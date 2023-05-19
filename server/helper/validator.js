@@ -6,7 +6,6 @@ const validator = async (body, rules, customMessages, callback) => {
     const validation = new Validator(body, rules, customMessages);
     validation.passes(() => callback(null, true));
     validation.fails(() => callback(validation.errors, false));
-
 };
 
 /**
@@ -33,6 +32,6 @@ const validateApi = async (req, res, next) => {
     });
 }
 
-module.exports ={
+module.exports = {
     validateApi
 }

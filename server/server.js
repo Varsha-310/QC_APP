@@ -42,10 +42,10 @@ mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
 
 // Global error handler  
 app.use((err, req, res, next) => {
+
     if (!err) {
         return next();
     }
-
     res.status(500);
     res.send(err);
 });
