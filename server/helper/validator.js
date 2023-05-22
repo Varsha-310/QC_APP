@@ -27,11 +27,39 @@ const validateApi = async (req, res, next) => {
             next();
         }
     }).catch(err => {
-
         console.log(err);
     });
 }
 
+/**
+ * compare received and generated hash to verify the webhook
+ * 
+ * @param req 
+ * @returns boolean
+ */
+export const verifyShopifyHook = async(req, res ,next) => {
+
+    try {
+
+        const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
+        const body = req.rawBody;
+        const digest = crypto.createHmac('sha256', api_secret).update(body).digest('base64');
+        const providedHmac = req.headers['x-shopify-hmac-sha256']?.toString();
+    
+        if(digest == providedHmac){
+            next();
+        }else{
+
+            res.sendStatus(HttpStatusCode.AUTHORIZATION);
+        }
+    } catch (e) {
+        res.sendStatus(HttpStatusCode.AUTHORIZATION);
+    }
+}
+
+
+
 module.exports = {
-    validateApi
+    validateApi,
+    verifyShopifyHook
 }

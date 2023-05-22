@@ -2,8 +2,9 @@ require('dotenv').config();
 var bodyParser = require('body-parser');
 const express = require("express");
 const rateLimit = require('express-rate-limit');
-const Route = require('./Route/route');
+let shopifyRoute = require("./routes/shopify");
 var mongoose = require('mongoose');
+const {verifyShopifyHook} = require("./helper/validator")
 
 const app = express();
 
@@ -15,6 +16,13 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+
+app.use(express.json({
+    limit:'50mb',
+    verify: (req, res, buf) => {
+        req.rawBody = buf
+    }
+  }));
 
 app.use(bodyParser.json());
 
@@ -28,7 +36,12 @@ const apiLimiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-app.use('/api/', apiLimiter, Route);
+app.use("/shopify", shopifyRoute);
+
+// GDPR Routes
+app.use("/gdpr", verifyShopifyHook, gdprRoute);
+
+app.use('/', shopifyRoute);
 
 // Database and Port connection
 mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
@@ -42,7 +55,6 @@ mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
 
 // Global error handler  
 app.use((err, req, res, next) => {
-
     if (!err) {
         return next();
     }

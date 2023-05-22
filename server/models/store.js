@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
-let settingsSchema = mongoose.Schema(
+let storeSchema = mongoose.Schema(
     { 
-        store: {type: String},
+        store_url: {type: String},
+        access_token: {type: String},
         status: {type:String},
         plan: {
             plan_name : String,
@@ -46,4 +47,4 @@ let settingsSchema = mongoose.Schema(
     { versionKey: false}
 );
 
-let Settings = module.exports = mongoose.model('Settings', settingsSchema);
+let store = module.exports = mongoose.model('store', storeSchema);
