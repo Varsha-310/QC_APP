@@ -1,0 +1,28 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+@import url(https://fonts.googleapis.com/css?family=Epilogue:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic);
+
+:root {
+  --font-family-main: "Poppins", sans-serif;
+  --font-family-header: "Epilogue", sans-serif;
+
+  /* font sizes */
+  --font-header-size: 24px;
+  --font-body-size: 16px;
+  --font-cta-size: 14px;
+
+  /* colors */
+  --background-color: #f1f3f7;
+  --secondary-bold-btn: #b62028;
+  --secondary-light-btn: #ffffff;
+  --frame-color: #b62028;
+  --Text-color: #ffffff;
+  --rating-color: #fec600;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
