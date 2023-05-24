@@ -20,7 +20,6 @@ const validateApi = async (req, res, next) => {
         "name": "required|string"
     };
     await validator(req.body, validationRule, {}, (err, status) => {
-
         if (!status) {
             res.send(err);
         } else {
@@ -33,12 +32,10 @@ const validateApi = async (req, res, next) => {
 
 /**
  * compare received and generated hash to verify the webhook
- * 
  * @param req 
  * @returns boolean
  */
-export const verifyShopifyHook = async(req, res ,next) => {
-
+const verifyShopifyHook = async(req, res ,next) => {
     try {
 
         const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
@@ -56,8 +53,6 @@ export const verifyShopifyHook = async(req, res ,next) => {
         res.sendStatus(HttpStatusCode.AUTHORIZATION);
     }
 }
-
-
 
 module.exports = {
     validateApi,

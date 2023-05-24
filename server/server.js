@@ -1,10 +1,11 @@
 require('dotenv').config();
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const express = require("express");
 const rateLimit = require('express-rate-limit');
-let shopifyRoute = require("./routes/shopify");
-var mongoose = require('mongoose');
-const {verifyShopifyHook} = require("./helper/validator")
+const shopifyRoute = require("./routes/shopify");
+const gdprRoute = require("./controllers/gdprController");
+const mongoose = require('mongoose');
+const {verifyShopifyHook} = require("./helper/validator");
 
 const app = express();
 
