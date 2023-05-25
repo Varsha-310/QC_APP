@@ -2,12 +2,9 @@ import dotenv from 'dotenv'
 dotenv.config();
 import bodyParser from 'body-parser';
 import express from 'express';
-import mongoose from 'mongoose';
 import { rateLimit } from 'express-rate-limit';
-import express from 'express';
-import { rateLimit } from 'express-rate-limit';
-import shopifyRoute from './routes/shopify';
-import gdprRoute from './routes/gdpr';
+import { shopifyRoute } from './routes/shopify';
+import {gdprRoute} from './routes/gdpr';
 import mongoose from 'mongoose';
 import { verifyShopifyHook } from './helper/validator';
 import {respondInternalServerError} from './helper/response';

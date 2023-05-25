@@ -1,12 +1,12 @@
 import Router from ('express');
 import {install , installCallback} from '../controllers/shopifyController'
 
-const Route = Router();
+const shopifyRoute = Router();
 
 // Route of app installation
-Route.get('/install', install);
+shopifyRoute.get('/install', install);
 
 // Route of app installation callback
-Route.get('/callback', installCallback);
+shopifyRoute.get('/callback', installCallback);
 
-module.exports = router;
+module.exports = {shopifyRoute };
