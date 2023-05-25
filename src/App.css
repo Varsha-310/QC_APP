@@ -26,3 +26,15 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* global values */
+.container_padding {
+  padding: 30px 70px;
+}
+.container_margin {
+}
+
+.dashboard-container{
+  display: flex;
+  background-color: var(--background-color);
+}

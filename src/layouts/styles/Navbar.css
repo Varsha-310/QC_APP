@@ -1,0 +1,8 @@
+.navbar-container{
+    background-color: var(--frame-color);
+    padding: 20px 60px;
+}
+.navbar-logo_icon{
+    width: 200px;
+    height: 50px;
+}
