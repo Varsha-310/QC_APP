@@ -1,6 +1,7 @@
 const axios = require('axios');
-import axios from 'axios';
 const store = require("../models/store");
+const {respondInternalServerError , respondNotAcceptable } = require("./helper/response");
+
 
 /**
  * method for installation method
@@ -11,6 +12,7 @@ const store = require("../models/store");
 const install = async (req, res) => {
     try {
         const shop = req.query.shop;
+        console.log(req)
         if (shop) {
             const scopes = process.env.SCOPES;
             const apiKey = process.env.SHOPIFY_API_KEY;
@@ -21,19 +23,11 @@ const install = async (req, res) => {
             res.cookie("state", state);
             return res.redirect(installUrl);
         } else {
-            return res
-                .status(400)
-                .send(
-                    "Missing shop parameter. Please add ?shop={shop}.myshopify.com to your request"
-                );
+            res.json(respondNotAcceptable("Something went wrong try after sometime"));
         }
     }
     catch (error) {
-        return res
-            .status(500)
-            .send(
-                "Something went wrong try after sometime!"
-            );
+        res.json(respondInternalServerError("Something went wrong try after sometime"));
 
     }
 };
@@ -57,27 +51,26 @@ const installCallback = async (req, res) => {
         }
         if (shop && hmac && code) {
 
-
             // const query: any = Object.assign({}, req.query);
-            // delete query["signature"];
-            // delete query["hmac"];
-            // const message = new URLSearchParams(query).toString();
-            // const providedHmac = Buffer.from(hmac.toString(), "utf-8");
-            // const generatedHash = Buffer.from(crypto.createHmac("sha256", apiSecret).update(message).digest("hex"), "utf-8");
-            // let hashEquals = false;
-            // try {
+            delete query["signature"];
+            delete query["hmac"];
+            const message = new URLSearchParams(query).toString();
+            const providedHmac = Buffer.from(hmac.toString(), "utf-8");
+            const generatedHash = Buffer.from(crypto.createHmac("sha256", apiSecret).update(message).digest("hex"), "utf-8");
+            let hashEquals = false;
+            try {
 
-            //     hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac);
-            // } catch (e) {
+                hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac);
+            } catch (e) {
 
-            //     logger.error({ shop, e });
-            //     hashEquals = false;
-            // }
+                logger.error({ shop, e });
+                hashEquals = false;
+            }
 
-            // if (!hashEquals) {
-            //     // logger.info(`Installation: HMAC missmatched - store - ${shop}`);
-            //     return res.status(400).json({ msg: "HMAC validation failed" });
-            // }
+            if (!hashEquals) {
+                // logger.info(`Installation: HMAC missmatched - store - ${shop}`);
+                return res.status(400).json({ msg: "HMAC validation failed" });
+            }
 
             let accessToken = await getAccessToken(shop, code);
 
@@ -92,17 +85,17 @@ const installCallback = async (req, res) => {
 
         } else {
 
-            return res.status(422).send("Required parameters missing");
+            res.json(respondNotAcceptable("Required parameters are missing"));
         }
     }
     catch (error) {
-        return res.status(500).send("something went wrong , try after sometime!");
+        res.json(respondInternalServerError("Something went wrong try after sometime"));
 
     }
 };
 
 /**
- * 
+ * Method to save store details in DB
  * @param {*} shopData 
  * @param {*} shop 
  * @param {*} accessToken 
@@ -115,8 +108,7 @@ let saveStoreData = async (shopData, shop, accessToken) => {
             email: shopData.shop.email,
             store_url: shop.toString(),
             access_token: accessToken,
-            country_code: shopData.shop?.country_code.toLowerCase(),
-            status: true
+            country_code: shopData.shop?.country_code.toLowerCase()
         };
         console.log(data);
         const storeObj = await store.findOne({
@@ -131,11 +123,17 @@ let saveStoreData = async (shopData, shop, accessToken) => {
         return true;
     }
     catch (error) {
-        return res.status(500).send("something went wrong , try after sometime!");
+        res.json(respondInternalServerError("Something went wrong try after sometime"));
 
     }
 }
 
+/**
+ * Method to get store details
+ * @param {*} shop 
+ * @param {*} accessToken 
+ * @returns 
+ */
 let getShopifyStoreData = async (shop, accessToken) => {
     try {
         let API_VERSION = process.env.API_VERSION;
@@ -154,10 +152,16 @@ let getShopifyStoreData = async (shop, accessToken) => {
         return shopData;
     }
     catch (error) {
-        return res.status(500).send("something went wrong , try after sometime!");
+        res.json(respondInternalServerError("Something went wrong try after sometime"));
     }
 }
 
+/**
+ * Method to get access token of stores
+ * @param {*} shop 
+ * @param {*} code 
+ * @returns 
+ */
 let getAccessToken = async (shop, code) => {
     try {
         const apiKey = process.env.SHOPIFY_API_KEY;
@@ -183,56 +187,8 @@ let getAccessToken = async (shop, code) => {
         return accessToken;
     }
     catch (error) {
-        return res.status(500).send("something went wrong , try after sometime!");
-    }
-}
+        res.json(respondInternalServerError("Something went wrong try after sometime"));
 
-//resigter webhook
-function registerWebhooks_(shopifyAPI, topic) {
-    let webhookEndpoint = topic.replace("/", "-");
-    let BASE_URL = process.env.BASE_URL;
-    let address = `${APP_URL}/webhooks/${webhookEndpoint}/${shopifyAPI.options.shopName}`;
-    return shopifyAPI.webhook.create({
-        topic: topic,
-        address: address,
-        format: "json"
-    });
-}
-
-//check for webhook is registered on not
-async function checkWebhookExist(shopifyAPI, topic) {
-    var exist = false;
-    var webhookList = await shopifyAPI.webhook.list();
-    for (var i = 0; i < webhookList.length; i++) {
-        if (webhookList.topic === topic) {
-            exist = true;
-            break;
-        }
-    }
-    return exist;
-}
-
-//pass the webhook topic to resigter webhook
-async function registerWebhooks(shopifyAPI) {
-    var args = [
-        "orders/cancelled",
-        "orders/create",
-        "orders/updated",
-        "orders/delete"
-    ];
-    for (let i = 0; i < args.length; i++) {
-        if (await checkWebhookExist(shopifyAPI, args[i])) {
-            console.log("webhook exist");
-        } else {
-            try {
-                let result = await registerWebhooks_(shopifyAPI, args[i]);
-                console.log(result);
-            } catch (err) {
-                // console.log(err);
-                // console.log('Error; statusCode: ', err.statusCode);
-                // break;
-            }
-        }
     }
 }
 
@@ -247,9 +203,13 @@ const checkWebhooks = async () => {
     try {
 
         const webhooksList = [
-            { "topic": "collections/update", endpoint: "/api/collectionUpdate" },
-            { "topic": "products/update", endpoint: "/api/productsupdated" },
-            { "topic": "orders/create", endpoint: "/api/orderwebhook" }
+            { "topic": "customers/data_request", endpoint: "/gdpr/customer/data" },
+            { "topic": "customers/redact", endpoint: "/gdpr/customer/delete" },
+            { "topic": "shop/redact", endpoint: "/gdpr/store/delete" },
+            { "topic": "orders/created", endpoint: "/gdpr/store/delete" },
+            { "topic": "orders/updated", endpoint: "/gdpr/store/delete" },
+            { "topic": "orders/cancelled", endpoint: "/gdpr/store/delete" }
+
         ];
         const AccessToken = process.env.ACCESS_TOKEN;
         const URL = `https://${process.env.STORE}/admin/api/${process.env.API_VERSION}/webhooks.json`;

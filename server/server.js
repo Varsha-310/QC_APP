@@ -1,13 +1,12 @@
-import dotenv from 'dotenv'
-dotenv.config();
-import bodyParser from 'body-parser';
-import express from 'express';
-import { rateLimit } from 'express-rate-limit';
-import { shopifyRoute } from './routes/shopify';
-import {gdprRoute} from './routes/gdpr';
-import mongoose from 'mongoose';
-import { verifyShopifyHook } from './helper/validator';
-import {respondInternalServerError} from './helper/response';
+require('dotenv').config();
+const bodyParser = require('body-parser');
+const express = require("express");
+const rateLimit = require('express-rate-limit');
+const shopifyRoute = require("./routes/shopify");
+const mongoose = require('mongoose');
+const { verifyShopifyHook } = require("./helper/validator");
+const gdprRoute = require("./routes/gdpr");
+const { respondSuccess, respondInternalServerError } = require("./helper/response");
 
 const app = express();
 
@@ -20,12 +19,13 @@ app.use(function (req, res, next) {
     next();
 });
 
+// defining rawbody from request
 app.use(express.json({
-    limit:'50mb',
+    limit: '50mb',
     verify: (req, res, buf) => {
         req.rawBody = buf
     }
-  }));
+}));
 
 app.use(bodyParser.json());
 
@@ -38,6 +38,11 @@ const apiLimiter = rateLimit({
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
+
+// route to check app status
+app.get("/", (req, res) => {
+    res.json(respondSuccess("App is live"));
+});
 
 // shopify routes
 app.use("/shopify", shopifyRoute);
@@ -60,6 +65,8 @@ app.use((err, req, res, next) => {
     if (!err) {
         return next();
     }
-    return respondInternalServerError("Something went wrong try after sometime")
+    res.json(respondInternalServerError("Something went wrong try after sometime"));
 });
+
+module.exports = app;
 

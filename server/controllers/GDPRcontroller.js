@@ -1,3 +1,5 @@
+const { respondSuccess } = require("./helper/response");
+
 /**
  * webhook to handle show user details
  * @param {*} req 
@@ -5,7 +7,7 @@
  * @returns 
  */
 const getUserDetails = (req, res) => {
-    return res.status(200).json({});
+    res.json(respondSuccess("webhook received"));
 }
 
 /**
@@ -15,7 +17,7 @@ const getUserDetails = (req, res) => {
  * @returns 
  */
 const deleteUserData = (req, res) => {
-    return res.sendStatus(200);
+    res.json(respondSuccess("webhook received"));
 }
 
 
@@ -26,7 +28,7 @@ const deleteUserData = (req, res) => {
  * @returns 
  */
 const deleteStoreData = (req, res) => {
-    return res.sendStatus(200);
+    res.json(respondSuccess("webhook received"));
 }
 
 module.exports = {

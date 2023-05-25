@@ -4,11 +4,6 @@ const errorMsg = {
     "500": "There seems to be some problem with our servers. You can retry after a few seconds or reach out to admin for assistance.",
     // unauthorized
     "401": "Your credentials are not sufficient to authorized you. Please retry with the right credentials.",
-    
-
-    "409" : "Customer already exists",
-    
-    "300" : "multiple Response"
 }
 
 /**
@@ -82,7 +77,7 @@ const respondError = (msg, code) => {
  * 
  * @returns {json}
  */
-const respondUnauthorized = (msg, data , code = 401) => {
+const respondUnauthorized = (msg, data, code = 401) => {
 
     return {
         ...respond(false, msg, code),
@@ -104,7 +99,7 @@ const respondNotAcceptable = (msg, code = 406) => {
  * 
  * @returns {json}
  */
- const multipleResponse = (msg = "", code= 300 ,data) => {
+const multipleResponse = (msg = "", code = 300, data) => {
 
     return {
         ...respond(false, msg, code),
