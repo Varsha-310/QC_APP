@@ -8,7 +8,6 @@ const getUserDetails = (req, res) => {
     return res.status(200).json({});
 }
 
-
 /**
  * webhook to handle delete user
  * @param {*} req 

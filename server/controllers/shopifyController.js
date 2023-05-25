@@ -1,4 +1,5 @@
 const axios = require('axios');
+import axios from 'axios';
 const store = require("../models/store");
 
 /**
@@ -14,7 +15,7 @@ const install = async (req, res) => {
             const scopes = process.env.SCOPES;
             const apiKey = process.env.SHOPIFY_API_KEY;
             const APP_URL = process.env.APP_URL;
-            const state = Date.now();
+            const state = Date.now();                                          
             const redirectUri = `${APP_URL}/shopify/callback`;
             const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&state=${state}&redirect_uri=${redirectUri}`;
             res.cookie("state", state);
@@ -125,7 +126,6 @@ let saveStoreData = async (shopData, shop, accessToken) => {
         if (storeObj) {
             await store.update({ store_url: shop.toString() }, data)
         } else {
-
             await store.create(data);
         }
         return true;

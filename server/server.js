@@ -1,11 +1,16 @@
-require('dotenv').config();
-const bodyParser = require('body-parser');
-const express = require("express");
-const rateLimit = require('express-rate-limit');
-const shopifyRoute = require("./routes/shopify");
-const gdprRoute = require("./controllers/gdprController");
-const mongoose = require('mongoose');
-const {verifyShopifyHook} = require("./helper/validator");
+import dotenv from 'dotenv'
+dotenv.config();
+import bodyParser from 'body-parser';
+import express from 'express';
+import mongoose from 'mongoose';
+import { rateLimit } from 'express-rate-limit';
+import express from 'express';
+import { rateLimit } from 'express-rate-limit';
+import shopifyRoute from './routes/shopify';
+import gdprRoute from './routes/gdpr';
+import mongoose from 'mongoose';
+import { verifyShopifyHook } from './helper/validator';
+import {respondInternalServerError} from './helper/response';
 
 const app = express();
 
@@ -37,12 +42,11 @@ const apiLimiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
+// shopify routes
 app.use("/shopify", shopifyRoute);
 
-// GDPR Routes
+// GDPR routes
 app.use("/gdpr", verifyShopifyHook, gdprRoute);
-
-app.use('/', shopifyRoute);
 
 // Database and Port connection
 mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
@@ -59,7 +63,6 @@ app.use((err, req, res, next) => {
     if (!err) {
         return next();
     }
-    res.status(500);
-    res.send(err);
+    return respondInternalServerError("Something went wrong try after sometime")
 });
 

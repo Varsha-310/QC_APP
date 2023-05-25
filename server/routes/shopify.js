@@ -1,7 +1,12 @@
-const router = require('express').Router();
-const { install,installCallback } = require('../controllers/shopifyController');
+import Router from ('express');
+import {install , installCallback} from '../controllers/shopifyController'
 
-router.get('/install', install);
-router.get('/callback', installCallback);
+const Route = Router();
+
+// Route of app installation
+Route.get('/install', install);
+
+// Route of app installation callback
+Route.get('/callback', installCallback);
 
 module.exports = router;
