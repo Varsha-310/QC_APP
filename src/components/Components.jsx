@@ -52,7 +52,7 @@ const TabBox = styled(Link)`
 const SubTabBox = styled(Link)`
   display: grid;
   grid-template-columns: ${(props) =>
-    props?.dropDown ? "1fr 3fr 1fr" : "1fr 4fr"};
+    props?.dropdown ? "1fr 3fr 1fr" : "1fr 4fr"};
   width: 185px;
   text-decoration: none;
   margin: 5px 0px;

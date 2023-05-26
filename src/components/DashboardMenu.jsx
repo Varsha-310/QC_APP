@@ -10,76 +10,129 @@ import { NestedTabBox, SubTabBox, TabBox, TabItemLable } from "./Components";
 
 const DashboardMenu = () => {
   const [activeTab, setActiveTab] = useState({ home: true });
+  const [activeDropDown, setActiveDropDown] = useState({
+    myplan: false,
+    credits: false,
+  });
 
   const handleTab = (event) => {
     const id = event.target.id;
     setActiveTab({ [id]: true });
   };
+
+  const handleDropDown = (event) => {
+    event.stopPropagation();
+    const id = event.currentTarget.id;
+    setActiveDropDown((prev) => ({ ...prev, [id]: !activeDropDown[id] }));
+  };
+
   return (
     <div className="dashboard-menu">
-      {/* home */}
-      <TabBox to={"/"} active={activeTab?.home} id="home" onClick={handleTab}>
-        HOME
-      </TabBox>
+      <ul>
+        <li>
+          <TabBox
+            to={"/"}
+            active={activeTab?.home}
+            id="home"
+            onClick={handleTab}
+          >
+            HOME
+          </TabBox>
+        </li>
 
-      {/* accounts */}
-      <TabBox
-        to={"/account_section"}
-        active={activeTab?.account}
-        id="account"
-        onClick={handleTab}
-        >
-        ACCOUNT SECTION
-      </TabBox>
-      <SubTabBox dropDown={true}>
-        <img src={MyPlanIcon} alt="" />
-        <TabItemLable>My Plan</TabItemLable>
-        <img src={DownArrowIcon} alt="" />
-      </SubTabBox>
-          <NestedTabBox>Billing Page</NestedTabBox>
-          <NestedTabBox>My Invoices</NestedTabBox>
-      <SubTabBox>
-        <img src={KycIcon} alt="" />
-        <TabItemLable>KYC Status</TabItemLable>
-      </SubTabBox>
+        <li>
+          <TabBox
+            to={"/account_section"}
+            active={activeTab?.account}
+            id="account"
+            onClick={handleTab}
+          >
+            ACCOUNT SECTION
+          </TabBox>
+        </li>
+        <ul>
+          <li>
+            <SubTabBox dropdown={"true"} id="myplan" onClick={handleDropDown}>
+              <img src={MyPlanIcon} alt="" />
+              <TabItemLable>My Plan</TabItemLable>
+              <img src={DownArrowIcon} alt="" />
+            </SubTabBox>
+          </li>
+          {activeDropDown?.myplan && (
+            <ul>
+              <li>
+                <NestedTabBox>Billing Page</NestedTabBox>
+              </li>
+              <li>
+                <NestedTabBox>My Invoices</NestedTabBox>
+              </li>
+            </ul>
+          )}
+          <li>
+            <SubTabBox>
+              <img src={KycIcon} alt="" />
+              <TabItemLable>KYC Status</TabItemLable>
+            </SubTabBox>
+          </li>
+        </ul>
 
-      {/* gift card */}
-      <TabBox
-        to={"/gift_card"}
-        active={activeTab?.giftcard}
-        id="giftcard"
-        onClick={handleTab}
-      >
-        GIFT CARD
-      </TabBox>
-      <SubTabBox>
-        <img src={GiftCardIcon} alt="" />
-        <TabItemLable>Create Gift Card</TabItemLable>
-      </SubTabBox>
-      <SubTabBox>
-        <img src={MyGiftCardsIcon} alt="" />
-        <TabItemLable>My Gift Cards</TabItemLable>
-      </SubTabBox>
-
-      {/* store credit */}
-      <TabBox
-        to={"/store_credits"}
-        active={activeTab?.storecredit}
-        id="storecredit"
-        onClick={handleTab}
-      >
-        STORE CREDIT
-      </TabBox>
-      <SubTabBox dropDown={true}>
-        <img src={StoreCredit} alt="" />
-        <TabItemLable>Issue Store Credits</TabItemLable>
-        <img src={DownArrowIcon} alt="" />
-      </SubTabBox>
-      <NestedTabBox>Listing Page</NestedTabBox>
-      <SubTabBox>
-        <img src={ConfigIcon} alt="" />
-        <TabItemLable>Configuration</TabItemLable>
-      </SubTabBox>
+        <li>
+          <TabBox
+            to={"/gift_card"}
+            active={activeTab?.giftcard}
+            id="giftcard"
+            onClick={handleTab}
+          >
+            GIFT CARD
+          </TabBox>
+        </li>
+        <ul>
+          <li>
+            <SubTabBox>
+              <img src={GiftCardIcon} alt="" />
+              <TabItemLable>Create Gift Card</TabItemLable>
+            </SubTabBox>
+          </li>
+          <li>
+            <SubTabBox>
+              <img src={MyGiftCardsIcon} alt="" />
+              <TabItemLable>My Gift Cards</TabItemLable>
+            </SubTabBox>
+          </li>
+        </ul>
+        <li>
+          <TabBox
+            to={"/store_credits"}
+            active={activeTab?.storecredit}
+            id="storecredit"
+            onClick={handleTab}
+          >
+            STORE CREDIT
+          </TabBox>
+          <ul>
+            <li>
+              <SubTabBox
+                dropdown={"true"}
+                id="credits"
+                onClick={handleDropDown}
+              >
+                <img src={StoreCredit} alt="" />
+                <TabItemLable>Issue Store Credits</TabItemLable>
+                <img src={DownArrowIcon} alt="" />
+              </SubTabBox>
+              {activeDropDown.credits && (
+                <NestedTabBox>Listing Page</NestedTabBox>
+              )}
+            </li>
+            <li>
+              <SubTabBox>
+                <img src={ConfigIcon} alt="" />
+                <TabItemLable>Configuration</TabItemLable>
+              </SubTabBox>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   );
 };
