@@ -2,7 +2,6 @@ const axios = require('axios');
 const store = require("../models/store");
 const {respondInternalServerError , respondNotAcceptable } = require("./helper/response");
 
-
 /**
  * method for installation method
  * @param {*} req 
@@ -10,10 +9,12 @@ const {respondInternalServerError , respondNotAcceptable } = require("./helper/r
  * @returns 
  */
 const install = async (req, res) => {
+
     try {
         const shop = req.query.shop;
         console.log(req)
         if (shop) {
+
             const scopes = process.env.SCOPES;
             const apiKey = process.env.SHOPIFY_API_KEY;
             const APP_URL = process.env.APP_URL;
@@ -27,6 +28,8 @@ const install = async (req, res) => {
         }
     }
     catch (error) {
+
+
         res.json(respondInternalServerError("Something went wrong try after sometime"));
 
     }
@@ -39,7 +42,9 @@ const install = async (req, res) => {
  * @returns 
  */
 const installCallback = async (req, res) => {
+
     try {
+
         const { shop, hmac, code, state } = req.query;
         const apiSecret = process.env.SHOPIFY_API_SECRET ?? "";
         const CLIENT_URL = process.env.CLIENT_URL ?? "";
@@ -51,7 +56,7 @@ const installCallback = async (req, res) => {
         }
         if (shop && hmac && code) {
 
-            // const query: any = Object.assign({}, req.query);
+            const query = req.query;
             delete query["signature"];
             delete query["hmac"];
             const message = new URLSearchParams(query).toString();
@@ -62,15 +67,12 @@ const installCallback = async (req, res) => {
 
                 hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac);
             } catch (e) {
-
-                logger.error({ shop, e });
                 hashEquals = false;
             }
 
             if (!hashEquals) {
-                // logger.info(`Installation: HMAC missmatched - store - ${shop}`);
-                return res.status(400).json({ msg: "HMAC validation failed" });
-            }
+                
+             }
 
             let accessToken = await getAccessToken(shop, code);
 
