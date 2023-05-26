@@ -12,10 +12,12 @@
 
   /* colors */
   --background-color: #f1f3f7;
+  --background-light-color: #ffffff;
   --secondary-bold-btn: #b62028;
   --secondary-light-btn: #ffffff;
   --frame-color: #b62028;
-  --Text-color: #ffffff;
+  --text-color: #ffffff;
+  --text-dark-color: #000000;
   --rating-color: #fec600;
 }
 * {
@@ -25,6 +27,9 @@
 }
 html {
   scroll-behavior: smooth;
+}
+body{
+  font-family: "Poppins",sans-serif;
 }
 
 /* global values */
@@ -36,11 +41,12 @@ html {
 
 /* app js */
 
-.dashboard-container{
+.dashboard-container {
   display: flex;
+  gap: 20px;
   background-color: var(--background-color);
   min-height: 100vh;
 }
-li{
+li {
   list-style: none;
 }

@@ -1,0 +1,30 @@
+.home-section-container {
+  background-color: var(--background-light-color);
+  padding: 20px 30px;
+  margin: 15px 0px;
+}
+.section-para {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  justify-content: center;
+  color: var(--text-dark-color);
+}
+.home-section-container:nth-child(4) {
+  height: 250px;
+}
+.rating-stars {
+  display: flex;
+  justify-content: center;
+}
+.rating-stars img {
+  margin: 10px 5px;
+}
+.giftbox{
+    position: relative;
+    top: -40px;
+    left: -40px;
+}

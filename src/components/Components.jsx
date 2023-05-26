@@ -27,6 +27,7 @@ const PrimaryBtn = styled.div`
   border: 1px solid
     ${(props) => (props.$primary ? SECONDARY_DARK_BTN : TEXT_PRIMARY_COLOR)};
   border-radius: 10px;
+  margin: 0px auto;
 `;
 
 const TabBox = styled(Link)`
@@ -86,4 +87,23 @@ const NestedTabBox = styled(Link)`
   margin: 10px 0px;
   color: ${TEXT_DARK_COLOR};
 `;
-export { PrimaryBtn, TabBox, TabItemLable, SubTabBox ,NestedTabBox};
+
+const SectionHeading1 = styled.div`
+  font-family: "Epilogue";
+  font-style: normal;
+  font-weight: ${props=>props?.weight};
+  font-size: ${props=>props?.size};
+  line-height: ${props=>props?.lineheight};
+  text-align: ${props=>props?.align};
+  width: 100%;
+  color: ${TEXT_DARK_COLOR};
+`;
+
+export {
+  PrimaryBtn,
+  TabBox,
+  TabItemLable,
+  SubTabBox,
+  NestedTabBox,
+  SectionHeading1,
+};
