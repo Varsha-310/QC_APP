@@ -1,14 +1,22 @@
-require('dotenv').config();
-const bodyParser = require('body-parser');
-const express = require("express");
-const rateLimit = require('express-rate-limit');
-const shopifyRoute = require("./routes/shopify");
-const mongoose = require('mongoose');
-const { verifyShopifyHook } = require("./helper/validator");
-const gdprRoute = require("./routes/gdpr");
-const { respondSuccess, respondInternalServerError } = require("./helper/response");
+//require('dotenv').config();
+//const bodyParser = require('body-parser');
+import bodyParser from "body-parser";
+import * as dotenv from "dotenv";
+dotenv.config();
+//const express = require("express");
+import express from "express";
+//const rateLimit = require('express-rate-limit');
+import { rateLimit } from 'express-rate-limit';
+//const shopifyRoute = require("./routes/shopify");
+//const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+//const { verifyShopifyHook } = require("./helper/validator");
+// const gdprRoute = require("./routes/gdpr");
+//import gdprRoute from "./routes/gdpr";
+// const { respondSuccess, respondInternalServerError } = require("./helper/response");
+import { respondSuccess, respondInternalServerError } from './helper/response';
 
-const app = express();
+export const app = express();
 
 // CORS configuration
 app.use(function (req, res, next) {
@@ -45,10 +53,10 @@ app.get("/", (req, res) => {
 });
 
 // shopify routes
-app.use("/shopify", shopifyRoute);
+//app.use("/shopify", shopifyRoute);
 
 // GDPR routes
-app.use("/gdpr", verifyShopifyHook, gdprRoute);
+//app.use("/gdpr", verifyShopifyHook, gdprRoute);
 
 // Database and Port connection
 mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
@@ -68,5 +76,5 @@ app.use((err, req, res, next) => {
     res.json(respondInternalServerError("Something went wrong try after sometime"));
 })
 
-module.exports = app;
+// export default app;
 

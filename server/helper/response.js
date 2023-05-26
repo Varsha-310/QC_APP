@@ -1,5 +1,4 @@
-"use strict";
-const errorMsg = {
+export const errorMsg = {
     // Internal server error
     "500": "There seems to be some problem with our servers. You can retry after a few seconds or reach out to admin for assistance.",
     // unauthorized
@@ -14,7 +13,7 @@ const errorMsg = {
  * @param code 
  * @returns {json} 
  */
-const respond = (status = true, msg, code) => {
+export const respond = (status = true, msg, code) => {
 
     return {
         "success": status,
@@ -29,7 +28,7 @@ const respond = (status = true, msg, code) => {
  * @param msg 
  * @returns {json}
  */
-const respondCreated = (msg) => {
+export const respondCreated = (msg) => {
 
     return respond(true, msg, 201);
 }
@@ -39,7 +38,7 @@ const respondCreated = (msg) => {
  * @param msg 
  * @returns {json}
  */
-const respondSuccess = (msg) => {
+export const respondSuccess = (msg) => {
 
     return respond(true, msg, 200);
 }
@@ -52,7 +51,7 @@ const respondSuccess = (msg) => {
  * @param data 
  * @returns {json}
  */
-const respondWithData = (msg = "", code = 200, data) => {
+export const respondWithData = (msg = "", code = 200, data) => {
 
     return {
         ...respond(true, msg, code),
@@ -67,7 +66,7 @@ const respondWithData = (msg = "", code = 200, data) => {
  * @param code 
  * @returns {json}
  */
-const respondError = (msg, code) => {
+export const respondError = (msg, code) => {
 
     return respond(false, msg, code);
 }
@@ -77,7 +76,7 @@ const respondError = (msg, code) => {
  * 
  * @returns {json}
  */
-const respondUnauthorized = (msg, data, code = 401) => {
+export const respondUnauthorized = (msg, data, code = 401) => {
 
     return {
         ...respond(false, msg, code),
@@ -87,7 +86,7 @@ const respondUnauthorized = (msg, data, code = 401) => {
 
 
 
-const respondNotAcceptable = (msg, code = 406) => {
+export const respondNotAcceptable = (msg, code = 406) => {
 
     return {
         ...respond(false, msg, code)
@@ -99,7 +98,7 @@ const respondNotAcceptable = (msg, code = 406) => {
  * 
  * @returns {json}
  */
-const multipleResponse = (msg = "", code = 300, data) => {
+export const multipleResponse = (msg = "", code = 300, data) => {
 
     return {
         ...respond(false, msg, code),
@@ -112,7 +111,7 @@ const multipleResponse = (msg = "", code = 300, data) => {
  * 
  * @returns {json}
  */
-const respondForbidden = (msg) => {
+export const respondForbidden = (msg) => {
 
     return respond(false, msg, 403);
 }
@@ -123,7 +122,7 @@ const respondForbidden = (msg) => {
  * @param {string} msg 
  * @returns {json}
  */
-const respondNotFound = (msg) => {
+export const respondNotFound = (msg) => {
     return respond(false, msg, 404);
 }
 
@@ -132,21 +131,21 @@ const respondNotFound = (msg) => {
  * 
  * @returns {json}
  */
-const respondInternalServerError = () => {
+export const respondInternalServerError = () => {
 
     return respond(false, errorMsg["500"], 500);
 }
 
-module.exports = {
-    respondInternalServerError,
-    respondNotFound,
-    respondForbidden,
-    respondUnauthorized,
-    respondCreated,
-    respondSuccess,
-    respondWithData,
-    respondError,
-    multipleResponse,
-    respondNotAcceptable,
-    errorMsg
-}
+// module.exports = {
+//     respondInternalServerError,
+//     respondNotFound,
+//     respondForbidden,
+//     respondUnauthorized,
+//     respondCreated,
+//     respondSuccess,
+//     respondWithData,
+//     respondError,
+//     multipleResponse,
+//     respondNotAcceptable,
+//     errorMsg
+// }

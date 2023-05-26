@@ -1,5 +1,7 @@
-const gdprRoute = require('express').Router();
-const { getUserDetails, deleteStoreData, deleteUserData } = require('../controllers/gdprController')
+import { Router } from 'express';
+import { getUserDetails, deleteStoreData, deleteUserData } from '../controllers/gdprController';
+
+const gdprRoute = Router();
 
 // gdpr api to get customer data
 gdprRoute.post('/customer/data', getUserDetails);
@@ -10,4 +12,4 @@ gdprRoute.post('/customer/delete', deleteUserData);
 // gdpr api to delete store data
 gdprRoute.post('/store/delete', deleteStoreData);
 
-module.exports = gdprRoute;
+export default gdprRoute;

@@ -1,4 +1,4 @@
-const { respondSuccess } = require("./helper/response");
+import { respondSuccess } from "../helper/response";
 
 /**
  * webhook to handle show user details
@@ -6,7 +6,7 @@ const { respondSuccess } = require("./helper/response");
  * @param {*} res 
  * @returns 
  */
-const getUserDetails = (req, res) => {
+export const getUserDetails = (req, res) => {
     res.json(respondSuccess("webhook received"));
 }
 
@@ -15,8 +15,8 @@ const getUserDetails = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  * @returns 
- */
-const deleteUserData = (req, res) => {
+ */ 
+export const deleteUserData = (req, res) => {
     res.json(respondSuccess("webhook received"));
 }
 
@@ -27,15 +27,11 @@ const deleteUserData = (req, res) => {
  * @param {*} res 
  * @returns 
  */
-const deleteStoreData = (req, res) => {
+export const deleteStoreData = (req, res) => {
     res.json(respondSuccess("webhook received"));
 }
 
-module.exports = {
-    getUserDetails,
-    deleteUserData,
-    deleteStoreData
-}
+
 
 
 
