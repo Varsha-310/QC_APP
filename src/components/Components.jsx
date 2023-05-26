@@ -39,17 +39,28 @@ const TabBox = styled(Link)`
   justify-content: center;
   align-items: center;
   min-height: 35px;
-  width: 175px;
-  max-width: 185px; 
+  width: 185px;
   color: ${TEXT_DARK_COLOR};
-  background-color: #FFFFFF;
-  margin-bottom: 15px;
-  cursor:pointer;
-  text-decoration:none;
+  background-color: #ffffff;
+  margin: 15px 0px;
+  cursor: pointer;
+  text-decoration: none;
   box-shadow: ${(props) =>
     props?.active ? "0px 4px 7px 1px rgba(0, 0, 0, 0.15)" : ""};
 `;
- 
+
+const SubTabBox = styled(Link)`
+  display: grid;
+  grid-template-columns: ${(props) =>
+    props?.dropDown ? "1fr 3fr 1fr" : "1fr 4fr"};
+  width: 185px;
+  text-decoration: none;
+  margin: 5px 0px;
+  padding: 5px 0px 5px 15px;
+  align-items: center;
+  // justify-items: center;
+`;
+
 const TabItemLable = styled.div`
   font-family: "Poppins";
   font-style: normal;
@@ -60,4 +71,19 @@ const TabItemLable = styled.div`
   align-items: center;
   color: ${TEXT_DARK_COLOR};
 `;
-export { PrimaryBtn, TabBox,TabItemLable };
+
+const NestedTabBox = styled(Link)`
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  width: 185px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  margin: 10px 0px;
+  color: ${TEXT_DARK_COLOR};
+`;
+export { PrimaryBtn, TabBox, TabItemLable, SubTabBox ,NestedTabBox};
