@@ -23,8 +23,17 @@
 .rating-stars img {
   margin: 10px 5px;
 }
-.giftbox{
-    position: relative;
-    top: -40px;
-    left: -40px;
+.giftbox {
+  position: relative;
+  top: -40px;
+  left: -40px;
 }
+
+/* status container */
+.status-dot-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+}
+

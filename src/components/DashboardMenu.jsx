@@ -6,7 +6,14 @@ import MyGiftCardsIcon from "../assets/icons/svgs/gift-cards.svg";
 import ConfigIcon from "../assets/icons/svgs/Vector-3.svg";
 import GiftCardIcon from "../assets/icons/svgs/Vector-15.svg";
 import KycIcon from "../assets/icons/svgs/Vector-4.svg";
-import { NestedTabBox, SubTabBox, TabBox, TabItemLable } from "./Components";
+import {
+  Dot,
+  NestedTabBox,
+  SubTabBox,
+  TabBox,
+  TabItemLable,
+  TabSubItemLable,
+} from "./Components";
 
 const DashboardMenu = () => {
   const [activeTab, setActiveTab] = useState({ home: true });
@@ -58,16 +65,24 @@ const DashboardMenu = () => {
               <img src={DownArrowIcon} alt="" />
             </SubTabBox>
           </li>
+
           {activeDropDown?.myplan && (
             <ul>
               <li>
-                <NestedTabBox>Billing Page</NestedTabBox>
+                <NestedTabBox>
+                  <Dot size="5px" fill={true} />
+                  <TabSubItemLable>Billing Page</TabSubItemLable>
+                </NestedTabBox>
               </li>
               <li>
-                <NestedTabBox>My Invoices</NestedTabBox>
+                <NestedTabBox>
+                  <Dot size="5px" fill={true} />
+                  <TabSubItemLable>My Invoices</TabSubItemLable>
+                </NestedTabBox>
               </li>
             </ul>
           )}
+          
           <li>
             <SubTabBox>
               <img src={KycIcon} alt="" />
@@ -86,6 +101,7 @@ const DashboardMenu = () => {
             GIFT CARD
           </TabBox>
         </li>
+
         <ul>
           <li>
             <SubTabBox>
@@ -93,6 +109,7 @@ const DashboardMenu = () => {
               <TabItemLable>Create Gift Card</TabItemLable>
             </SubTabBox>
           </li>
+
           <li>
             <SubTabBox>
               <img src={MyGiftCardsIcon} alt="" />
@@ -100,6 +117,7 @@ const DashboardMenu = () => {
             </SubTabBox>
           </li>
         </ul>
+
         <li>
           <TabBox
             to={"/store_credits"}
@@ -121,7 +139,10 @@ const DashboardMenu = () => {
                 <img src={DownArrowIcon} alt="" />
               </SubTabBox>
               {activeDropDown.credits && (
-                <NestedTabBox>Listing Page</NestedTabBox>
+                <NestedTabBox>
+                  <div></div>
+                  <TabSubItemLable>Listing Page</TabSubItemLable>
+                </NestedTabBox>
               )}
             </li>
             <li>

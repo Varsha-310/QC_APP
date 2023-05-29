@@ -8,6 +8,7 @@ const FRAME_COLOR = "#b62028";
 const TEXT_REGULAR_COLOR = "#ffffff";
 const TEXT_PRIMARY_COLOR = "#B72028";
 const TEXT_DARK_COLOR = "#000000";
+const TEXT_BOLD_COLOR = "#182560";
 const RATING_COLOR = "#fec600";
 
 const PrimaryBtn = styled.div`
@@ -72,33 +73,73 @@ const TabItemLable = styled.div`
   align-items: center;
   color: ${TEXT_DARK_COLOR};
 `;
-
-const NestedTabBox = styled(Link)`
+const TabSubItemLable = styled.div`
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
-  width: 185px;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  color: ${TEXT_DARK_COLOR};
+`;
+const NestedTabBox = styled(Link)`
+  width: 185px;
   text-decoration: none;
   margin: 10px 0px;
-  color: ${TEXT_DARK_COLOR};
+  display:grid;
+  grid-template-columns: 1fr 4fr;
+  padding: 0px 0px 0px 15px;
+
+  justify-content:center;
 `;
 
 const SectionHeading1 = styled.div`
   font-family: "Epilogue";
   font-style: normal;
-  font-weight: ${props=>props?.weight};
-  font-size: ${props=>props?.size};
-  line-height: ${props=>props?.lineheight};
-  text-align: ${props=>props?.align};
+  font-weight: ${(props) => props?.weight};
+  font-size: ${(props) => props?.size};
+  line-height: ${(props) => props?.lineheight};
+  text-align: ${(props) => props?.align};
   width: 100%;
   color: ${TEXT_DARK_COLOR};
 `;
+const SectionTitle = styled.div`
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: ${(props) => props?.weight};
+  font-size: ${(props) => props?.size};
+  line-height: ${(props) => props?.lineheight};
+  text-align: ${(props) => props?.align};
+  width: 100%;
+  color: ${TEXT_BOLD_COLOR};
+`;
 
+const Dot = styled.div`
+  position: relative;
+  height: ${(props) => props?.size};
+  width: ${(props) => props?.size};
+  border-radius: 50px;
+  background-color: ${(props) =>
+    props?.fill == true ? FRAME_COLOR : "#FFFFFF"};
+  border: 1px solid ${FRAME_COLOR};
+  margin: 10px;
+  z-index: 20;
+
+  // &::after{
+  //   content:"";
+  //   z-index:-1;
+
+  //   position:absolute;
+  //   top: 50%;
+  //   left: calc(100%-2px);
+  //   transform: translate:(-50%,-50%);
+  //   background-color: ${FRAME_COLOR};
+  //   width: 200px;
+  //   height: 2px;
+  // }
+`;
 export {
   PrimaryBtn,
   TabBox,
@@ -106,4 +147,7 @@ export {
   SubTabBox,
   NestedTabBox,
   SectionHeading1,
+  Dot,
+  SectionTitle,
+  TabSubItemLable
 };
