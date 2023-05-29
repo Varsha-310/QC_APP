@@ -1,5 +1,5 @@
-const Validator = require('validatorjs');
-const { respondInternalServerError, respondUnauthorized } = require("./helper/response");
+import * as Validator from 'validatorjs';
+import { respondInternalServerError, respondUnauthorized } from "./response";
 
 
 // created validator for Api
@@ -16,7 +16,7 @@ const validator = async (body, rules, customMessages, callback) => {
  * @param {*} res 
  * @param {*} next 
  */
-const validateApi = async (req, res, next) => {
+ export const validateApi = async (req, res, next) => {
     try {
 
         const validationRule = {
@@ -40,7 +40,7 @@ const validateApi = async (req, res, next) => {
  * @param req 
  * @returns boolean
  */
-const verifyShopifyHook = async (req, res, next) => {
+ export const verifyShopifyHook = async (req, res, next) => {
     try {
 
         const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
@@ -60,7 +60,3 @@ const verifyShopifyHook = async (req, res, next) => {
     }
 }
 
-module.exports = {
-    validateApi,
-    verifyShopifyHook
-}

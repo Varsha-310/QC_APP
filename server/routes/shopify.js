@@ -1,5 +1,7 @@
-const shopifyRoute = require('express').Router();
-const { install, installCallback } = require('../controllers/shopifyController');
+import { Router } from 'express';
+import { install, installCallback, testapi } from '../controllers/shopifyController';
+
+const shopifyRoute = Router();
 
 // Route of app installation
 shopifyRoute.get('/install', install);
@@ -7,4 +9,6 @@ shopifyRoute.get('/install', install);
 // Route of app installation callback
 shopifyRoute.get('/callback', installCallback);
 
-module.exports = shopifyRoute;
+shopifyRoute.get('/test', testapi);
+
+export default shopifyRoute;

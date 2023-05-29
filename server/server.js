@@ -1,20 +1,13 @@
-//require('dotenv').config();
-//const bodyParser = require('body-parser');
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config();
-//const express = require("express");
 import express from "express";
-//const rateLimit = require('express-rate-limit');
 import { rateLimit } from 'express-rate-limit';
-//const shopifyRoute = require("./routes/shopify");
-//const mongoose = require('mongoose');
 import mongoose from 'mongoose';
-//const { verifyShopifyHook } = require("./helper/validator");
-// const gdprRoute = require("./routes/gdpr");
-//import gdprRoute from "./routes/gdpr";
-// const { respondSuccess, respondInternalServerError } = require("./helper/response");
+import gdprRoute from "./routes/gdpr";
+import shopifyRoute from './routes/shopify'
 import { respondSuccess, respondInternalServerError } from './helper/response';
+import cron from 'node-cron';
 
 export const app = express();
 
@@ -41,8 +34,8 @@ app.enable('trust proxy', true);
 
 // Api rate limiter
 const apiLimiter = rateLimit({
-    windowMs: 60 * 1000, // 15 minutes
-    max: 60, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    windowMs: 60 * 1000, // 1 minute
+    max: 60, // Limit each IP to 60requests per `window` 
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -53,10 +46,10 @@ app.get("/", (req, res) => {
 });
 
 // shopify routes
-//app.use("/shopify", shopifyRoute);
+app.use("/shopify", shopifyRoute);
 
 // GDPR routes
-//app.use("/gdpr", verifyShopifyHook, gdprRoute);
+app.use("/gdpr",  gdprRoute);
 
 // Database and Port connection
 mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)

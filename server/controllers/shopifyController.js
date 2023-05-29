@@ -1,6 +1,7 @@
-const axios = require('axios');
-const store = require("../models/store");
-const {respondInternalServerError , respondNotAcceptable } = require("./helper/response");
+import axios from 'axios';
+import store from '../models/store';
+import {respondInternalServerError , respondNotAcceptable} from '../helper/response';
+import { webhooks } from '../config/custom';
 
 /**
  * method for installation method
@@ -8,7 +9,7 @@ const {respondInternalServerError , respondNotAcceptable } = require("./helper/r
  * @param {*} res 
  * @returns 
  */
-const install = async (req, res) => {
+export const install = async (req, res) => {
 
     try {
         const shop = req.query.shop;
@@ -81,6 +82,7 @@ const installCallback = async (req, res) => {
                 let storeData = await getShopifyStoreData(shop, accessToken);
                 if (storeData) {
                     let response = await saveStoreData(storeData, shop, accessToken);
+                    await checkWebhooks(shop,accessToken);
                     return res.redirect(`${CLIENT_URL}/config/${shop}`);
                 }
             }
@@ -103,7 +105,7 @@ const installCallback = async (req, res) => {
  * @param {*} accessToken 
  * @returns 
  */
-let saveStoreData = async (shopData, shop, accessToken) => {
+export const saveStoreData = async (shopData, shop, accessToken) => {
     try {
         const data = {
             name: shopData.shop.name,
@@ -113,15 +115,9 @@ let saveStoreData = async (shopData, shop, accessToken) => {
             country_code: shopData.shop?.country_code.toLowerCase()
         };
         console.log(data);
-        const storeObj = await store.findOne({
-            store_url: data.store_url
+        const storeObj = await store.updateOne({
+            store_url: data.store_url ,data , upsert : true
         });
-        console.log(storeObj)
-        if (storeObj) {
-            await store.update({ store_url: shop.toString() }, data)
-        } else {
-            await store.create(data);
-        }
         return true;
     }
     catch (error) {
@@ -136,7 +132,7 @@ let saveStoreData = async (shopData, shop, accessToken) => {
  * @param {*} accessToken 
  * @returns 
  */
-let getShopifyStoreData = async (shop, accessToken) => {
+export const getShopifyStoreData = async (shop, accessToken) => {
     try {
         let API_VERSION = process.env.API_VERSION;
         const shopOption = {
@@ -164,7 +160,7 @@ let getShopifyStoreData = async (shop, accessToken) => {
  * @param {*} code 
  * @returns 
  */
-let getAccessToken = async (shop, code) => {
+export const getAccessToken = async (shop, code) => {
     try {
         const apiKey = process.env.SHOPIFY_API_KEY;
         const apiSecret = process.env.SHOPIFY_API_SECRET;
@@ -200,26 +196,18 @@ let getAccessToken = async (shop, code) => {
 * @param {*} req 
 * @param {*} res 
 */
-const checkWebhooks = async () => {
+export const checkWebhooks = async (storeUrl,accessToken) => {
 
     try {
 
-        const webhooksList = [
-            { "topic": "customers/data_request", endpoint: "/gdpr/customer/data" },
-            { "topic": "customers/redact", endpoint: "/gdpr/customer/delete" },
-            { "topic": "shop/redact", endpoint: "/gdpr/store/delete" },
-            { "topic": "orders/created", endpoint: "/gdpr/store/delete" },
-            { "topic": "orders/updated", endpoint: "/gdpr/store/delete" },
-            { "topic": "orders/cancelled", endpoint: "/gdpr/store/delete" }
-
-        ];
-        const AccessToken = process.env.ACCESS_TOKEN;
-        const URL = `https://${process.env.STORE}/admin/api/${process.env.API_VERSION}/webhooks.json`;
+        const webhooksList = webhooks;
+        console.log(webhooksList,"webhooksList");
+        const URL = `https://${storeUrl}/admin/api/${process.env.API_VERSION}/webhooks.json`;
         const result = await request({
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "X-Shopify-Access-Token": `${AccessToken}`,
+                "X-Shopify-Access-Token": `${accessToken}`,
             },
             url: URL
         }).then(response => JSON.parse(response));
@@ -235,7 +223,7 @@ const checkWebhooks = async () => {
                     url: URL,
                     headers: {
                         "Content-Type": "application/json",
-                        "X-Shopify-Access-Token": `${AccessToken}`
+                        "X-Shopify-Access-Token": `${accessToken}`
                     },
                     data: {
                         "webhook": {
@@ -257,7 +245,22 @@ const checkWebhooks = async () => {
     }
 }
 
-module.exports = {
-    install,
-    installCallback
+
+/**
+ * method for appUninstalled method
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+
+
+export const appUninstalled = (req,res) => {
+    const {domain} = req.body;
+    let appData = store.findOneAndUpdate({store_url :domain }, {isInstalled : false});
+    res.json(respondSuccess("webhook received"));
 }
+
+export const testapi = async (req,res) => {
+    await checkWebhooks('ss','dd');
+}
+

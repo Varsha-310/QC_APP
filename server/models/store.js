@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 let storeSchema = mongoose.Schema(
     { 
         store_url: {type: String},
+        isInstalled : {type: Boolean},
         access_token: {type: String},
         status: {type:String},
         plan: {
@@ -47,4 +48,4 @@ let storeSchema = mongoose.Schema(
     { versionKey: false}
 );
 
-let store = module.exports = mongoose.model('store', storeSchema);
+export default  mongoose.model('store', storeSchema);
