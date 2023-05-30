@@ -51,6 +51,13 @@ app.use("/shopify", shopifyRoute);
 // GDPR routes
 app.use("/gdpr",  gdprRoute);
 
+// cron to check webhooks for every store
+cron.schedule('0 */6 * * *', () => {
+  
+    console.log('checking webhooks!');
+    
+  });
+
 // Database and Port connection
 mongoose.connect("mongodb://0.0.0.0:27017/" + process.env.DB)
     .then(() => {

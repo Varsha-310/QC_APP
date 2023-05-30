@@ -1,7 +1,6 @@
 import * as Validator from 'validatorjs';
 import { respondInternalServerError, respondUnauthorized } from "./response";
 
-
 // created validator for Api
 const validator = async (body, rules, customMessages, callback) => {
 
@@ -58,5 +57,10 @@ const validator = async (body, rules, customMessages, callback) => {
     catch (e) {
         res.json(respondInternalServerError("Something went wrong try after sometime"))
     }
+}
+
+export const verifyJwt = () => {
+
+
 }
 

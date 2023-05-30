@@ -29,8 +29,6 @@ export const install = async (req, res) => {
         }
     }
     catch (error) {
-
-
         res.json(respondInternalServerError("Something went wrong try after sometime"));
 
     }
@@ -42,7 +40,7 @@ export const install = async (req, res) => {
  * @param {*} res 
  * @returns 
  */
-const installCallback = async (req, res) => {
+export const installCallback = async (req, res) => {
 
     try {
 
@@ -190,6 +188,14 @@ export const getAccessToken = async (shop, code) => {
     }
 }
 
+export const cronToCheckWebhooks = async() => {
+    let stores = await store.find()
+    console.log(stores);
+    for (const store of stores){
+        console.log(store);
+        await checkWebhooks(store.storeUrl , store.accessToken);
+    };
+}
 
 /**
 * Check and update weebhook
@@ -252,11 +258,9 @@ export const checkWebhooks = async (storeUrl,accessToken) => {
  * @param {*} res 
  * @returns 
  */
-
-
-export const appUninstalled = (req,res) => {
+export const appUninstalled = async (req,res) => {
     const {domain} = req.body;
-    let appData = store.findOneAndUpdate({store_url :domain }, {isInstalled : false});
+    await store.findOneAndUpdate({store_url :domain }, {isInstalled : false});
     res.json(respondSuccess("webhook received"));
 }
 
