@@ -1,8 +1,4 @@
-.section-box-container {
-  background-color: var(--background-light-color);
-  padding: 20px 30px;
-  margin: 15px 0px;
-}
+
 .section-para {
   font-family: "Poppins";
   font-style: normal;
@@ -13,7 +9,7 @@
   justify-content: center;
   color: var(--text-dark-color);
 }
-.section-box-container:nth-child(4) {
+.dashboard-home-container .section-box-container:nth-child(4) {
   height: 250px;
 }
 .rating-stars {

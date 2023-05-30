@@ -32,6 +32,46 @@ const PrimaryBtn = styled.div`
   margin: 0px auto;
 `;
 
+const CustomBtn = styled.div`
+  font-family: "Poppins";
+  height: ${(props) => props?.height || "30px"};
+  width: ${(props) => props?.width || "85px"};
+  font-weight: ${(props) => props?.weight || "600"};
+  font-size: ${(props) => props?.size || "14px"};
+  line-height: ${(props) => props?.lineheight || "18px"};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) =>
+    props.active ? SECONDARY_LIGHT_BTN : SECONDARY_DARK_BTN};
+  background-color: ${(props) => (props?.active ? SECONDARY_DARK_BTN : "")};
+  margin: 0px auto;
+  border-radius: 8px;
+  border: 1px solid ${SECONDARY_DARK_BTN};
+`;
+
+const RectBtn = styled.div`
+  font-family: "Poppins";
+  height: ${(props) => props?.height || "30px"};
+  width: ${(props) => props?.width || "85px"};
+  font-weight: ${(props) => props?.weight || "600"};
+  font-size: ${(props) => props?.size || "14px"};
+  line-height: ${(props) => props?.lineheight || "18px"};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${(props) => props?.padding || ""};
+  color: ${(props) =>
+    props.active ? SECONDARY_LIGHT_BTN : SECONDARY_DARK_BTN};
+  background-color: ${(props) => (props?.active ? SECONDARY_DARK_BTN : "")};
+  margin: 0px auto;
+  border-radius: ${(props) => props?.bdradius || "0px"};
+  border: ${(props) => props?.border || `1px solid ${SECONDARY_DARK_BTN}`};
+  box-shadow: ${(props) =>
+    props?.active && " 0px 5px 10px 3px rgba(0, 0, 0, 0.25)"};
+`;
+
 const TabBox = styled(Link)`
   font-family: "Poppins", sans-serif;
   font-style: normal;
@@ -104,6 +144,7 @@ const SectionHeading1 = styled.div`
   line-height: ${(props) => props?.lineheight};
   text-align: ${(props) => props?.align};
   width: 100%;
+  margin: ${(props) => props?.margin};
   color: ${TEXT_DARK_COLOR};
 `;
 const SectionTitle = styled.div`
@@ -116,7 +157,6 @@ const SectionTitle = styled.div`
   width: 100%;
   color: ${TEXT_BOLD_COLOR};
 `;
-
 const SectionPara = styled.p`
   font-family: "Poppins";
   font-style: normal;
@@ -124,7 +164,7 @@ const SectionPara = styled.p`
   font-size: 16px;
   line-height: 24px;
   display: flex;
-  justify-content: center;
+  justify-content: ${(props) => props?.align || "center"};
   margin: ${(props) => props?.margin};
   color: var(--text-dark-color);
 `;
@@ -163,5 +203,7 @@ export {
   Dot,
   SectionTitle,
   TabSubItemLable,
-  SectionPara
+  SectionPara,
+  CustomBtn,
+  RectBtn,
 };

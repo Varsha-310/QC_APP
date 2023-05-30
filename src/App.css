@@ -17,6 +17,7 @@
   --secondary-light-btn: #ffffff;
   --frame-color: #b62028;
   --text-color: #ffffff;
+  --text-light-color: #75859D;
   --text-dark-color: #000000;
   --text-bold-color:#182560;
   --rating-color: #fec600;
@@ -34,14 +35,16 @@ body{
 }
 
 /* global values */
+.section-box-container {
+  background-color: var(--background-light-color);
+  padding: 15px 30px;
+  margin: 15px 0px;
+}
 .container_padding {
   padding: 30px 70px;
 }
-.container_margin {
-}
 
 /* app js */
-
 .dashboard-container {
   display: flex;
   gap: 20px;
