@@ -7,7 +7,7 @@ import DashboardMenu from "./components/DashboardMenu";
 function App() {
   return (
     <div className="App">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="dashboard-container container_padding">
         <DashboardMenu />
         <Outlet />

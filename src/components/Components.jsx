@@ -20,6 +20,7 @@ const PrimaryBtn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   font-weight: ${(props) => props?.weight || "600"};
   color: ${(props) =>
     props.$primary ? TEXT_REGULAR_COLOR : TEXT_PRIMARY_COLOR};
@@ -88,11 +89,11 @@ const NestedTabBox = styled(Link)`
   width: 185px;
   text-decoration: none;
   margin: 10px 0px;
-  display:grid;
+  display: grid;
   grid-template-columns: 1fr 4fr;
   padding: 0px 0px 0px 15px;
 
-  justify-content:center;
+  justify-content: center;
 `;
 
 const SectionHeading1 = styled.div`
@@ -114,6 +115,18 @@ const SectionTitle = styled.div`
   text-align: ${(props) => props?.align};
   width: 100%;
   color: ${TEXT_BOLD_COLOR};
+`;
+
+const SectionPara = styled.p`
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  justify-content: center;
+  margin: ${(props) => props?.margin};
+  color: var(--text-dark-color);
 `;
 
 const Dot = styled.div`
@@ -149,5 +162,6 @@ export {
   SectionHeading1,
   Dot,
   SectionTitle,
-  TabSubItemLable
+  TabSubItemLable,
+  SectionPara
 };

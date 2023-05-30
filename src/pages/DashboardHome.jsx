@@ -8,7 +8,7 @@ import { Dot, PrimaryBtn, SectionHeading1, SectionTitle } from "../components/Co
 const DashboardHome = () => {
   return (
     <div className="dashboard-home-container">
-      <div className="home-section-container">
+      <div className="section-box-container">
         <SectionHeading1
           weight="500"
           size="16px"
@@ -19,7 +19,7 @@ const DashboardHome = () => {
         </SectionHeading1>
       </div>
 
-      <div className="home-section-container">
+      <div className="section-box-container">
         <p className="section-para">Share your thoughts about us with us.</p>
         <div className="rating-stars">
           <img src={StarFull} alt="" />
@@ -30,7 +30,7 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      <div className="home-section-container">
+      <div className="section-box-container">
         <div className="status-dot-container">
           <Dot size="18px" fill={true} />
           <Dot size="18px" fill={false} />
@@ -43,7 +43,7 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      <div className="home-section-container">
+      <div className="section-box-container">
         <SectionHeading1
           weight="500"
           size="24px"

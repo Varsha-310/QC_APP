@@ -1,4 +1,4 @@
-.home-section-container {
+.section-box-container {
   background-color: var(--background-light-color);
   padding: 20px 30px;
   margin: 15px 0px;
@@ -13,7 +13,7 @@
   justify-content: center;
   color: var(--text-dark-color);
 }
-.home-section-container:nth-child(4) {
+.section-box-container:nth-child(4) {
   height: 250px;
 }
 .rating-stars {

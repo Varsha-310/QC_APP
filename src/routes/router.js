@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import DashboardHome from "../pages/DashboardHome";
 import ErrorPage from "../pages/ErrorPage";
+import PlanSelection from "../pages/PlanSelection";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: "plan_select", element: <PlanSelection /> },
 ]);
 
 export default router;
