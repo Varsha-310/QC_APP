@@ -1,0 +1,22 @@
+.confirmation_page-container {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.success-icon {
+  width: 120px;
+  height: 120px;
+}
+.confirmation-heading {
+  margin: 35px 0px;
+}
+.confirmaiton-desc {
+  max-width: 650px;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: #75859d;
+}

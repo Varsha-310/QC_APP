@@ -3,6 +3,7 @@ import App from "../App";
 import DashboardHome from "../pages/DashboardHome";
 import ErrorPage from "../pages/ErrorPage";
 import PlanSelection from "../pages/PlanSelection";
+import ConfirmationPage from "../pages/ConfirmationPage";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "plan_select", element: <PlanSelection /> },
+  { path: "submission_success", element: <ConfirmationPage/> },
 ]);
 
 export default router;

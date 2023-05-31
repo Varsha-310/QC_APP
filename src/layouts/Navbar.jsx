@@ -9,9 +9,12 @@ const Navbar = () => {
         alt="qwikcilver_logo"
         className="navbar-logo_icon"
       />
+      
       <div className="navbar-menu">
-        <div className="navbar-menu-item"></div>
-        <div className="navbar-menu-item"></div>
+        <ul>
+          <li className="navbar-menu-item"></li>
+          <li className="navbar-menu-item"></li>
+        </ul>
       </div>
     </div>
   );
