@@ -1,13 +1,12 @@
 import axios from "axios";
 
-export const kycInitiate = () => {
+export const initiatieKyc = () => {
     try {
         const transactionData = {
             method: "POST",
             url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction`,
             headers: {
                 "Content-Type": application / vnd.manch.v1 + json
-
             }
         }
     }

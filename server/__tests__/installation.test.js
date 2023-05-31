@@ -1,10 +1,10 @@
-import Request from 'supertest';
+import {request } from 'supertest';
 import { app } from "../server";
 
 // app running status test
 describe('Project Setup testing, api: /', () => {
     it('It will check project running status', async () => {
-      const res = await Request(app)
+      const res = await request(app)
       .get('/');
       expect(res.statusCode).toEqual(200);
     });

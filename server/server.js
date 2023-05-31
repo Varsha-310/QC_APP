@@ -4,7 +4,7 @@ dotenv.config();
 import express from "express";
 import { rateLimit } from 'express-rate-limit';
 import mongoose from 'mongoose';
-import gdprRoute from "./routes/gdpr";
+import gdprRoute from './routes/gdpr';
 import shopifyRoute from './routes/shopify'
 import { respondSuccess, respondInternalServerError } from './helper/response';
 import cron from 'node-cron';
@@ -53,9 +53,7 @@ app.use("/gdpr",  gdprRoute);
 
 // cron to check webhooks for every store
 cron.schedule('0 */6 * * *', () => {
-  
     console.log('checking webhooks!');
-    
   });
 
 // Database and Port connection
@@ -74,7 +72,6 @@ app.use((err, req, res, next) => {
         return next();
     }
     res.json(respondInternalServerError("Something went wrong try after sometime"));
-})
+});
 
-// export default app;
 
