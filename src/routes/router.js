@@ -4,6 +4,7 @@ import DashboardHome from "../pages/DashboardHome";
 import ErrorPage from "../pages/ErrorPage";
 import PlanSelection from "../pages/PlanSelection";
 import ConfirmationPage from "../pages/ConfirmationPage";
+import KycProgress from "../pages/KycProgress";
 
 const router = createBrowserRouter([
   {
