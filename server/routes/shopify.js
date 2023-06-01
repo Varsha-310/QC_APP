@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { install, installCallback, testapi } from '../controllers/shopifyController';
+import { install, installCallback, appUninstalled } from '../controllers/shopifyController';
 
 const shopifyRoute = Router();
 
@@ -9,6 +9,7 @@ shopifyRoute.get('/install', install);
 // Route of app installation callback
 shopifyRoute.get('/callback', installCallback);
 
-shopifyRoute.get('/test', testapi);
+// Route for uninstallation
+shopifyRoute.post("/uninstall", appUninstalled);
 
 export default shopifyRoute;

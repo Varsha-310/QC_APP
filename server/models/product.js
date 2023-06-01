@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 /*Scheme for storing giftcard products */
 
-var ProductSchema = mongoose.Schema(
+var productSchema = mongoose.Schema(
     {
         store: {type: String},
         id: {type: Number, required: true, unique: true},
@@ -69,4 +69,4 @@ var ProductSchema = mongoose.Schema(
     }
 );
 
-let Product = module.exports = mongoose.model('Product', ProductSchema);
+export default  mongoose.model('product', productSchema);

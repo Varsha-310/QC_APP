@@ -11,11 +11,6 @@ let storeSchema = mongoose.Schema(
             created_at : Date,
             updated_at : Date
         },
-        shopify_private_app : { //Shopify Private APP Credentials
-            api_key: String,
-            password: String,
-            shared_secret: String
-        },
         qwikcilver_account: { //Qwikcilver Account Credentials
             UserName: String,
             Password: String,

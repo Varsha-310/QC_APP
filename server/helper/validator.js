@@ -1,9 +1,14 @@
 import * as Validator from 'validatorjs';
 import { respondInternalServerError, respondUnauthorized } from "./response";
 
-// created validator for Api
+/**
+ * created validator for Api
+ * @param {*} body 
+ * @param {*} rules 
+ * @param {*} customMessages 
+ * @param {*} callback 
+ */
 const validator = async (body, rules, customMessages, callback) => {
-
     const validation = new Validator(body, rules, customMessages);
     validation.passes(() => callback(null, true));
     validation.fails(() => callback(validation.errors, false));
@@ -59,8 +64,27 @@ const validator = async (body, rules, customMessages, callback) => {
     }
 }
 
-export const verifyJwt = () => {
+/**
+ * verify generated hash to verify api
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const verifyHmacForApi = (req,res) => {
+    try {
 
+        const hmac_secret = process.env.HMAC_SECRET ?? "";
+        const digest = crypto.createHmac('sha256', hmac_secret).update(body).digest('base64');
+        const providedHmac = req.headers['']?.toString();
 
+        if (digest == providedHmac) {
+            next();
+        } else {
+
+            res.json(respondUnauthorized("not a valid request"));
+        }
+    }
+    catch (e) {
+        res.json(respondInternalServerError("Something went wrong try after sometime"))
+    }
 }
 
