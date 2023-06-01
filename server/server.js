@@ -11,7 +11,6 @@ import cron from "node-cron";
 import { logger } from "./helper/utility";
 
 export const app = express();
-logger.info("Logiing");
 
 // CORS configuration
 app.use(function (req, res, next) {
@@ -72,9 +71,11 @@ mongoose
   .then(() => {
     app.listen(process.env.PORT);
     console.log("server is running at " + process.env.PORT);
+    logger.info("server is running at " + process.env.PORT);
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
+    logger.info("Error occurred, server can't start", error);
   });
 
 // Global error handler

@@ -5,7 +5,7 @@ export const webhooks = [
     { "topic": "orders/created", endpoint: "/webhooks/ordercreated" },
     { "topic": "orders/updated", endpoint: "/webhooks/orderupdated" },
     { "topic": "orders/cancelled", endpoint: "/webhooks/orderdeleted" },  
-    {"topic": "app/uninstalled", endpoint: ""}
+    {"topic": "app/uninstalled", endpoint: "shopify/uninstall"}
 ];
 
 

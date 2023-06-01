@@ -4,7 +4,6 @@ import {
   respondInternalServerError,
   respondNotAcceptable,
 } from "../helper/response";
-import { webhooks } from "../config/custom";
 
 /**
  * method for installation method

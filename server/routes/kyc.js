@@ -1,8 +1,10 @@
-import { Router } from 'express';
-import {initiatieKyc} from '../controllers/kycController';
+import { Router } from "express";
+import { initiatieKyc } from "../controllers/kycController";
+import { verifyJwt } from "../helper/jwtHelper";
 
 const kycRoute = Router();
 
-kycRoute.post('/initiate',verifyJwt , initiatieKyc);
+// route to initiate kyc
+kycRoute.post("/initiate", verifyJwt, initiatieKyc);
 
 export default kycRoute;

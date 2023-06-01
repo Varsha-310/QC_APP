@@ -4,10 +4,10 @@ import { respondInternalServerError, respondUnauthorized } from "./response";
 
 /**
  * create jwt token for api authorization
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
-export const createToken = async (req, res) => {
+export const createJwt = async (req, res) => {
   try {
     let { store_url } = req.body;
     let secretKey = process.env.JWT_SECRET;
@@ -29,14 +29,13 @@ export const createToken = async (req, res) => {
   }
 };
 
-
 /**
  * verify jwt token for api authorization
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
-export const verifyToken = (req,res,next) => {
+export const verifyJwt = (req, res, next) => {
   try {
     if (req.headers.authorization) {
       jwt.verify(
