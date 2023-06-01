@@ -143,9 +143,11 @@ const SectionHeading1 = styled.div`
   font-weight: ${(props) => props?.weight};
   font-size: ${(props) => props?.size};
   line-height: ${(props) => props?.lineheight};
-  text-align: ${(props) => props?.align};
   margin: ${(props) => props?.margin};
   color: ${TEXT_DARK_COLOR};
+  display: flex;
+  align-items: center;
+  justify-content: ${(props) => props?.align || "left"};
 `;
 const SectionTitle = styled.div`
   font-family: "Poppins";
@@ -193,6 +195,14 @@ const Dot = styled.div`
   //   height: 2px;
   // }
 `;
+
+const CustomContainer = styled.div`
+  display: flex;
+  align: center;
+  justify-content: ${({ align }) => align || "center"};
+  margin: ${({ margin }) => margin || ""};
+  padding: ${({ padding }) => padding || ""};
+`;
 export {
   PrimaryBtn,
   TabBox,
@@ -206,4 +216,5 @@ export {
   SectionPara,
   CustomBtn,
   RectBtn,
+  CustomContainer,
 };

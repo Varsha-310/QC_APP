@@ -1,0 +1,20 @@
+.contact-input {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  margin: 20px 0px;
+}
+.contact-input input {
+  width: 90%;
+  padding: 15px 50px;
+  border: 1px solid #b72028;
+
+  font-family: "Epilogue";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+.contact-input input:focus {
+  outline: none;
+}
