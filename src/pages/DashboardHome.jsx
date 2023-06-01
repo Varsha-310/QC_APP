@@ -3,7 +3,7 @@ import "./style/DashboardHome.css";
 import StarFull from "../assets/icons/pngs/Star.png";
 import StarNull from "../assets/icons/pngs/StarNull.png";
 import Giftbox from "../assets/images/Giftbox.png";
-import { Dot, PrimaryBtn, SectionHeading1, SectionTitle } from "../components/Components";
+import { Dot, PrimaryBtn, SectionHeading1, SectionTitle } from "../components/BasicComponents";
 
 const DashboardHome = () => {
   return (

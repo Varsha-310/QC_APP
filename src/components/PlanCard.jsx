@@ -1,7 +1,7 @@
 import React from "react";
 import "./styles/PlanCard.css";
 import RoundedTick from "../assets/icons/svgs/cicletick.svg";
-import { CustomBtn } from "./Components";
+import { CustomBtn } from "./BasicComponents";
 
 const PlanCard = ({ title, price, active, popular }) => {
   return (

@@ -6,6 +6,7 @@ import MyGiftCardsIcon from "../assets/icons/svgs/gift-cards.svg";
 import ConfigIcon from "../assets/icons/svgs/Vector-3.svg";
 import GiftCardIcon from "../assets/icons/svgs/Vector-15.svg";
 import KycIcon from "../assets/icons/svgs/Vector-4.svg";
+import ResendMail from "../assets/icons/svgs/ResendMail.svg";
 import {
   Dot,
   NestedTabBox,
@@ -13,7 +14,7 @@ import {
   TabBox,
   TabItemLable,
   TabSubItemLable,
-} from "./Components";
+} from "./BasicComponents";
 
 const DashboardMenu = () => {
   const [activeTab, setActiveTab] = useState({ home: true });
@@ -82,7 +83,7 @@ const DashboardMenu = () => {
               </li>
             </ul>
           )}
-          
+
           <li>
             <SubTabBox>
               <img src={KycIcon} alt="" />
@@ -114,6 +115,13 @@ const DashboardMenu = () => {
             <SubTabBox>
               <img src={MyGiftCardsIcon} alt="" />
               <TabItemLable>My Gift Cards</TabItemLable>
+            </SubTabBox>
+          </li>
+
+          <li>
+            <SubTabBox>
+              <img src={ResendMail} alt="" />
+              <TabItemLable>Re-send Gift Card emails</TabItemLable>
             </SubTabBox>
           </li>
         </ul>

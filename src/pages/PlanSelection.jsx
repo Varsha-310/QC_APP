@@ -8,7 +8,7 @@ import {
   SectionHeading1,
   SectionPara,
   SectionTitle,
-} from "../components/Components";
+} from "../components/BasicComponents";
 import { Link } from "react-router-dom";
 import PlanCard from "../components/PlanCard";
 

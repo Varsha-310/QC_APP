@@ -33,39 +33,39 @@ const PrimaryBtn = styled.div`
 `;
 
 const CustomBtn = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px auto;
+  border-radius: 8px;
   font-family: "Poppins";
   height: ${(props) => props?.height || "30px"};
   width: ${(props) => props?.width || "85px"};
   font-weight: ${(props) => props?.weight || "600"};
   font-size: ${(props) => props?.size || "14px"};
   line-height: ${(props) => props?.lineheight || "18px"};
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: ${(props) =>
     props.active ? SECONDARY_LIGHT_BTN : SECONDARY_DARK_BTN};
   background-color: ${(props) => (props?.active ? SECONDARY_DARK_BTN : "")};
-  margin: 0px auto;
-  border-radius: 8px;
   border: 1px solid ${SECONDARY_DARK_BTN};
 `;
 
 const RectBtn = styled.div`
   font-family: "Poppins";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px auto;
+  cursor: pointer;
   height: ${(props) => props?.height || "30px"};
   width: ${(props) => props?.width || "85px"};
   font-weight: ${(props) => props?.weight || "600"};
   font-size: ${(props) => props?.size || "14px"};
   line-height: ${(props) => props?.lineheight || "18px"};
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: ${(props) => props?.padding || ""};
   color: ${(props) =>
     props.active ? SECONDARY_LIGHT_BTN : SECONDARY_DARK_BTN};
   background-color: ${(props) => (props?.active ? SECONDARY_DARK_BTN : "")};
-  margin: 0px auto;
   border-radius: ${(props) => props?.bdradius || "0px"};
   border: ${(props) => props?.border || `1px solid ${SECONDARY_DARK_BTN}`};
   box-shadow: ${(props) =>
@@ -139,22 +139,22 @@ const NestedTabBox = styled(Link)`
 const SectionHeading1 = styled.div`
   font-family: "Epilogue";
   font-style: normal;
+  width: 100%;
   font-weight: ${(props) => props?.weight};
   font-size: ${(props) => props?.size};
   line-height: ${(props) => props?.lineheight};
   text-align: ${(props) => props?.align};
-  width: 100%;
   margin: ${(props) => props?.margin};
   color: ${TEXT_DARK_COLOR};
 `;
 const SectionTitle = styled.div`
   font-family: "Poppins";
   font-style: normal;
+  width: 100%;
   font-weight: ${(props) => props?.weight};
   font-size: ${(props) => props?.size};
   line-height: ${(props) => props?.lineheight};
   text-align: ${(props) => props?.align};
-  width: 100%;
   color: ${TEXT_BOLD_COLOR};
 `;
 const SectionPara = styled.p`
@@ -163,10 +163,10 @@ const SectionPara = styled.p`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  color: var(--text-dark-color);
   display: flex;
   justify-content: ${(props) => props?.align || "center"};
   margin: ${(props) => props?.margin};
-  color: var(--text-dark-color);
 `;
 
 const Dot = styled.div`

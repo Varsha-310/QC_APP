@@ -1,4 +1,4 @@
-import { SectionHeading1 } from "../components/Components";
+import { SectionHeading1 } from "../components/BasicComponents";
 import SecureDoc from "../assets/icons/pngs/secure document.png";
 import "./style/KycProgress.css";
 
