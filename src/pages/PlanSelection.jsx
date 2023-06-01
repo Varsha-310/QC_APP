@@ -132,7 +132,7 @@ const PlanSelection = () => {
       </div>
       <div className="plans">
         <PlanCard title={"Basic"} price={399} />
-        <PlanCard title={"Pro"} price={799} active={true} popular={true}/>
+        <PlanCard title={"Pro"} price={799} active={true} popular={true} />
         <PlanCard title={"Premium"} price={1599} />
       </div>
 
@@ -143,7 +143,9 @@ const PlanSelection = () => {
         </div>
       </div>
 
-      <PrimaryBtn $primary>Confirm Payment</PrimaryBtn>
+      <div style={{margin:"40px 0px"}}>
+        <PrimaryBtn $primary>Confirm Payment</PrimaryBtn>
+      </div>
 
       {/* enterprise plan box */}
 

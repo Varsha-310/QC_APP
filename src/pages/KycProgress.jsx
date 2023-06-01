@@ -12,7 +12,7 @@ const KycProgress = () => {
           </SectionHeading1>
           <img
             src={require("../assets/icons/pngs/work-in-progress.png")}
-            alt=""
+            alt="progress"
           />
         </div>
         <p className="box-text">
