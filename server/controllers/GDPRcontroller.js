@@ -1,7 +1,7 @@
 import { respondSuccess } from "../helper/response";
 
 /**
- * webhook to handle show user details
+ * Webhook to handle show user details
  * @param {*} req
  * @param {*} res
  * @returns
@@ -11,7 +11,7 @@ export const getUserDetails = (req, res) => {
 };
 
 /**
- * webhook to handle delete user
+ * Webhook to handle delete user
  * @param {*} req
  * @param {*} res
  * @returns
@@ -21,7 +21,7 @@ export const deleteUserData = (req, res) => {
 };
 
 /**
- * webhook to handle delete store data
+ * Webhook to handle delete store data
  * @param {*} req
  * @param {*} res
  * @returns

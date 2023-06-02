@@ -3,7 +3,7 @@ import store from "../models/store";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 
 /**
- * create jwt token for api authorization
+ * Create jwt token for api authorization
  * @param {*} req
  * @param {*} res
  */
@@ -30,7 +30,7 @@ export const createJwt = async (req, res) => {
 };
 
 /**
- * verify jwt token for api authorization
+ * Verify jwt token for api authorization
  * @param {*} req
  * @param {*} res
  * @param {*} next

@@ -2,7 +2,7 @@ import * as Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 
 /**
- * created validator for Api
+ * Created validator for Api
  * @param {*} body
  * @param {*} rules
  * @param {*} customMessages
@@ -34,7 +34,7 @@ export const validateApi = async (req, res, next) => {
 };
 
 /**
- * validation for api
+ * Validation for api
  * @param {*} req 
  * @param {*} validationRule 
  * @param {*} next 
@@ -56,7 +56,7 @@ const validateMethod = async (req, validationRule, next) => {
 };
 
 /**
- * compare received and generated hash to verify the webhook
+ * Compare received and generated hash to verify the webhook
  * @param req
  * @returns boolean
  */

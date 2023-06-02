@@ -6,7 +6,7 @@ import {
 } from "../helper/response";
 
 /**
- * method for installation method
+ * Method for installation method
  * @param {*} req
  * @param {*} res
  * @returns
@@ -35,7 +35,7 @@ export const install = async (req, res) => {
 };
 
 /**
- * method for installation callback
+ * Method for installation callback
  * @param {*} req
  * @param {*} res
  * @returns
@@ -191,7 +191,7 @@ export const getAccessToken = async (shop, code) => {
 };
 
 /**
- * method for appUninstalled method
+ * Method for appUninstalled method
  * @param {*} req
  * @param {*} res
  * @returns

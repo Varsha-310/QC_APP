@@ -1,4 +1,4 @@
-import { request } from "supertest";
+import  request  from "supertest";
 import { app } from "../server";
 
 // app running status test

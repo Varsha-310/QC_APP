@@ -22,7 +22,7 @@ export const respond = (status = true, msg, code) => {
 };
 
 /**
- * return response for the newly created instance
+ * Return response for the newly created instance
  *
  * @param msg
  * @returns {json}

@@ -2,7 +2,7 @@ import axios from "axios";
 import { respondInternalServerError } from "../helper/response";
 
 /**
- * method to initiate kyc
+ * Method to initiate kyc
  * @param {*} req
  * @param {*} res
  */
@@ -44,7 +44,7 @@ export const initiatieKyc = async (req, res) => {
 };
 
 /**
- * method to submit the form filled
+ * Method to submit the form filled
  * @param {*} data
  * @param {*} res
  */
@@ -70,7 +70,7 @@ export const fillForm = (data, res) => {
 };
 
 /**
- * to dispatch the transaction to user
+ * To dispatch the transaction to user
  * @param {*} data
  * @param {*} res
  */
