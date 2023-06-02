@@ -1,40 +1,31 @@
-/**
- * webhook to handle show user details
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
-const getUserDetails = (req, res) => {
-    return res.status(200).json({});
-}
+import { respondSuccess } from "../helper/response";
 
 /**
- * webhook to handle delete user
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Webhook to handle show user details
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
-const deleteUserData = (req, res) => {
-    return res.sendStatus(200);
-}
-
+export const getUserDetails = (req, res) => {
+  res.json(respondSuccess("webhook received"));
+};
 
 /**
- * webhook to handle delete store data
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Webhook to handle delete user
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
-const deleteStoreData = (req, res) => {
-    return res.sendStatus(200);
-}
+export const deleteUserData = (req, res) => {
+  res.json(respondSuccess("webhook received"));
+};
 
-module.exports = {
-    getUserDetails,
-    deleteUserData,
-    deleteStoreData
-}
-
-
-
-
+/**
+ * Webhook to handle delete store data
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const deleteStoreData = (req, res) => {
+  res.json(respondSuccess("webhook received"));
+};
