@@ -8,7 +8,9 @@ import Queue from "better-queue";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
-   orderCreateQueue(req,res); 
+  const shop = req.headres.shop;
+  const order = req.body;
+  orderCreateQueue.push({shop, order});
   res.json(respondSuccess("webhook received"));
 };
 
@@ -31,26 +33,30 @@ export const orderDeleted = (req, res) => {
 };
 
 /**
- * Queue to handle webhooks 
+ * Queue to handle webhooks
  */
-const orderCreateQueue = new Queue(ordercreateEvent, { maxRetries: 2, retryDelay: 1000 });
+const orderCreateQueue = new Queue(ordercreateEvent, {
+  maxRetries: 2,
+  retryDelay: 1000,
+});
 
 /**
  * Handle order create event
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
-const ordercreateEvent= (req,res) => {
-    try{
-        
-    }
-    catch (err) {
-        console.log(err);
-        logger.info(err);
-        res.json(
-          respondInternalServerError("Something went wrong try after sometime")
-        );
-      }
+const ordercreateEvent = (input, done) => {
+  try {
+    const { shop,  order} = input;
+    
 
-}
+  } catch (err) {
+    console.log(err);
+    logger.info(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
 
+  done();
+};

@@ -4,6 +4,7 @@ import {
   respondInternalServerError,
   respondNotAcceptable,
 } from "../helper/response";
+import { createJwt } from "../helper/jwtHelper";
 
 /**
  * Method for installation method
@@ -79,6 +80,7 @@ export const installCallback = async (req, res) => {
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
+          await createJwt(shop)
           return res.redirect(`${CLIENT_URL}/config/${shop}`);
         }
       }

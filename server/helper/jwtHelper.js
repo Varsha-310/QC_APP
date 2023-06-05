@@ -1,4 +1,4 @@
-import { Jwt } from "jsonwebtoken";
+import  jwt  from "jsonwebtoken";
 import store from "../models/store";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 

@@ -45,4 +45,4 @@ let storeSchema = mongoose.Schema(
   { versionKey: false }
 );
 
-export default mongoose.model("store", storeSchema);
+export default mongoose.model("Store", storeSchema);
