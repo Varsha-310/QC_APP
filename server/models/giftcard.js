@@ -11,10 +11,8 @@ const giftcardSchema = mongoose.Schema({
   expires_on: { type: Date },
   qc_request: ({}),
   qc_response: ({}),
-  logs:[{
-    order
-  }],
-  code: { type: String }
+  code: { type: String },
+  order: Object
 });
 
 export default mongoose.model("Giftcard", giftcardSchema);

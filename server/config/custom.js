@@ -64,6 +64,7 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
         await axios(config).catch((err) => {
           console.log("-------error in creating webhook-----", err.data);
         });
+        
       }
     }
   } catch (err) {

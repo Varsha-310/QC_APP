@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 
 const planSchema = mongoose.Schema({
   plan_name: { type: String },
-  user_limit: {type : Number},
-  user_charge: {type: String},
+  uses_limit: {type : Number},
+  uses_charge: {type: String},
   plan_limit: {type: String},
   price: {type:Number},
   symbol: {type:String},
