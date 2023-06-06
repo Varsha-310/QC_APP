@@ -32,6 +32,10 @@ const PrimaryBtn = styled.div`
   margin: 0px auto;
 `;
 
+const SecondaryBtn= styled.div`
+     
+`;
+
 const CustomBtn = styled.div`
   display: flex;
   align-items: center;
@@ -181,19 +185,6 @@ const Dot = styled.div`
   border: 1px solid ${FRAME_COLOR};
   margin: 10px;
   z-index: 20;
-
-  // &::after{
-  //   content:"";
-  //   z-index:-1;
-
-  //   position:absolute;
-  //   top: 50%;
-  //   left: calc(100%-2px);
-  //   transform: translate:(-50%,-50%);
-  //   background-color: ${FRAME_COLOR};
-  //   width: 200px;
-  //   height: 2px;
-  // }
 `;
 
 const CustomContainer = styled.div`
@@ -202,6 +193,18 @@ const CustomContainer = styled.div`
   justify-content: ${({ align }) => align || "center"};
   margin: ${({ margin }) => margin || ""};
   padding: ${({ padding }) => padding || ""};
+`;
+
+const TextRegular = styled.div`
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  margin: ${({ margin }) => margin || "10px 0px"};
+  color: ${(props) => (props?.fade ? "#00000099" : TEXT_DARK_COLOR)};
 `;
 export {
   PrimaryBtn,
@@ -217,4 +220,5 @@ export {
   CustomBtn,
   RectBtn,
   CustomContainer,
+  TextRegular,
 };

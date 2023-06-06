@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import "./style/AccountPage.css";
 import { CustomContainer, PrimaryBtn } from "../components/BasicComponents";
 import { SectionHeading1 } from "../components/BasicComponents";
@@ -30,7 +29,13 @@ const AccountPage = () => {
       </div>
 
       <CustomContainer margin="30px 0px" align="center">
-        <PlanCard title={"Pro"} price={799} active={true} popular={true} />
+        <PlanCard
+          title={"Pro"}
+          price={799}
+          active={true}
+          popular={true}
+          btnText={"Upgrade"}
+        />
       </CustomContainer>
 
       <CustomContainer margin="50px 0px">
@@ -74,7 +79,9 @@ const AccountPage = () => {
         </div>
       </div>
 
-      <PrimaryBtn $primary>Save</PrimaryBtn>
+      <CustomContainer margin="50px 0px">
+        <PrimaryBtn $primary>Save</PrimaryBtn>
+      </CustomContainer>
     </div>
   );
 };

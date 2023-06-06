@@ -131,9 +131,15 @@ const PlanSelection = () => {
         </RectBtn>
       </div>
       <div className="plans">
-        <PlanCard title={"Basic"} price={399} />
-        <PlanCard title={"Pro"} price={799} active={true} popular={true} />
-        <PlanCard title={"Premium"} price={1599} />
+        <PlanCard title={"Basic"} price={399} btnText={"Select"} />
+        <PlanCard
+          title={"Pro"}
+          price={799}
+          active={true}
+          popular={true}
+          btnText={"Selected"}
+        />
+        <PlanCard title={"Premium"} price={1599} btnText={"Select"} />
       </div>
 
       <div className="section-box-container">
@@ -143,7 +149,7 @@ const PlanSelection = () => {
         </div>
       </div>
 
-      <div style={{margin:"40px 0px"}}>
+      <div style={{ margin: "40px 0px" }}>
         <PrimaryBtn $primary>Confirm Payment</PrimaryBtn>
       </div>
 

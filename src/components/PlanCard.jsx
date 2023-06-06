@@ -3,7 +3,7 @@ import "./styles/PlanCard.css";
 import RoundedTick from "../assets/icons/svgs/cicletick.svg";
 import { CustomBtn } from "./BasicComponents";
 
-const PlanCard = ({ title, price, active, popular }) => {
+const PlanCard = ({ title, price, active, popular,btnText }) => {
   return (
     <div className={`plan-card ${active ? "card-shadow" : ""}`}>
       {popular && (
@@ -38,7 +38,7 @@ const PlanCard = ({ title, price, active, popular }) => {
       </div>
 
       <div className="plan-card-btn">
-        <CustomBtn active={active}>{active ? "Selected" : "Select"}</CustomBtn>
+        <CustomBtn active={active}>{btnText}</CustomBtn>
       </div>
     </div>
   );

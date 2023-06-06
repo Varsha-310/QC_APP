@@ -6,6 +6,7 @@ import PlanSelection from "../pages/PlanSelection";
 import ConfirmationPage from "../pages/ConfirmationPage";
 import KycProgress from "../pages/KycProgress";
 import AccountPage from "../pages/AccountPage";
+import TransactionDetail from "../pages/TransactionDetail";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,18 @@ const router = createBrowserRouter([
       {
         path: "/account_section",
         element: <AccountPage />,
+      },
+      {
+        path: "/billings",
+        element: <AccountPage />,
+      },
+      {
+        path:"/transactions",
+        element: <TransactionDetail/>
+      },
+      {
+        path:"/transactions/:id",
+        element: <TransactionDetail/>
       },
       {
         path: "/gift_card",
