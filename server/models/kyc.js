@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 
 var UserSchema = mongoose.Schema({
   store_url: { type: String },
-  name: { type: String },
   kyc_user_data: [
     {
       name: { type: String },

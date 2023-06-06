@@ -8,14 +8,14 @@ var walletSchema = mongoose.Schema({
   balance: { type: Number },
   store_name: {type:String},
   shopify_gc_number: {type:Number},
-  // qc_gc_list: [
-  //   {
-  //     gc_number: Number,
-  //     code: Number,
-  //     date: Date,
-  //     amount: Number
-  //   }
-  // ]
+  qc_gc_list: [
+    {
+      gc_number: Number,
+      code: Number,
+      date: Date,
+      amount: Number
+    }
+  ]
 });
 
 export default mongoose.model("Wallet", walletSchema);
