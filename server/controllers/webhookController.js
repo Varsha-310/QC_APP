@@ -7,10 +7,11 @@ import Queue from "better-queue";
  * @param {*} req
  * @param {*} res
  */
+
 export const orderCreated = (req, res) => {
   const shop = req.headres.shop;
   const order = req.body;
-  orderCreateQueue.push({shop, order});
+  orderCreateQueue.push({ shop, order });
   res.json(respondSuccess("webhook received"));
 };
 
@@ -19,8 +20,10 @@ export const orderCreated = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
+
 export const orderUpdated = (req, res) => {
-  res.json(respondSuccess("webhook received"));
+  console.log(req.body);
+  res.send(respondSuccess("webhook received"));
 };
 
 /**
@@ -28,29 +31,22 @@ export const orderUpdated = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
+
 export const orderDeleted = (req, res) => {
   res.json(respondSuccess("webhook received"));
 };
-
-/**
- * Queue to handle webhooks
- */
-const orderCreateQueue = new Queue(ordercreateEvent, {
-  maxRetries: 2,
-  retryDelay: 1000,
-});
 
 /**
  * Handle order create event
  * @param {*} req
  * @param {*} res
  */
+
 const ordercreateEvent = (input, done) => {
   try {
-    const { shop,  order} = input;
-    
-
-  } catch (err) {
+    const { shop, order } = input;
+  }
+  catch (err) {
     console.log(err);
     logger.info(err);
     res.json(
@@ -60,3 +56,12 @@ const ordercreateEvent = (input, done) => {
 
   done();
 };
+
+/**
+ * Queue to handle webhooks
+ */
+
+const orderCreateQueue = new Queue(ordercreateEvent, {
+  maxRetries: 2,
+  retryDelay: 1000,
+});

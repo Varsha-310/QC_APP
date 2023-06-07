@@ -1,5 +1,6 @@
 import * as Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized } from "./response";
+import crypto from "crypto";
 
 /**
  * Created validator for Api
@@ -63,10 +64,11 @@ const validateMethod = async (req, validationRule, next) => {
 export const verifyShopifyHook = async (req, res, next) => {
   try {
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
-    const body = req.rawBody;
+    console.log(api_secret);
+    console.log(body);
     const digest = crypto
       .createHmac("sha256", api_secret)
-      .update(body)
+      .update(body,'utf8')
       .digest("base64");
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
 
@@ -76,9 +78,7 @@ export const verifyShopifyHook = async (req, res, next) => {
       res.json(respondUnauthorized("not shopify webhook"));
     }
   } catch (e) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json( respondInternalServerError() );
   }
 };
 

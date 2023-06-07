@@ -4,7 +4,6 @@ import {
   installCallback,
   appUninstalled,
 } from "../controllers/shopifyController";
-
 const shopifyRoute = Router();
 
 // Route of app installation

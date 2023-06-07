@@ -6,6 +6,7 @@ import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr";
 import shopifyRoute from "./routes/shopify";
+import webhookRoute from "./routes/webhooks";
 import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
@@ -60,6 +61,9 @@ app.use("/shopify", shopifyRoute);
 // GDPR routes
 app.use("/gdpr", gdprRoute);
 
+//webhooks routes
+app.use("/webhook",webhookRoute)
+
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {
   console.log("checking webhooks!");
@@ -71,7 +75,6 @@ mongoose
   .then(() => {
     app.listen(process.env.PORT);
     console.log("server is running at " + process.env.PORT);
-    logger.info("server is running at " + process.env.PORT);
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);

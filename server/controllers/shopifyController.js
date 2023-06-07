@@ -203,3 +203,11 @@ export const appUninstalled = async (req, res) => {
   await store.findOneAndUpdate({ store_url: domain }, { isInstalled: false });
   res.json(respondSuccess("webhook received"));
 };
+
+/**
+ * Method for dataList method
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+
