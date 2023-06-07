@@ -23,6 +23,7 @@ export const createJwt = async (req, res) => {
       }
     });
   } catch (err) {
+    console.log(err)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
