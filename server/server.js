@@ -9,6 +9,8 @@ import shopifyRoute from "./routes/shopify";
 import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
+import kycRoute from "./routes/kyc";
+import webhookRoute from "./routes/webhooks";
 
 export const app = express();
 
@@ -43,8 +45,8 @@ app.enable("trust proxy", true);
 
 // Api rate limiter
 const apiLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 60, // Limit each IP to 60requests per `window`
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 1, // Limit each IP to 60requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -59,6 +61,12 @@ app.use("/shopify", shopifyRoute);
 
 // GDPR routes
 app.use("/gdpr", gdprRoute);
+
+// webhook routes
+app.use("/webhooks",webhookRoute)
+
+//kyc routes
+app.use("/kyc", kycRoute)
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {

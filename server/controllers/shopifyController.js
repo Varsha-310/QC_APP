@@ -85,8 +85,8 @@ export const installCallback = async (req, res) => {
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
-          let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
+          // let token = await createJwt(shop);
+          return res.redirect(`${CLIENT_URL}/config/${shop}`);
         }
       }
     } else {
@@ -124,6 +124,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
     });
     return true;
   } catch (error) {
+    console.log(error)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );

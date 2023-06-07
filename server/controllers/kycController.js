@@ -1,5 +1,7 @@
 import axios from "axios";
 import { respondInternalServerError } from "../helper/response";
+import crypto from "crypto";
+import { logger } from "../helper/utility";
 
 /**
  * Method to initiate kyc
@@ -8,13 +10,22 @@ import { respondInternalServerError } from "../helper/response";
  */
 export const initiatieKyc = async (req, res) => {
   try {
+    let key = process.env.MANCH_SECURE_KEY
+    let message = "Please fill the details and submit"
+      const hmac = crypto.createHmac('sha256', key);
+      hmac.update(message);
+      const hmacDigest = hmac.digest('hex');
+      console.log(hmacDigest,"hmac for kyc auth");
+    
     const { email, phone, store, name } = req.body;
     logger.info("kyc transaction requested for", email, store);
     const transactionData = {
       method: "POST",
       url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction`,
       headers: {
-        "Content-Type": application / vnd.manch.v1 + json,
+        "Content-Type": "application / vnd.manch.v1 + json",
+        "request-id": "2wdc4rtg6yuj",
+        "authorization" : hmacDigest
       },
       data: JSON.stringify({
         companyKey: process.env.COMPANY_KEY,

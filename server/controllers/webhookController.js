@@ -8,6 +8,7 @@ import Queue from "better-queue";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
+  console.log("order created")
   const shop = req.headres.shop;
   const order = req.body;
   orderCreateQueue.push({shop, order});
@@ -20,6 +21,7 @@ export const orderCreated = (req, res) => {
  * @param {*} res
  */
 export const orderUpdated = (req, res) => {
+
   res.json(respondSuccess("webhook received"));
 };
 
@@ -33,14 +35,6 @@ export const orderDeleted = (req, res) => {
 };
 
 /**
- * Queue to handle webhooks
- */
-const orderCreateQueue = new Queue(ordercreateEvent, {
-  maxRetries: 2,
-  retryDelay: 1000,
-});
-
-/**
  * Handle order create event
  * @param {*} req
  * @param {*} res
@@ -48,6 +42,7 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
 const ordercreateEvent = (input, done) => {
   try {
     const { shop,  order} = input;
+    console.log(input , "----------------------------")
     
 
   } catch (err) {
@@ -60,3 +55,13 @@ const ordercreateEvent = (input, done) => {
 
   done();
 };
+
+/**
+ * Queue to handle webhooks
+ */
+const orderCreateQueue = new Queue(ordercreateEvent, {
+  maxRetries: 2,
+  retryDelay: 1000,
+});
+
+
