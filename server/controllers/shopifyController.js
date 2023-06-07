@@ -4,6 +4,9 @@ import {
   respondInternalServerError,
   respondNotAcceptable,
 } from "../helper/response";
+import cookie from "cookie";
+import crypto from "crypto";
+import { checkWebhooks } from "../config/custom";
 import { createJwt } from "../helper/jwtHelper";
 
 /**
@@ -48,6 +51,7 @@ export const installCallback = async (req, res) => {
     const CLIENT_URL = process.env.CLIENT_URL ?? "";
     const apiKey = process.env.SHOPIFY_API_KEY ?? "";
     const API_VERSION = process.env.API_VERSION ?? "";
+    const headersCookies = req.headers.cookie ?? "";
     const stateCookie = cookie.parse(headersCookies).state;
     if (state !== stateCookie) {
       return res.status(403).send("Request origin cannot be verified");
@@ -63,6 +67,7 @@ export const installCallback = async (req, res) => {
         "utf-8"
       );
       let hashEquals = false;
+      console.log(generatedHash, providedHmac);
       try {
         hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac);
       } catch (e) {
@@ -80,14 +85,15 @@ export const installCallback = async (req, res) => {
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
-          await createJwt(shop)
-          return res.redirect(`${CLIENT_URL}/config/${shop}`);
+          let token = await createJwt(shop);
+          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
         }
       }
     } else {
       res.json(respondNotAcceptable("Required parameters are missing"));
     }
   } catch (error) {
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );

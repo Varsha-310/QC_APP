@@ -1,4 +1,5 @@
 import store from "../models/store";
+import axios from "axios"
 
 const webhooks = [
   { topic: "customers/data_request", endpoint: "/gdpr/customer/data" },
@@ -29,21 +30,24 @@ export const cronToCheckWebhooks = async () => {
  */
 export const checkWebhooks = async (storeUrl, accessToken) => {
   try {
+    console.log(storeUrl,accessToken)
     const webhooksList = webhooks;
     console.log(webhooksList, "webhooksList");
     const URL = `https://${storeUrl}/admin/api/${process.env.API_VERSION}/webhooks.json`;
-    const result = await request({
+    const options = ({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": `${accessToken}`,
       },
       url: URL,
-    }).then((response) => JSON.parse(response));
+    });
+     let result = await axios(options);
+     console.log(result.data.webhooks, "1234567898765432123456789")
 
     //console.log(result.webhooks);
     for (const iterator of webhooksList) {
-      const flag = result.webhooks.find((item) => item.topic == iterator.topic);
+      const flag = result.data.webhooks.find((item) => item.topic == iterator.topic);
       if (!flag) {
         console.log(iterator);
         const config = {
@@ -56,13 +60,13 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
           data: {
             webhook: {
               topic: iterator.topic,
-              address: `${process.env.DOMAIN}${iterator.endpoint}`,
+              address: `${process.env.APP_URL}${iterator.endpoint}`,
               format: "json",
             },
           },
         };
         await axios(config).catch((err) => {
-          console.log("-------error in creating webhook-----", err.data);
+          console.log("-------error in creating webhook-----", err);
         });
         
       }
