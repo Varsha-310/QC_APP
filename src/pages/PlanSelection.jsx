@@ -89,20 +89,14 @@ const PlanSelection = () => {
   return (
     <div className="plan-selection-container container_padding">
       <div className="section-box-container">
-        <SectionHeading1
-          weight="600"
-          size="20px"
-          align="left"
-          lineheight="20px"
-        >
+        <div className="section-box-title">
           Register for the gift card scheme
-        </SectionHeading1>
-
-        <SectionPara margin={"20px 0px"} align="left">
+        </div>
+        <div className="section-box-subtitle">
           To complete registration, provide the necessary details, choose your
           gift card plan, and make the payment.In each section, provide the
           details and click Continue.
-        </SectionPara>
+        </div>
 
         <SectionTitle size="14px" weight="600" lineheight="24px" align="left">
           <span style={{ color: "red" }}>*</span>Marked as Mandatory

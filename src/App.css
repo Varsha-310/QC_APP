@@ -32,25 +32,49 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-family-main);
   background-color: var(--background-color);
 }
 
 /* global values */
-.section-box-container {
-  background-color: var(--background-light-color);
-  padding: 15px 30px;
-  margin: 15px 0px;
+.component {
+  width: 100%;
 }
 .container_padding {
   padding: 30px 70px;
 }
 
+.section-box-container {
+  background-color: var(--background-light-color);
+  padding: 15px 30px;
+  margin: 15px 0px;
+}
+.section-box-title {
+  font-family: var(--font-family-header);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  color: var(--text-dark-color);
+}
+
+.section-box-subtitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+  color: var(--text-dark-color);
+}
+
+
+
 /* app js */
 .dashboard-container {
   display: flex;
   gap: 20px;
-  /* background-color: var(--background-color); */
   min-height: 100vh;
 }
 li {

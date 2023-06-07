@@ -7,25 +7,11 @@ const AccountPage = () => {
   return (
     <div className="account_page-container" style={{ width: "100%" }}>
       <div className="section-box-container">
-        <SectionHeading1
-          weight="500"
-          size="16px"
-          align="left"
-          lineheight="16px"
-        >
-          Account
-        </SectionHeading1>
+        <div className="section-box-title">Account</div>
       </div>
 
       <div className="section-box-container">
-        <SectionHeading1
-          weight="500"
-          size="16px"
-          align="left"
-          lineheight="16px"
-        >
-          Current Plan
-        </SectionHeading1>
+        <div className="section-box-title">Current Plan</div>
       </div>
 
       <CustomContainer margin="30px 0px" align="center">
@@ -43,14 +29,7 @@ const AccountPage = () => {
       </CustomContainer>
 
       <div className="section-box-container">
-        <SectionHeading1
-          weight="500"
-          size="16px"
-          align="left"
-          lineheight="16px"
-        >
-          Settings
-        </SectionHeading1>
+        <div className="section-box-title">Setttings</div>
       </div>
 
       <div className="section-box-container">
