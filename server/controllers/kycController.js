@@ -10,13 +10,13 @@ import { logger } from "../helper/utility";
  */
 export const initiatieKyc = async (req, res) => {
   try {
-    let key = process.env.MANCH_SECURE_KEY
-    let message = "Please fill the details and submit"
-      const hmac = crypto.createHmac('sha256', key);
-      hmac.update(message);
-      const hmacDigest = hmac.digest('hex');
-      console.log(hmacDigest,"hmac for kyc auth");
-    
+    let key = process.env.MANCH_SECURE_KEY;
+    let message = "Please fill the details and submit";
+    const hmac = crypto.createHmac("sha256", key);
+    hmac.update(message);
+    const hmacDigest = hmac.digest("hex");
+    console.log(hmacDigest, "hmac for kyc auth");
+
     const { email, phone, store, name } = req.body;
     logger.info("kyc transaction requested for", email, store);
     const transactionData = {
@@ -25,7 +25,7 @@ export const initiatieKyc = async (req, res) => {
       headers: {
         "Content-Type": "application / vnd.manch.v1 + json",
         "request-id": "2wdc4rtg6yuj",
-        "authorization" : hmacDigest
+        authorization: hmacDigest,
       },
       data: JSON.stringify({
         companyKey: process.env.COMPANY_KEY,
@@ -87,6 +87,7 @@ export const fillForm = (data, res) => {
  */
 export const dispatchTransaction = (data, res) => {
   try {
+    
     let { transaction_id } = data;
     logger.info("dispatch api called for", transaction_id);
     const dispatchData = {

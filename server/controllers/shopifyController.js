@@ -49,8 +49,6 @@ export const installCallback = async (req, res) => {
     const { shop, hmac, code, state } = req.query;
     const apiSecret = process.env.SHOPIFY_API_SECRET ?? "";
     const CLIENT_URL = process.env.CLIENT_URL ?? "";
-    const apiKey = process.env.SHOPIFY_API_KEY ?? "";
-    const API_VERSION = process.env.API_VERSION ?? "";
     const headersCookies = req.headers.cookie ?? "";
     const stateCookie = cookie.parse(headersCookies).state;
     if (state !== stateCookie) {
@@ -117,14 +115,14 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       country_code: shopData.shop?.country_code.toLowerCase(),
     };
     console.log(data);
-    const storeObj = await store.updateOne({
-      store_url: data.store_url,
-      data,
-      upsert: true,
-    });
+    await store.updateOne(
+      { store_url: data.store_url },
+      { $set: data },
+      { upsert: true }
+    );
     return true;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -142,7 +140,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
       method: "GET",
-      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,email,city,country_code`,
+      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code`,
       headers: {
         "X-Shopify-Access-Token": accessToken,
       },
