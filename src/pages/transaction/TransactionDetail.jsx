@@ -2,11 +2,11 @@ import React from "react";
 import {
   CustomContainer,
   SectionHeading1,
-} from "../components/BasicComponents";
-import "./style/TransactionDetail.css";
+} from "../../components/BasicComponents";
+import "./styles/TransactionDetail.css";
 import styled from "styled-components";
 
-import GiftCouponIcon from "../assets/images/GiftCouponIcon.png";
+import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
 
 const TextBoxContainer = styled.div`
   display: grid;

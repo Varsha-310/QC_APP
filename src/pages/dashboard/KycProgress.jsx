@@ -1,6 +1,6 @@
-import { SectionHeading1 } from "../components/BasicComponents";
-import SecureDoc from "../assets/icons/pngs/secure document.png";
-import "./style/KycProgress.css";
+import { SectionHeading1 } from "../../components/BasicComponents";
+import SecureDoc from "../../assets/icons/pngs/secure document.png";
+import "./styles/KycProgress.css";
 
 const KycProgress = () => {
   return (
@@ -11,7 +11,7 @@ const KycProgress = () => {
             KYC status - Progress
           </SectionHeading1>
           <img
-            src={require("../assets/icons/pngs/work-in-progress.png")}
+            src={require("../../assets/icons/pngs/work-in-progress.png")}
             alt="progress"
           />
         </div>

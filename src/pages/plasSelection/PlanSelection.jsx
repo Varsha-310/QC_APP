@@ -1,6 +1,6 @@
 import React from "react";
-import "./style/PlanSelection.css";
-import Tick from "../assets/icons/svgs/tick.svg";
+import "./styles/PlanSelection.css";
+import Tick from "../../assets/icons/svgs/tick.svg";
 import {
   CustomBtn,
   PrimaryBtn,
@@ -8,9 +8,9 @@ import {
   SectionHeading1,
   SectionPara,
   SectionTitle,
-} from "../components/BasicComponents";
+} from "../../components/BasicComponents";
 import { Link } from "react-router-dom";
-import PlanCard from "../components/PlanCard";
+import PlanCard from "../../components/PlanCard";
 
 const PlanSelection = () => {
   const tableContent = [

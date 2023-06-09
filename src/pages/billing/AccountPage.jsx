@@ -1,7 +1,7 @@
-import "./style/AccountPage.css";
-import { CustomContainer, PrimaryBtn } from "../components/BasicComponents";
-import { SectionHeading1 } from "../components/BasicComponents";
-import PlanCard from "../components/PlanCard";
+import "./styles/AccountPage.css";
+import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
+import { SectionHeading1 } from "../../components/BasicComponents";
+import PlanCard from "../../components/PlanCard";
 
 const AccountPage = () => {
   return (

@@ -1,6 +1,6 @@
-import "./style/ConfirmationPage.css";
-import Success from "../assets/icons/svgs/success.svg";
-import { SectionTitle } from "../components/BasicComponents";
+import "./styles/ConfirmationPage.css";
+import Success from "../../assets/icons/svgs/success.svg";
+import { SectionTitle } from "../../components/BasicComponents";
 
 const ConfirmationPage = () => {
   return (

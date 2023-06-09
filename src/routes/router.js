@@ -1,14 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import DashboardHome from "../pages/DashboardHome";
-import ErrorPage from "../pages/ErrorPage";
-import PlanSelection from "../pages/PlanSelection";
-import ConfirmationPage from "../pages/ConfirmationPage";
-import KycProgress from "../pages/KycProgress";
-import AccountPage from "../pages/AccountPage";
-import TransactionDetail from "../pages/TransactionDetail";
-import RefundSetting from "../pages/refund/RefundSetting";
-import RefundPage from "../pages/refund/RefundPage";
+import {
+  DashboardHome,
+  ErrorPage,
+  AccountPage,
+  KycProgress,
+  PlanSelection,
+  ConfirmationPage,
+  RefundPage,
+  RefundSetting,
+  TransactionDetail,
+  TransactionHistory,
+} from "../pages";
 
 const router = createBrowserRouter([
   {
@@ -29,12 +32,12 @@ const router = createBrowserRouter([
         element: <AccountPage />,
       },
       {
-        path:"/transactions",
-        element: <TransactionDetail/>
+        path: "/transactions",
+        element: <TransactionDetail />,
       },
       {
-        path:"/transactions/:id",
-        element: <TransactionDetail/>
+        path: "/transactions/:id",
+        element: <TransactionDetail />,
       },
       {
         path: "/gift_card",
@@ -43,12 +46,12 @@ const router = createBrowserRouter([
         path: "/store_credits",
       },
       {
-        path:"/refunds/:id",
-        element: <RefundPage/>
+        path: "/refunds/:id",
+        element: <RefundPage />,
       },
       {
-        path:"/refund_settings",
-        element: <RefundSetting/>
+        path: "/refund_settings",
+        element: <RefundSetting />,
       },
     ],
   },
