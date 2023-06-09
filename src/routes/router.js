@@ -8,6 +8,7 @@ import KycProgress from "../pages/KycProgress";
 import AccountPage from "../pages/AccountPage";
 import TransactionDetail from "../pages/TransactionDetail";
 import RefundSetting from "../pages/refund/RefundSetting";
+import RefundPage from "../pages/refund/RefundPage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/store_credits",
+      },
+      {
+        path:"/refunds/:id",
+        element: <RefundPage/>
       },
       {
         path:"/refund_settings",

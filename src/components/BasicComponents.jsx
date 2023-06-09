@@ -15,7 +15,7 @@ const PrimaryBtn = styled.div`
   font-family: "Poppins", sans-serif;
   font-size: 14px;
   line-height: 21px;
-  width: 180px;
+  width: ${(props) => props?.width || "180px"};
   height: 40px;
   display: flex;
   justify-content: center;
@@ -32,9 +32,7 @@ const PrimaryBtn = styled.div`
   margin: 0px auto;
 `;
 
-const SecondaryBtn= styled.div`
-     
-`;
+const SecondaryBtn = styled.div``;
 
 const CustomBtn = styled.div`
   display: flex;

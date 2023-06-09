@@ -40,6 +40,9 @@ body {
 .component {
   width: 100%;
 }
+.main-component{
+  min-height: 90%;
+}
 .container_padding {
   padding: 30px 70px;
 }

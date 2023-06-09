@@ -3,7 +3,6 @@ import "./styles/RefundSetting.css";
 import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
 
 const RefundSetting = () => {
-  
   return (
     <div className="refund-setting__component component">
       <div className="section-box-container">
@@ -41,10 +40,7 @@ const RefundSetting = () => {
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">Gift Card</div>
           <input type="radio" className="refund-setting__radio" />
-          <input
-            type="radio"
-            className="refund-setting__radio" id="default"
-          />
+          <input type="radio" className="refund-setting__radio" id="default" />
         </div>
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">

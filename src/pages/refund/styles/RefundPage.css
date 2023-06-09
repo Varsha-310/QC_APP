@@ -1,0 +1,76 @@
+
+.refund-page__select-item{
+    display: flex;
+    margin: 10px 0px;
+}
+.refund-page__select-item select{
+    width: 200px;
+    height: 40px;
+    padding: 5px;
+    margin: 0px 10px;
+    outline: none;
+}
+
+.refund-page__refund-item-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.refund-page__title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  margin: 10px 0px 10px 0px;
+  color: var(--text-dark-color);
+}
+.refund-page__text_bold {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-dark-color);
+}
+.refund-page__refund-status-item {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 10px 0px;
+  color: var(--text-dark-color);
+}
+.refund-page__refund-shipping{
+    margin-top: 40px;
+}
+.refund-page__shipping-rate-input {
+  width: 100%;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 10px 20px;
+  margin: 10px 0px;
+  color: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.refund-page__quantity {
+  text-align: center;
+}
+
+/* summary price estimation */
+.refund-page__price-summary-table {
+  width: 100%;
+}
+.refund-page__price-summary-table tr {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.refund-page__price-summary-table td {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    margin: 5px 0px;
+    
+    color: var(--text-dark-color);
+}
+.refund-page__price-summary-table #total-refund td {
+    font-weight: 500;
+}
