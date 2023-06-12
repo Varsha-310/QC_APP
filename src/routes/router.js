@@ -11,6 +11,8 @@ import {
   RefundSetting,
   TransactionDetail,
   TransactionHistory,
+  RefundConfirmation,
+  CreateGiftCard,
 } from "../pages";
 
 const router = createBrowserRouter([
@@ -24,39 +26,55 @@ const router = createBrowserRouter([
         element: <DashboardHome />,
       },
       {
-        path: "/account_section",
-        element: <AccountPage />,
-      },
-      {
         path: "/billings",
         element: <AccountPage />,
       },
       {
         path: "/transactions",
-        element: <TransactionDetail />,
+        element: <TransactionHistory />,
       },
       {
         path: "/transactions/:id",
         element: <TransactionDetail />,
       },
+
       {
-        path: "/gift_card",
+        path: "/kyc-status",
+        element: <KycProgress />,
       },
       {
-        path: "/store_credits",
+        path: "/create-giftcard",
+        element: <CreateGiftCard />,
+      },
+      {
+        path: "/my-gift-card",
+        element: "",
+      },
+      {
+        path: "/resend-gift-card",
+        element: "",
+      },
+      {
+        path: "/issue-store-credits",
+        element: "",
+      },
+      {
+        path: "/refunds",
+        element: "",
       },
       {
         path: "/refunds/:id",
         element: <RefundPage />,
       },
       {
-        path: "/refund_settings",
+        path: "/configuration",
         element: <RefundSetting />,
       },
     ],
   },
-  { path: "plan_select", element: <PlanSelection /> },
-  { path: "submission_success", element: <ConfirmationPage /> },
+  { path: "/plan_select", element: <PlanSelection /> },
+  { path: "/submission_success", element: <ConfirmationPage /> },
+  { path: "/refund_success", element: <RefundConfirmation /> },
 ]);
 
 export default router;
