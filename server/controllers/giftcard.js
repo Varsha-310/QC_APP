@@ -1,5 +1,6 @@
 import { getShopifyObject } from "../helper/shopify";
-import product from "../models/product";
+import Product from "../models/product";
+import { respondInternalServerError, respondSuccess } from "../helper/response"; 
 
 //Create QC Giftcard Product
 export const createGiftcardProducts = async (req, res, next) => {
@@ -39,20 +40,15 @@ export const createGiftcardProducts = async (req, res, next) => {
       tags: tags,
       variants: req.body.variants,
     });
-    await product.create({store_url : req.body.store , id : newProduct.id ,newProduct});
+    await Product.create( newProduct );
        console.log("createGiftcardProducts response shopify");
     console.log(newProduct);
-    res.status(200).send({
-      success: true,
-      message: "Product created in shopify successfully",
-      data: newProduct,
-    });
+    res.json(respondSuccess("Product created in shopify successfully"))
   } catch (error) {
     console.log(error)
-    var err = new Error("Internal Server Error");
-    err.status = 500;
-
-    next(error);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
   }
 };
 
@@ -82,16 +78,12 @@ export const updateGiftcardProduct = async (req, res, next) => {
       req.body.product_id,
       updateObj
     );
-    res.status(200).send({
-      success: true,
-      message: "Product updated successfully",
-      data: updatedProduct,
-    });
+    res.json(respondSuccess("Product created in shopify successfully"));
   } catch (error) {
-    var err = new Error("Internal Server Error");
-    err.status = 500;
-
-    next(error);
+    console.log(error)
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
   }
 };
 
@@ -103,32 +95,31 @@ export const getGiftcardProducts = async (req, res, next) => {
         let products = await Product.find({ store: req.token.store }); //Get Store Object
         console.log(products.length);
         //Since this API is used in the dashboard, the redemption status is also sent along in the response
-        if (products && products.length) {
-          if (req.token.store !== "plumgoodness-2.myshopify.com") {
-            var qcRedemptionEnabled = await checkQcRedemption(req.token.store);
-          }
-          if (req.token.store == "plumgoodness-2.myshopify.com") {
-            var qcRedemptionEnabled = true;
-          }
+        // if (products && products.length) {
+        //   if (req.token.store !== "plumgoodness-2.myshopify.com") {
+        //     var qcRedemptionEnabled = await checkQcRedemption(req.token.store);
+        //   }
+        //   if (req.token.store == "plumgoodness-2.myshopify.com") {
+        //     var qcRedemptionEnabled = true;
+        //   }
     
           //Check the status of the QC Redemption Snippet
           res.status(200).send({
             success: true,
             message: "Giftcard Products fetched successfully",
-            data: products,
-            qcRedemptionEnabled: qcRedemptionEnabled,
+            data: products
           });
-        } else {
-          res.status(400).send({
-            success: false,
-            message: "No products found for the store",
-          });
-        }
+        // } else {
+        //   res.status(400).send({
+        //     success: false,
+        //     message: "No products found for the store",
+        //   });
+        // }
       } catch (error) {
-        var err = new Error("Internal Server Error");
-        err.status = 500;
         console.log(error);
-        next(error);
+        res.json(
+          respondInternalServerError("Something went wrong try after sometime")
+        );
       }
     };
     

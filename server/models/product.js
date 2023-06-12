@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 var productSchema = mongoose.Schema({
   store_url: { type: String },
-  id: { type: Number, required: true, unique: true },
+  id: { type: Number,  unique: true },
   title: { type: String },
   body_html: { type: String },
   vendor: { type: String },

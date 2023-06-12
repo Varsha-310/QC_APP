@@ -2,7 +2,6 @@ import * as Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 import crypto from "crypto";
 
-
 /**
  * Created validator for Api
  * @param {*} body
@@ -51,6 +50,7 @@ const validateMethod = async (req, validationRule, next) => {
       }
     });
   } catch (err) {
+    console.log(err);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -78,7 +78,7 @@ export const verifyShopifyHook = async (req, res, next) => {
     } else {
       res.json(respondUnauthorized("not shopify webhook"));
     }
-  } catch (e) {
+  } catch(e){
     console.log(e)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
