@@ -3,10 +3,18 @@
   padding: 15px 0px;
   border-spacing: 0;
 }
-.listing-table tr {
+/* for trasaction table grid */
+.trasaction-table tr {
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto;
+  grid-template-columns: repeat(6,auto);
 }
+/* for refund table grid */
+.refund-table tr {
+  display: grid;
+  grid-template-columns: repeat(8,1fr)
+}
+
+/* for both table fields */
 .listing-table thead tr {
   background: rgba(151, 151, 151, 0.2);
   padding: 0px 5px;
@@ -44,8 +52,19 @@
   
   color: var(--text-dark-color);
 }
-.listing-table tbody tr td a{
+
+.listing-table tbody tr td[id="action"] a{
   text-decoration: none;
   font-weight: 600;
   color: var(--text-dark-color);
+}
+
+/* refund table initiate refund */
+.listing-table tbody tr td[id="initiate-refund"] a{
+   text-decoration: none;
+   width: 100%;
+   padding: 5px;
+   border-radius: 10px;
+   color: #ffffff;
+   background-color: var(--frame-color);
 }

@@ -2,9 +2,9 @@ import React from "react";
 import "./styles/ListingTable.css";
 import { Link } from "react-router-dom";
 
-const ListingTable = ({ headings, data }) => {
+const ListingTable = ({table, headings, data }) => {
   return (
-    <table className="listing-table">
+    <table className="listing-table trasaction-table">
       <thead>
         <tr>
           {headings.map((item) => (

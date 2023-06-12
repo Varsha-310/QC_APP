@@ -10,14 +10,6 @@ const TransactionHistory = () => {
     "Next Payment Date",
     "Action",
   ];
-  const keys = [
-    "plan_name",
-    "invoice_date",
-    "invoice_number",
-    "amount",
-    "next_payment_date",
-    "action",
-  ];
   const data = [
     {
       plan_name: "Pro",

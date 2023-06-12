@@ -94,33 +94,35 @@ const TabBox = styled(Link)`
     props?.active ? "0px 4px 7px 1px rgba(0, 0, 0, 0.15)" : ""};
 `;
 
-const SubTabBox = styled(Link)`
+const SubTabBox = styled.div`
   display: grid;
   grid-template-columns: ${(props) =>
     props?.dropdown ? "1fr 3fr 1fr" : "1fr 4fr"};
   width: 185px;
-  text-decoration: none;
   margin: 5px 0px;
   padding: 5px 0px 5px 15px;
   align-items: center;
   // justify-items: center;
+  cursor: pointer;
 `;
 
-const TabItemLable = styled.div`
+const TabItemLable = styled(Link)`
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
+  text-decoration: none;
   font-size: 16px;
   line-height: 24px;
   display: flex;
   align-items: center;
   color: ${TEXT_DARK_COLOR};
 `;
-const TabSubItemLable = styled.div`
+const TabSubItemLable = styled(Link)`
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
+  text-decoration: none;
   line-height: 18px;
   display: flex;
   justify-content: left;
