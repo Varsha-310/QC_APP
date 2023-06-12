@@ -11,6 +11,7 @@ import cron from "node-cron";
 import { logger } from "./helper/utility";
 import kycRoute from "./routes/kyc";
 import webhookRoute from "./routes/webhooks";
+import giftcardRoute from "./routes/giftcard";
 
 export const app = express();
 
@@ -63,10 +64,13 @@ app.use("/shopify", shopifyRoute);
 app.use("/gdpr", gdprRoute);
 
 // webhook routes
-app.use("/webhooks",webhookRoute)
+app.use("/webhooks",webhookRoute);
 
 //kyc routes
-app.use("/kyc", kycRoute)
+app.use("/kyc", kycRoute);
+
+// giftcard routes
+app.use("/giftcard" , giftcardRoute)
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {
