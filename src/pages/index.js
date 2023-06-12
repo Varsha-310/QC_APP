@@ -7,6 +7,8 @@ import RefundPage from "./refund/RefundPage";
 import RefundSetting from "./refund/RefundSetting";
 import TransactionDetail from "./transaction/TransactionDetail";
 import TransactionHistory from "./transaction/TransactionHistory";
+import RefundConfirmation from "./refund/RefundConfirmation";
+import CreateGiftCard from "./issuance/CreateGiftCard";
 
 import ErrorPage from "./ErrorPage";
 
@@ -21,4 +23,6 @@ export {
   RefundSetting,
   TransactionDetail,
   TransactionHistory,
+  RefundConfirmation,
+  CreateGiftCard,
 };
