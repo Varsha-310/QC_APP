@@ -13,7 +13,8 @@ import {
   TransactionHistory,
   RefundConfirmation,
   CreateGiftCard,
-  RefundList
+  RefundList,
+  GiftCardsList,
 } from "../pages";
 
 const router = createBrowserRouter([
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/my-gift-card",
-        element: "",
+        element: <GiftCardsList />,
       },
       {
         path: "/resend-gift-card",
@@ -61,7 +62,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/refunds",
-        element: <RefundList/> ,
+        element: <RefundList />,
       },
       {
         path: "/refunds/:id",

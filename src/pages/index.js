@@ -10,7 +10,7 @@ import TransactionHistory from "./transaction/TransactionHistory";
 import RefundConfirmation from "./refund/RefundConfirmation";
 import CreateGiftCard from "./issuance/CreateGiftCard";
 import RefundList from "./refund/RefundList";
-
+import GiftCardsList from "./issuance/GiftCardsList";
 
 import ErrorPage from "./ErrorPage";
 
@@ -27,5 +27,6 @@ export {
   TransactionHistory,
   RefundConfirmation,
   CreateGiftCard,
-  RefundList
+  RefundList,
+  GiftCardsList,
 };

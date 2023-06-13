@@ -3,18 +3,19 @@
   padding: 15px 0px;
   border-spacing: 0;
 }
+.listing-table tr{
+  display: grid;
+}
 /* for trasaction table grid */
 .trasaction-table tr {
-  display: grid;
   grid-template-columns: repeat(6,auto);
 }
 /* for refund table grid */
 .refund-table tr {
-  display: grid;
   grid-template-columns: repeat(8,1fr)
 }
 
-/* for both table fields */
+/* for all table fields */
 .listing-table thead tr {
   background: rgba(151, 151, 151, 0.2);
   padding: 0px 5px;
