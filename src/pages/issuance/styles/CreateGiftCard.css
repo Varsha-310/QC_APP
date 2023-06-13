@@ -1,0 +1,88 @@
+.gift-card__card-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.gift-card__active-status {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: var(--text-dark-color);
+}
+.gift-card__card-data {
+  display: flex;
+  flex-direction: column;
+}
+.gift-card__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  /* margin: 10px 0px; */
+  color: var(--text-dark-color);
+}
+.gift-card__input {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  resize: none;
+  outline: none;
+  padding: 10px 20px;
+  margin: 10px 0px;
+  color: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.gift-card__validity {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+
+  margin: 10px 0px;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.4);
+}
+.gift-card__validity_option select {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  padding: 10px 20px;
+  color: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.gift-card__validity input[type="checkbox"] {
+  accent-color: var(--secondary-bold-btn);
+  border: 2px solid red;
+}
+
+.gift-card__variant-data {
+  margin: 40px 0px;
+}
+.gift-card__variant-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.5fr;
+  align-items: center;
+  column-gap: 20px;
+  /* margin: 10px 0px; */
+}
+
+.gift-card__append-variant {
+  width: fit-content;
+  margin: 2 0px 0px;
+  padding: 5px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  color: var(--secondary-bold-btn);
+  border: 2px solid #b62028;
+  border-radius: 10px;
+}
+.gift-card__append-variant img {
+  margin-left: 10px;
+}

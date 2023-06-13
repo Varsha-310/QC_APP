@@ -50,7 +50,6 @@ const DashboardMenu = () => {
 
         <li>
           <TabBox
-            to={"/account_section"}
             active={activeTab?.account}
             id="account"
             onClick={handleTab}
@@ -62,7 +61,7 @@ const DashboardMenu = () => {
           <li>
             <SubTabBox dropdown={"true"} id="myplan" onClick={handleDropDown}>
               <img src={MyPlanIcon} alt="" />
-              <TabItemLable>My Plan</TabItemLable>
+              <TabItemLable to={"/billings"}>My Plan</TabItemLable>
               <img src={DownArrowIcon} alt="" />
             </SubTabBox>
           </li>
@@ -72,13 +71,13 @@ const DashboardMenu = () => {
               <li>
                 <NestedTabBox>
                   <Dot size="5px" fill={true} />
-                  <TabSubItemLable>Billing Page</TabSubItemLable>
+                  <TabSubItemLable to={"/billings"}>Billing Page</TabSubItemLable>
                 </NestedTabBox>
               </li>
               <li>
                 <NestedTabBox>
                   <Dot size="5px" fill={true} />
-                  <TabSubItemLable>My Invoices</TabSubItemLable>
+                  <TabSubItemLable to={"/transactions"}>Transaction Page</TabSubItemLable>
                 </NestedTabBox>
               </li>
             </ul>
@@ -87,14 +86,13 @@ const DashboardMenu = () => {
           <li>
             <SubTabBox>
               <img src={KycIcon} alt="" />
-              <TabItemLable>KYC Status</TabItemLable>
+              <TabItemLable to={"/kyc-status"}>KYC Status</TabItemLable>
             </SubTabBox>
           </li>
         </ul>
 
         <li>
           <TabBox
-            to={"/gift_card"}
             active={activeTab?.giftcard}
             id="giftcard"
             onClick={handleTab}
@@ -107,28 +105,27 @@ const DashboardMenu = () => {
           <li>
             <SubTabBox>
               <img src={GiftCardIcon} alt="" />
-              <TabItemLable>Create Gift Card</TabItemLable>
+              <TabItemLable to={"/create-giftcard"}>Create Gift Card</TabItemLable>
             </SubTabBox>
           </li>
 
           <li>
             <SubTabBox>
               <img src={MyGiftCardsIcon} alt="" />
-              <TabItemLable>My Gift Cards</TabItemLable>
+              <TabItemLable to={"/my-gift-card"}>My Gift Cards</TabItemLable>
             </SubTabBox>
           </li>
 
           <li>
             <SubTabBox>
               <img src={ResendMail} alt="" />
-              <TabItemLable>Re-send Gift Card emails</TabItemLable>
+              <TabItemLable to={"resend-gift-card"}>Re-send Gift Card emails</TabItemLable>
             </SubTabBox>
           </li>
         </ul>
 
         <li>
           <TabBox
-            to={"/store_credits"}
             active={activeTab?.storecredit}
             id="storecredit"
             onClick={handleTab}
@@ -143,20 +140,20 @@ const DashboardMenu = () => {
                 onClick={handleDropDown}
               >
                 <img src={StoreCredit} alt="" />
-                <TabItemLable>Issue Store Credits</TabItemLable>
+                <TabItemLable to={"/issue-store-credits"}>Issue Store Credits</TabItemLable>
                 <img src={DownArrowIcon} alt="" />
               </SubTabBox>
               {activeDropDown.credits && (
                 <NestedTabBox>
                   <div></div>
-                  <TabSubItemLable>Listing Page</TabSubItemLable>
+                  <TabSubItemLable to={"/refunds"}>Listing Page</TabSubItemLable>
                 </NestedTabBox>
               )}
             </li>
             <li>
               <SubTabBox>
                 <img src={ConfigIcon} alt="" />
-                <TabItemLable>Configuration</TabItemLable>
+                <TabItemLable to={"/configuration"}>Configuration</TabItemLable>
               </SubTabBox>
             </li>
           </ul>
