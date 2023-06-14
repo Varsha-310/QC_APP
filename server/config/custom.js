@@ -3,12 +3,11 @@ import axios from "axios"
 
 const webhooks = [
   { topic: "customers/data_request", endpoint: "/gdpr/customer/data" },
-  { topic: "customers/redact", endpoint: "/gdpr/customer/delete" },
-  { topic: "shop/redact", endpoint: "/gdpr/store/delete" },
-  { topic: "orders/created", endpoint: "/webhooks/ordercreated" },
+  // { topic: "customers/redact", endpoint: "/gdpr/customer/delete" },
+  // { topic: "shop/redact", endpoint: "/gdpr/store/delete" },
+  { topic: "orders/create", endpoint: "/webhooks/ordercreated" },
   { topic: "orders/updated", endpoint: "/webhooks/orderupdated" },
-  { topic: "orders/cancelled", endpoint: "/webhooks/orderdeleted" },
-  { topic: "app/uninstalled", endpoint: "shopify/uninstall" },
+  // { topic: "app/uninstalled", endpoint: "shopify/uninstall" },
 ];
 
 /**
@@ -16,6 +15,7 @@ const webhooks = [
  */
 export const cronToCheckWebhooks = async () => {
   let stores = await store.find();
+  
   console.log(stores);
   for (const store of stores) {
     console.log(store);
@@ -72,6 +72,6 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    console.log("An error occured",err);
   }
 };

@@ -7,6 +7,8 @@ import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr";
 import shopifyRoute from "./routes/shopify";
 import webhookRoute from "./routes/webhooks";
+import refundSettingRoute from "./routes/refund";
+import storesRoute from "./routes/store";
 import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
@@ -62,7 +64,13 @@ app.use("/shopify", shopifyRoute);
 app.use("/gdpr", gdprRoute);
 
 //webhooks routes
-app.use("/webhook",webhookRoute)
+app.use("/webhooks",webhookRoute)
+
+//refund setting route
+app.use("/refund",refundSettingRoute)
+
+//Store details route
+app.use("/stores",storesRoute)
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {

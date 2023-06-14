@@ -13,7 +13,7 @@ export const createJwt = async (req, res) => {
     let secretKey = process.env.JWT_SECRET;
     const storeData = await store.find({ store_url: store_url });
     let data = storeData.store_url;
-    Jwt.sign(data, secretKey, (err, token) => {
+    jwt.sign(data, secretKey, (err, token) => {
       if (err) {
         res.json(
           respondInternalServerError("Something went wrong try after sometime")
@@ -44,7 +44,7 @@ export const verifyJwt = (req, res, next) => {
         process.env.JWT_SECRET,
         function (err, payload) {
           if (!err) {
-            req.token = payload;
+            req.data = payload;
             next();
           } else {
             res.json(respondUnauthorized("Invalid jwt token"));

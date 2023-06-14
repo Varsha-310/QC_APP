@@ -1,6 +1,8 @@
-import { respondSuccess } from "../helper/response";
+import { respondSuccess, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import Queue from "better-queue";
+import orders from "../models/orders"
+
 
 /**
  * To handle order creation webhook
@@ -9,9 +11,14 @@ import Queue from "better-queue";
  */
 
 export const orderCreated = (req, res) => {
-  const shop = req.headres.shop;
-  const order = req.body;
-  orderCreateQueue.push({ shop, order });
+  // const shop = req.headers.shop;
+  // console.log(shop);
+  // return;
+  // const order = req.body;
+  // orderCreateQueue.push({ shop, order });
+  console.log(req.body.payment_gateway_names);
+  console.log("wavehook recieved", "payment Done Through",req.body.payment_gateway_names[0]);
+  handleOrderCreatewebhook(req,res);
   res.json(respondSuccess("webhook received"));
 };
 
@@ -22,7 +29,8 @@ export const orderCreated = (req, res) => {
  */
 
 export const orderUpdated = (req, res) => {
-  console.log(req.body);
+ // console.log(req.body);
+  handleOrderCreatewebhook(req,res)
   res.send(respondSuccess("webhook received"));
 };
 
@@ -33,7 +41,7 @@ export const orderUpdated = (req, res) => {
  */
 
 export const orderDeleted = (req, res) => {
-  res.json(respondSuccess("webhook received"));
+  // res.json(respondSuccess("webhook received"));
 };
 
 /**
@@ -65,3 +73,26 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
   maxRetries: 2,
   retryDelay: 1000,
 });
+
+
+/** 
+ * to handle order while creating and updating
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+export const handleOrderCreatewebhook = async (req, res) => {
+  try {
+    const orderData = req.body; 
+    const store = req.headers["x-shopify-shop-domain"];
+    orderData.store_url = store; 
+
+    await orders.updateOne({store_url:store, id: orderData.id}, orderData, {upsert: true});  
+    console.log("Webhook Complieted");  
+  
+  } catch (err) {
+    
+    console.log(err);
+  }
+};
+

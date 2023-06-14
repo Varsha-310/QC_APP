@@ -18,7 +18,6 @@ import { createJwt } from "../helper/jwtHelper";
 export const install = async (req, res) => {
   try {
     const shop = req.query.shop;
-    console.log(req);
     if (shop) {
       const scopes = process.env.SCOPES;
       const apiKey = process.env.SHOPIFY_API_KEY;
@@ -26,7 +25,7 @@ export const install = async (req, res) => {
       const state = Date.now();
       const redirectUri = `${APP_URL}/shopify/callback`;
       const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&state=${state}&redirect_uri=${redirectUri}`;
-      res.cookie("state", state);
+      res.cookie("state", state);   // cookie: 'state=1686118763459',
       return res.redirect(installUrl);
     } else {
       res.json(respondNotAcceptable("Something went wrong try after sometime"));
@@ -80,13 +79,14 @@ export const installCallback = async (req, res) => {
       let accessToken = await getAccessToken(shop, code);
 
       if (accessToken) {
-        console.log(accessToken, "accessToken");
+        // console.log(accessToken, "accessToken");
         let storeData = await getShopifyStoreData(shop, accessToken);
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken);
+          // console.log(response ,"response of store data");
           await checkWebhooks(shop, accessToken);
-          let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
+          // let token = await createJwt(shop);
+          return res.redirect(`${CLIENT_URL}/config/${shop}`);
         }
       }
     } else {
@@ -118,10 +118,10 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
     };
     console.log(data);
     const storeObj = await store.updateOne({
-      store_url: data.store_url,
-      data,
-      upsert: true,
-    });
+      store_url: data.store_url},
+      {$set: data},
+      {upsert: true},
+);
     return true;
   } catch (error) {
     res.json(
