@@ -72,8 +72,9 @@ export const verifyShopifyHook = async (req, res, next) => {
       .update(body)
       .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
-
+ console.log(providedHmac, digest)
     if (digest == providedHmac) {
+      console.log("shopy webhook verified");
       next();
     } else {
       res.json(respondUnauthorized("not shopify webhook"));

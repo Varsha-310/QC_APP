@@ -12,6 +12,7 @@ import { logger } from "./helper/utility";
 import kycRoute from "./routes/kyc";
 import webhookRoute from "./routes/webhooks";
 import giftcardRoute from "./routes/giftcard";
+import { cronToCheckWebhooks } from "./config/custom";
 
 export const app = express();
 
@@ -73,8 +74,9 @@ app.use("/kyc", kycRoute);
 app.use("/giftcard" , giftcardRoute)
 
 // cron to check webhooks for every store
-cron.schedule("0 */6 * * *", () => {
-  console.log("checking webhooks!");
+cron.schedule("* * * * *", () => {
+  // cronToCheckWebhooks();
+  // console.log("checking webhooks!");
 });
 
 // Database and Port connection

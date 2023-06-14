@@ -255,3 +255,106 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
   maxRetries: 2,
   retryDelay: 1000,
 });
+
+
+//Webhooks for Product Create Activity
+export const productCreateEvent = async (req, res, next) => {
+
+  console.log("productCreateEvent webhook function start");
+  console.log(req.body);
+  //Send a response back immediately, as a delay in response will cause the webhooks to be removed
+  res.status(200).send({
+    success: true,
+    message: "Product Create Event received successfully",
+  });
+  if (req.body.product_type == "qwikcilver_gift_card") {
+    //Save the product to DB only if the product type is "qwikcilver_gift_card"
+    try {
+      let shopName = req.get("x-shopify-shop-domain");
+      let settings = await store.findOne({ store_url: shopName });
+      console.log("------------------------settings------------------------", settings, shopName)
+      if (settings ) {
+        let updatedProduct = req.body;
+        updatedProduct.store = shopName;
+        new processPrd(updatedProduct, shopName); //Store the product to DB
+      }
+    } catch (error) {
+      console.log(error);
+      var err = new Error("Internal Server Error");
+      err.status = 500;
+    }
+  }
+};
+
+//Webhooks for Product Update Activity
+export const productUpdateEvent = async (req, res, next) => {
+  //Send a response back immediately, as a delay in response will cause the webhooks to be removed
+  res.status(200).send({
+    success: true,
+    message: "Product Create Event received successfully",
+  });
+  if (req.body.product_type == "qwikcilver_gift_card") {
+    //Update only if the product type is "qwikcilver_gift_card"
+    try {
+      let shopName = req.get("x-shopify-shop-domain");
+      let settings = await store.findOne({ store_url: shopName });
+      if (settings && settings.shopify_private_app) {
+        let updatedProduct = req.body;
+        updatedProduct.store = shopName;
+        new processPrd(updatedProduct, shopName); //Update the data in DB
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+//Webhooks for Product Delete Activity
+export const productDeleteEvent = async (req, res, next) => {
+  //Send a response back immediately, as a delay in response will cause the webhooks to be removed
+  res.status(200).send({
+    success: true,
+    message: "Product Create Event received successfully",
+  });
+  try {
+    //The product type check is not implemented as the Product Delete webhook will only send the product ID
+    let shopName = req.get("x-shopify-shop-domain");
+    let settings = await store.findOne({ store_url: shopName });
+    if (settings) {
+    //   let status = verifyShopifyWebhook(
+    //     req,
+    //     settings.shopify_private_app.shared_secret
+    //   );
+    //   if (!status) {
+    //     console.log("cannot verify request");
+    //     return;
+    //   }
+      product.remove({ id: req.body.id })
+        .then((deleted) => console.log(`deleted product: ${req.body.id}`))
+        .catch((err) => console.log(err));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+function processPrd(updatedProduct, store) {
+  console.log("---------------------------------in create/update product -------------------------------------")
+  let product_id = updatedProduct.id;
+  updatedProduct.store_url = store;
+  updatedProduct.id = parseInt(product_id);
+  //Insert if the product details are not found, else update it
+  console.log(updatedProduct, "---------------------", updatedProduct.store_url)
+  product.findOneAndUpdate({ id: product_id }, updatedProduct, {
+    upsert: true,
+    setDefaultsOnInsert: true,
+  })
+    .then((res2) => {
+      console.log("-----------processed", product_id);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

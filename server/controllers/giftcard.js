@@ -1,6 +1,8 @@
 import { getShopifyObject } from "../helper/shopify";
 import Product from "../models/product";
 import { respondInternalServerError, respondSuccess } from "../helper/response"; 
+import store from "../models/store";
+import axios from "axios";
 
 //Create QC Giftcard Product
 export const createGiftcardProducts = async (req, res, next) => {
@@ -8,7 +10,7 @@ export const createGiftcardProducts = async (req, res, next) => {
   try {
     let shopify = await getShopifyObject(req.body.store); //Get Shopify Object
     console.log("createGiftcardProducts test1");
-    console.log(shopify);
+    // console.log(shopify);
     let tags = "cpgn_" + req.body.cpg_name;
     tags = tags.replace(/\s/g, "_");
     console.log("createGiftcardProducts shopify call start");
@@ -26,7 +28,7 @@ export const createGiftcardProducts = async (req, res, next) => {
       variants: req.body.variants,
     };
     console.log("Body shopify");
-    console.log(body);
+    // console.log(body);
     let newProduct = await shopify.product.create({
       // Create a product in Shopify with the details sent in API
       title: req.body.title,
@@ -40,7 +42,7 @@ export const createGiftcardProducts = async (req, res, next) => {
       tags: tags,
       variants: req.body.variants,
     });
-    await Product.create( newProduct );
+    // await Product.create( newProduct );
        console.log("createGiftcardProducts response shopify");
     console.log(newProduct);
     res.json(respondSuccess("Product created in shopify successfully"))
@@ -55,7 +57,7 @@ export const createGiftcardProducts = async (req, res, next) => {
 //Update QC Giftcard Product
 export const updateGiftcardProduct = async (req, res, next) => {
   try {
-    let shopify = await getShopifyObject(req.token.store); // Get Shopify Object
+    let shopify = await getShopifyObject(req.body.store); // Get Shopify Object
     let updateObj = {};
     //Update only the fields sent in request
     if (req.body.images && req.body.images.length >= 0) {
@@ -78,7 +80,7 @@ export const updateGiftcardProduct = async (req, res, next) => {
       req.body.product_id,
       updateObj
     );
-    res.json(respondSuccess("Product created in shopify successfully"));
+    res.json(respondSuccess("Product updated in shopify successfully"));
   } catch (error) {
     console.log(error)
     res.json(
@@ -91,8 +93,8 @@ export const updateGiftcardProduct = async (req, res, next) => {
 export const getGiftcardProducts = async (req, res, next) => {
     console.log(req.body)
       try {
-        console.log(req.token.store);
-        let products = await Product.find({ store: req.token.store }); //Get Store Object
+        console.log(req.body.store);
+        let products = await Product.find({ store_url: req.body.store }); //Get Store Object
         console.log(products.length);
         //Since this API is used in the dashboard, the redemption status is also sent along in the response
         // if (products && products.length) {
@@ -107,6 +109,7 @@ export const getGiftcardProducts = async (req, res, next) => {
           res.status(200).send({
             success: true,
             message: "Giftcard Products fetched successfully",
+            code: "200",
             data: products
           });
         // } else {
@@ -122,4 +125,39 @@ export const getGiftcardProducts = async (req, res, next) => {
         );
       }
     };
+
+    export const storeTemplate = async (req,res) => {
+      try{
+        let {image , store_url , image_name} = req.body;
+        let themeId = "116488863943";
+        let storeData = await store.findOne({store_url: store_url});
+        console.log(storeData, "---------------------------------------------------------------");
+        let accessToken = storeData.access_token
+        const URL = `https://${store_url}/admin/api/${process.env.API_VERSION}/themes/${themeId}/assets.json`;
+        const options = ({
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": `${accessToken}`,
+          },
+          data : {
+            "asset": {
+              "key": `assets/${image_name}.jpg`,
+              "attachment": image
+            }
+          },
+          url: URL,
+        });
+         let result = await axios(options);
+         console.log( "------------------",result);
+      }
+      catch(err){
+        console.log(err, "------------------------------err-------------------------");
+        res.json(
+          respondInternalServerError("Something went wrong try after sometime")
+        );
+
+      }
+
+    }
     
