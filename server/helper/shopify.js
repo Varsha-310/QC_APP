@@ -17,7 +17,7 @@ export function getShopifyObject(store_url) {
     return new Promise(async (resolve, reject) => {
       console.log("Promise start");
       let settings = await store.findOne({ store_url: store_url }); //Fetch Store Details
-      
+      console.log("-----------------------------------------", settings)
     //   if (settings && settings.shopify_private_app) {
         //If Shopify private App credentials are added
   
