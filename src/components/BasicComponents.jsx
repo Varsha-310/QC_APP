@@ -91,7 +91,7 @@ const TabBox = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   box-shadow: ${(props) =>
-    props?.active ? "0px 4px 7px 1px rgba(0, 0, 0, 0.15)" : ""};
+    props?.active === "true" ? "0px 4px 7px 1px rgba(0, 0, 0, 0.15)" : ""};
 `;
 
 const SubTabBox = styled.div`
@@ -132,12 +132,26 @@ const TabSubItemLable = styled(Link)`
 const NestedTabBox = styled(Link)`
   width: 185px;
   text-decoration: none;
-  margin: 10px 0px;
+  position: relative;
+  // margin: 10px 0px;
+  // padding: 10px 0px;
   display: grid;
   grid-template-columns: 1fr 4fr;
   padding: 0px 0px 0px 15px;
+  align-items: center;
+  // justify-content: space-between;
 
-  justify-content: center;
+  // &:after {
+  //   content: "";
+  //   position: absolute;
+  //   background: var(--frame-color);
+  //   height: 100%;
+  //   width: 2px;
+  //   left: 26px;
+  //   top: 0px;
+  //   /* z-index: -10; */
+  //   transform: translateY(-50%);
+  // }
 `;
 
 const SectionHeading1 = styled.div`
@@ -180,8 +194,7 @@ const Dot = styled.div`
   height: ${(props) => props?.size};
   width: ${(props) => props?.size};
   border-radius: 50px;
-  background-color: ${(props) =>
-    props?.fill == true ? FRAME_COLOR : "#FFFFFF"};
+  background-color: ${(props) => (props?.fill ? FRAME_COLOR : "#FFFFFF")};
   border: 1px solid ${FRAME_COLOR};
   margin: 10px;
   z-index: 20;

@@ -29,15 +29,15 @@ const DashboardHome = () => {
       </div>
 
       <div className="section-box-container">
-        <div className="status-dot-container">
+        {/* <div className="status-dot-container">
           <Dot size="18px" fill={true} />
           <Dot size="18px" fill={false} />
           <Dot size="18px" fill={false} />
-        </div>
-        
-        <div className="status-dot-container">
+          </div>
+          
+          <div className="status-dot-container">
           <SectionTitle
-            size="12px"
+          size="12px"
             weight="600"
             lineheight="150%"
             align="center"
@@ -60,7 +60,25 @@ const DashboardHome = () => {
           >
             Payment Status
           </SectionTitle>
-        </div>
+        </div> */}
+        <section className="status-progress-contain">
+
+        
+        <ul className="status-progress-list">
+          <li className="status-progress-item">
+            <Dot size="18px" fill={true} />
+            <span className="progress-label">Company Detail</span>
+          </li>
+          <li className="status-progress-item">
+            <Dot size="18px" fill={false} />
+            <span className="progress-label">Plan Selection</span>
+          </li>
+          <li className="status-progress-item">
+            <Dot size="18px" fill={false} />
+            <span className="progress-label">Payment Status</span>
+          </li>
+        </ul>
+        </section>
       </div>
 
       <div className="section-box-container">

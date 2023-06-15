@@ -39,7 +39,6 @@ const router = createBrowserRouter([
         path: "/transactions/:id",
         element: <TransactionDetail />,
       },
-
       {
         path: "/kyc-status",
         element: <KycProgress />,
