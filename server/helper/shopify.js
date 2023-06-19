@@ -13,7 +13,7 @@ const getshopifyObject = (store) => {
 
 //Function to create a Shopify Object from the Private APP Credentials - Used to communicate with Shopify APIs
 export function getShopifyObject(store_url) {
-    console.log("getShopifyObject start");
+    console.log("getShopifyObject start" , store_url);
     return new Promise(async (resolve, reject) => {
       console.log("Promise start");
       let settings = await store.findOne({ store_url: store_url }); //Fetch Store Details

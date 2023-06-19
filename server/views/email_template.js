@@ -1,4 +1,4 @@
-exports.template = `
+let email_template = `
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
     <tbody>
         <tr>
@@ -145,3 +145,5 @@ exports.template = `
         </tr>
     </tbody>
 </table>`
+
+export default email_template;

@@ -5,6 +5,7 @@ import store from "../models/store";
 import product from "../models/product";
 import { getShopifyObject } from "../helper/shopify";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail";
+import createVoucher from "../middleware/qwikcilverHelper"
 
 /**
  * To handle order creation webhook
@@ -123,7 +124,7 @@ const ordercreateEvent = async(input, done) => {
                 // }
               // }
             }
-            // line_item["cpg_name"] = cpg_name;
+            line_item["cpg_name"] = cpg_name;
             console.log("line_item", line_item);
             // console.log("cpgn_name", cpg_name);
             qwikcilver_gift_cards.push(line_item);
@@ -136,7 +137,7 @@ const ordercreateEvent = async(input, done) => {
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
         if (
           newOrder.financial_status == "paid" ||
-          shopName === "qwikcilver-demo.myshopify.com"
+          shopName === "mmtteststore8.myshopify.com"
         ) {
           for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
             var email = null;
@@ -180,7 +181,7 @@ const ordercreateEvent = async(input, done) => {
               for (let quantity of item_quantity) {
                 //Loop through the quantity
                 //Create a QC Giftcard
-                giftCardDetails = await qwikcilverHelper.createVoucher(
+                giftCardDetails = await createVoucher(
                   shopName,
                   parseInt(qwikcilver_gift_card.price),
                   newOrder.id,
