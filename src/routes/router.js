@@ -15,6 +15,7 @@ import {
   CreateGiftCard,
   RefundList,
   GiftCardsList,
+  ResendGiftCard,
 } from "../pages";
 
 const router = createBrowserRouter([
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/resend-gift-card",
-        element: "",
+        element: <ResendGiftCard/>,
       },
       {
         path: "/issue-store-credits",

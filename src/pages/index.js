@@ -11,7 +11,7 @@ import RefundConfirmation from "./refund/RefundConfirmation";
 import CreateGiftCard from "./issuance/CreateGiftCard";
 import RefundList from "./refund/RefundList";
 import GiftCardsList from "./issuance/GiftCardsList";
-
+import ResendGiftCard from "./issuance/ResendGiftCard";
 import ErrorPage from "./ErrorPage";
 
 export {
@@ -29,4 +29,5 @@ export {
   CreateGiftCard,
   RefundList,
   GiftCardsList,
+  ResendGiftCard
 };

@@ -3,16 +3,21 @@
   padding: 15px 0px;
   border-spacing: 0;
 }
-.listing-table tr{
+.listing-table tr {
   display: grid;
 }
 /* for trasaction table grid */
 .trasaction-table tr {
-  grid-template-columns: repeat(6,auto);
+  grid-template-columns: repeat(6, auto);
 }
 /* for refund table grid */
 .refund-table tr {
-  grid-template-columns: repeat(8,1fr)
+  grid-template-columns: repeat(8, 1fr);
+}
+
+/* resend mail table grid */
+.resend-table tr {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 /* for all table fields */
@@ -46,26 +51,42 @@
 .listing-table tbody tr td {
   text-align: center;
   padding: 10px 0px;
-  
   font-weight: 500;
   font-size: 14px;
   line-height: 21px;
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-dark-color);
 }
 
-.listing-table tbody tr td[id="action"] a{
+.listing-table tbody tr td[id="action"] a {
   text-decoration: none;
   font-weight: 600;
   color: var(--text-dark-color);
 }
 
 /* refund table initiate refund */
-.listing-table tbody tr td[id="initiate-refund"] a{
-   text-decoration: none;
-   width: 100%;
-   padding: 5px;
-   border-radius: 10px;
-   color: #ffffff;
-   background-color: var(--frame-color);
+
+.listing-table .refund-success,
+.listing-table .refund-unsuccess {
+  display: block;
+  text-decoration: none;
+  width: 80%;
+  padding: 5px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.listing-table .refund-success {
+  color: #ffffff;
+  background-color: var(--frame-color);
+}
+.listing-table .refund-unsuccess {
+  color: var(--frame-color);
+  background-color: rgba(182, 32, 40, 0.3);
+}
+.gc-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -2,6 +2,7 @@ import React from "react";
 import "./styles/RefundPage.css";
 import { useParams } from "react-router";
 import { PrimaryBtn } from "../../components/BasicComponents";
+import CustomDropdown from "../../components/CustomDropdown";
 
 const RefundPage = () => {
   const { id } = useParams();
@@ -17,12 +18,9 @@ const RefundPage = () => {
         {/* select product */}
         <div className="refund-page__select-item">
           <div className="refund-page__title">Select Product : </div>
-          <select>
-            <option value="item1">item</option>
-            <option value="item1">item</option>
-            <option value="item1">item</option>
-            <option value="item1">item</option>
-          </select>
+          <div className="refund-page__drop-container">
+            <CustomDropdown options={["item1", "item2", "item3", "item4"]} />
+          </div>
         </div>
 
         <div className="refund-page__refund-item-data">
@@ -112,8 +110,6 @@ const RefundPage = () => {
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 };

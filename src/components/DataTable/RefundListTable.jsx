@@ -23,8 +23,17 @@ const RefundListTable = ({ headings, data }) => {
             <td>{row.return_status}</td>
             <td>{row.original_payment}</td>
             <td>{row.refund_mode}</td>
-            <td id="initiate-refund">
-              <Link to={`/refunds/${row.order}`}>{row.initiate_refund}</Link>
+            <td>
+              <Link
+                className={
+                  row.initiate_refund !== "NA"
+                    ? "refund-success"
+                    : "refund-unsuccess"
+                }
+                to={`/refunds/${row.order}`}
+              >
+                {row.initiate_refund}
+              </Link>
             </td>
           </tr>
         ))}

@@ -2,8 +2,20 @@
   width: 100%;
 }
 .transaction-detail__box-bg {
-  padding: 50px 50px;
+  padding: 30px 50px;
   background: rgba(182, 32, 40, 0.1);
+}
+.gift-card__text-box-container {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  column-gap: 15px;
+  margin: 10px 0px;
+}
+.gift-card__text-box {
+  background: #ffffff;
+  width: 100%;
+  padding: 0px 12px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
 }
 .transaction-detail__plan-data {
   display: grid;
@@ -17,6 +29,13 @@
   display: flex;
   align-items: center;
 
+  color: var(--text-dark-color);
+}
+.transaction-detail__due-amount {
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 32px;
+  margin: 10px 0px;
   color: var(--text-dark-color);
 }
 .transaction-detail__plan-due-date {
@@ -41,9 +60,10 @@
 
 .transaction-detail__plan-fees {
   margin: 10px 0px;
+  padding: 30px 15%;
 }
 
-.transaction-detail__footer-img{
+.transaction-detail__footer-img {
   position: relative;
   top: 20px;
   left: -200px;

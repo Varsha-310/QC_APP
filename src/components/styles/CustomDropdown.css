@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 5px 10px;
   border: 1.5px solid rgba(182, 32, 40, 0.2);
   color: rgba(0, 0, 0, 0.4);
   font-weight: 400;
@@ -22,6 +22,7 @@
 }
 .dropdown-content {
   position: absolute;
+  background-color: var(--text-color);
   /* top: 110%; */
   left: 0;
   width: 100%;
@@ -29,7 +30,7 @@
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.05);
 }
 .dropdown-content .item {
-  padding: 10px;
+  padding: 5px 10px;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.4);
   font-weight: 400;

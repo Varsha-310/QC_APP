@@ -1,25 +1,10 @@
 import React from "react";
-import {
-  CustomContainer,
-  SectionHeading1,
-} from "../../components/BasicComponents";
+import { CustomContainer } from "../../components/BasicComponents";
 import "./styles/TransactionDetail.css";
 import styled from "styled-components";
 
 import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
 
-const TextBoxContainer = styled.div`
-  display: grid;
-  grid-template-columns: 5fr 1fr;
-  column-gap: 15px;
-  margin: 10px 0px;
-`;
-const TextBox = styled.div`
-  background: #ffffff;
-  width: 100%;
-  padding: 0px 12px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-`;
 const TextElement = styled.div`
   font-style: normal;
   font-weight: 500;
@@ -36,16 +21,10 @@ const TransactionDetail = () => {
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
-        <SectionHeading1
-          weight="500"
-          size="16px"
-          align="left"
-          lineheight="16px"
-        >
-          Plan Name - Basic
-        </SectionHeading1>
+        <div className="section-box-title">Account Page</div>
       </div>
 
+      {/* plan */}
       <div className="transaction-detail__plan-data">
         <div className="transaction-detail__plan-detail transaction-detail__box-bg">
           <TextElement>Invoice Number: QC01214784</TextElement>
@@ -56,7 +35,7 @@ const TransactionDetail = () => {
           <TextElement>Amount Due(INR)</TextElement>
 
           <CustomContainer align="space-between">
-            <TextElement>₹399.00</TextElement>
+            <div className="transaction-detail__due-amount">₹ 399.00</div>
             <TextElement $fade>(GST no Incl)</TextElement>
           </CustomContainer>
 
@@ -66,69 +45,77 @@ const TransactionDetail = () => {
         </div>
       </div>
 
+      {/* plan details & usages */}
       <div className="transaction-detail__plan-charges transaction-detail__box-bg">
-        <TextBoxContainer>
-          <TextBox>
+        <TextElement>Your Current Plan - Basic</TextElement>
+        <div className="gift-card__text-box-container">
+          <div className="gift-card__text-box">
             <TextElement>
               Monthly Digital Issuance as part of plan (Both Gift Cards & Store
               Credits)
             </TextElement>
-          </TextBox>
-          <TextBox>
+          </div>
+          <div className="gift-card__text-box">
             <TextElement align="center">₹20000.00</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          </div>
+        </div>
 
-        <TextBoxContainer>
-          <TextBox>
+        <div className="gift-card__text-box-container">
+          <div className="gift-card__text-box">
             <TextElement>Current Usage</TextElement>
-          </TextBox>
-          <TextBox>
+          </div>
+          <div className="gift-card__text-box">
             <TextElement align="center">₹8000.00</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          </div>
+        </div>
 
-        <TextBoxContainer>
-          <TextBox>
+        <div className="gift-card__text-box-container">
+          <div className="gift-card__text-box">
             <TextElement>
-              Issuance above Plan Limits (at 2% of value of issuance)
+              Issuance beyond Plan Limits (To be charged at 2.5% of Value of
+              Issuance)
             </TextElement>
-          </TextBox>
-          <TextBox>
+          </div>
+          <div className="gift-card__text-box">
             <TextElement align="center">Nill</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          </div>
+        </div>
       </div>
 
+      {/* expected charges */}
       <div className="transaction-detail__plan-fees transaction-detail__box-bg">
-        <TextBoxContainer>
-          <TextBox>
+        <TextElement>Expected Charges - March, 2023</TextElement>
+        <div className="gift-card__text-box-container">
+          <div className="gift-card__text-box">
             <TextElement>Subscription Fee</TextElement>
-          </TextBox>
-          <TextBox>
+          </div>
+          <div className="gift-card__text-box">
             <TextElement align="center">₹8000.00</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          </div>
+        </div>
 
-        <TextBoxContainer>
-          <TextBox>
-            <TextElement>Usage Fee (at 2% extra)</TextElement>
-          </TextBox>
-          <TextBox>
+        <div className="gift-card__text-box-container">
+          <div className="gift-card__text-box">
+            <TextElement>Usage Fee (at 2.5% of Value Issuance)</TextElement>
+          </div>
+          <div className="gift-card__text-box">
             <TextElement align="center">₹8000.00</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          </div>
+        </div>
 
-        <TextBoxContainer>
+        <div className="gift-card__text-box-container">
           <TextElement align="right">Total</TextElement>
-
-          <TextBox>
-            <TextElement align="center">₹399.00</TextElement>
-          </TextBox>
-        </TextBoxContainer>
+          <div className="gift-card__text-box">
+            <TextElement align="center">₹1600.00</TextElement>
+          </div>
+        </div>
       </div>
 
-      <img src={GiftCouponIcon} alt="" className="transaction-detail__footer-img"/>
+      <img
+        src={GiftCouponIcon}
+        alt=""
+        className="transaction-detail__footer-img"
+      />
     </div>
   );
 };
