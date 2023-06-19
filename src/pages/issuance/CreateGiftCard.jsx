@@ -5,6 +5,7 @@ import { PrimaryBtn } from "../../components/BasicComponents";
 import "./styles/CreateGiftCard.css";
 import { useState, useRef } from "react";
 import { FaChevronCircleRight, FaChevronCircleLeft } from "react-icons/fa";
+import CustomDropdown from "../../components/CustomDropdown";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -109,6 +110,9 @@ const CreateGiftCard = () => {
       </div>
       <div className="gift-card__card-details">
         <div className="gift-card__card-preview">
+          <div className="gift-card__upload-image">
+            <input type="file" id="giftcard_image" typeof="image/png image/jpg image/jpeg"  />
+          </div>
           <div className="gift-card__preview-img">
             <div
               onClick={() => imageSlider("prev")}
@@ -187,15 +191,9 @@ const CreateGiftCard = () => {
             />
             Gift Card Validity
           </div>
-          
+
           {isValidityCheck && (
-            <div className="gift-card__validity_option">
-              <select name="validity" id="validity" className="validity_option">
-                <option value="5">5 Months</option>
-                <option value="5">5 Months</option>
-                <option value="5">5 Months</option>
-              </select>
-            </div>
+            <CustomDropdown options={["5 months", "6 months", "10 months"]} />
           )}
         </div>
       </div>
