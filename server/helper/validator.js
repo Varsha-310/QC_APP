@@ -1,4 +1,4 @@
-import * as Validator from "validatorjs";
+import  Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 import crypto from "crypto";
 
@@ -21,12 +21,13 @@ const validator = async (body, rules, customMessages, callback) => {
  * @param {*} res
  * @param {*} next
  */
-export const validateApi = async (req, res, next) => {
+export const verifyGetGiftcard = async (req, res, next) => {
   try {
+    console.log("api validation")
     const validationRule = {
-      name: "required|string",
+      store_url: "required|string",
     };
-    await validateMethod(req, res, next, validationRule);
+    await validateMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
@@ -40,12 +41,13 @@ export const validateApi = async (req, res, next) => {
  * @param {*} validationRule 
  * @param {*} next 
  */
-const validateMethod = async (req, validationRule, next) => {
+const validateMethod = async (req, validationRule,res , next) => {
   try {
     await validator(req.body, validationRule, {}, (err, status) => {
       if (!status) {
         res.send(err);
       } else {
+        console.log("api validation done");
         next();
       }
     });

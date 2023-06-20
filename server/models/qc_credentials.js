@@ -9,7 +9,6 @@ const qc_credentials = mongoose.Schema({
         TerminalId: String,
         DateAtClient: String,
         ForwardingEntityId: String,
-        apiBaseUrl: String,
         ForwardingEntityPassword: String,
         CardProgramGroupName: String,
       },

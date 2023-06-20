@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { createGiftcardProducts, getGiftcardProducts, storeTemplate, updateGiftcardProduct } from "../controllers/giftcard";
 import { verifyJwt } from "../helper/jwtHelper";
+import { verifyGetGiftcard } from "../helper/validator";
 
 const giftcardRoute = Router();
 
@@ -11,7 +12,7 @@ giftcardRoute.post("/products/add", verifyJwt, createGiftcardProducts);
 giftcardRoute.post("/products/update", verifyJwt, updateGiftcardProduct);
 
 // route to retrive gc product for a store
-giftcardRoute.post("/products/list", verifyJwt, getGiftcardProducts);
+giftcardRoute.post("/products/list", verifyJwt, verifyGetGiftcard , getGiftcardProducts);
 
 //route to add giftcard template
 giftcardRoute.post("/template/add", verifyJwt , storeTemplate);

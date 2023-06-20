@@ -3,6 +3,8 @@ import Product from "../models/product";
 import { respondInternalServerError, respondSuccess } from "../helper/response"; 
 import store from "../models/store";
 import axios from "axios";
+import  base64 from "base64-js";
+
 
 //Create QC Giftcard Product
 export const createGiftcardProducts = async (req, res, next) => {
@@ -10,23 +12,13 @@ export const createGiftcardProducts = async (req, res, next) => {
   try {
     let shopify = await getShopifyObject(req.body.store); //Get Shopify Object
     console.log("createGiftcardProducts test1");
+    // const base64Image = req.body.images;
+    // const imageData = base64.toByteArray(base64Image);
     // console.log(shopify);
     let tags = "cpgn_" + req.body.cpg_name;
     tags = tags.replace(/\s/g, "_");
     console.log("createGiftcardProducts shopify call start");
-    let body = {
-      // Create a product in Shopify with the details sent in API
-      title: req.body.title,
-      body_html: "",
-      vendor: req.body.vendor
-        ? req.body.vendor
-        : "asdfghjkl",
-      product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
-      published: JSON.parse(req.body.published),
-      images: req.body.images,
-      tags: tags,
-      variants: req.body.variants,
-    };
+   
     console.log("Body shopify");
     // console.log(body);
     let newProduct = await shopify.product.create({
@@ -37,17 +29,20 @@ export const createGiftcardProducts = async (req, res, next) => {
         ? req.body.vendor
         : "asdfghjkl",
       product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
-      published: JSON.parse(req.body.published),
-      images: req.body.images,
+      // published: false,
+      images: [{
+        "attachment" : req.body.images
+      }],
       tags: tags,
       variants: req.body.variants,
+      status: "draft"
     });
-    // await Product.create( newProduct );
+    await Product.create( newProduct );
        console.log("createGiftcardProducts response shopify");
     console.log(newProduct);
     res.json(respondSuccess("Product created in shopify successfully"))
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -55,7 +50,7 @@ export const createGiftcardProducts = async (req, res, next) => {
 };
 
 //Update QC Giftcard Product
-export const updateGiftcardProduct = async (req, res, next) => {
+export const updateGiftcardProduct = async (req, res) => {
   try {
     let shopify = await getShopifyObject(req.body.store); // Get Shopify Object
     let updateObj = {};
@@ -94,7 +89,7 @@ export const getGiftcardProducts = async (req, res, next) => {
     console.log(req.body)
       try {
         console.log(req.body.store);
-        let products = await Product.find({ store_url: req.body.store }); //Get Store Object
+        let products = await Product.find({ store_url: req.body.store_url }); //Get Store Object
         console.log(products.length);
         //Since this API is used in the dashboard, the redemption status is also sent along in the response
         // if (products && products.length) {
@@ -160,4 +155,7 @@ export const getGiftcardProducts = async (req, res, next) => {
       }
 
     }
+
+
+
     

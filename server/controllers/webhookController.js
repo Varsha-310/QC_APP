@@ -5,7 +5,7 @@ import store from "../models/store";
 import product from "../models/product";
 import { getShopifyObject } from "../helper/shopify";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail";
-import createVoucher from "../middleware/qwikcilverHelper"
+import {createVoucher} from "../middleware/qwikcilverHelper"
 
 /**
  * To handle order creation webhook
@@ -181,18 +181,18 @@ const ordercreateEvent = async(input, done) => {
               for (let quantity of item_quantity) {
                 //Loop through the quantity
                 //Create a QC Giftcard
-                giftCardDetails = await createVoucher(
-                  shopName,
-                  parseInt(qwikcilver_gift_card.price),
-                  newOrder.id,
-                  "Giftcard created for " +
-                  newOrder.name +
-                  " - " +
-                  qwikcilver_gift_card.name,
-                  qwikcilver_gift_card.cpg_name
-                );
-                console.log(giftCardDetails);
-                console.log(giftCardDetails.createGiftCardResponse);
+                // giftCardDetails = await createVoucher(
+                //   shopName,
+                //   parseInt(qwikcilver_gift_card.price),
+                //   newOrder.id,
+                //   "Giftcard created for " +
+                //   newOrder.name +
+                //   " - " +
+                //   qwikcilver_gift_card.name,
+                //   qwikcilver_gift_card.cpg_name
+                // );
+                // console.log(giftCardDetails);
+                // console.log(giftCardDetails.createGiftCardResponse);
                 // Save the information
                 // await saveLogs(
                 //   shopName,
@@ -203,9 +203,9 @@ const ordercreateEvent = async(input, done) => {
                 //   qwikcilver_gift_card.id
                 // );
                 //If successful, send an email to the customer containg the newly generated QC Giftcard Details
-                if (
-                  giftCardDetails.createGiftCardResponse["ResponseCode"] == 0
-                ) {
+                // if (
+                //   giftCardDetails.createGiftCardResponse["ResponseCode"] == 0
+                // ) {
                   // await emailHelper.sendEmailViaSendGrid(
                   //   giftCardDetails.createGiftCardResponse,
                   //   newOrder,
@@ -215,7 +215,7 @@ const ordercreateEvent = async(input, done) => {
                   //   sender,
                   //   receiver
                   // );
-                }
+                // }
                 console.log(
                   "---Done Processing",
                   quantity,
