@@ -1,21 +1,23 @@
 import { getShopifyObject } from "../helper/shopify";
 import Product from "../models/product";
-import { respondInternalServerError, respondSuccess } from "../helper/response"; 
-import store from "../models/store";
+import { respondInternalServerError, respondSuccess , respondUnauthorized , respondNotFound , respondWithData} from "../helper/response"; 
+import Store from "../models/store";
 import axios from "axios";
 import  base64 from "base64-js";
+import Wallet from "../models/wallet";
 
 
 //Create QC Giftcard Product
 export const createGiftcardProducts = async (req, res, next) => {
-  console.log("createGiftcardProducts function start");
   try {
-    let shopify = await getShopifyObject(req.body.store); //Get Shopify Object
+    console.log("createGiftcardProducts function start");
+    let { store , cgp_name , title , images , variants} = req.body;
+    let shopify = await getShopifyObject(store); //Get Shopify Object
     console.log("createGiftcardProducts test1");
     // const base64Image = req.body.images;
     // const imageData = base64.toByteArray(base64Image);
     // console.log(shopify);
-    let tags = "cpgn_" + req.body.cpg_name;
+    let tags = "cpgn_" + cgp_name;
     tags = tags.replace(/\s/g, "_");
     console.log("createGiftcardProducts shopify call start");
    
@@ -23,7 +25,7 @@ export const createGiftcardProducts = async (req, res, next) => {
     // console.log(body);
     let newProduct = await shopify.product.create({
       // Create a product in Shopify with the details sent in API
-      title: req.body.title,
+      title: title,
       body_html: "",
       vendor: req.body.vendor
         ? req.body.vendor
@@ -31,10 +33,10 @@ export const createGiftcardProducts = async (req, res, next) => {
       product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
       // published: false,
       images: [{
-        "attachment" : req.body.images
+        "attachment" : images
       }],
       tags: tags,
-      variants: req.body.variants,
+      variants: variants,
       status: "draft"
     });
     await Product.create( newProduct );
@@ -157,5 +159,51 @@ export const getGiftcardProducts = async (req, res, next) => {
     }
 
 
+    export const addGiftcardtoWallet = (req,res) => {
+      try{
+        let { customer_id , gc_card , gc_pin} = req.body;
 
+
+      }
+      catch(err){
+        res.json(
+          respondInternalServerError("Something went wrong try after sometime")
+        );
+      }
+
+    }
+
+    export const  getWalletBalance = async(req,res) => {
+      try{ 
+        let {customerId , store} = req.body;
+        let storeExists= await Store.findOne({store_url : store});
+        console.log(storeExists)
+        if(storeExists){
+          let walletExists = await  Wallet.findOne({shopify_customer_id : customerId});
+          if(walletExists){
+            res.json( {
+              ...respondWithData("balance fetched"),
+             "data" : walletExists.balance
+            });
+
+          }
+          else{
+            res.json(respondNotFound("wallet does not exists"));
+          }
+
+        }
+        else{
+          res.json(respondUnauthorized("Invalid store"));
+
+        }
+        
+      }
+      catch(err){
+        console.log(err)
+        res.json(
+          respondInternalServerError("Something went wrong try after sometime")
+        );
+      }
+
+    }
     

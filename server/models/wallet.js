@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 /*Scheme for storing wallet details */
 
 var walletSchema = mongoose.Schema({
-  store_id: { type: String },
+  store_url: { type: String },
   shopify_customer_id: { type: String },
   balance: { type: Number },
   store_name: {type:String},
@@ -11,7 +11,7 @@ var walletSchema = mongoose.Schema({
   qc_gc_list: [
     {
       gc_number: Number,
-      code: Number,
+      code: Number,    
       date: Date,
       amount: Number
     }

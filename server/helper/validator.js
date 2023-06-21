@@ -35,6 +35,28 @@ export const verifyGetGiftcard = async (req, res, next) => {
   }
 };
 
+
+/**
+ * Validation for  getWalletBalance API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateGetBalance = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      store: "required|string",
+      customerId : "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
 /**
  * Validation for api
  * @param {*} req 
@@ -101,7 +123,7 @@ export const verifyHmacForApi = (req, res) => {
       .createHmac("sha256", hmac_secret)
       .update(body)
       .digest("base64");
-    const providedHmac = req.headers[""]?.toString();
+    const providedHmac = req.headers["Authorization"]?.toString();
 
     if (digest == providedHmac) {
       next();
