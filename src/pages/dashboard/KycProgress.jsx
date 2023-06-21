@@ -11,6 +11,7 @@ const KycProgress = () => {
             KYC status - Progress
           </SectionHeading1>
           <img
+            className="kyc-status__progress"
             src={require("../../assets/icons/pngs/work-in-progress.png")}
             alt="progress"
           />

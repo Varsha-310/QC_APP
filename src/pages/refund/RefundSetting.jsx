@@ -39,7 +39,8 @@ const RefundSetting = () => {
         </div>
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">Gift Card</div>
-          <input type="radio" className="refund-setting__radio" />
+          <div></div>
+          {/* <input type="radio" className="refund-setting__radio" /> */}
           <input type="radio" className="refund-setting__radio" id="default" />
         </div>
         <div className="refund-setting__options refund-setting__table-grid">

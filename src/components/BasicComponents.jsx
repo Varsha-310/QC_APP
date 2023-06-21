@@ -48,7 +48,7 @@ const CustomBtn = styled.div`
   line-height: ${(props) => props?.lineheight || "18px"};
   color: ${(props) =>
     props.active ? SECONDARY_LIGHT_BTN : SECONDARY_DARK_BTN};
-  background-color: ${(props) => (props?.active ? SECONDARY_DARK_BTN : "")};
+  background-color: ${(props) => (props?.active ? TEXT_PRIMARY_COLOR : "")};
   border: 1px solid ${SECONDARY_DARK_BTN};
 `;
 

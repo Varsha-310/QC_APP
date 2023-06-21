@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/resend-gift-card",
-        element: <ResendGiftCard/>,
+        element: <ResendGiftCard />,
       },
       {
         path: "/issue-store-credits",

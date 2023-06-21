@@ -1,8 +1,9 @@
 import React from "react";
 import "./styles/ListingTable.css";
+import DownloadIcon from "../../assets/icons/svgs/downloadIcon.svg";
 import { Link } from "react-router-dom";
 
-const ListingTable = ({table, headings, data }) => {
+const ListingTable = ({ headings, data }) => {
   return (
     <table className="listing-table trasaction-table">
       <thead>
@@ -22,7 +23,9 @@ const ListingTable = ({table, headings, data }) => {
             <td>INR {row.amount}</td>
             <td>{row.next_payment_date}</td>
             <td id="action">
-              <Link to={"/transactions/" + row.action}>Details</Link>
+              <Link to={"/transactions/" + row.action}>
+                <img src={DownloadIcon} alt="" />
+              </Link>
             </td>
           </tr>
         ))}
