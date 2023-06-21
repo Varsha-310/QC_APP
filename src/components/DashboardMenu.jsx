@@ -17,13 +17,11 @@ import {
 } from "./BasicComponents";
 
 const DashboardMenu = () => {
-  const [activeTab, setActiveTab] = useState({  });
+  const [activeTab, setActiveTab] = useState({});
   const [activeDropDown, setActiveDropDown] = useState({
     myplan: false,
     credits: false,
   });
-
- 
 
   const handleTab = (event) => {
     const id = event.target.closest(".parent").id;
@@ -47,7 +45,7 @@ const DashboardMenu = () => {
         </li>
 
         <li id="account" className="parent" onClick={handleTab}>
-          <TabBox active={`${activeTab?.account}`}>ACCOUNT SECTION</TabBox>
+          <TabBox active={`${activeTab?.account}`} to={"/billings"}>ACCOUNT SECTION</TabBox>
 
           <ul>
             <li>
@@ -89,7 +87,7 @@ const DashboardMenu = () => {
         </li>
 
         <li id="giftcard" className="parent" onClick={handleTab}>
-          <TabBox active={`${activeTab?.giftcard}`}>GIFT CARD</TabBox>
+          <TabBox active={`${activeTab?.giftcard}`} to={"create-giftcard"}>GIFT CARD</TabBox>
 
           <ul>
             <li>
@@ -112,7 +110,7 @@ const DashboardMenu = () => {
               <SubTabBox>
                 <img src={ResendMail} alt="" />
                 <TabItemLable to={"resend-gift-card"}>
-                  Re-send Gift Card emails
+                  Re-send Gift Card
                 </TabItemLable>
               </SubTabBox>
             </li>
@@ -129,7 +127,7 @@ const DashboardMenu = () => {
                 onClick={handleDropDown}
               >
                 <img src={StoreCredit} alt="" />
-                <TabItemLable to={"/issue-store-credits"}>
+                <TabItemLable to={"/refunds"}>
                   Issue Store Credits
                 </TabItemLable>
                 <img src={DownArrowIcon} alt="" />

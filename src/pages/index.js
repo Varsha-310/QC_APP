@@ -29,5 +29,5 @@ export {
   CreateGiftCard,
   RefundList,
   GiftCardsList,
-  ResendGiftCard
+  ResendGiftCard,
 };

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import DeleteIcon from "../../assets/icons/svgs/delete.svg";
 import AddIcon from "../../assets/icons/svgs/plus-sign.svg";
+import UploadIcon from "../../assets/icons/svgs/upload.svg";
 import { PrimaryBtn } from "../../components/BasicComponents";
 import "./styles/CreateGiftCard.css";
 import { useState, useRef } from "react";
@@ -19,8 +20,9 @@ const ActiveDot = styled.div`
 const CreateGiftCard = () => {
   //
   const [cardData, setCardData] = useState({
-    title: "New Card",
-    description: "shopping card data",
+    title: "Gift Card",
+    description:
+      "Shopping for someone else but not sure what to gift? Give the gift of choice with a gift card . Gift card are delivered by E-mail",
     variants: [{ variant_name: "dummy", variant_price: "1000" }],
   });
 
@@ -37,6 +39,12 @@ const CreateGiftCard = () => {
   ]);
   // selected or current image
   const [selectedImg, setSelectedImg] = useState(0);
+
+  const [selectedImage, setSelectedImage] = useState([]);
+  const [previewImage, setPreviewImage] = useState([]);
+
+  console.log(selectedImage);
+  console.log(previewImage);
   // validity checkbox
 
   const scrollContainer = useRef(null);
@@ -102,6 +110,25 @@ const CreateGiftCard = () => {
     });
     console.log(index);
   };
+  // file input
+  const handleFileInput = (event) => {
+    // const files = Array.from(event.target.files);
+    // setImages(files);
+    console.log(event.target.files);
+    const file = event.target.files[0];
+
+    if (file) {
+      setSelectedImage((prev) => [...prev, file]);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage((prev) => [...prev, reader.result]);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedImage(null);
+      setPreviewImage(null);
+    }
+  };
 
   return (
     <div className="gift-card__container section-box-container component">
@@ -111,7 +138,21 @@ const CreateGiftCard = () => {
       <div className="gift-card__card-details">
         <div className="gift-card__card-preview">
           <div className="gift-card__upload-image">
-            <input type="file" id="giftcard_image" typeof="image/png image/jpg image/jpeg"  />
+            <span>Ratio 600x250</span>
+            <div className="file-input-container">
+              <input
+                type="file"
+                id="file-input"
+                className="file-input"
+                typeof="image/png, image/jpg, image/jpeg"
+                // multiple
+                onChange={handleFileInput}
+              />
+              <img src={UploadIcon} alt="" />
+              <label htmlFor="file-input" className="file-input-label">
+                Change image
+              </label>
+            </div>
           </div>
           <div className="gift-card__preview-img">
             <div
@@ -129,7 +170,8 @@ const CreateGiftCard = () => {
               <FaChevronCircleRight />
             </div>
             <img
-              src={require("../../assets/images/slider/" + images[selectedImg])}
+              src={previewImage[selectedImg]}
+              // src={require("../../assets/images/slider/" + images[selectedImg])}
               alt=""
             />
           </div>
@@ -144,15 +186,17 @@ const CreateGiftCard = () => {
             </div>
 
             <div className="gift-card__preview-scroll" ref={scrollContainer}>
-              {images.map((item, index) => (
-                <figure key={index}>
-                  <img
-                    src={require("../../assets/images/slider/" + item)}
-                    alt=""
-                    onClick={() => setSelectedImg(index)}
-                  />
-                </figure>
-              ))}
+              {previewImage.length > 0 &&
+                previewImage.map((item, index) => (
+                  <figure key={index}>
+                    <img
+                      // src={require("../../assets/images/slider/" + item)}
+                      src={item}
+                      alt=""
+                      onClick={() => setSelectedImg(index)}
+                    />
+                  </figure>
+                ))}
             </div>
 
             <div
@@ -179,6 +223,7 @@ const CreateGiftCard = () => {
             type="text"
             className="gift-card__input"
             name="description"
+            rows={4}
             value={cardData.description}
             onChange={handleChange}
           />

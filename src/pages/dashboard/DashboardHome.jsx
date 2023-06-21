@@ -29,55 +29,21 @@ const DashboardHome = () => {
       </div>
 
       <div className="section-box-container">
-        {/* <div className="status-dot-container">
-          <Dot size="18px" fill={true} />
-          <Dot size="18px" fill={false} />
-          <Dot size="18px" fill={false} />
-          </div>
-          
-          <div className="status-dot-container">
-          <SectionTitle
-          size="12px"
-            weight="600"
-            lineheight="150%"
-            align="center"
-          >
-            Company Detail
-          </SectionTitle>
-          <SectionTitle
-            size="12px"
-            weight="400"
-            lineheight="150%"
-            align="center"
-          >
-            Plan Selection
-          </SectionTitle>
-          <SectionTitle
-            size="12px"
-            weight="400"
-            lineheight="150%"
-            align="center"
-          >
-            Payment Status
-          </SectionTitle>
-        </div> */}
         <section className="status-progress-contain">
-
-        
-        <ul className="status-progress-list">
-          <li className="status-progress-item">
-            <Dot size="18px" fill={true} />
-            <span className="progress-label">Company Detail</span>
-          </li>
-          <li className="status-progress-item">
-            <Dot size="18px" fill={false} />
-            <span className="progress-label">Plan Selection</span>
-          </li>
-          <li className="status-progress-item">
-            <Dot size="18px" fill={false} />
-            <span className="progress-label">Payment Status</span>
-          </li>
-        </ul>
+          <ul className="status-progress-list">
+            <li className="status-progress-item">
+              <Dot size="18px" fill={true} />
+              <span className="progress-label">Company Details</span>
+            </li>
+            <li className="status-progress-item">
+              <Dot size="18px" fill={false} />
+              <span className="progress-label">Plan Selection</span>
+            </li>
+            <li className="status-progress-item">
+              <Dot size="18px" fill={false} />
+              <span className="progress-label">Payment Status</span>
+            </li>
+          </ul>
         </section>
       </div>
 
