@@ -84,7 +84,7 @@ const TabBox = styled(Link)`
   justify-content: center;
   align-items: center;
   min-height: 35px;
-  width: 185px;
+  width: 100%;
   color: ${TEXT_DARK_COLOR};
   background-color: #ffffff;
   margin: 15px 0px;
@@ -98,7 +98,7 @@ const SubTabBox = styled.div`
   display: grid;
   grid-template-columns: ${(props) =>
     props?.dropdown ? "1fr 3fr 1fr" : "1fr 4fr"};
-  width: 185px;
+  width: 100%;
   margin: 5px 0px;
   padding: 5px 0px 5px 15px;
   align-items: center;
@@ -130,7 +130,7 @@ const TabSubItemLable = styled(Link)`
   color: ${TEXT_DARK_COLOR};
 `;
 const NestedTabBox = styled(Link)`
-  width: 185px;
+  width: 100%;
   text-decoration: none;
   position: relative;
   // margin: 10px 0px;

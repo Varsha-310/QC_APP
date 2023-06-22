@@ -22,6 +22,9 @@
   --text-dark-color: #000000;
   --text-bold-color: #182560;
   --rating-color: #fec600;
+
+  /* default sizes */
+  --header-height: 90px;
 }
 * {
   box-sizing: border-box;
@@ -40,7 +43,7 @@ body {
 .component {
   width: 100%;
 }
-.main-component{
+.main-component {
   min-height: 90%;
 }
 .container_padding {
@@ -72,8 +75,6 @@ body {
   color: var(--text-dark-color);
 }
 
-
-
 /* app js */
 .dashboard-container {
   display: flex;
@@ -82,4 +83,14 @@ body {
 }
 li {
   list-style: none;
+}
+
+/* for tabview */
+@media only screen and (max-width: 900px) {
+  .container_padding {
+    padding: 10px 40px;
+  }
+  /* .main-component{
+    min-height: 60%;
+  } */
 }
