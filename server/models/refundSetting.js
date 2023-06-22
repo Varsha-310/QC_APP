@@ -28,6 +28,14 @@ const refundSettingSchema = new Schema({
       enum: ['Back-to-Source', 'Store-credit'],
       // default: 'Store-credit',
     },
+    restock_type:{
+      type: String,
+      enum:['return','no_restock'],
+      // default: 'no_restock'
+    },
+    location_id:{
+      type:Number
+    }
 });
 
 export default mongoose.model("refundSetting", refundSettingSchema);

@@ -9,9 +9,11 @@ import shopifyRoute from "./routes/shopify";
 import webhookRoute from "./routes/webhooks";
 import refundSettingRoute from "./routes/refund";
 import storesRoute from "./routes/store";
+import calculateRefundAmount from "./routes/calculateRefund"
 import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
+import { createJwt } from "./helper/jwtHelper";
 
 export const app = express();
 
@@ -52,6 +54,13 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+app.get("/geneerate-token", async(req, res) =>{
+
+  const shop = req.query.shop;
+  const jwt = await createJwt(shop);
+  res.json(jwt);
+});
+
 // route to check app status
 app.get("/", (req, res) => {
   res.json(respondSuccess("App is live"));
@@ -71,6 +80,9 @@ app.use("/refund",refundSettingRoute)
 
 //Store details route
 app.use("/stores",storesRoute)
+
+//Calculate refund roure
+app.use("/calculateRefund",calculateRefundAmount)
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {

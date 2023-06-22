@@ -11,13 +11,7 @@ import orders from "../models/orders"
  */
 
 export const orderCreated = (req, res) => {
-  // const shop = req.headers.shop;
-  // console.log(shop);
-  // return;
-  // const order = req.body;
-  // orderCreateQueue.push({ shop, order });
-  console.log(req.body.payment_gateway_names);
-  console.log("wavehook recieved", "payment Done Through",req.body.payment_gateway_names[0]);
+  
   handleOrderCreatewebhook(req,res);
   res.json(respondSuccess("webhook received"));
 };
@@ -83,7 +77,10 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
 
 export const handleOrderCreatewebhook = async (req, res) => {
   try {
+
     const orderData = req.body; 
+    console.log(orderData.id);
+    // return;
     const store = req.headers["x-shopify-shop-domain"];
     orderData.store_url = store; 
 
@@ -91,7 +88,6 @@ export const handleOrderCreatewebhook = async (req, res) => {
     console.log("Webhook Complieted");  
   
   } catch (err) {
-    
     console.log(err);
   }
 };

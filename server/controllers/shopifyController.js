@@ -85,8 +85,8 @@ export const installCallback = async (req, res) => {
           let response = await saveStoreData(storeData, shop, accessToken);
           // console.log(response ,"response of store data");
           await checkWebhooks(shop, accessToken);
-          // let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}/config/${shop}`);
+          let token = await createJwt(shop);
+          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
         }
       }
     } else {

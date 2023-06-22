@@ -66,8 +66,8 @@ export const validategetStoresDataApi = async (req, res, next) => {
   try {
     const validationRule = {
       store_url:"required|string",
-      Refund_Mode: "required|string",
-      payment_gateway_names: "required|string"
+      // Refund_Mode: "required|string",
+      // payment_gateway_names: "required|string"
     };
     await validategetStoresDataMethod(req, res, next, validationRule);
   } catch (err) {
@@ -172,6 +172,49 @@ export const validategetConfigMethod = async (req, res, next, validationRule) =>
   }
 };
 
+
+
+/**
+ * Validation rules for calculate refund
+ */
+
+export const validateCalculateRefundApi = async (req, res, next) => {
+  try {
+    const validationRule = {
+      store_url: "required|string",
+      id:"required|integer"
+    };
+    await validateCalculateRefundMethod(req, res, next, validationRule);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation for api
+ * @param {*} req 
+ * @param {*} validationRule 
+ * @param {*} next 
+ */
+
+const validateCalculateRefundMethod = async (req, res, next, validationRule) => {
+  try {
+    await validator(req.body, validationRule, {}, (err, status) => {
+      if (!status) {
+        res.send(err);
+      } else {
+        next();
+      }
+    });
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
 /**
  * Compare received and generated hash to verify the webhook
  * @param req
@@ -180,9 +223,10 @@ export const validategetConfigMethod = async (req, res, next, validationRule) =>
 export const verifyShopifyHook = async (req, res, next) => {
   try {
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
-    // console.log(api_secret);
+    
     const body = req.rawBody;
-    // console.log(body);
+    console.log(body);
+  
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)
@@ -197,6 +241,7 @@ export const verifyShopifyHook = async (req, res, next) => {
       res.json(respondUnauthorized("not shopify webhook"));
     }
   } catch (e) {
+    console.log(e);
     res.json(respondInternalServerError());
   }
 };

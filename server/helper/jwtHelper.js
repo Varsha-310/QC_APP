@@ -7,29 +7,21 @@ import { respondInternalServerError, respondUnauthorized } from "./response";
  * @param {*} req
  * @param {*} res
  */
-export const createJwt = async (req, res) => {
+export const createJwt = async (shop) => {
+
+  console.log("create jwt start");
   try {
-    let { store_url } = req.body;
+    
+    console.log(shop);
     let secretKey = process.env.JWT_SECRET;
-    const storeData = await store.find({ store_url: store_url });
-    let data = storeData.store_url;
-    jwt.sign(data, secretKey, (err, token) => {
-      if (err) {
-        res.json(
-          respondInternalServerError("Something went wrong try after sometime")
-        );
-      } else {
-        res.json({ token });
-      }
-    });
+    return jwt.sign({store_url: shop}, secretKey)
   } catch (err) {
+
     console.log(err)
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    console.log("Error in JWT helper tokem");
+    return false;
   }
 };
-
 /**
  * Verify jwt token for api authorization
  * @param {*} req
@@ -37,6 +29,7 @@ export const createJwt = async (req, res) => {
  * @param {*} next
  */
 export const verifyJwt = (req, res, next) => {
+
   try {
     if (req.headers.authorization) {
       jwt.verify(
@@ -44,7 +37,7 @@ export const verifyJwt = (req, res, next) => {
         process.env.JWT_SECRET,
         function (err, payload) {
           if (!err) {
-            req.data = payload;
+            req.token = payload;
             next();
           } else {
             res.json(respondUnauthorized("Invalid jwt token"));
@@ -55,6 +48,7 @@ export const verifyJwt = (req, res, next) => {
       res.json(respondUnauthorized("Invalid jwt token"));
     }
   } catch (err) {
+    console.log("asdfghjkl;", err)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
