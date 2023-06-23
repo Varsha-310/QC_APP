@@ -20,6 +20,9 @@
   font-weight: 400;
   font-size: 14px;
 }
+.dropdown-btn span{
+  color:var(--frame-color)
+}
 .dropdown-content {
   position: absolute;
   background-color: var(--text-color);

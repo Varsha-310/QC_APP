@@ -29,26 +29,26 @@ const RefundSetting = () => {
 
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">Prepaid</div>
-          <input type="radio" className="refund-setting__radio" />
-          <input type="radio" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
         </div>
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">COD</div>
-          <input type="radio" className="refund-setting__radio" />
-          <input type="radio" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
         </div>
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">Gift Card</div>
           <div></div>
-          {/* <input type="radio" className="refund-setting__radio" /> */}
-          <input type="radio" className="refund-setting__radio" id="default" />
+          {/* <input type="checkbox" className="refund-setting__radio" /> */}
+          <input type="checkbox" className="refund-setting__radio" id="default" />
         </div>
         <div className="refund-setting__options refund-setting__table-grid">
           <div className="refund-setting__type-name">
             Combination of Prepaid & Gift Card
           </div>
-          <input type="radio" className="refund-setting__radio" />
-          <input type="radio" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
+          <input type="checkbox" className="refund-setting__radio" />
         </div>
 
         <CustomContainer margin="50px 0px">

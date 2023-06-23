@@ -1,7 +1,7 @@
 import React from "react";
 import "./styles/RefundPage.css";
 import { useParams } from "react-router";
-import { PrimaryBtn } from "../../components/BasicComponents";
+import { Dot, PrimaryBtn } from "../../components/BasicComponents";
 import CustomDropdown from "../../components/CustomDropdown";
 
 const RefundPage = () => {
@@ -29,13 +29,26 @@ const RefundPage = () => {
             <div className="refund-page__refund-process">
               <div className="refund-page__title">Multivitamin & Mineral</div>
               <div className="refund-page__refund-status">
-                <div className="refund-page__refund-status-item">
-                  Return Reason
-                </div>
-                <div className="refund-page__refund-status-item">Refunded</div>
-                <div className="refund-page__refund-status-item">
-                  Restocked at
-                </div>
+                <ul>
+                  <li className="refund-page__refund-status-item">
+                    <Dot size="6px" fill={true} />
+                    <span className="refund-page__refund-status-label">
+                      Return Reason
+                    </span>
+                  </li>
+                  <li className="refund-page__refund-status-item">
+                    <Dot size="6px" fill={false} />
+                    <span className="refund-page__refund-status-label">
+                      Refunded
+                    </span>
+                  </li>
+                  <li className="refund-page__refund-status-item">
+                    <Dot size="6px" fill={false} />
+                    <span className="refund-page__refund-status-label">
+                      Restocked at
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
 

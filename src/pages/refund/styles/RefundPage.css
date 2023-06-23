@@ -25,7 +25,24 @@
   line-height: 21px;
   color: var(--text-dark-color);
 }
+
 .refund-page__refund-status-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.refund-page__refund-status-item + .refund-page__refund-status-item::after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background: var(--frame-color);
+  left: 13px;
+  top: 0px;
+  /* z-index: -10; */
+  transform: translateY(-50%);
+}
+.refund-page__refund-status-label {
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;

@@ -73,7 +73,7 @@ const DashboardMenu = () => {
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/billings"}>
-                        Billing Page
+                        My Invoices
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
@@ -81,7 +81,7 @@ const DashboardMenu = () => {
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/transactions"}>
-                        Transaction Page
+                        Current Usage
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
@@ -149,7 +149,7 @@ const DashboardMenu = () => {
                   <TabItemLable to={"/refunds"}>
                     Issue Store Credits
                   </TabItemLable>
-                  <img src={DownArrowIcon} alt="" />
+                  <DownArrowIcon/>
                 </SubTabBox>
                 {activeDropDown.credits && (
                   <NestedTabBox>

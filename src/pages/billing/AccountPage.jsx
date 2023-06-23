@@ -18,7 +18,7 @@ const AccountPage = () => {
         <PlanCard
           title={"Pro"}
           price={799}
-          active={true}
+          active={false}
           popular={true}
           btnText={"Upgrade"}
         />

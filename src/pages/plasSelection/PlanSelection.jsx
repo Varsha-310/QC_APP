@@ -103,6 +103,11 @@ const PlanSelection = () => {
         </SectionTitle>
       </div>
 
+      <div className="plan-selection__plan-type">
+        <div className="plan-selection__plan-annually">Annually</div>
+        <div className="plan-selection__plan-monthly">Monthly</div>
+      </div>
+
       {/* plans */}
       <div className="package-detail">
         <RectBtn
@@ -153,9 +158,7 @@ const PlanSelection = () => {
         {/* <SectionHeading1 weight="600" size="24px" lineheight="30px">
           Enterprise Plan
         </SectionHeading1> */}
-        <div className="plan-box-title">
-          Enterprise Plan
-        </div>
+        <div className="plan-box-title">Enterprise Plan</div>
         <p className="box-text">
           We provide more flexible plans for enterprise. Please contact us to
           get the ultimate solution for you.
