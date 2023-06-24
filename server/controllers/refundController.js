@@ -1,6 +1,7 @@
 import { respondError, respondSuccess, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import refundSetting from "../models/refundSetting"
+import orders from "../models/orders"
 
 /**
  * To handle refund settings
@@ -30,26 +31,37 @@ export const getConfigapi = async (req, res) => {
 
 export const updateConfigapi = async (req, res) => {
   try {
-    const { store_url, prepaid, COD, GiftCard, giftcard_cash, restock_type, location_id } = req.body;
-
-    if (restock_type === 'no_restock') {
-        res.json(respondError("You have selected restock_type to no_restock. Need for location id"));
-    }
-    else if (restock_type === 'return') {
+    const { store_url, id, prepaid, COD, GiftCard, giftcard_cash, restock_type } = req.body;
+    let location_id;
+    if (restock_type === 'return') {
+      const order = await orders.findOne({ id: id }); 
+      location_id = order.location_id
       if (!location_id) {
-         res.json(respondError("Location id is required to create a refund"));
-  
+        return res.json(respondError("Location id is required to create a refund"));
       }
+    }
+    const updateFields = {
+      prepaid:prepaid,
+      COD:COD,
+      GiftCard:GiftCard,
+      giftcard_cash:giftcard_cash,
+      restock_type: restock_type
+    };
+    if (location_id) {
+      updateFields.location_id = location_id;
     }
     const updatedSettings = await refundSetting.findOneAndUpdate(
       { store_url: store_url },
-      { $set: { prepaid: prepaid, COD: COD, GiftCard: GiftCard, giftcard_cash: giftcard_cash, restock_type: restock_type } },
+      { $set: updateFields },
       { upsert: true }
     );
     res.json(respondSuccess(updatedSettings));
 
   } catch (err) {
     logger.info(err);
+    console.log(err);
     res.json(respondInternalServerError());
   }
 };
+
+

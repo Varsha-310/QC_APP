@@ -1,4 +1,4 @@
-import {respondSuccess, respondInternalServerError } from "../helper/response";
+import { respondWithData, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import orderdetail from "../models/orders"
 /**
@@ -16,6 +16,7 @@ export const getStoresData = async (req, res) => {
         const storeUrl = req.token.store_url;
         const storeUrlFilter = { store_url: storeUrl };
 
+
         // Fetch all the data present in the particular store 
 
         const filter = { ...storeUrlFilter }
@@ -29,7 +30,18 @@ export const getStoresData = async (req, res) => {
         const orders = await orderdetail.find(filter)
             .skip(skip)
             .limit(limit);
-        res.json(respondSuccess(orders))
+
+        const customerTotalData = orders.map(order => ({
+            id: order.id,
+            updated_at: order.updated_at,
+            customer_name: order.customer.first_name,
+            total: order.total_price,
+            Return_status:order.status,
+            Original_Payment: order.payment_gateway_names,
+            Refund_Mode:order.Refund_Mode,
+            Initiate_Refund: order.Initiate_Refund
+        }))
+        res.json(respondWithData(customerTotalData))
     } catch (err) {
         logger.info(err);
         res.json(respondInternalServerError())

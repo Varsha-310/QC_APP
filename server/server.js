@@ -14,9 +14,11 @@ import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
 import { createJwt } from "./helper/jwtHelper";
+import cors from "cors";
 
 export const app = express();
 
+app.use(cors())
 // CORS configuration
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -54,7 +56,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get("/geneerate-token", async(req, res) =>{
+app.get("/geneerate-token", async (req, res) => {
 
   const shop = req.query.shop;
   const jwt = await createJwt(shop);
@@ -73,16 +75,16 @@ app.use("/shopify", shopifyRoute);
 app.use("/gdpr", gdprRoute);
 
 //webhooks routes
-app.use("/webhooks",webhookRoute)
+app.use("/webhooks", webhookRoute)
 
 //refund setting route
-app.use("/refund",refundSettingRoute)
+app.use("/refund", refundSettingRoute)
 
 //Store details route
-app.use("/stores",storesRoute)
+app.use("/stores", storesRoute)
 
 //Calculate refund roure
-app.use("/calculateRefund",calculateRefundAmount)
+app.use("/calculateRefund", calculateRefundAmount)
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {
