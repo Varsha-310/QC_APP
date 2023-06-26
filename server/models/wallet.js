@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 var walletSchema = mongoose.Schema({
   store_url: { type: String },
   shopify_customer_id: { type: String },
+  wallet_id: {type:String},
   balance: { type: Number },
   store_name: {type:String},
   shopify_gc_number: {type:Number},

@@ -1,23 +1,26 @@
 import { Router } from "express";
-import { createGiftcardProducts, getGiftcardProducts, storeTemplate, updateGiftcardProduct } from "../controllers/giftcard";
+import { addGiftcardtoWallet, createGiftcardProducts, getGiftcardProducts , updateGiftcardProduct } from "../controllers/giftcard";
 import { verifyJwt } from "../helper/jwtHelper";
-import { verifyGetGiftcard , validateGetBalance } from "../helper/validator";
+import {  validateGetBalance , validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator";
 import { getWalletBalance } from "../controllers/giftcard";
 
 const giftcardRoute = Router();
 
 // route to add a giftcard product
-giftcardRoute.post("/products/add", verifyJwt, createGiftcardProducts);
+giftcardRoute.post("/products/add", verifyJwt, validatecreateGiftcard , createGiftcardProducts);
 
 // route to edit giftcard product
-giftcardRoute.post("/products/update", verifyJwt, updateGiftcardProduct);
+giftcardRoute.put("/products/update", verifyJwt,validateUpdateGiftcard , updateGiftcardProduct);
 
 // route to retrive gc product for a store
-giftcardRoute.post("/products/list", verifyJwt, verifyGetGiftcard , getGiftcardProducts);
+giftcardRoute.post("/products/list", verifyJwt,  getGiftcardProducts);
 
-//route to add giftcard template
-giftcardRoute.post("/template/add", verifyJwt , storeTemplate);
+// route to add giftcard to wallet
+giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcardtoWallet);
 
-giftcardRoute.post("/wallet/balance" , validateGetBalance , getWalletBalance );
+// route to get wallet balance
+giftcardRoute.get("/wallet/balance" , validateGetBalance , getWalletBalance );
+
+
 
 export default giftcardRoute;
