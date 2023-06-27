@@ -40,7 +40,7 @@ export const validateApi = async (req, res, next) => {
  * @param {*} validationRule 
  * @param {*} next 
  */
-const validateMethod = async (req, validationRule, next) => {
+const validateMethod = async (req, res, next, validationRule) => {
   try {
     await validator(req.body, validationRule, {}, (err, status) => {
       if (!status) {
@@ -89,12 +89,10 @@ export const validategetStoresDataMethod = async (req, res, next, validationRule
     });
   }
   catch (err) {
-    res.json( err,
-      respondInternalServerError("Something went wrong try after sometime")
+    res.json( err,respondInternalServerError("Something went wrong try after sometime")
     )
   }
 };
-
 
 
 /**
@@ -105,11 +103,11 @@ export const validateUpdateConfigApi = async (req, res, next) => {
     const validationRule = {
       store_url: "required|string",
       prepaid: "required|string",
-      COD: "required|string",
-      GiftCard: "required|string",
+      cod: "required|string",
+      giftCard: "required|string",
       giftcard_cash: "required|string",
     };
-    await validateUpdateConfigMethod(req, res, next, validationRule);
+    await validateMethod(req, res, next, validationRule);
   } catch (err) {
     console.log(err);
     res.json(
@@ -117,25 +115,6 @@ export const validateUpdateConfigApi = async (req, res, next) => {
     );
   }
 };
-
-export const validateUpdateConfigMethod = async (req, res, next, validationRule) => {
-  try {
-     await validator(req.body, validationRule, {}, (err, status) => {
-      if (!status) {
-        res.send(err);
-      } else {
-        next();
-      }
-    });
-  }
-  catch (err) {
-    res.json( err,
-      respondInternalServerError("Something went wrong try after sometime")
-    )
-  }
-};
-
-
 
 
 /**
@@ -146,7 +125,7 @@ export const validategetConfigApi = async (req, res, next) => {
     const validationRule = {
       store_url: "required|string",
     };
-    await validategetConfigMethod(req, res, next, validationRule);
+    await validateMethod(req, res, next, validationRule);
   } catch (err) {
     console.log(err);
     res.json(
@@ -154,24 +133,6 @@ export const validategetConfigApi = async (req, res, next) => {
     );
   }
 };
-
-export const validategetConfigMethod = async (req, res, next, validationRule) => {
-  try {
-     await validator(req.body, validationRule, {}, (err, status) => {
-      if (!status) {
-        res.send(err);
-      } else {
-        next();
-      }
-    });
-  }
-  catch (err) {
-    res.json( err,
-      respondInternalServerError("Something went wrong try after sometime")
-    )
-  }
-};
-
 
 
 /**
@@ -184,30 +145,7 @@ export const validateCalculateRefundApi = async (req, res, next) => {
       store_url: "required|string",
       id:"required|integer"
     };
-    await validateCalculateRefundMethod(req, res, next, validationRule);
-  } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
-};
-
-/**
- * Validation for api
- * @param {*} req 
- * @param {*} validationRule 
- * @param {*} next 
- */
-
-const validateCalculateRefundMethod = async (req, res, next, validationRule) => {
-  try {
-    await validator(req.body, validationRule, {}, (err, status) => {
-      if (!status) {
-        res.send(err);
-      } else {
-        next();
-      }
-    });
+    await validateMethod(req, res, next, validationRule);
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")

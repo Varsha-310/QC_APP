@@ -13,12 +13,12 @@ const refundSettingSchema = new Schema({
       enum: ['Back-to-Source', 'Store-credit'],
       // default: 'Store-credit',
     },
-    COD: {
+    cod: {
       type: String,
       enum: ['Back-to-Source', 'Store-credit'],
       // default: 'Store-credit',
     },
-    GiftCard: {
+    giftCard: {
       type: String,
       enum: ['Back-to-Source', 'Store-credit'],
       // default: 'Store-credit',

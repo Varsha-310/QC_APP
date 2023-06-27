@@ -11,8 +11,8 @@ import orders from "../models/orders"
  */
 
 export const orderCreated = (req, res) => {
-  
-  handleOrderCreatewebhook(req,res);
+
+  handleOrderCreatewebhook(req, res);
   res.json(respondSuccess("webhook received"));
 };
 
@@ -23,8 +23,8 @@ export const orderCreated = (req, res) => {
  */
 
 export const orderUpdated = (req, res) => {
- // console.log(req.body);
-  handleOrderCreatewebhook(req,res)
+  // console.log(req.body);
+  handleOrderCreatewebhook(req, res)
   res.send(respondSuccess("webhook received"));
 };
 
@@ -78,16 +78,17 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
 export const handleOrderCreatewebhook = async (req, res) => {
   try {
 
-    const orderData = req.body; 
+    const orderData = req.body;
     console.log(orderData.id);
-    // return;
-    const store = req.headers["x-shopify-shop-domain"];
-    orderData.store_url = store; 
 
-    await orders.updateOne({store_url:store, id: orderData.id}, orderData, {upsert: true});  
-    console.log("Webhook Complieted");  
-  
+    const store = req.headers["x-shopify-shop-domain"];
+    orderData.store_url = store;
+
+    await orders.updateOne({ store_url: store, id: orderData.id }, orderData, { upsert: true });
+    console.log("Webhook Complieted");
+
   } catch (err) {
+    logger.info(err);
     console.log(err);
   }
 };

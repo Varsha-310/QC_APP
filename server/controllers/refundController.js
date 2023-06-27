@@ -1,4 +1,4 @@
-import { respondError, respondSuccess, respondInternalServerError } from "../helper/response";
+import { respondError, respondWithData, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import refundSetting from "../models/refundSetting"
 import orders from "../models/orders"
@@ -15,9 +15,9 @@ export const getConfigapi = async (req, res) => {
     let { store_url } = req.body;
     const settings = await refundSetting.findOne({ store_url: store_url });
     if (!settings) {
-      return res.json(respondError());
+      return res.json(respondError("store_url not found"));
     }
-    res.json(respondSuccess(settings));
+    res.json(respondWithData({msg:"Success",code:200,data: settings}));
   } catch (err) {
     console.log(err);
     logger.info(err);
@@ -27,11 +27,15 @@ export const getConfigapi = async (req, res) => {
   }
 };
 
-
+/**
+ * To handle refund update settings 
+ * @param {*} req
+ * @param {*} res
+ */
 
 export const updateConfigapi = async (req, res) => {
   try {
-    const { store_url, id, prepaid, COD, GiftCard, giftcard_cash, restock_type } = req.body;
+    const { store_url, id, prepaid, cod, giftCard, giftcard_cash, restock_type } = req.body;
     let location_id;
     if (restock_type === 'return') {
       const order = await orders.findOne({ id: id }); 
@@ -42,8 +46,8 @@ export const updateConfigapi = async (req, res) => {
     }
     const updateFields = {
       prepaid:prepaid,
-      COD:COD,
-      GiftCard:GiftCard,
+      cod:cod,
+      giftCard:giftCard,
       giftcard_cash:giftcard_cash,
       restock_type: restock_type
     };
@@ -52,10 +56,10 @@ export const updateConfigapi = async (req, res) => {
     }
     const updatedSettings = await refundSetting.findOneAndUpdate(
       { store_url: store_url },
-      { $set: updateFields },
+      { $set: updateFields  },
       { upsert: true }
     );
-    res.json(respondSuccess(updatedSettings));
+    res.json(respondWithData({msg:"updated successfully",code:200,data: updatedSettings}));
 
   } catch (err) {
     logger.info(err);

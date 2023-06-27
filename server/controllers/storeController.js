@@ -1,6 +1,8 @@
 import { respondWithData, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import orderdetail from "../models/orders"
+
+
 /**
  * Function to handle pagination and filter the data according to store url.
  * @param {*} req
@@ -27,23 +29,14 @@ export const getStoresData = async (req, res) => {
         if (req.query.payment_gateway_names) {
             filter.payment_gateway_names = req.query.payment_gateway_names;
         }
-        const orders = await orderdetail.find(filter)
+        const orders = await orderdetail.find(filter,{id:1,updated_at:1,'customer.first_name':1,total_price:1,status:1,payment_gateway_names:1,Refund_Mode:1,Initiate_Refund:1})
             .skip(skip)
             .limit(limit);
 
-        const customerTotalData = orders.map(order => ({
-            id: order.id,
-            updated_at: order.updated_at,
-            customer_name: order.customer.first_name,
-            total: order.total_price,
-            Return_status:order.status,
-            Original_Payment: order.payment_gateway_names,
-            Refund_Mode:order.Refund_Mode,
-            Initiate_Refund: order.Initiate_Refund
-        }))
-        res.json(respondWithData(customerTotalData))
+        res.json(respondWithData({msg:"Success",code:200,data: orders}))
     } catch (err) {
         logger.info(err);
+        console.log(err);
         res.json(respondInternalServerError())
     }
 };
