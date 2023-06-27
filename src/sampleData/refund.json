@@ -1,0 +1,1682 @@
+[
+  {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_line_items_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_shipping_price_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "customer": {
+      "id": 6977868890276,
+      "email": "anubhav.g@marmeto.com",
+      "accepts_marketing": false,
+      "created_at": "2023-06-09T13:23:34.000Z",
+      "updated_at": "2023-06-14T07:28:08.000Z",
+      "first_name": "A",
+      "last_name": "S",
+      "state": "disabled",
+      "note": null,
+      "verified_email": true,
+      "phone": null,
+      "currency": "INR"
+    },
+    "_id": "648971e8da1c8a4ce1eb7564",
+    "id": 5605853135012,
+    "store_url": "qwickcilver-dev.myshopify.com",
+    "Initiate_Refund": "N/A",
+    "Refund_Mode": "N/A",
+    "__v": 0,
+    "app_id": 580111,
+    "browser_ip": "106.51.87.194",
+    "cancel_reason": null,
+    "cancelled_at": null,
+    "cart_token": "3b11cef9d168768aac549b8298f70397",
+    "checkout_id": 38130205032612,
+    "checkout_token": "1cd1e42f6b1cf6c036e48b6b2d9d34a9",
+    "closed_at": null,
+    "company": null,
+    "confirmed": true,
+    "contact_email": "anubhav.g@marmeto.com",
+    "created_at": "2023-06-14T07:20:25.000Z",
+    "currency": "INR",
+    "current_subtotal_price": "10000.00",
+    "current_total_discounts": "0.00",
+    "current_total_duties_set": null,
+    "current_total_price": "11800.00",
+    "current_total_tax": "1800.00",
+    "customer_locale": "en-IN",
+    "device_id": null,
+    "discount_codes": [],
+    "email": "anubhav.g@marmeto.com",
+    "estimated_taxes": false,
+    "financial_status": "paid",
+    "fulfillment_status": null,
+    "gateway": "bogus",
+    "line_items": [
+      {
+        "id": 14089524510884,
+        "admin_graphql_api_id": "gid://shopify/LineItem/14089524510884",
+        "fulfillable_quantity": 1,
+        "fulfillment_service": "manual",
+        "fulfillment_status": null,
+        "gift_card": false,
+        "grams": 0,
+        "name": "Black Shirt",
+        "price": "10000.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          }
+        },
+        "product_exists": true,
+        "product_id": 8203755913380,
+        "properties": [],
+        "quantity": 1,
+        "requires_shipping": true,
+        "sku": "",
+        "taxable": true,
+        "title": "Black Shirt",
+        "total_discount": "0.00",
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "variant_id": 44440485167268,
+        "variant_inventory_management": "shopify",
+        "variant_title": "",
+        "vendor": "Qwikcilver Demo",
+        "tax_lines": [
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "CGST"
+          },
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "SGST"
+          }
+        ],
+        "duties": [],
+        "discount_allocations": [],
+        "_id": "648971e87b6a413128afeab1"
+      }
+    ],
+    "location_id": null,
+    "name": "#1035",
+    "note": null,
+    "note_attributes": [],
+    "number": 35,
+    "order_number": 1035,
+    "order_status_url": "https://qwickcilver-dev.myshopify.com/53738569892/orders/9a976ab2957c951ca9095b8d289b8f8b/authenticate?key=67e95f34944654e108329aea40740e05",
+    "original_total_duties_set": null,
+    "payment_gateway_names": ["bogus"],
+    "payment_terms": null,
+    "phone": null,
+    "presentment_currency": "INR",
+    "processed_at": "2023-06-14T07:20:24.000Z",
+    "processing_method": "direct",
+    "reference": null,
+    "referring_site": "https://qwickcilver-dev.myshopify.com/products/black-shirt",
+    "refunds": [],
+    "shipping_lines": [
+      {
+        "id": 4763356856484,
+        "carrier_identifier": null,
+        "code": "Standard",
+        "delivery_category": null,
+        "discounted_price": "0.00",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "phone": null,
+        "price": "0.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "requested_fulfillment_service_id": null,
+        "source": "shopify",
+        "title": "Standard",
+        "tax_lines": [],
+        "discount_allocations": []
+      }
+    ],
+    "source_identifier": null,
+    "source_name": "web",
+    "source_url": null,
+    "status": "In Progress",
+    "subtotal_price": "10000.00",
+    "tags": "",
+    "tax_lines": [
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "CGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      },
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "SGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      }
+    ],
+    "taxes_included": false,
+    "test": true,
+    "token": "9a976ab2957c951ca9095b8d289b8f8b",
+    "total_discounts": "0.00",
+    "total_line_items_price": "10000.00",
+    "total_outstanding": "0.00",
+    "total_price": "11800.00",
+    "total_tax": "1800.00",
+    "total_tip_received": "0.00",
+    "total_weight": 0,
+    "updated_at": "2023-06-14T07:20:26.000Z",
+    "user_id": null
+  },
+  {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_line_items_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_shipping_price_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "customer": {
+      "id": 6977868890276,
+      "email": "anubhav.g@marmeto.com",
+      "accepts_marketing": false,
+      "created_at": "2023-06-09T13:23:34.000Z",
+      "updated_at": "2023-06-14T07:28:08.000Z",
+      "first_name": "A",
+      "last_name": "S",
+      "state": "disabled",
+      "note": null,
+      "verified_email": true,
+      "phone": null,
+      "currency": "INR"
+    },
+    "_id": "64897226da1c8a4ce1eb758d",
+    "id": 5605835112612,
+    "store_url": "qwickcilver-dev.myshopify.com",
+    "Initiate_Refund": "N/A",
+    "Refund_Mode": "N/A",
+    "__v": 0,
+    "app_id": 580111,
+    "browser_ip": "106.51.87.194",
+    "cancel_reason": null,
+    "cancelled_at": null,
+    "cart_token": "db2b486379a9862aeb403e05efeb6729",
+    "checkout_id": 38130159747236,
+    "checkout_token": "75666c9768ee2cd2e8528c4159f6a2b0",
+    "closed_at": null,
+    "company": null,
+    "confirmed": true,
+    "contact_email": "anubhav.g@marmeto.com",
+    "created_at": "2023-06-14T06:51:25.000Z",
+    "currency": "INR",
+    "current_subtotal_price": "10000.00",
+    "current_total_discounts": "0.00",
+    "current_total_duties_set": null,
+    "current_total_price": "11800.00",
+    "current_total_tax": "1800.00",
+    "customer_locale": "en-IN",
+    "device_id": null,
+    "discount_codes": [],
+    "email": "anubhav.g@marmeto.com",
+    "estimated_taxes": false,
+    "financial_status": "paid",
+    "fulfillment_status": null,
+    "gateway": "bogus",
+    "line_items": [
+      {
+        "id": 14089470902436,
+        "admin_graphql_api_id": "gid://shopify/LineItem/14089470902436",
+        "fulfillable_quantity": 1,
+        "fulfillment_service": "manual",
+        "fulfillment_status": null,
+        "gift_card": false,
+        "grams": 0,
+        "name": "Black Shirt",
+        "price": "10000.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          }
+        },
+        "product_exists": true,
+        "product_id": 8203755913380,
+        "properties": [],
+        "quantity": 1,
+        "requires_shipping": true,
+        "sku": "",
+        "taxable": true,
+        "title": "Black Shirt",
+        "total_discount": "0.00",
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "variant_id": 44440485167268,
+        "variant_inventory_management": "shopify",
+        "variant_title": "",
+        "vendor": "Qwikcilver Demo",
+        "tax_lines": [
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "CGST"
+          },
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "SGST"
+          }
+        ],
+        "duties": [],
+        "discount_allocations": [],
+        "_id": "648972267b6a413128afeab5"
+      }
+    ],
+    "location_id": null,
+    "name": "#1033",
+    "note": null,
+    "note_attributes": [],
+    "number": 33,
+    "order_number": 1033,
+    "order_status_url": "https://qwickcilver-dev.myshopify.com/53738569892/orders/38580eb217127635043a15fe15ff0a3a/authenticate?key=9835d6b55e282101a8dadb24f881c5e7",
+    "original_total_duties_set": null,
+    "payment_gateway_names": ["gift_card", "bogus"],
+    "payment_terms": null,
+    "phone": null,
+    "presentment_currency": "INR",
+    "processed_at": "2023-06-14T06:51:23.000Z",
+    "processing_method": "direct",
+    "reference": null,
+    "referring_site": "https://qwickcilver-dev.myshopify.com/products/black-shirt",
+    "refunds": [],
+    "shipping_lines": [
+      {
+        "id": 4763341947044,
+        "carrier_identifier": null,
+        "code": "Standard",
+        "delivery_category": null,
+        "discounted_price": "0.00",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "phone": null,
+        "price": "0.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "requested_fulfillment_service_id": null,
+        "source": "shopify",
+        "title": "Standard",
+        "tax_lines": [],
+        "discount_allocations": []
+      }
+    ],
+    "source_identifier": null,
+    "source_name": "web",
+    "source_url": null,
+    "status": "In Progress",
+    "subtotal_price": "10000.00",
+    "tags": "n",
+    "tax_lines": [
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "CGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      },
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "SGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      }
+    ],
+    "taxes_included": false,
+    "test": true,
+    "token": "38580eb217127635043a15fe15ff0a3a",
+    "total_discounts": "0.00",
+    "total_line_items_price": "10000.00",
+    "total_outstanding": "0.00",
+    "total_price": "11800.00",
+    "total_tax": "1800.00",
+    "total_tip_received": "0.00",
+    "total_weight": 0,
+    "updated_at": "2023-06-14T06:59:23.000Z",
+    "user_id": null
+  },
+  {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_line_items_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_shipping_price_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "customer": {
+      "id": 6977868890276,
+      "email": "anubhav.g@marmeto.com",
+      "accepts_marketing": false,
+      "created_at": "2023-06-09T13:23:34.000Z",
+      "updated_at": "2023-06-14T08:08:01.000Z",
+      "first_name": "A",
+      "last_name": "S",
+      "state": "disabled",
+      "note": null,
+      "verified_email": true,
+      "phone": null,
+      "currency": "INR"
+    },
+    "_id": "64897564da1c8a4ce1eb7790",
+    "id": 5605879480484,
+    "store_url": "qwickcilver-dev.myshopify.com",
+    "Initiate_Refund": "N/A",
+    "Refund_Mode": "N/A",
+    "__v": 0,
+    "app_id": 580111,
+    "browser_ip": "106.51.87.194",
+    "cancel_reason": null,
+    "cancelled_at": null,
+    "cart_token": "d5924de7d231913d3d61f4b3e75a9afb",
+    "checkout_id": 38130270830756,
+    "checkout_token": "cc6b1be14f6a5f03db5f1301025f7fc2",
+    "closed_at": null,
+    "company": null,
+    "confirmed": true,
+    "contact_email": "anubhav.g@marmeto.com",
+    "created_at": "2023-06-14T08:08:01.000Z",
+    "currency": "INR",
+    "current_subtotal_price": "10000.00",
+    "current_total_discounts": "0.00",
+    "current_total_duties_set": null,
+    "current_total_price": "11800.00",
+    "current_total_tax": "1800.00",
+    "customer_locale": "en-IN",
+    "device_id": null,
+    "discount_codes": [],
+    "email": "anubhav.g@marmeto.com",
+    "estimated_taxes": false,
+    "financial_status": "paid",
+    "fulfillment_status": null,
+    "gateway": "gift_card",
+    "line_items": [
+      {
+        "id": 14089605873828,
+        "admin_graphql_api_id": "gid://shopify/LineItem/14089605873828",
+        "fulfillable_quantity": 1,
+        "fulfillment_service": "manual",
+        "fulfillment_status": null,
+        "gift_card": false,
+        "grams": 0,
+        "name": "Black Shirt",
+        "price": "10000.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          }
+        },
+        "product_exists": true,
+        "product_id": 8203755913380,
+        "properties": [],
+        "quantity": 1,
+        "requires_shipping": true,
+        "sku": "",
+        "taxable": true,
+        "title": "Black Shirt",
+        "total_discount": "0.00",
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "variant_id": 44440485167268,
+        "variant_inventory_management": "shopify",
+        "variant_title": "",
+        "vendor": "Qwikcilver Demo",
+        "tax_lines": [
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "CGST"
+          },
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "SGST"
+          }
+        ],
+        "duties": [],
+        "discount_allocations": [],
+        "_id": "648975667b6a413128afeab9"
+      }
+    ],
+    "location_id": null,
+    "name": "#1039",
+    "note": null,
+    "note_attributes": [],
+    "number": 39,
+    "order_number": 1039,
+    "order_status_url": "https://qwickcilver-dev.myshopify.com/53738569892/orders/7ec804fba62e595df8d1b4137ff9df76/authenticate?key=d5db558adc06144cefeb6e60ae52f04e",
+    "original_total_duties_set": null,
+    "payment_gateway_names": ["gift_card"],
+    "payment_terms": null,
+    "phone": null,
+    "presentment_currency": "INR",
+    "processed_at": "2023-06-14T08:08:00.000Z",
+    "processing_method": "gift_cards_only",
+    "reference": null,
+    "referring_site": "https://qwickcilver-dev.myshopify.com/products/black-shirt",
+    "refunds": [],
+    "shipping_lines": [
+      {
+        "id": 4763377729700,
+        "carrier_identifier": null,
+        "code": "Standard",
+        "delivery_category": null,
+        "discounted_price": "0.00",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "phone": null,
+        "price": "0.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "requested_fulfillment_service_id": null,
+        "source": "shopify",
+        "title": "Standard",
+        "tax_lines": [],
+        "discount_allocations": []
+      }
+    ],
+    "source_identifier": null,
+    "source_name": "web",
+    "source_url": null,
+    "status": "In Progress",
+    "subtotal_price": "10000.00",
+    "tags": "",
+    "tax_lines": [
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "CGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      },
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "SGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      }
+    ],
+    "taxes_included": false,
+    "test": false,
+    "token": "7ec804fba62e595df8d1b4137ff9df76",
+    "total_discounts": "0.00",
+    "total_line_items_price": "10000.00",
+    "total_outstanding": "0.00",
+    "total_price": "11800.00",
+    "total_tax": "1800.00",
+    "total_tip_received": "0.00",
+    "total_weight": 0,
+    "updated_at": "2023-06-14T08:08:03.000Z",
+    "user_id": null
+  },
+  {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_line_items_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_shipping_price_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "customer": {
+      "id": 6977868890276,
+      "email": "anubhav.g@marmeto.com",
+      "accepts_marketing": false,
+      "created_at": "2023-06-09T13:23:34.000Z",
+      "updated_at": "2023-06-14T08:08:01.000Z",
+      "first_name": "A",
+      "last_name": "S",
+      "state": "disabled",
+      "note": null,
+      "verified_email": true,
+      "phone": null,
+      "currency": "INR"
+    },
+    "_id": "648979fada1c8a4ce1eb7a91",
+    "id": 5605820629156,
+    "store_url": "qwickcilver-dev.myshopify.com",
+    "Initiate_Refund": "N/A",
+    "Refund_Mode": "N/A",
+    "__v": 0,
+    "app_id": 580111,
+    "browser_ip": "106.51.87.194",
+    "cancel_reason": null,
+    "cancelled_at": null,
+    "cart_token": "d154bb626e6f06a1893f25283b44d40c",
+    "checkout_id": 38130115346596,
+    "checkout_token": "103087d9e0ce6538675839b54a4c1e69",
+    "closed_at": null,
+    "company": null,
+    "confirmed": true,
+    "contact_email": "anubhav.g@marmeto.com",
+    "created_at": "2023-06-14T06:24:40.000Z",
+    "currency": "INR",
+    "current_subtotal_price": "10000.00",
+    "current_total_discounts": "0.00",
+    "current_total_duties_set": null,
+    "current_total_price": "11800.00",
+    "current_total_tax": "1800.00",
+    "customer_locale": "en-IN",
+    "device_id": null,
+    "discount_codes": [],
+    "email": "anubhav.g@marmeto.com",
+    "estimated_taxes": false,
+    "financial_status": "paid",
+    "fulfillment_status": null,
+    "gateway": "gift_card",
+    "line_items": [
+      {
+        "id": 14089427419300,
+        "admin_graphql_api_id": "gid://shopify/LineItem/14089427419300",
+        "fulfillable_quantity": 1,
+        "fulfillment_service": "manual",
+        "fulfillment_status": null,
+        "gift_card": false,
+        "grams": 0,
+        "name": "Black Shirt",
+        "price": "10000.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          }
+        },
+        "product_exists": true,
+        "product_id": 8203755913380,
+        "properties": [],
+        "quantity": 1,
+        "requires_shipping": true,
+        "sku": "",
+        "taxable": true,
+        "title": "Black Shirt",
+        "total_discount": "0.00",
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "variant_id": 44440485167268,
+        "variant_inventory_management": "shopify",
+        "variant_title": "",
+        "vendor": "Qwikcilver Demo",
+        "tax_lines": [
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "CGST"
+          },
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "SGST"
+          }
+        ],
+        "duties": [],
+        "discount_allocations": [],
+        "_id": "648979fa7b6a413128afeaf4"
+      }
+    ],
+    "location_id": null,
+    "name": "#1032",
+    "note": null,
+    "note_attributes": [],
+    "number": 32,
+    "order_number": 1032,
+    "order_status_url": "https://qwickcilver-dev.myshopify.com/53738569892/orders/b6f3c9a25cab4d55d0c0856754eae24f/authenticate?key=39a95fb636d69645483211e169c4621e",
+    "original_total_duties_set": null,
+    "payment_gateway_names": ["gift_card"],
+    "payment_terms": null,
+    "phone": null,
+    "presentment_currency": "INR",
+    "processed_at": "2023-06-14T06:24:39.000Z",
+    "processing_method": "gift_cards_only",
+    "reference": null,
+    "referring_site": "https://qwickcilver-dev.myshopify.com/products/black-shirt",
+    "refunds": [],
+    "shipping_lines": [
+      {
+        "id": 4763330314404,
+        "carrier_identifier": null,
+        "code": "Standard",
+        "delivery_category": null,
+        "discounted_price": "0.00",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "phone": null,
+        "price": "0.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "requested_fulfillment_service_id": null,
+        "source": "shopify",
+        "title": "Standard",
+        "tax_lines": [],
+        "discount_allocations": []
+      }
+    ],
+    "source_identifier": null,
+    "source_name": "web",
+    "source_url": null,
+    "status": "In Progress",
+    "subtotal_price": "10000.00",
+    "tags": "",
+    "tax_lines": [
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "CGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      },
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "SGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      }
+    ],
+    "taxes_included": false,
+    "test": false,
+    "token": "b6f3c9a25cab4d55d0c0856754eae24f",
+    "total_discounts": "0.00",
+    "total_line_items_price": "10000.00",
+    "total_outstanding": "0.00",
+    "total_price": "11800.00",
+    "total_tax": "1800.00",
+    "total_tip_received": "0.00",
+    "total_weight": 0,
+    "updated_at": "2023-06-14T06:24:41.000Z",
+    "user_id": null
+  },
+  {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "current_total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "subtotal_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_discounts_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_line_items_price_set": {
+      "shop_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "10000.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_price_set": {
+      "shop_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "11800.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_shipping_price_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "INR"
+      }
+    },
+    "total_tax_set": {
+      "shop_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      },
+      "presentment_money": {
+        "amount": "1800.00",
+        "currency_code": "INR"
+      }
+    },
+    "customer": {
+      "id": 6977868890276,
+      "email": "anubhav.g@marmeto.com",
+      "accepts_marketing": true,
+      "created_at": "2023-06-09T13:23:34.000Z",
+      "updated_at": "2023-06-14T10:31:45.000Z",
+      "first_name": "A",
+      "last_name": "S",
+      "state": "disabled",
+      "note": null,
+      "verified_email": true,
+      "phone": null,
+      "currency": "INR"
+    },
+    "_id": "64899712da1c8a4ce1eb8350",
+    "id": 5605963432100,
+    "store_url": "qwickcilver-dev.myshopify.com",
+    "Initiate_Refund": "N/A",
+    "Refund_Mode": "N/A",
+    "__v": 0,
+    "app_id": 580111,
+    "browser_ip": "115.246.209.61",
+    "cancel_reason": null,
+    "cancelled_at": null,
+    "cart_token": "6bc565b8955b66aa584269735ef07247",
+    "checkout_id": 38130481692836,
+    "checkout_token": "a7dda4cb40d56d4865ed41e28970ef07",
+    "closed_at": null,
+    "company": null,
+    "confirmed": true,
+    "contact_email": "anubhav.g@marmeto.com",
+    "created_at": "2023-06-14T10:31:44.000Z",
+    "currency": "INR",
+    "current_subtotal_price": "10000.00",
+    "current_total_discounts": "0.00",
+    "current_total_duties_set": null,
+    "current_total_price": "11800.00",
+    "current_total_tax": "1800.00",
+    "customer_locale": "en-IN",
+    "device_id": null,
+    "discount_codes": [],
+    "email": "anubhav.g@marmeto.com",
+    "estimated_taxes": false,
+    "financial_status": "paid",
+    "fulfillment_status": null,
+    "gateway": "bogus",
+    "line_items": [
+      {
+        "id": 14089832628388,
+        "admin_graphql_api_id": "gid://shopify/LineItem/14089832628388",
+        "fulfillable_quantity": 1,
+        "fulfillment_service": "manual",
+        "fulfillment_status": null,
+        "gift_card": false,
+        "grams": 0,
+        "name": "Black Shirt",
+        "price": "10000.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "10000.00",
+            "currency_code": "INR"
+          }
+        },
+        "product_exists": true,
+        "product_id": 8203755913380,
+        "properties": [],
+        "quantity": 1,
+        "requires_shipping": true,
+        "sku": "",
+        "taxable": true,
+        "title": "Black Shirt",
+        "total_discount": "0.00",
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "variant_id": 44440485167268,
+        "variant_inventory_management": "shopify",
+        "variant_title": "",
+        "vendor": "Qwikcilver Demo",
+        "tax_lines": [
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "CGST"
+          },
+          {
+            "channel_liable": false,
+            "price": "900.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "900.00",
+                "currency_code": "INR"
+              }
+            },
+            "rate": 0.09,
+            "title": "SGST"
+          }
+        ],
+        "duties": [],
+        "discount_allocations": [],
+        "_id": "648997138422283e27016bc5"
+      }
+    ],
+    "location_id": null,
+    "name": "#1040",
+    "note": null,
+    "note_attributes": [],
+    "number": 40,
+    "order_number": 1040,
+    "order_status_url": "https://qwickcilver-dev.myshopify.com/53738569892/orders/f05b482f9c7af6274e712f31faf48b53/authenticate?key=bd274a9c641dca24a508c7be1a51fde2",
+    "original_total_duties_set": null,
+    "payment_gateway_names": ["gift_card", "bogus"],
+    "payment_terms": null,
+    "phone": null,
+    "presentment_currency": "INR",
+    "processed_at": "2023-06-14T10:31:43.000Z",
+    "processing_method": "direct",
+    "reference": null,
+    "referring_site": "https://qwickcilver-dev.myshopify.com/products/black-shirt",
+    "refunds": [],
+    "shipping_lines": [
+      {
+        "id": 4763445887140,
+        "carrier_identifier": null,
+        "code": "Standard",
+        "delivery_category": null,
+        "discounted_price": "0.00",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "phone": null,
+        "price": "0.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "0.00",
+            "currency_code": "INR"
+          }
+        },
+        "requested_fulfillment_service_id": null,
+        "source": "shopify",
+        "title": "Standard",
+        "tax_lines": [],
+        "discount_allocations": []
+      }
+    ],
+    "source_identifier": null,
+    "source_name": "web",
+    "source_url": null,
+    "status": "In Progress",
+    "subtotal_price": "10000.00",
+    "tags": "",
+    "tax_lines": [
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "CGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      },
+      {
+        "price": "900.00",
+        "rate": 0.09,
+        "title": "SGST",
+        "price_set": {
+          "shop_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          },
+          "presentment_money": {
+            "amount": "900.00",
+            "currency_code": "INR"
+          }
+        },
+        "channel_liable": false
+      }
+    ],
+    "taxes_included": false,
+    "test": true,
+    "token": "f05b482f9c7af6274e712f31faf48b53",
+    "total_discounts": "0.00",
+    "total_line_items_price": "10000.00",
+    "total_outstanding": "0.00",
+    "total_price": "11800.00",
+    "total_tax": "1800.00",
+    "total_tip_received": "0.00",
+    "total_weight": 0,
+    "updated_at": "2023-06-14T10:31:46.000Z",
+    "user_id": null
+  }
+]
