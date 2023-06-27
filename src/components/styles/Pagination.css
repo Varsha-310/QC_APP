@@ -1,0 +1,18 @@
+.pagination__container {
+  display: flex;
+  justify-content: center;
+}
+.pagination__page-btn {
+  border: none;
+  appearance: none;
+  display: block;
+  padding: 5px;
+  width: auto;
+  margin: 0;
+  background-color: transparent;
+  color: var(--frame-color);
+}
+.pagination__chevrons {
+  margin: 5px;
+  color: var(--frame-color);
+}

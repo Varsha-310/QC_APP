@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import RefundListTable from "../../components/DataTable/RefundListTable";
+import Pagination from "../../components/Pagination";
 
 const RefundList = () => {
+  const [currentPage,setCurrentPage]=useState(1);
   const Heading = [
     "Order",
     "Date",
@@ -87,6 +89,7 @@ const RefundList = () => {
   return (
     <div className="refund-list__container " style={{ width: "100%" }}>
       <RefundListTable headings={Heading} data={data} />
+      <Pagination total={11} perPage={5} setPage={setCurrentPage}/>
     </div>
   );
 };
