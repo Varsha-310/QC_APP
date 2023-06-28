@@ -5,8 +5,13 @@ import UploadIcon from "../../assets/icons/svgs/upload.svg";
 import { PrimaryBtn } from "../../components/BasicComponents";
 import "./styles/CreateGiftCard.css";
 import { useState, useRef } from "react";
-import { FaChevronCircleRight, FaChevronCircleLeft } from "react-icons/fa";
+import {
+  FaChevronCircleRight,
+  FaChevronCircleLeft,
+  FaPlus,
+} from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
+import axios from "axios";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -22,6 +27,8 @@ const CreateGiftCard = () => {
   const [cardData, setCardData] = useState({
     title: "Gift Card",
     description:
+      "Shopping for someone else but not sure what to gift? Give the gift of choice with a gift card . Gift card are delivered by E-mail",
+    terms:
       "Shopping for someone else but not sure what to gift? Give the gift of choice with a gift card . Gift card are delivered by E-mail",
     variants: [{ variant_name: "dummy", variant_price: "1000" }],
   });
@@ -130,6 +137,43 @@ const CreateGiftCard = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    const url =
+      "https://3563-106-51-87-194.ngrok-free.app/giftcard/products/add";
+    const headers = {
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+    };
+
+    try {
+      const res = await axios.post(
+        url,
+        {
+          store: "mmtteststore8.myshopify.com",
+          title: "testing",
+          cpg_name: "asdfgh",
+          published: "false",
+          variants: [
+            {
+              option1: "100",
+              price: "100",
+              requires_shipping: false,
+              taxable: false,
+            },
+          ],
+          images: [
+            {
+              src: "https://return-prime-public.s3.us-east-2.amazonaws.com/1591349514508-948441110.png",
+            },
+          ],
+        },
+        { headers }
+      );
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <div className="gift-card__container section-box-container component">
       <div className="gift-card__active-status">
@@ -177,13 +221,13 @@ const CreateGiftCard = () => {
           </div>
 
           <div className="gift-card__scroll-container">
-            <div
+            {/* <div
               onClick={() => sliderScroll(SCROLL_LEFT)}
               className="gift-card__slider-btns"
               id="scroll-left"
             >
               <FaChevronCircleLeft />
-            </div>
+            </div> */}
 
             <div className="gift-card__preview-scroll" ref={scrollContainer}>
               {previewImage.length > 0 &&
@@ -199,13 +243,13 @@ const CreateGiftCard = () => {
                 ))}
             </div>
 
-            <div
+            {/* <div
               onClick={() => sliderScroll(SCROLL_RIGHT)}
               className="gift-card__slider-btns"
               id="scroll-right"
             >
               <FaChevronCircleRight />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -223,8 +267,17 @@ const CreateGiftCard = () => {
             type="text"
             className="gift-card__input"
             name="description"
-            rows={4}
+            rows={3}
             value={cardData.description}
+            onChange={handleChange}
+          />
+          <label className="gift-card__label">Terms and Condition</label>
+          <textarea
+            type="text"
+            className="gift-card__input"
+            name="terms"
+            rows={3}
+            value={cardData.terms}
             onChange={handleChange}
           />
           <div className="gift-card__validity">
@@ -237,9 +290,11 @@ const CreateGiftCard = () => {
             Gift Card Validity
           </div>
 
-          {isValidityCheck && (
-            <CustomDropdown options={["5 months", "6 months", "10 months"]} />
-          )}
+          <div className="gift-card__validity">
+            {isValidityCheck && (
+              <CustomDropdown options={["6 months", "12 months"]} />
+            )}
+          </div>
         </div>
       </div>
 
@@ -272,10 +327,15 @@ const CreateGiftCard = () => {
         ))}
       </div>
       <div className="gift-card__append-variant" onClick={handleAppend}>
-        Append a Variant <img src={AddIcon} alt="" />
+        Append a Variant
+        <span>
+          <FaPlus />
+        </span>
       </div>
 
-      <PrimaryBtn $primary>Save</PrimaryBtn>
+      <PrimaryBtn $primary onClick={handleSubmit}>
+        Save
+      </PrimaryBtn>
     </div>
   );
 };

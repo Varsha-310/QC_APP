@@ -46,7 +46,7 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 21px;
-
+  width: 200px;
   margin: 10px 0px;
   display: flex;
   align-items: center;
@@ -70,7 +70,7 @@ option {
 }
 
 .gift-card__variant-data {
-  margin: 40px 0px;
+  margin: 20px 0px;
 }
 .gift-card__variant-grid-row {
   display: grid;
@@ -99,8 +99,10 @@ option {
   background-color: var(--frame-color);
   color: var(--text-color);
 }
-.gift-card__append-variant img {
+.gift-card__append-variant span {
   margin-left: 10px;
+  display: flex;
+  align-items: center;
 }
 
 /* image slider */

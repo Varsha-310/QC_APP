@@ -11,7 +11,7 @@ const TEXT_DARK_COLOR = "#000000";
 const TEXT_BOLD_COLOR = "#182560";
 const RATING_COLOR = "#fec600";
 
-const PrimaryBtn = styled.div`
+const PrimaryBtn = styled.button`
   font-family: "Poppins", sans-serif;
   font-size: 14px;
   line-height: 21px;

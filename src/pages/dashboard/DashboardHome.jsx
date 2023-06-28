@@ -9,8 +9,24 @@ import {
   SectionHeading1,
   SectionTitle,
 } from "../../components/BasicComponents";
+import axios from "axios";
 
 const DashboardHome = () => {
+  const handleKYC = async () => {
+    console.log("hit");
+    const url = "https://b170-49-207-198-131.ngrok-free.app/kyc/initiate";
+    const headers = {
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+    };
+
+    const res = await axios.post(url, {}, { headers });
+    const resData = res.data;
+
+    window.open(resData.data,"_blank")
+    console.log(resData);
+  };
+
   return (
     <div className="dashboard-home-container">
       <div className="section-box-container">
@@ -63,7 +79,9 @@ const DashboardHome = () => {
         </p>
       </div>
 
-      <PrimaryBtn $primary>Start KYC</PrimaryBtn>
+      <PrimaryBtn $primary onClick={handleKYC}>
+        Start KYC
+      </PrimaryBtn>
 
       <img src={Giftbox} alt="" className="giftbox" />
     </div>

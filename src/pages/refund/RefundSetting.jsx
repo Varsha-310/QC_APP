@@ -72,7 +72,7 @@ const RefundSetting = () => {
     if(res.data.message.code ===200){
       alert("Updated Successfully!")
     }else{
-      alert("Something went wrong!")
+      alert("Something went")
     }
 
     console.log(res.data);
