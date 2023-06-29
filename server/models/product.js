@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 /*Scheme for storing giftcard products */
 
 var productSchema = mongoose.Schema({
-  store: { type: String },
-  id: { type: Number, required: true, unique: true },
+  store_url: { type: String },
+  id: { type: Number,  unique: true },
   title: { type: String },
   body_html: { type: String },
   vendor: { type: String },
@@ -71,4 +71,4 @@ var productSchema = mongoose.Schema({
   image: { type: Object },
 });
 
-export default mongoose.model("product", productSchema);
+export default mongoose.model("Product", productSchema);

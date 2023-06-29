@@ -1,5 +1,5 @@
-import { Jwt } from "jsonwebtoken";
-import store from "../models/store";
+import Jwt from "jsonwebtoken";
+import Store from "../models/store";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 
 /**
@@ -7,25 +7,21 @@ import { respondInternalServerError, respondUnauthorized } from "./response";
  * @param {*} req
  * @param {*} res
  */
-export const createJwt = async (req, res) => {
+export const createJwt = async (shop) => {
+  console.log("create jwt start");
   try {
-    let { store_url } = req.body;
     let secretKey = process.env.JWT_SECRET;
-    const storeData = await store.find({ store_url: store_url });
-    let data = storeData.store_url;
-    Jwt.sign(data, secretKey, (err, token) => {
-      if (err) {
-        res.json(
-          respondInternalServerError("Something went wrong try after sometime")
-        );
-      } else {
-        res.json({ token });
-      }
-    });
+    // const storeData = await Store.findOne({ store_url: shop });
+    console.log(storeData);
+    let payload = { store_url: shop };
+    console.log("----payload--------", payload);
+    let jwtToken = await Jwt.sign(payload, secretKey);
+    console.log("JWT TOken TEst");
+    return jwtToken;
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    // console.log(err)
+    console.log("Error in JWT helper tokem");
+    return false;
   }
 };
 
@@ -37,15 +33,26 @@ export const createJwt = async (req, res) => {
  */
 export const verifyJwt = (req, res, next) => {
   try {
+    console.log("-----in verify jwt----------" , req.headers)
     if (req.headers.authorization) {
-      jwt.verify(
+      Jwt.verify(
         req.headers.authorization,
         process.env.JWT_SECRET,
-        function (err, payload) {
+        async function (err, payload) {
           if (!err) {
             req.token = payload;
-            next();
+            console.log(payload , "payload")
+            let storeExists = await Store.findOne({
+              store_url: payload.store_url,
+            });
+            if (storeExists) {
+              next();
+            } else {
+              console.log(err)
+              res.json(respondUnauthorized("Invalid jwt token"));
+            }
           } else {
+            console.log(err)
             res.json(respondUnauthorized("Invalid jwt token"));
           }
         }
@@ -54,6 +61,7 @@ export const verifyJwt = (req, res, next) => {
       res.json(respondUnauthorized("Invalid jwt token"));
     }
   } catch (err) {
+    console.log("asdfghjkl;", err);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );

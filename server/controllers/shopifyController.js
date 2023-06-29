@@ -4,6 +4,10 @@ import {
   respondInternalServerError,
   respondNotAcceptable,
 } from "../helper/response";
+import cookie from "cookie";
+import crypto from "crypto";
+import { checkWebhooks } from "../config/custom";
+import { createJwt } from "../helper/jwtHelper";
 
 /**
  * Method for installation method
@@ -28,6 +32,7 @@ export const install = async (req, res) => {
       res.json(respondNotAcceptable("Something went wrong try after sometime"));
     }
   } catch (error) {
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -45,8 +50,7 @@ export const installCallback = async (req, res) => {
     const { shop, hmac, code, state } = req.query;
     const apiSecret = process.env.SHOPIFY_API_SECRET ?? "";
     const CLIENT_URL = process.env.CLIENT_URL ?? "";
-    const apiKey = process.env.SHOPIFY_API_KEY ?? "";
-    const API_VERSION = process.env.API_VERSION ?? "";
+    const headersCookies = req.headers.cookie ?? "";
     const stateCookie = cookie.parse(headersCookies).state;
     if (state !== stateCookie) {
       return res.status(403).send("Request origin cannot be verified");
@@ -62,6 +66,7 @@ export const installCallback = async (req, res) => {
         "utf-8"
       );
       let hashEquals = false;
+      console.log(generatedHash, providedHmac);
       try {
         hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac);
       } catch (e) {
@@ -71,7 +76,7 @@ export const installCallback = async (req, res) => {
       if (!hashEquals) {
       }
 
-      let accessToken = await getAccessToken(shop, code);
+      let accessToken = await getAccessToken(shop, code, res);
 
       if (accessToken) {
         console.log(accessToken, "accessToken");
@@ -79,13 +84,15 @@ export const installCallback = async (req, res) => {
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
-          return res.redirect(`${CLIENT_URL}/config/${shop}`);
+          let token = await createJwt(shop);
+          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
         }
       }
     } else {
       res.json(respondNotAcceptable("Required parameters are missing"));
     }
   } catch (error) {
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -109,13 +116,14 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       country_code: shopData.shop?.country_code.toLowerCase(),
     };
     console.log(data);
-    const storeObj = await store.updateOne({
-      store_url: data.store_url,
-      data,
-      upsert: true,
-    });
+    await store.updateOne(
+      { store_url: data.store_url },
+      { $set: data },
+      { upsert: true }
+    );
     return true;
   } catch (error) {
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -133,7 +141,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
       method: "GET",
-      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,email,city,country_code`,
+      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code`,
       headers: {
         "X-Shopify-Access-Token": accessToken,
       },
@@ -158,7 +166,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
  * @param {*} code
  * @returns
  */
-export const getAccessToken = async (shop, code) => {
+export const getAccessToken = async (shop, code, res) => {
   try {
     const apiKey = process.env.SHOPIFY_API_KEY;
     const apiSecret = process.env.SHOPIFY_API_SECRET;

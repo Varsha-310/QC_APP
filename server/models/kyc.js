@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 
 var UserSchema = mongoose.Schema({
   store_url: { type: String },
-  name: { type: String },
   kyc_user_data: [
     {
       name: { type: String },
@@ -23,4 +22,4 @@ var UserSchema = mongoose.Schema({
   ],
 });
 
-export default mongoose.model("user", userSchema);
+export default mongoose.model("User", userSchema);

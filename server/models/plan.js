@@ -1,10 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 /*Scheme for storing wallet details */
 
-var planSchema = mongoose.Schema({
+const planSchema = mongoose.Schema({
   plan_name: { type: String },
-  plan_details: [{}],
+  uses_limit: {type : Number},
+  uses_charge: {type: String},
+  plan_limit: {type: String},
+  price: {type:Number},
+  symbol: {type:String},
+  currency: {typ:String}
 });
 
-export default mongoose.model("plan", planSchema);
+export default mongoose.model("Plan", planSchema);
