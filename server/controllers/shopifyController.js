@@ -32,7 +32,7 @@ export const install = async (req, res) => {
       res.json(respondNotAcceptable("Something went wrong try after sometime"));
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -76,7 +76,7 @@ export const installCallback = async (req, res) => {
       if (!hashEquals) {
       }
 
-      let accessToken = await getAccessToken(shop, code,res);
+      let accessToken = await getAccessToken(shop, code, res);
 
       if (accessToken) {
         console.log(accessToken, "accessToken");
@@ -85,7 +85,6 @@ export const installCallback = async (req, res) => {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
           let token = await createJwt(shop);
-          console.log(token,"---------------------------jwt token----------------------------")
           return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
         }
       }
@@ -167,7 +166,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
  * @param {*} code
  * @returns
  */
-export const getAccessToken = async (shop, code,res) => {
+export const getAccessToken = async (shop, code, res) => {
   try {
     const apiKey = process.env.SHOPIFY_API_KEY;
     const apiSecret = process.env.SHOPIFY_API_SECRET;
