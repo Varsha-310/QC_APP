@@ -9,7 +9,8 @@ import shopifyRoute from "./routes/shopify";
 import webhookRoute from "./routes/webhooks";
 import refundSettingRoute from "./routes/refund";
 import storesRoute from "./routes/store";
-import calculateRefundAmount from "./routes/calculateRefund"
+import calculateRefundAmount from "./routes/calculateRefund";
+import checkamount from "./routes/giftcardamount";
 import { respondSuccess, respondInternalServerError } from "./helper/response";
 import cron from "node-cron";
 import { logger } from "./helper/utility";
@@ -85,6 +86,10 @@ app.use("/stores", storesRoute)
 
 //Calculate refund roure
 app.use("/calculateRefund", calculateRefundAmount)
+
+//Checking giftcard amount
+app.use("/giftcardamount", checkamount)
+
 
 // cron to check webhooks for every store
 cron.schedule("0 */6 * * *", () => {

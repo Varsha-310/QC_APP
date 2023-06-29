@@ -15,36 +15,35 @@ import store from "../models/store";
 
 export const createRefundAmount = async (req, res) => {
     try {
-        const { id, store_url } = req.body; 
-        
+        const {store_url} = req.token
+        const { id } = req.body; 
         const storeData = await store.findOne({ store_url });
         const accessToken = storeData.access_token;     
-
         const refundAmount = await calculateRefund(id, store_url,storeData,accessToken );
 
+         
         //checking setting for store
         const setting = await refundSetting.findOne({ store_url });
         if (!setting) {
-            return res.json(respondError("store_url invalid"))
+            return res.json(respondError("store_url invalid", 404))
         }
 
         if (setting.prepaid === "Back-to-Source" || setting.cod === "Back-to-Source" ||
             setting.giftCard === "Back-to-Source" || setting.giftcard_cash === "Back-to-Source") {
 
             if (setting.restock_type === "no_restock") {
-
                 const refundResponse = await createRefund(id, store_url, refundAmount, setting.restock_type, storeData, accessToken);
-                return res.json(respondWithData({msg:"Success",code:200,data: refundResponse}));
+                return res.json(respondWithData("Success",200, refundResponse));
             }
             else if (setting.restock_type === "return") {
                 if (!setting.location_id) {
-                    return res.json(respondError("Location ID is required to create a refund"));
+                    return res.json(respondError("Location ID is required to create a refund", 404));
                 }
                 const refundResponse = await createRefund(id, store_url, refundAmount, setting.restock_type, storeData, accessToken);
-                return res.json(respondWithData({msg:"Success",code:200,data: refundResponse}));
-            }
+                return res.json(respondWithData("Success",200,refundResponse));
+            }     
         }
-        res.json(respondNotFound("Invalid payment mode"));
+        res.json(respondNotFound("Invalid payment mode", 404));
 
         // const finaldata = await calculateRefund(req,res);
         // res.send(finaldata.data);
@@ -76,12 +75,11 @@ export const calculateRefund = async (id, store_url, storeData, accessToken) => 
         let data = ({
             "refund": {
                 "currency":shipping.currency_code,
-                "line_items": { id: calculateLineItems },
+                "line_items": calculateLineItems ,
                 "shipping": shipping,
             }
         });
-       
-
+      
         const options = {
             'method': 'POST',
             'url': `https://${store_url}/admin/api/2023-04/orders/${id}/refunds/calculate.json`,
@@ -91,8 +89,6 @@ export const calculateRefund = async (id, store_url, storeData, accessToken) => 
             },
             "data": JSON.stringify(data)
         };
-       
-
         const result = await axios(options);
         return result;
     }
@@ -116,16 +112,15 @@ export const createRefund = async (id, store_url,refundAmount, restock_type, sto
     try {
         const allData = await orders.find({ id: id });
         const lineItemId = allData[0].line_items;
-        const location_id = allData[0].location_id;
+        // const location_id = allData[0].location_id;
         const currency =  allData[0].total_shipping_price_set.shop_money.currency_code
        
         const refundLineItems = lineItemId.map((lineItem) => ({
             line_item_id: lineItem.id,
             quantity: lineItem.quantity,
             restock_type: restock_type,
-            location_id: location_id,
+            // location_id: location_id,
         }));
-   
         const data = {
             "refund": {
                 currency: currency,
@@ -136,6 +131,7 @@ export const createRefund = async (id, store_url,refundAmount, restock_type, sto
                 refund_line_items: refundLineItems,
             },
         };
+        
         const options = {
             method: "POST",
             url: `https://${store_url}/admin/api/2023-04/orders/${id}/refunds.json`,

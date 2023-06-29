@@ -11,12 +11,10 @@ export const createJwt = async (shop) => {
 
   console.log("create jwt start");
   try {
-    
-    console.log(shop);
+
     let secretKey = process.env.JWT_SECRET;
     return jwt.sign({store_url: shop}, secretKey)
   } catch (err) {
-
     console.log(err)
     console.log("Error in JWT helper tokem");
     return false;
@@ -29,7 +27,6 @@ export const createJwt = async (shop) => {
  * @param {*} next
  */
 export const verifyJwt = (req, res, next) => {
-
   try {
     if (req.headers.authorization) {
       jwt.verify(
@@ -38,6 +35,7 @@ export const verifyJwt = (req, res, next) => {
         function (err, payload) {
           if (!err) {
             req.token = payload;
+            // console.log(req.token)
             next();
           } else {
             res.json(respondUnauthorized("Invalid jwt token"));

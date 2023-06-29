@@ -50,6 +50,7 @@ const validateMethod = async (req, res, next, validationRule) => {
       }
     });
   } catch (err) {
+    console.log(err);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -101,29 +102,12 @@ export const validategetStoresDataMethod = async (req, res, next, validationRule
 export const validateUpdateConfigApi = async (req, res, next) => {
   try {
     const validationRule = {
-      store_url: "required|string",
       prepaid: "required|string",
       cod: "required|string",
       giftCard: "required|string",
       giftcard_cash: "required|string",
-    };
-    await validateMethod(req, res, next, validationRule);
-  } catch (err) {
-    console.log(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
-};
-
-
-/**
- * Validation rules for the getConfigapi route
- */
-export const validategetConfigApi = async (req, res, next) => {
-  try {
-    const validationRule = {
-      store_url: "required|string",
+      restock_type: "required|string",
+      // location_id:"required|numeric",
     };
     await validateMethod(req, res, next, validationRule);
   } catch (err) {
@@ -142,7 +126,7 @@ export const validategetConfigApi = async (req, res, next) => {
 export const validateCalculateRefundApi = async (req, res, next) => {
   try {
     const validationRule = {
-      store_url: "required|string",
+      // store_url: "required|string",
       id:"required|integer"
     };
     await validateMethod(req, res, next, validationRule);

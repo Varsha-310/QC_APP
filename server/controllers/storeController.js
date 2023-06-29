@@ -32,7 +32,7 @@ export const getStoresData = async (req, res) => {
             .skip(skip)
             .limit(limit);
         const totalCount = await orderdetail.countDocuments(filter); 
-        res.json(respondWithData({msg:"Success",code:200,data: orders, totalOrders: totalCount}))
+        res.json(respondWithData("Success",200,orders, {totalOrders: totalCount}))
     } catch (err) {
         logger.info(err);
         console.log(err);
