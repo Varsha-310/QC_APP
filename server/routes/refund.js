@@ -7,7 +7,7 @@ import { verifyJwt } from "../helper/jwtHelper";
 const refundRoute = Router();
 
 // Route to fetch the refund settings
-refundRoute.post("/getSetting",verifyJwt, validategetConfigApi, getConfigapi);
+refundRoute.get("/getSetting",verifyJwt, validategetConfigApi, getConfigapi);
 
 //Route to update the refund
 refundRoute.put("/updateSetting",verifyJwt, validateUpdateConfigApi, updateConfigapi);

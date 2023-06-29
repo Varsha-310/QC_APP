@@ -12,12 +12,13 @@ import orders from "../models/orders"
 // Function to handle the refund
 export const getConfigapi = async (req, res) => {
   try {
-    let { store_url } = req.body;
-    const settings = await refundSetting.findOne({ store_url: store_url });
+    let { store_url } = req.token;
+    const settings = await refundSetting.findOne({ store_url });
+
     if (!settings) {
-      return res.json(respondError("store_url not found"));
+      return res.json(respondError("Invalid store_url", 404));
     }
-    res.json(respondWithData({msg:"Success",code:200,data: settings}));
+    res.json(respondWithData("Success", 200, settings));
   } catch (err) {
     console.log(err);
     logger.info(err);
@@ -35,36 +36,32 @@ export const getConfigapi = async (req, res) => {
 
 export const updateConfigapi = async (req, res) => {
   try {
-    const { store_url, id, prepaid, cod, giftCard, giftcard_cash, restock_type } = req.body;
-    let location_id;
+    const { store_url } = req.token;
+    const { prepaid, cod, giftCard, giftcard_cash, restock_type, location_id } = req.body;
     if (restock_type === 'return') {
-      const order = await orders.findOne({ id: id }); 
-      location_id = order.location_id
       if (!location_id) {
-        return res.json(respondError("Location id is required to create a refund"));
+        return res.json(respondError("Location id is required to create a refund", 404));
       }
     }
-    const updateFields = {
-      prepaid:prepaid,
-      cod:cod,
-      giftCard:giftCard,
-      giftcard_cash:giftcard_cash,
-      restock_type: restock_type
-    };
-    if (location_id) {
-      updateFields.location_id = location_id;
-    }
     const updatedSettings = await refundSetting.findOneAndUpdate(
-      { store_url: store_url },
-      { $set: updateFields  },
+      { store_url },
+      {
+        $set: {
+          prepaid,
+          cod,
+          giftCard,
+          giftcard_cash,
+          restock_type,
+          location_id,
+        },
+      },
       { upsert: true }
     );
-    res.json(respondWithData({msg:"updated successfully",code:200,data: updatedSettings}));
-
+    res.json(respondWithData("updated successfully", 200, updatedSettings));
   } catch (err) {
-    logger.info(err);
-    console.log(err);
+    console.error(err)
     res.json(respondInternalServerError());
+
   }
 };
 
