@@ -36,7 +36,7 @@ export const respondCreated = (msg) => {
  * @param msg
  * @returns {json}
  */
-export const respondSuccess = (msg) => {
+export const respondSuccess = (msg , data) => {
   return respond(true, msg, 200);
 };
 

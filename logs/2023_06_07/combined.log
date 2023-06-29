@@ -1,0 +1,207 @@
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T03:57:33.660Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T03:57:38.141Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:09:34.634Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:06.222Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:23.316Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:24.487Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:27.257Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:31.076Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:49.851Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:10:57.017Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:11:13.326Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:11:21.004Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:16.564Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:18.330Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:22.769Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:37.209Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:38.855Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:44.470Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:43:46.852Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:48:08.508Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:48:12.966Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:59:37.031Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T04:59:59.316Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:01.075Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:03.058Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:22.941Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:25.155Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:27.487Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:30.543Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:39.509Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:00:41.603Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:01:01.123Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:01:28.409Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:01:29.948Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:01:41.545Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:01:54.076Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:02:02.738Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:02:20.755Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:02:26.110Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:02:34.229Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:02:40.651Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:04:46.125Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:04:50.823Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:04:58.424Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:05:08.160Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:05:39.519Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:11:32.198Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:12:21.144Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T05:12:24.279Z"}
+{"level":"info","message":{},"timestamp":"2023-06-07T05:12:24.284Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:12:40.851Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T05:12:41.869Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T05:12:41.938Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:21:27.077Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:21:29.986Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:21:56.725Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:22:07.136Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:22:46.535Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:22:51.901Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:22:57.254Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:22:58.991Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:05.944Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:07.579Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:12.810Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:16.303Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:20.910Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:23:23.021Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:24:07.427Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:24:27.609Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:27:28.767Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:27:34.088Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:27:35.699Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:28:15.334Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:29:33.205Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T05:48:54.325Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:18:58.239Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:19:01.994Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:19:12.527Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:20:26.204Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:35:29.113Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:37:06.009Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:37:08.632Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:37:16.403Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:37:39.057Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:37:40.399Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:38:22.912Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:41:12.351Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:44:15.095Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:46:26.135Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:46:27.903Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:46:33.107Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:46:34.746Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:46:44.896Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:47:09.799Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:47:20.990Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:47:23.887Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:47:25.894Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:48:34.826Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:48:37.894Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:49:57.501Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:50:00.356Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T06:50:04.253Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:10:36.213Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:12:43.978Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:12:49.721Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:12:54.206Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:17:45.880Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:18:30.556Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:24:28.181Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:24:32.041Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:24:39.467Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:26:27.586Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:26:28.996Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:27:28.542Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:28:07.726Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:28:12.930Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:28:16.972Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:28:19.529Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:10.651Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:14.568Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:16.831Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:19.389Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:22.672Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:30:39.368Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:32:20.053Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:32:23.452Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:32:27.119Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:34:58.539Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:35:28.543Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:35:30.274Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:35:32.063Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:00.838Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:02.794Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:04.395Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:08.968Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:10.954Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:37.013Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:36:46.087Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:37:38.827Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:38:32.129Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:40:31.527Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:40:37.273Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:41:07.734Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:41:09.348Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:41:54.736Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:45:12.206Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:45:13.648Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:45:24.391Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:52:56.202Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:54:17.998Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:55:58.646Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:59:14.717Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:59:16.090Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:59:24.232Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T07:59:53.326Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:00:34.031Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:05:27.659Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:05:38.617Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:05:44.885Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:08:15.401Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:09:34.545Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:09:36.906Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:10:15.803Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:10:21.701Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T08:10:49.319Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:16:01.889Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:21:55.997Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:43:15.442Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:21.228Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:21.278Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:22.292Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:22.315Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:23.283Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:23.310Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:24.207Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:24.227Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:25.103Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:25.125Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:43:36.587Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:38.337Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:38.389Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:43:39.338Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:43:39.359Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:44:21.183Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:44:24.141Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T11:44:27.247Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:44:30.747Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:44:30.794Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:44:31.782Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:44:31.803Z"}
+{"level":"info","message":"kyc transaction requested for","timestamp":"2023-06-07T11:44:32.893Z"}
+{"level":"info","message":{"code":"ECONNREFUSED","config":{"adapter":["xhr","http"],"data":"{\"companyKey\":\"TST00001\",\"templateKey\":\"TMPTS00054\",\"expiresInDays\":\"30\",\"createdForEmail\":\"abhinand+qcuat1@manchtech.com\",\"createdByEmail\":\"abhinand+csupport@manchtech.com\",\"title\":\"e-KYC process\",\"message\":\"Please fill the details and submit\",\"secondPartyDetails\":{\"organization\":\"testing\",\"name\":\"varsha\",\"email\":\"varshaa@marmeto.com\",\"phone\":\"8095379504\"}}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Accept-Encoding":"gzip, compress, deflate, br","Content-Length":"360","Content-Type":"application / vnd.manch.v1 + json","User-Agent":"axios/1.4.0","authorization":"d4c35620f40dd99c5193ae86bcd912b5d23ce51cbd7faf631ed6496b312fbe88","request-id":"2wdc4rtg6yuj"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"/app/api/fill-data/transaction","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"connect ECONNREFUSED ::1:80","name":"Error","stack":"Error: connect ECONNREFUSED ::1:80\n    at AxiosError.from (file:///D:/QC-APP/node_modules/axios/lib/core/AxiosError.js:89:14)\n    at RedirectableRequest.handleRequestError (file:///D:/QC-APP/node_modules/axios/lib/adapters/http.js:591:25)\n    at RedirectableRequest.emit (node:events:513:28)\n    at eventHandlers.<computed> (D:\\QC-APP\\node_modules\\follow-redirects\\index.js:14:24)\n    at ClientRequest.emit (node:events:513:28)\n    at Socket.socketErrorListener (node:_http_client:494:9)\n    at Socket.emit (node:events:513:28)\n    at emitErrorNT (node:internal/streams/destroy:151:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","status":null},"timestamp":"2023-06-07T11:44:32.913Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:09:16.215Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:09:23.434Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:09:25.161Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:09:27.693Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:09:36.812Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:10:18.204Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:11:06.566Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:18:57.276Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:19.478Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:21.112Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:41.531Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:42.939Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:44.001Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:45.454Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-06-07T16:19:47.558Z"}

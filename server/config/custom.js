@@ -3,11 +3,15 @@ import axios from "axios"
 
 const webhooks = [
   { topic: "customers/data_request", endpoint: "/gdpr/customer/data" },
-  // { topic: "customers/redact", endpoint: "/gdpr/customer/delete" },
-  // { topic: "shop/redact", endpoint: "/gdpr/store/delete" },
+  { topic: "customers/redact", endpoint: "/gdpr/customer/delete" },
+  { topic: "shop/redact", endpoint: "/gdpr/store/delete" },
   { topic: "orders/create", endpoint: "/webhooks/ordercreated" },
   { topic: "orders/updated", endpoint: "/webhooks/orderupdated" },
-  // { topic: "app/uninstalled", endpoint: "shopify/uninstall" },
+  { topic: "orders/cancelled", endpoint: "/webhooks/orderdeleted" },
+  { topic: "app/uninstalled", endpoint: "/shopify/uninstall" },
+  {topic: "products/create",  endpoint:"/webhooks/productcreated"},
+  {topic: "products/delete", endpoint: "/webhooks/productdeleted"},
+  {topic: "products/update", endpoint: "/webhooks/productupdated" }
 ];
 
 /**
@@ -19,7 +23,7 @@ export const cronToCheckWebhooks = async () => {
   console.log(stores);
   for (const store of stores) {
     console.log(store);
-    await checkWebhooks(store.storeUrl, store.accessToken);
+    await checkWebhooks(store.store_url, store.access_token);
   }
 };
 
@@ -45,7 +49,7 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
      let result = await axios(options);
      console.log(result.data.webhooks, "1234567898765432123456789")
 
-    //console.log(result.webhooks);
+    console.log(result.webhooks);
     for (const iterator of webhooksList) {
       const flag = result.data.webhooks.find((item) => item.topic == iterator.topic);
       if (!flag) {
@@ -66,7 +70,7 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
           },
         };
         await axios(config).catch((err) => {
-          console.log("-------error in creating webhook-----", err);
+          console.log("-------error in creating webhook-----", err.data);
         });
         
       }

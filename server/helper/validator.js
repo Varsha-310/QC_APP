@@ -21,12 +21,35 @@ const validator = async (body, rules, customMessages, callback) => {
  * @param {*} res
  * @param {*} next
  */
-export const validateApi = async (req, res, next) => {
+export const verifyGetGiftcard = async (req, res, next) => {
   try {
+    console.log("api validation")
     const validationRule = {
-      name: "required|string",
+      store_url: "required|string",
     };
-    await validateMethod(req, res, next, validationRule);
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+
+/**
+ * Validation for  getWalletBalance API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateGetBalance = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      store: "required|string",
+      customerId : "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
@@ -46,6 +69,7 @@ const validateMethod = async (req, res, next, validationRule) => {
       if (!status) {
         res.send(err);
       } else {
+        console.log("api validation done");
         next();
       }
     });
@@ -144,6 +168,7 @@ export const validateCalculateRefundApi = async (req, res, next) => {
  */
 export const verifyShopifyHook = async (req, res, next) => {
   try {
+    console.log("in shopify webhook verification")
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
     
     const body = req.rawBody;
@@ -152,12 +177,11 @@ export const verifyShopifyHook = async (req, res, next) => {
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)
-      .digest("base64");
-    // console.log(digest);
+      .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
-    // console.log(providedHmac);
-
+ console.log(providedHmac, digest)
     if (digest == providedHmac) {
+      console.log("shopy webhook verified");
       next();
     } else {
       res.json(respondUnauthorized("not shopify webhook"));
@@ -180,7 +204,7 @@ export const verifyHmacForApi = (req, res) => {
       .createHmac("sha256", hmac_secret)
       .update(body)
       .digest("base64");
-    const providedHmac = req.headers[""]?.toString();
+    const providedHmac = req.headers["Authorization"]?.toString();
 
     if (digest == providedHmac) {
       next();

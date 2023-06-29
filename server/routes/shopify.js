@@ -1,8 +1,7 @@
 import { Router } from "express";
 import {
   install,
-  installCallback,
-  appUninstalled,
+  installCallback
 } from "../controllers/shopifyController";
 const shopifyRoute = Router();
 
@@ -11,8 +10,5 @@ shopifyRoute.get("/install", install);
 
 // Route of app installation callback
 shopifyRoute.get("/callback", installCallback);
-
-// Route for uninstallation
-shopifyRoute.post("/uninstall", appUninstalled);
 
 export default shopifyRoute;

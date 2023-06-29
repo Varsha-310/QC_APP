@@ -16,6 +16,9 @@ import cron from "node-cron";
 import { logger } from "./helper/utility";
 import { createJwt } from "./helper/jwtHelper";
 import cors from "cors";
+import kycRoute from "./routes/kyc";
+import giftcardRoute from "./routes/giftcard";
+import { cronToCheckWebhooks } from "./config/custom";
 
 export const app = express();
 
@@ -29,7 +32,7 @@ app.use(function (req, res, next) {
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
+    "*"
   );
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
@@ -51,8 +54,8 @@ app.enable("trust proxy", true);
 
 // Api rate limiter
 const apiLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 60, // Limit each IP to 60requests per `window`
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 1, // Limit each IP to 60requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -90,10 +93,16 @@ app.use("/calculateRefund", calculateRefundAmount)
 //Checking giftcard amount
 app.use("/giftcardamount", checkamount)
 
+//kyc routes
+app.use("/kyc", kycRoute);
+
+// giftcard routes
+app.use("/giftcard" , giftcardRoute)
 
 // cron to check webhooks for every store
-cron.schedule("0 */6 * * *", () => {
-  console.log("checking webhooks!");
+cron.schedule("* * * * *", () => {
+  // cronToCheckWebhooks();
+  // console.log("checking webhooks!");
 });
 
 // Database and Port connection
