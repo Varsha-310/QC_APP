@@ -6,7 +6,7 @@ import EditIcon from "../../assets/icons/svgs/Edit.svg";
 import DeleteIcon from "../../assets/icons/svgs/deletefill.svg";
 import DetailIcon from "../../assets/icons/svgs/Msg.svg";
 
-const GiftCardTable = ({ data }) => {
+const GiftCardTable = ({ data,deleteItem }) => {
   return (
     <table className="gift-cards-table">
       <thead>
@@ -26,9 +26,9 @@ const GiftCardTable = ({ data }) => {
             </td>
             <td>{row.created_at.slice(0,10)}</td>
             <td className="gc-table__actions">
-                <Link><img className="gc-table-icons" src={DetailIcon} alt=""/></Link>
+                <Link><img className="gc-table-icons" src={DetailIcon} alt="" /></Link>
                 <Link><img className="gc-table-icons" src={EditIcon} alt=""/></Link>
-                <Link><img className="gc-table-icons" src={DeleteIcon} alt=""/></Link>
+                <Link><img className="gc-table-icons" src={DeleteIcon} alt="" onClick={()=>deleteItem(row.id)}/></Link>
             </td>
           </tr>
         ))}

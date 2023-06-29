@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
 import axios from "axios";
+import { baseUrl1 } from "../../axios";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -88,10 +89,11 @@ const CreateGiftCard = () => {
     const name = event.target.name;
     const value = event.target.value;
 
+    // console.log(index+name+value)
     setCardData((prev) => {
-      let dt = { ...prev };
-      let arr = dt.variants;
-      arr[index][name] = value;
+      const updatedVariants = [...prev.variants];
+      updatedVariants[index][name] = value;
+      return { ...prev, variants: updatedVariants };
     });
   };
 
@@ -121,14 +123,30 @@ const CreateGiftCard = () => {
   const handleFileInput = (event) => {
     // const files = Array.from(event.target.files);
     // setImages(files);
-    console.log(event.target.files);
     const file = event.target.files[0];
 
     if (file) {
       setSelectedImage((prev) => [...prev, file]);
       const reader = new FileReader();
+
       reader.onloadend = () => {
-        setPreviewImage((prev) => [...prev, reader.result]);
+        const img = new Image();
+        img.onload = () => {
+          if (img.width === 600 && img.height === 250) {
+            // Image dimensions are valid
+            // data without base64 prefix
+            console.log(reader.result.split(',')[0])
+            const dataURLWithoutPrefix = reader.result.split(',')[1]; 
+            setPreviewImage((prev) => [...prev, { attachment: dataURLWithoutPrefix}]);
+            // alert("Image dimensions are valid");
+          } else {
+            // Image dimensions are invalid
+            // Perform any error handling or display an error message
+            alert("Image dimensions are invalid");
+          }
+        };
+
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     } else {
@@ -138,8 +156,7 @@ const CreateGiftCard = () => {
   };
 
   const handleSubmit = async () => {
-    const url =
-      "https://3563-106-51-87-194.ngrok-free.app/giftcard/products/add";
+    const url = baseUrl1 + "/giftcard/products/add";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
@@ -149,23 +166,12 @@ const CreateGiftCard = () => {
       const res = await axios.post(
         url,
         {
-          store: "mmtteststore8.myshopify.com",
-          title: "testing",
-          cpg_name: "asdfgh",
-          published: "false",
-          variants: [
-            {
-              option1: "100",
-              price: "100",
-              requires_shipping: false,
-              taxable: false,
-            },
-          ],
-          images: [
-            {
-              src: "https://return-prime-public.s3.us-east-2.amazonaws.com/1591349514508-948441110.png",
-            },
-          ],
+          title: cardData.title,
+          description: cardData.description,
+          published: "true",
+
+          variants: cardData.variants,
+          images: previewImage,
         },
         { headers }
       );
@@ -188,7 +194,7 @@ const CreateGiftCard = () => {
                 type="file"
                 id="file-input"
                 className="file-input"
-                typeof="image/png, image/jpg, image/jpeg"
+                accept="image/png, image/jpg, image/jpeg"
                 // multiple
                 onChange={handleFileInput}
               />
@@ -214,8 +220,7 @@ const CreateGiftCard = () => {
               <FaChevronCircleRight />
             </div>
             <img
-              src={previewImage[selectedImg]}
-              // src={require("../../assets/images/slider/" + images[selectedImg])}
+              src={"data:image/jpeg;base64,"+previewImage[selectedImg]?.attachment}
               alt=""
             />
           </div>
@@ -234,8 +239,7 @@ const CreateGiftCard = () => {
                 previewImage.map((item, index) => (
                   <figure key={index}>
                     <img
-                      // src={require("../../assets/images/slider/" + item)}
-                      src={item}
+                      src={"data:image/jpeg;base64,"+item?.attachment}
                       alt=""
                       onClick={() => setSelectedImg(index)}
                     />
@@ -304,6 +308,7 @@ const CreateGiftCard = () => {
           <label className="gift-card__label">Gift Card Price</label>
           <label></label>
         </div>
+
         {cardData.variants.map((item, index) => (
           <div className="gift-card__variant-grid-row" key={index}>
             <input

@@ -10,11 +10,12 @@ import {
   SectionTitle,
 } from "../../components/BasicComponents";
 import axios from "axios";
+import { baseUrl1 } from "../../axios";
 
 const DashboardHome = () => {
   const handleKYC = async () => {
     console.log("hit");
-    const url = "https://b170-49-207-198-131.ngrok-free.app/kyc/initiate";
+    const url = baseUrl1+"/kyc/initiate";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
@@ -48,15 +49,15 @@ const DashboardHome = () => {
         <section className="status-progress-contain">
           <ul className="status-progress-list">
             <li className="status-progress-item">
-              <Dot size="18px" fill={true} />
+              <Dot size="18px" fill={"true"} />
               <span className="progress-label">Company Details</span>
             </li>
             <li className="status-progress-item">
-              <Dot size="18px" fill={false} />
+              <Dot size="18px" fill={"false"} />
               <span className="progress-label">Plan Selection</span>
             </li>
             <li className="status-progress-item">
-              <Dot size="18px" fill={false} />
+              <Dot size="18px" fill={"false"} />
               <span className="progress-label">Payment Status</span>
             </li>
           </ul>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./styles/RefundSetting.css";
 import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
 import axios from "axios";
+import { baseUrl2 } from "../../axios";
 
 const RefundSetting = () => {
   const [configuration, setConfiguration] = useState();
@@ -41,8 +42,7 @@ const RefundSetting = () => {
 
   // update configuration
   const handleUpdate = async (event) => {
-    const url =
-      "https://5cf1-106-51-87-194.ngrok-free.app/refund/updateSetting";
+    const url = baseUrl2 + "/refund/updateSetting";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
@@ -69,10 +69,10 @@ const RefundSetting = () => {
       }
     }
 
-    if(res.data.message.code ===200){
-      alert("Updated Successfully!")
-    }else{
-      alert("Something went")
+    if (res.data.message.code === 200) {
+      alert("Updated Successfully!");
+    } else {
+      alert("Something went");
     }
 
     console.log(res.data);
