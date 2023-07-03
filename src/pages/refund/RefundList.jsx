@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RefundListTable from "../../components/DataTable/RefundListTable";
 import Pagination from "../../components/Pagination";
+import axios from "axios";
+import { baseUrl2 } from "../../axios";
 
 const RefundList = () => {
-  const [currentPage,setCurrentPage]=useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [refundData, setRefundData] = useState(null);
   const Heading = [
     "Order",
     "Date",
@@ -14,82 +17,36 @@ const RefundList = () => {
     "Refund Mode",
     "Initiate Refund",
   ];
-  const data = [
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "CC",
-      refund_mode: "Store Credit",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "CC",
-      refund_mode: "Store Credit",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "CC",
-      refund_mode: "Store Credit",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "CC",
-      refund_mode: "Store Credit",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "CC",
-      refund_mode: "Store Credit",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "NBI",
-      refund_mode: "Back-to-Source",
-      initiate_refund: "Proceed",
-    },
-    {
-      order: "1234",
-      date: "12-12-23",
-      customer: "Nisha",
-      total: 2000,
-      return_status: "In Process",
-      original_payment: "UPI",
-      refund_mode: "Store Credit",
-      initiate_refund: "NA",
-    },
-  ];
+
+  const updateData = async () => {
+    const url = `${baseUrl2}/stores/getStoreData?page=${currentPage}&limit=10&store_url=qwickcilver-dev.myshopify.com`;
+    const headers = {
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4Nzg3MDYzMn0.RaURbIwQG9v97h02SrsTEhPmSzlksrpD4WbBavcxXYA",
+    };
+
+    // let res;
+    const res = await axios.post(url, {}, { headers });
+    console.log(res);
+
+    const resData = await res.data;
+    console.log(resData.data);
+    setRefundData(resData.data);
+  };
+
+  useEffect(() => {
+    updateData();
+  }, []);
+
   return (
     <div className="refund-list__container " style={{ width: "100%" }}>
-      <RefundListTable headings={Heading} data={data} />
-      <Pagination total={11} perPage={5} setPage={setCurrentPage}/>
+      <RefundListTable headings={Heading} data={refundData?.orders} />
+      <Pagination
+        total={refundData?.totalOrders}
+        perPage={5}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

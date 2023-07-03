@@ -28,6 +28,7 @@ const ResendGiftCard = () => {
       total: "460",
     },
   ];
+  
   return <ResendGiftCardTable data={data} />;
 };
 

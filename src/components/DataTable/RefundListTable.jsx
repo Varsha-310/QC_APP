@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./styles/ListingTable.css";
 import { Link } from "react-router-dom";
 
@@ -14,25 +14,25 @@ const RefundListTable = ({ headings, data }) => {
       </thead>
 
       <tbody>
-        {data.map((row) => (
-          <tr>
-            <td>#{row.order}</td>
-            <td>{row.date}</td>
-            <td>{row.customer}</td>
-            <td>₹ {row.total}</td>
-            <td>{row.return_status}</td>
-            <td>{row.original_payment}</td>
-            <td>{row.refund_mode}</td>
+        {data?.map((row, index) => (
+          <tr key={index}>
+            <td>#{row.id}</td>
+            <td>{row.updated_at?.slice(0,10)}</td>
+            <td>{row.customer?.first_name}</td>
+            <td>₹ {row.total_price}</td>
+            <td>{row.status}</td>
+            <td>{row.payment_gateway_names[0]}</td>
+            <td>{row.Refund_Mode}</td>
             <td>
               <Link
                 className={
-                  row.initiate_refund !== "NA"
+                  row.Initiate_Refund !== "N/A"
                     ? "refund-success"
                     : "refund-unsuccess"
                 }
-                to={`/refunds/${row.order}`}
+                to={`/refunds/${row.id}`}
               >
-                {row.initiate_refund}
+                {row.Initiate_Refund}
               </Link>
             </td>
           </tr>
