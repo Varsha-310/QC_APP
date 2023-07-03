@@ -26,7 +26,7 @@ const GiftCardTable = ({ data,deleteItem }) => {
             </td>
             <td>{row.created_at.slice(0,10)}</td>
             <td className="gc-table__actions">
-                <Link><img className="gc-table-icons" src={DetailIcon} alt="" /></Link>
+                <Link to={"/my-gift-card/"+row.id}><img className="gc-table-icons" src={DetailIcon} alt="" /></Link>
                 <Link><img className="gc-table-icons" src={EditIcon} alt=""/></Link>
                 <Link><img className="gc-table-icons" src={DeleteIcon} alt="" onClick={()=>deleteItem(row.id)}/></Link>
             </td>

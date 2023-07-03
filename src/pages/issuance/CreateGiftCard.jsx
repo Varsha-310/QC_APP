@@ -31,7 +31,8 @@ const CreateGiftCard = () => {
       "Shopping for someone else but not sure what to gift? Give the gift of choice with a gift card . Gift card are delivered by E-mail",
     terms:
       "Shopping for someone else but not sure what to gift? Give the gift of choice with a gift card . Gift card are delivered by E-mail",
-    variants: [{ variant_name: "dummy", variant_price: "1000" }],
+    variants: [{ option1: "dummy", price: "1000" }],
+    validity: "",
   });
 
   const [isValidityCheck, setIsValidityCheck] = useState(false);
@@ -101,10 +102,7 @@ const CreateGiftCard = () => {
   const handleAppend = () => {
     setCardData((prev) => ({
       ...prev,
-      variants: [
-        ...prev.variants,
-        { variant_name: "dummy111", variant_price: "100011" },
-      ],
+      variants: [...prev.variants, { option1: "dummy111", price: "100011" }],
     }));
   };
 
@@ -135,9 +133,12 @@ const CreateGiftCard = () => {
           if (img.width === 600 && img.height === 250) {
             // Image dimensions are valid
             // data without base64 prefix
-            console.log(reader.result.split(',')[0])
-            const dataURLWithoutPrefix = reader.result.split(',')[1]; 
-            setPreviewImage((prev) => [...prev, { attachment: dataURLWithoutPrefix}]);
+            console.log(reader.result.split(",")[0]);
+            const dataURLWithoutPrefix = reader.result.split(",")[1];
+            setPreviewImage((prev) => [
+              ...prev,
+              { attachment: dataURLWithoutPrefix },
+            ]);
             // alert("Image dimensions are valid");
           } else {
             // Image dimensions are invalid
@@ -169,9 +170,10 @@ const CreateGiftCard = () => {
           title: cardData.title,
           description: cardData.description,
           published: "true",
-
           variants: cardData.variants,
           images: previewImage,
+          terms: cardData.terms,
+          validity: cardData.validity,
         },
         { headers }
       );
@@ -220,7 +222,10 @@ const CreateGiftCard = () => {
               <FaChevronCircleRight />
             </div>
             <img
-              src={"data:image/jpeg;base64,"+previewImage[selectedImg]?.attachment}
+              src={
+                "data:image/jpeg;base64," +
+                previewImage[selectedImg]?.attachment
+              }
               alt=""
             />
           </div>
@@ -239,7 +244,7 @@ const CreateGiftCard = () => {
                 previewImage.map((item, index) => (
                   <figure key={index}>
                     <img
-                      src={"data:image/jpeg;base64,"+item?.attachment}
+                      src={"data:image/jpeg;base64," + item?.attachment}
                       alt=""
                       onClick={() => setSelectedImg(index)}
                     />
@@ -285,19 +290,26 @@ const CreateGiftCard = () => {
             onChange={handleChange}
           />
           <div className="gift-card__validity">
-            <input
+            {/* <input
               type="checkbox"
               className="gift-card__validity-checkbox"
               onChange={() => setIsValidityCheck(!isValidityCheck)}
               checked={isValidityCheck}
-            />
+            /> */}
             Gift Card Validity
           </div>
 
           <div className="gift-card__validity">
-            {isValidityCheck && (
-              <CustomDropdown options={["6 months", "12 months"]} />
-            )}
+            <CustomDropdown
+              options={[
+                { title: "6 months", value: "180" },
+                { title: "12 months", value: "365" },
+              ]}
+              setCardData={setCardData}
+              validity={cardData.validity}
+            />
+            {/* {isValidityCheck && (
+            )} */}
           </div>
         </div>
       </div>
@@ -315,16 +327,16 @@ const CreateGiftCard = () => {
               type="text"
               className="gift-card__variant-input-title gift-card__input"
               id={index}
-              name="variant_name"
-              value={item.variant_name}
+              name="option1"
+              value={item.option1}
               onChange={handleVariant}
             />
             <input
               type="number"
               className="gift-card__variant-input-price gift-card__input"
               id={index}
-              name="variant_price"
-              value={item.variant_price}
+              name="price"
+              value={item.price}
               onChange={handleVariant}
             />
             <img src={DeleteIcon} alt="" id={index} onClick={handleDelete} />

@@ -222,3 +222,16 @@ option {
   /* background-color: #f0f0f0; */
   /* border: 1px solid #ccc; */
 }
+
+.gift-card__validity-show{
+  cursor: pointer;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  border: 1.5px solid rgba(182, 32, 40, 0.2);
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 400;
+  font-size: 14px;
+}

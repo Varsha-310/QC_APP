@@ -9,7 +9,7 @@ const RefundSetting = () => {
   console.log(configuration);
 
   const updateConfig = async () => {
-    const url = "https://5cf1-106-51-87-194.ngrok-free.app/refund/getSetting";
+    const url = baseUrl2 + "/refund/getSetting";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
@@ -21,11 +21,11 @@ const RefundSetting = () => {
       { headers }
     );
 
-    const redData = res.data;
+    const resData = res.data;
 
-    console.log(redData);
+    console.log(resData);
     // console.log(redData.message.data.cod)
-    setConfiguration(redData.message.data);
+    setConfiguration(resData.data);
   };
 
   useEffect(() => {
@@ -48,17 +48,19 @@ const RefundSetting = () => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
     };
     const body = {
-      store_url: configuration.store_url,
+      location_id: configuration.location_id,
       prepaid: configuration.prepaid,
       cod: configuration.cod,
       giftCard: configuration.giftCard,
       giftcard_cash: configuration.giftcard_cash,
+      restock_type: configuration.restock_type,
     };
 
     let res = null;
 
     try {
       res = await axios.put(url, body, { headers });
+      console.log(res);
     } catch (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -69,11 +71,11 @@ const RefundSetting = () => {
       }
     }
 
-    if (res.data.message.code === 200) {
-      alert("Updated Successfully!");
-    } else {
-      alert("Something went");
-    }
+    // if (res.data.message === 200) {
+    //   alert("Updated Successfully!");
+    // } else {
+    //   alert("Something went");
+    // }
 
     console.log(res.data);
   };
@@ -100,10 +102,10 @@ const RefundSetting = () => {
               Payment Mode of Returned Order
             </div>
             <div className="refund-setting__headings">
-              Refund Back-to-Source
+              Refund to Store-Credit
             </div>
             <div className="refund-setting__headings">
-              Refund to Store-Credit
+              Refund Back-to-Source
             </div>
           </div>
 
@@ -113,29 +115,22 @@ const RefundSetting = () => {
               type="checkbox"
               className="refund-setting__radio"
               name="prepaid"
-              value={"Back-to-Source"}
+              value={"Store-Credit"}
               onChange={handleChange}
-              checked={configuration.prepaid.toLowerCase() === "back-to-source"}
+              checked={configuration.prepaid.toLowerCase() === "store-credit"}
             />
             <input
               type="checkbox"
               className="refund-setting__radio"
               name="prepaid"
-              value={"Store-Credit"}
+              value={"Back-to-Source"}
               onChange={handleChange}
-              checked={configuration.prepaid.toLowerCase() === "store-credit"}
+              checked={configuration.prepaid.toLowerCase() === "back-to-source"}
             />
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
             <div className="refund-setting__type-name">COD</div>
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="cod"
-              value={"Back-to-Source"}
-              onChange={handleChange}
-              checked={configuration.cod.toLowerCase() === "back-to-source"}
-            />
+
             <input
               type="checkbox"
               className="refund-setting__radio"
@@ -144,10 +139,18 @@ const RefundSetting = () => {
               onChange={handleChange}
               checked={configuration.cod.toLowerCase() === "store-credit"}
             />
+            <input
+              type="checkbox"
+              className="refund-setting__radio"
+              name="cod"
+              value={"Back-to-Source"}
+              onChange={handleChange}
+              checked={configuration.cod.toLowerCase() === "back-to-source"}
+            />
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
             <div className="refund-setting__type-name">Gift Card</div>
-            <div></div>
+
             {/* <input type="checkbox" className="refund-setting__radio" /> */}
             <input
               type="checkbox"
@@ -158,21 +161,13 @@ const RefundSetting = () => {
               id="default"
               checked={configuration.giftCard.toLowerCase() === "store-credit"}
             />
+            <div></div>
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
             <div className="refund-setting__type-name">
               Combination of Prepaid & Gift Card
             </div>
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="giftcard_cash"
-              value={"Back-to-Source"}
-              onChange={handleChange}
-              checked={
-                configuration.giftcard_cash.toLowerCase() === "back-to-source"
-              }
-            />
+
             <input
               type="checkbox"
               className="refund-setting__radio"
@@ -183,13 +178,23 @@ const RefundSetting = () => {
                 configuration.giftcard_cash.toLowerCase() === "store-credit"
               }
             />
+            <input
+              type="checkbox"
+              className="refund-setting__radio"
+              name="giftcard_cash"
+              value={"Back-to-Source"}
+              onChange={handleChange}
+              checked={
+                configuration.giftcard_cash.toLowerCase() === "back-to-source"
+              }
+            />
           </div>
 
-          <CustomContainer margin="50px 0px">
-            <PrimaryBtn $primary onClick={handleUpdate}>
-              Save
-            </PrimaryBtn>
-          </CustomContainer>
+          {/* <CustomContainer margin="50px 0px"> */}
+          <PrimaryBtn $primary onClick={handleUpdate}>
+            Save
+          </PrimaryBtn>
+          {/* </CustomContainer> */}
         </div>
       </div>
     )

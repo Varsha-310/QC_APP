@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import "./styles/CustomDropdown.css";
 
-const CustomDropdown = ({ options }) => {
+const CustomDropdown = ({ options, setCardData, validity }) => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState("Select");
   function handleBlur(e) {
@@ -16,7 +16,7 @@ const CustomDropdown = ({ options }) => {
         }}
         className="dropdown-btn"
       >
-        {selected}
+        {validity ? (validity === "180" ? "6 months" : "12 months") : "Select"}
         <span>{isActive ? <FaCaretUp /> : <FaCaretDown />}</span>
       </div>
       <div
@@ -28,11 +28,12 @@ const CustomDropdown = ({ options }) => {
             key={index}
             className="item"
             onClick={(e) => {
-              setIsSelected(e.target.textContent);
+              // setIsSelected(e.target.textContent);
+              setCardData((prev) => ({ ...prev, validity: item.value }));
               setIsActive(!isActive);
             }}
           >
-            {item}
+            {item.title}
           </div>
         ))}
       </div>
