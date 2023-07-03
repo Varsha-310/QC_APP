@@ -32,7 +32,7 @@ export const createJwt = async (shop) => {
  */
 export const verifyJwt = (req, res, next) => {
   try {
-    console.log("-----in verify jwt----------" , req.headers)
+    // console.log("-----in verify jwt----------" , req.headers)
     if (req.headers.authorization) {
       Jwt.verify(
         req.headers.authorization,
@@ -40,7 +40,7 @@ export const verifyJwt = (req, res, next) => {
         async function (err, payload) {
           if (!err) {
             req.token = payload;
-            console.log(payload , "payload")
+            // console.log(payload , "payload")
             let storeExists = await Store.findOne({
               store_url: payload.store_url,
             });

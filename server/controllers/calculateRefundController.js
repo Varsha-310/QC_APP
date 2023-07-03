@@ -15,12 +15,11 @@ import store from "../models/store";
 
 export const createRefundAmount = async (req, res) => {
     try {
-        const {store_url} = req.token
+        const {store_url} = req.token;
         const { id } = req.body; 
         const storeData = await store.findOne({ store_url });
-        const accessToken = storeData.access_token;     
+        const accessToken = storeData.access_token;   
         const refundAmount = await calculateRefund(id, store_url,storeData,accessToken );
-
          
         //checking setting for store
         const setting = await refundSetting.findOne({ store_url });
@@ -40,6 +39,7 @@ export const createRefundAmount = async (req, res) => {
                     return res.json(respondError("Location ID is required to create a refund", 404));
                 }
                 const refundResponse = await createRefund(id, store_url, refundAmount, setting.restock_type, storeData, accessToken);
+                
                 return res.json(respondWithData("Success",200,refundResponse));
             }     
         }
@@ -79,7 +79,7 @@ export const calculateRefund = async (id, store_url, storeData, accessToken) => 
                 "shipping": shipping,
             }
         });
-      
+
         const options = {
             'method': 'POST',
             'url': `https://${store_url}/admin/api/2023-04/orders/${id}/refunds/calculate.json`,

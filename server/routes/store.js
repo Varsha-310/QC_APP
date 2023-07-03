@@ -6,6 +6,6 @@ import {verifyJwt , createJwt} from "../helper/jwtHelper"
 const storeRoute = Router();
 
 // Route to fetch the store data
-storeRoute.get("/getStoreData",verifyJwt,validategetStoresDataApi, getStoresData);
+storeRoute.post("/getStoreData",verifyJwt,validategetStoresDataApi, getStoresData);
 
 export default storeRoute;
