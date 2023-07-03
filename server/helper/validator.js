@@ -16,7 +16,7 @@ const validator = async (body, rules, customMessages, callback) => {
 };
 
 /**
- * Validation for API
+ * Validation for get giftcard products
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -25,16 +25,15 @@ export const verifyGetGiftcard = async (req, res, next) => {
   try {
     console.log("api validation")
     const validationRule = {
-      store_url: "required|string",
+      store: "required|string",
     };
-    await validateMethod(req,  validationRule, res , next);
+    await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
   }
 };
-
 
 /**
  * Validation for  getWalletBalance API
@@ -49,6 +48,56 @@ export const validateGetBalance = async (req, res, next) => {
       store: "required|string",
       customerId : "required|string"
     };
+    await validateParamsMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+
+
+
+/**
+ * Validation for api
+ * @param {*} req 
+ * @param {*} validationRule 
+ * @param {*} next 
+ */
+const validateParamsMethod = async (req, validationRule,res , next) => {
+  try {
+    await validator(req.query, validationRule, {}, (err, status) => {
+      if (!status) {
+        res.send(err);
+      } else {
+        console.log("api validation done");
+        next();
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation for  createGiftcard API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validatecreateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      title: "required|string",
+      variants: "required|array",
+      images: "required|array"
+
+    };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
@@ -56,6 +105,48 @@ export const validateGetBalance = async (req, res, next) => {
     );
   }
 };
+
+/**
+ * Validation for  updateGiftcard API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateUpdateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      product_id: "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation for  addGiftcardtoWallet API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateAddToWallet = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      gc_pin: "required|string",
+      customer_id : "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
 
 /**
  * Validation for api
