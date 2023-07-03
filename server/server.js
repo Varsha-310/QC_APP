@@ -5,6 +5,7 @@ import express from "express";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr";
+import planRoute from "./routes/plan";
 import shopifyRoute from "./routes/shopify";
 import webhookRoute from "./routes/webhooks";
 import refundSettingRoute from "./routes/refund";
@@ -95,6 +96,9 @@ app.use("/giftcardamount", checkamount)
 
 //kyc routes
 app.use("/kyc", kycRoute);
+
+// plan routes
+app.use("/plan" , planRoute)
 
 // giftcard routes
 app.use("/giftcard" , giftcardRoute)
