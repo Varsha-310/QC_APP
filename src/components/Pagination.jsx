@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   BiChevronsRight,
   BiChevronsLeft,
@@ -12,23 +12,61 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
     return Math.ceil(total / perPage);
   }, [total, perPage]);
 
+  const [currentPagesIndex, setCurrentPagesIndex] = useState(1);
+  // total page 20
+  // pages to show 5
+
+  const pagesIndexSize = 5;
+
+  const startPagesIndex = (currentPagesIndex - 1) * pagesIndexSize;
+  const endPagesIndex = startPagesIndex + pagesIndexSize;
+
   return (
     <div className="pagination__container">
-      <BiChevronLeft className="pagination__chevrons" />
-      <BiChevronsLeft className="pagination__chevrons" />
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-        (page, index) => {
-          return (
-            <button key={index} className="pagination__page-btn" onClick={()=> console.log("hhh")}>
-              {page}
-            </button>
-          );
+      <BiChevronLeft
+        className="pagination__chevrons"
+        onClick={() =>
+          currentPage > 1
+            ? setCurrentPage(currentPage - 1)
+            : alert("You are already in First Page")
         }
-      )}
-      <BiChevronsRight className="pagination__chevrons" />
+      />
+      <BiChevronsLeft
+        className="pagination__chevrons"
+        onClick={() =>
+          currentPagesIndex > 1
+            ? setCurrentPagesIndex(currentPagesIndex - 1)
+            : ""
+        }
+      />
+      {Array.from({ length: totalPages }, (_, index) => index + 1)
+        .slice(startPagesIndex, endPagesIndex)
+        .map((page, index) => {
+          return (
+            <div
+              key={index}
+              className="pagination__page-btn"
+              onClick={() => setCurrentPage(page)}
+            >
+              {page}
+            </div>
+          );
+        })}
+      <BiChevronsRight
+        className="pagination__chevrons"
+        onClick={() =>
+          currentPagesIndex < Math.ceil(totalPages / pagesIndexSize)
+            ? setCurrentPagesIndex(currentPagesIndex + 1)
+            : ""
+        }
+      />
       <BiChevronRight
         className="pagination__chevrons"
-        onClick={() => setCurrentPage("2")}
+        onClick={() =>
+          currentPage < totalPages
+            ? setCurrentPage(currentPage + 1)
+            : alert("You are already in Last Page")
+        }
       />
     </div>
   );

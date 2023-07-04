@@ -1,18 +1,23 @@
 .pagination__container {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .pagination__page-btn {
   border: none;
   appearance: none;
   display: block;
-  padding: 5px;
+  padding: 5px 10px;
   width: auto;
   margin: 0;
   background-color: transparent;
+  cursor: pointer;
   color: var(--frame-color);
+  font-size: 16px;
 }
 .pagination__chevrons {
-  margin: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  /* margin: 10px 5px; */
   color: var(--frame-color);
 }
