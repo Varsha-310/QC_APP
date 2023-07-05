@@ -223,7 +223,7 @@ option {
   /* border: 1px solid #ccc; */
 }
 
-.gift-card__validity-show{
+.gift-card__validity-show {
   cursor: pointer;
   background: white;
   display: flex;
@@ -234,4 +234,15 @@ option {
   color: rgba(0, 0, 0, 0.4);
   font-weight: 400;
   font-size: 14px;
+}
+
+.mandatory {
+  color: #b62028;
+}
+.gift-card__error {
+  color: #b62028;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
 }

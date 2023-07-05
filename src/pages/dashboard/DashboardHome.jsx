@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles/DashboardHome.css";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
@@ -13,9 +13,11 @@ import axios from "axios";
 import { baseUrl1 } from "../../axios";
 
 const DashboardHome = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleKYC = async () => {
-    console.log("hit");
-    const url = baseUrl1+"/kyc/initiate";
+    setIsLoading(true);
+    const url = baseUrl1 + "/kyc/initiate";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
@@ -24,8 +26,10 @@ const DashboardHome = () => {
     const res = await axios.post(url, {}, { headers });
     const resData = res.data;
 
-    window.open(resData.data,"_blank")
-    console.log(resData);
+    setIsLoading(false);
+
+    window.open(resData.data, "_blank");
+    // console.log(resData);
   };
 
   return (

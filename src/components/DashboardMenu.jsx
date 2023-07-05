@@ -18,6 +18,7 @@ import {
   TabItemLable,
   TabSubItemLable,
 } from "./BasicComponents";
+import { Link } from "react-router-dom";
 
 const DashboardMenu = () => {
   const [activeTab, setActiveTab] = useState({});
@@ -50,7 +51,7 @@ const DashboardMenu = () => {
           </li>
 
           <li id="account" className="parent" onClick={handleTab}>
-            <TabBox active={`${activeTab?.account}`} to={"/billings"}>
+            <TabBox active={`${activeTab?.account}`} to={"/my-account"}>
               ACCOUNT SECTION
             </TabBox>
 
@@ -62,7 +63,7 @@ const DashboardMenu = () => {
                   onClick={handleDropDown}
                 >
                   <MyPlanIcon />
-                  <TabItemLable to={"/billings"}>My Plan</TabItemLable>
+                  <TabItemLable to={"/my-account"}>My Plan</TabItemLable>
                   <DownArrowIcon />
                 </SubTabBox>
               </li>
@@ -72,7 +73,7 @@ const DashboardMenu = () => {
                   <li>
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
-                      <TabSubItemLable to={"/billings"}>
+                      <TabSubItemLable to={"/my-invoices"}>
                         My Invoices
                       </TabSubItemLable>
                     </NestedTabBox>
@@ -80,7 +81,7 @@ const DashboardMenu = () => {
                   <li>
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
-                      <TabSubItemLable to={"/transactions"}>
+                      <TabSubItemLable to={"/current-usage"}>
                         Current Usage
                       </TabSubItemLable>
                     </NestedTabBox>
@@ -137,7 +138,9 @@ const DashboardMenu = () => {
           </li>
 
           <li id="storecredit" className="parent" onClick={handleTab}>
-            <TabBox active={`${activeTab?.storecredit}`}>STORE CREDIT</TabBox>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              STORE CREDIT
+            </TabBox>
             <ul>
               <li>
                 <SubTabBox
@@ -149,7 +152,7 @@ const DashboardMenu = () => {
                   <TabItemLable to={"/refunds"}>
                     Issue Store Credits
                   </TabItemLable>
-                  <DownArrowIcon/>
+                  <DownArrowIcon />
                 </SubTabBox>
                 {activeDropDown.credits && (
                   <NestedTabBox>
@@ -173,7 +176,7 @@ const DashboardMenu = () => {
         </ul>
       </nav>
 
-      {/* Tablet view */}
+      {/* -------------------------------- Tablet view ------------------------------------*/}
       <div className="dashboard__tab-menu">
         <ul className="dashboard__menu-items">
           <li id="home" className="parent" onClick={handleTab}>
@@ -183,7 +186,7 @@ const DashboardMenu = () => {
           </li>
 
           <li id="account" className="parent" onClick={handleTab}>
-            <TabBox active={`${activeTab?.account}`} to={"/billings"}>
+            <TabBox active={`${activeTab?.account}`} to={"/my-account"}>
               ACCOUNT SECTION
             </TabBox>
 
@@ -195,7 +198,7 @@ const DashboardMenu = () => {
                   onClick={handleDropDown}
                 >
                   <MyPlanIcon />
-                  <TabItemLable to={"/billings"}>My Plan</TabItemLable>
+                  <TabItemLable to={"/my-account"}>My Plan</TabItemLable>
                   <DownArrowIcon />
                 </SubTabBox>
               </li>
@@ -205,16 +208,16 @@ const DashboardMenu = () => {
                   <li>
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
-                      <TabSubItemLable to={"/billings"}>
-                        Billing Page
+                      <TabSubItemLable to={"/my-invoices"}>
+                        My Invoices
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
                   <li>
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
-                      <TabSubItemLable to={"/transactions"}>
-                        Transaction Page
+                      <TabSubItemLable to={"/current-usage"}>
+                        Current Usage
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
@@ -270,7 +273,9 @@ const DashboardMenu = () => {
           </li>
 
           <li id="storecredit" className="parent" onClick={handleTab}>
-            <TabBox active={`${activeTab?.storecredit}`}>STORE CREDIT</TabBox>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              STORE CREDIT
+            </TabBox>
             <ul>
               <li>
                 <SubTabBox
@@ -282,7 +287,7 @@ const DashboardMenu = () => {
                   <TabItemLable to={"/refunds"}>
                     Issue Store Credits
                   </TabItemLable>
-                  <img src={DownArrowIcon} alt="" />
+                  <DownArrowIcon />
                 </SubTabBox>
                 {activeDropDown.credits && (
                   <NestedTabBox>
