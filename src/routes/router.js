@@ -31,15 +31,15 @@ const router = createBrowserRouter([
         element: <DashboardHome />,
       },
       {
-        path: "/billings",
+        path: "/my-account",
         element: <AccountPage />,
       },
       {
-        path: "/transactions",
+        path: "/my-invoices",
         element: <TransactionHistory />,
       },
       {
-        path: "/transactions/:id",
+        path: "/current-usage",
         element: <TransactionDetail />,
       },
       {

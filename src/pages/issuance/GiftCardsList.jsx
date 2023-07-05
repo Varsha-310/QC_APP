@@ -3,13 +3,17 @@ import GiftCardTable from "../../components/DataTable/GiftCardTable";
 import Pagination from "../../components/Pagination";
 import axios from "axios";
 import { baseUrl1 } from "../../axios";
+import BarLoading from "../../components/Loaders/BarLoading";
 
 const GiftCardsList = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(data);
 
   // fetch card data
   const updateData = async () => {
+    setIsLoading(true);
     const url = `${baseUrl1}/giftcard/products/list?limit=10&page=${currentPage}`;
     const headers = {
       Authorization:
@@ -17,11 +21,13 @@ const GiftCardsList = () => {
     };
     // let res;
     const res = await axios.post(url, {}, { headers });
-    console.log(res);
+    // console.log(res);
 
     const resData = await res.data;
-    console.log(resData.data);
+    // console.log(resData.data);
     setData(resData);
+
+    setIsLoading(false);
   };
 
   // delete card
@@ -44,12 +50,24 @@ const GiftCardsList = () => {
 
   useEffect(() => {
     updateData();
+    window.scrollTo(0, 0);
   }, [currentPage]);
 
   return (
     <div style={{ width: "100%" }}>
-      <GiftCardTable data={data.data} deleteItem={deleteItem} />
-      <Pagination total={data.count} perPage={5} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+      {isLoading ? (
+        <BarLoading />
+      ) : (
+        <>
+          <GiftCardTable data={data.data} deleteItem={deleteItem} />
+          <Pagination
+            total={data.count}
+            perPage={10}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+          />
+        </>
+      )}
     </div>
   );
 };

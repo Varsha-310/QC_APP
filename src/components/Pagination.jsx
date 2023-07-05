@@ -18,7 +18,10 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
 
   const pagesIndexSize = 5;
 
-  const startPagesIndex = (currentPagesIndex - 1) * pagesIndexSize;
+  const startPagesIndex = useMemo(() => {
+    return (currentPagesIndex - 1) * pagesIndexSize;
+  }, []);
+
   const endPagesIndex = startPagesIndex + pagesIndexSize;
 
   return (
@@ -39,19 +42,31 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
             : ""
         }
       />
+      {currentPagesIndex > 1 ? <span className="index-dots">...</span> : ""}
+
       {Array.from({ length: totalPages }, (_, index) => index + 1)
         .slice(startPagesIndex, endPagesIndex)
         .map((page, index) => {
           return (
             <div
               key={index}
-              className="pagination__page-btn"
+              className={`pagination__page-btn ${
+                currentPage == page ? "activePage" : ""
+              }`}
               onClick={() => setCurrentPage(page)}
             >
               {page}
             </div>
           );
         })}
+
+      {/* Math.ceil(totalPages / pagesIndexSize) >= 2 && */}
+      {currentPagesIndex < Math.ceil(totalPages / pagesIndexSize) ? (
+        <span className="index-dots">...</span>
+      ) : (
+        ""
+      )}
+
       <BiChevronsRight
         className="pagination__chevrons"
         onClick={() =>

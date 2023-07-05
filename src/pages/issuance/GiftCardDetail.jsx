@@ -150,10 +150,12 @@ const GiftCardDetail = () => {
             <label className="gift-card__label">Description</label>
             <div className="gift-card__input">{cardData.body_html}</div>
 
-            <label className="gift-card__label">Terms and Condition</label>
-            <div className="gift-card__input">{cardData.terms}</div>
+            <label className="gift-card__label">Terms & Condition</label>
+            <div className="gift-card__input">
+              {cardData.terms ? cardData.terms : "N/A"}
+            </div>
 
-            <div className="gift-card__validity">Gift Card Validity</div>
+            <div className="gift-card__label">Gift Card Validity</div>
 
             <div className="gift-card__validity-show">
               {cardData?.validity || "NA"}

@@ -158,7 +158,7 @@ const RefundSetting = () => {
               value={"Store-Credit"}
               name="giftCard"
               onChange={handleChange}
-              id="default"
+              // id="default"
               checked={configuration.giftCard.toLowerCase() === "store-credit"}
             />
             <div></div>

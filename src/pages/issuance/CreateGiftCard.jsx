@@ -30,10 +30,8 @@ const CreateGiftCard = () => {
   //values
   const [cardData, setCardData] = useState({
     title: "",
-    description:
-      "",
-    terms:
-      "",
+    description: "",
+    terms: "",
     variants: [{ option1: "", price: "" }],
     validity: "",
   });

@@ -16,6 +16,15 @@
   width: 100%;
   padding: 0px 12px;
   border: 2px solid rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+#total::after {
+  content: "(GST not Incl)";
+  position: absolute;
+  /* top: 50%; */
+  left: 110%;
+  width: 100%;
+  color: #00000099;
 }
 .transaction-detail__plan-data {
   display: grid;

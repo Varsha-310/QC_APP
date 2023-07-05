@@ -7,7 +7,7 @@ const AccountPage = () => {
   return (
     <div className="account_page-container" style={{ width: "100%" }}>
       <div className="section-box-container">
-        <div className="section-box-title">Account</div>
+        <div className="section-box-title">My Plan</div>
       </div>
 
       <div className="section-box-container">

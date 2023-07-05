@@ -7,7 +7,19 @@
 .dashboard__tab-menu {
   display: none;
 }
-
+.dashboard__menu-connect {
+  position: relative;
+}
+.dashboard__menu-connect + .dashboard__menu-connect::after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 14.5%;
+  background-color: var(--frame-color);
+  transform: translateY(-50%);
+}
 @media only screen and (max-width: 900px) {
   .dashboard__pc-menu {
     display: none;
@@ -28,5 +40,8 @@
   }
   .dashboard__menu-active {
     left: 0;
+  }
+  .dashboard__menu-connect + .dashboard__menu-connect::after {
+    left: 15%;
   }
 }

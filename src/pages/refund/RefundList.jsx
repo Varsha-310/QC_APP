@@ -3,10 +3,15 @@ import RefundListTable from "../../components/DataTable/RefundListTable";
 import Pagination from "../../components/Pagination";
 import axios from "axios";
 import { baseUrl2 } from "../../axios";
+import BarLoading from "../../components/Loaders/BarLoading";
 
 const RefundList = () => {
+  const PER_PAGE_ITEM = 10;
+
   const [currentPage, setCurrentPage] = useState(1);
   const [refundData, setRefundData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const Heading = [
     "Order",
     "Date",
@@ -19,7 +24,8 @@ const RefundList = () => {
   ];
 
   const updateData = async () => {
-    const url = `${baseUrl2}/stores/getStoreData?page=${currentPage}&limit=10&store_url=qwickcilver-dev.myshopify.com`;
+    setIsLoading(true);
+    const url = `${baseUrl2}/stores/getStoreData?page=${currentPage}&limit=${PER_PAGE_ITEM}&store_url=qwickcilver-dev.myshopify.com`;
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4Nzg3MDYzMn0.RaURbIwQG9v97h02SrsTEhPmSzlksrpD4WbBavcxXYA",
@@ -32,21 +38,29 @@ const RefundList = () => {
     const resData = await res.data;
     console.log(resData.data);
     setRefundData(resData.data);
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
     updateData();
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="refund-list__container " style={{ width: "100%" }}>
-      <RefundListTable headings={Heading} data={refundData?.orders} />
-      <Pagination
-        total={refundData?.totalOrders}
-        perPage={5}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      {isLoading ? (
+        <BarLoading />
+      ) : (
+        <>
+          <RefundListTable headings={Heading} data={refundData?.orders} />
+          <Pagination
+            total={refundData?.totalOrders}
+            perPage={PER_PAGE_ITEM}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 };

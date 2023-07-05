@@ -21,7 +21,7 @@ const TransactionDetail = () => {
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
-        <div className="section-box-title">Account Page</div>
+        <div className="section-box-title">Current Usage</div>
       </div>
 
       {/* plan */}
@@ -106,7 +106,7 @@ const TransactionDetail = () => {
         <div className="gift-card__text-box-container">
           <TextElement align="right">Total</TextElement>
           <div className="gift-card__text-box">
-            <TextElement align="center">₹1600.00</TextElement>
+            <TextElement align="center" id="total">₹1600.00</TextElement>
           </div>
         </div>
       </div>

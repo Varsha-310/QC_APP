@@ -210,7 +210,9 @@ const EditGiftCard = () => {
       variants: cardData.variants,
       //   images:
     };
-    const res = axios.put(url, body, { headers });
+    const res = await axios.put(url, body, { headers });
+
+    const resData = res.data;
   };
 
   return (

@@ -9,7 +9,7 @@ const RefundPage = () => {
   return (
     <div className="refund-page__component component">
       <div className="section-box-container">
-        <div className="section-box-title">
+        <div className="section-box-title bold">
           Refunding Order No: {id} Orders Via Gift Card
         </div>
       </div>
@@ -69,7 +69,7 @@ const RefundPage = () => {
 
           {/* refund quantity */}
           <div className="refund-page__quantity">
-            <div className="refund-page__title">500 x 2</div>
+            <div className="refund-page__title">₹500.00 x 2</div>
           </div>
 
           {/* refund summary */}

@@ -88,3 +88,7 @@
 .refund-page__price-summary-table #total-refund td {
   font-weight: 500;
 }
+
+.bold{
+  font-weight: 600;
+}
