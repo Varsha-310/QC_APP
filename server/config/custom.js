@@ -9,9 +9,9 @@ const webhooks = [
   { topic: "orders/updated", endpoint: "/webhooks/orderupdated" },
   { topic: "orders/cancelled", endpoint: "/webhooks/orderdeleted" },
   { topic: "app/uninstalled", endpoint: "/shopify/uninstall" },
-  {topic: "products/create",  endpoint:"/webhooks/productcreated"},
-  {topic: "products/delete", endpoint: "/webhooks/productdeleted"},
-  {topic: "products/update", endpoint: "/webhooks/productupdated" }
+  { topic: "products/create",  endpoint:"/webhooks/productcreated"},
+  { topic: "products/delete", endpoint: "/webhooks/productdeleted"},
+  { topic: "products/update", endpoint: "/webhooks/productupdated" }
 ];
 
 /**
@@ -46,9 +46,7 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
       url: URL,
     });
      let result = await axios(options);
-     console.log(result.data.webhooks, "1234567898765432123456789")
-
-    console.log(result.webhooks);
+     console.log(result.data.webhooks, "1234567898765432123456789");
     for (const iterator of webhooksList) {
       const flag = result.data.webhooks.find((item) => item.topic == iterator.topic);
       if (!flag) {
