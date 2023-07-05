@@ -1,5 +1,5 @@
 import  Validator from "validatorjs";
-import { respondInternalServerError, respondUnauthorized } from "./response";
+import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response";
 import crypto from "crypto";
 
 /**
@@ -46,7 +46,7 @@ export const validateGetBalance = async (req, res, next) => {
     console.log("api validation")
     const validationRule = {
       store: "required|string",
-      customerId : "required|string"
+      customer_id : "required|string"
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
@@ -69,7 +69,9 @@ const validateParamsMethod = async (req, validationRule,res , next) => {
   try {
     await validator(req.query, validationRule, {}, (err, status) => {
       if (!status) {
-        res.send(err);
+        res.json(
+          respondValidationError(err)
+        );
       } else {
         console.log("api validation done");
         next();
@@ -95,7 +97,8 @@ export const validatecreateGiftcard = async (req, res, next) => {
     const validationRule = {
       title: "required|string",
       variants: "required|array",
-      images: "required|array"
+      images: "required|array",
+      validity: "required|string"
 
     };
     await validateMethod(req,  validationRule, res , next);
@@ -158,7 +161,9 @@ const validateMethod = async (req, validationRule,res , next) => {
   try {
     await validator(req.body, validationRule, {}, (err, status) => {
       if (!status) {
-        res.send(err);
+        res.json(
+          respondValidationError(err)
+        );
       } else {
         console.log("api validation done");
         next();

@@ -24,6 +24,8 @@ giftcardRoute.post("/products/select", verifyJwt, validateUpdateGiftcard , getSe
 // route to add giftcard to wallet
 giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcardtoWallets);
 
+giftcardRoute.post("/wallet/addgc" , validateAddToWallet , addGiftcardtoWallet);
+
 // route to get wallet balance
 giftcardRoute.post("/wallet/balance" , validateGetBalance , getWalletBalance );
 

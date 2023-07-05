@@ -5,7 +5,6 @@ import store from "../models/store";
 import product from "../models/product";
 import { getShopifyObject } from "../helper/shopify";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail";
-import {createVoucher} from "../middleware/qwikcilverHelper"
 
 /**
  * To handle order creation webhook
@@ -43,31 +42,33 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async(input, done) => {
-  console.log("------------order create event-----------------")
+const ordercreateEvent = async (input, done) => {
+  console.log("------------order create event-----------------");
   try {
     const { shop, order } = input;
- 
+
     let isGiftcardOrder = false;
     // let shopName = req.get("x-shopify-shop-domain");
-    let shopName = "mmtteststore8.myshopify.com"
-    console.log("Shop Name",  shopName);
+    let shopName = "mmtteststore8.myshopify.com";
+    console.log("Shop Name", shopName);
     let settings = await store.findOne({ store_url: shopName });
     // if(settings.qwikcilver_web_properties.emailTemplate){
     //      template=settings.qwikcilver_web_properties.emailTemplate;
     // }
 
     if (settings) {
-  
-      let newOrder = order ;
+      let newOrder = order;
       let qwikcilver_gift_cards = [];
       //Check whether the checkout ID is present in the Logs under the event "Redemption"
 
-        //If yes, then mark the redemption as used
-        let shopify = await getShopifyObject(shopName); //Get the shopify object
-        console.log(shopify, "----------------shopify object----------------------")
-        // let transactions = await shopify.transaction.list(newOrder.id); 
-        //List all the transactions of the order
+      //If yes, then mark the redemption as used
+      let shopify = await getShopifyObject(shopName); //Get the shopify object
+      console.log(
+        shopify,
+        "----------------shopify object----------------------"
+      );
+      // let transactions = await shopify.transaction.list(newOrder.id);
+      //List all the transactions of the order
       //   transactions.map(async (transaction) => {
       //     if (transaction.gateway == "gift_card") {
       //       //See if the transaction is made with Shopify Gift Card
@@ -93,35 +94,34 @@ const ordercreateEvent = async(input, done) => {
       //     }
       //   });
       // }
-    
+
       for (let line_item of newOrder.line_items) {
         //Check for the order lineitems whether it contains a QC Giftcard Product
         // gift_card_product = "";
         console.log(line_item);
-        let gift_card_product = await product.findOne({
-          id: line_item.product_id,
-        }).lean(); //Get the product from DB
-        
-        console.log(gift_card_product)
-        if (gift_card_product) {
+        let gift_card_product = await product
+          .findOne({
+            id: line_item.product_id,
+          })
+          .lean(); //Get the product from DB
 
+        console.log(gift_card_product);
+        if (gift_card_product) {
           if (gift_card_product.product_type == "qwikcilver_gift_card") {
             //Check the product type
             isGiftcardOrder = true;
             let cpg_name = "12345";
             if (gift_card_product.tags.length) {
               // for (tag of gift_card_product.tags) {
-                // if (tag.includes("cpgn_")) {
-                //   cpg_name = tag;
-
-                //   cpg_name = cpg_name.replace("cpgn_", "");
-
-                //   cpg_name = cpg_name.replace(/_/g, " ");
-                //   if (cpg_name.includes(",")) {
-                //     cpg_name = cpg_name.split(",")[0];
-                //     console.log(cpg_name);
-                //   }
-                // }
+              // if (tag.includes("cpgn_")) {
+              //   cpg_name = tag;
+              //   cpg_name = cpg_name.replace("cpgn_", "");
+              //   cpg_name = cpg_name.replace(/_/g, " ");
+              //   if (cpg_name.includes(",")) {
+              //     cpg_name = cpg_name.split(",")[0];
+              //     console.log(cpg_name);
+              //   }
+              // }
               // }
             }
             line_item["cpg_name"] = cpg_name;
@@ -206,15 +206,15 @@ const ordercreateEvent = async(input, done) => {
                 // if (
                 //   giftCardDetails.createGiftCardResponse["ResponseCode"] == 0
                 // ) {
-                  // await emailHelper.sendEmailViaSendGrid(
-                  //   giftCardDetails.createGiftCardResponse,
-                  //   newOrder,
-                  //   shopName,
-                  //   email,
-                  //   message,
-                  //   sender,
-                  //   receiver
-                  // );
+                // await emailHelper.sendEmailViaSendGrid(
+                //   giftCardDetails.createGiftCardResponse,
+                //   newOrder,
+                //   shopName,
+                //   email,
+                //   message,
+                //   sender,
+                //   receiver
+                // );
                 // }
                 console.log(
                   "---Done Processing",
@@ -230,9 +230,9 @@ const ordercreateEvent = async(input, done) => {
       }
       if (isGiftcardOrder == true) {
         let data = {
-          "shopName": shopName,
-          "orderId": newOrder.id
-        }
+          shopName: shopName,
+          orderId: newOrder.id,
+        };
         // addTagToOrder(data);
         await sendEmailViaSendGrid(
           // giftCardDetails.createGiftCardResponse,
@@ -243,7 +243,6 @@ const ordercreateEvent = async(input, done) => {
           sender,
           receiver
         );
-
       }
     }
   } catch (error) {
@@ -253,8 +252,6 @@ const ordercreateEvent = async(input, done) => {
   }
 };
 
-
-
 /**
  * Queue to handle webhooks
  */
@@ -263,46 +260,46 @@ const orderCreateQueue = new Queue(ordercreateEvent, {
   retryDelay: 1000,
 });
 
-
 //Webhooks for Product Create Activity
-export const productCreateEvent = async (req, res, next) => {
+export const productCreateEvent = async (req, res) => {
+  try {
+    console.log("productCreateEvent webhook function start");
+    console.log(req.body);
+    //Send a response back immediately, as a delay in response will cause the webhooks to be removed
+    res.status(200).send({
+      success: true,
+      message: "Product Create Event received successfully",
+    });
+    if (req.body.product_type == "qwikcilver_gift_card") {
+      //Save the product to DB only if the product type is "qwikcilver_gift_card"
 
-  console.log("productCreateEvent webhook function start");
-  console.log(req.body);
-  //Send a response back immediately, as a delay in response will cause the webhooks to be removed
-  res.status(200).send({
-    success: true,
-    message: "Product Create Event received successfully",
-  });
-  if (req.body.product_type == "qwikcilver_gift_card") {
-    //Save the product to DB only if the product type is "qwikcilver_gift_card"
-    try {
       let shopName = req.get("x-shopify-shop-domain");
       let settings = await store.findOne({ store_url: shopName });
-      console.log("------------------------settings------------------------", settings, shopName)
-      if (settings ) {
+      console.log(
+        "------------------------settings------------------------",
+        settings,
+        shopName
+      );
+      if (settings) {
         let updatedProduct = req.body;
         updatedProduct.store = shopName;
         new processPrd(updatedProduct, shopName); //Store the product to DB
       }
-    } catch (error) {
-      console.log(error);
-      var err = new Error("Internal Server Error");
-      err.status = 500;
     }
-  }
+  } catch (err) {}
 };
 
 //Webhooks for Product Update Activity
-export const productUpdateEvent = async (req, res, next) => {
+export const productUpdateEvent = async (req, res) => {
   //Send a response back immediately, as a delay in response will cause the webhooks to be removed
-  res.status(200).send({
-    success: true,
-    message: "Product Create Event received successfully",
-  });
-  if (req.body.product_type == "qwikcilver_gift_card") {
-    //Update only if the product type is "qwikcilver_gift_card"
-    try {
+  try {
+    res.status(200).send({
+      success: true,
+      message: "Product Create Event received successfully",
+    });
+    if (req.body.product_type == "qwikcilver_gift_card") {
+      //Update only if the product type is "qwikcilver_gift_card"
+
       let shopName = req.get("x-shopify-shop-domain");
       let settings = await store.findOne({ store_url: shopName });
       if (settings && settings.shopify_private_app) {
@@ -310,13 +307,18 @@ export const productUpdateEvent = async (req, res, next) => {
         updatedProduct.store = shopName;
         new processPrd(updatedProduct, shopName); //Update the data in DB
       }
-    } catch (error) {
-      console.log(error);
     }
+  } catch (err) {
+
   }
 };
 
-//Webhooks for Product Delete Activity
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 export const productDeleteEvent = async (req, res, next) => {
   //Send a response back immediately, as a delay in response will cause the webhooks to be removed
   res.status(200).send({
@@ -328,15 +330,16 @@ export const productDeleteEvent = async (req, res, next) => {
     let shopName = req.get("x-shopify-shop-domain");
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {
-    //   let status = verifyShopifyWebhook(
-    //     req,
-    //     settings.shopify_private_app.shared_secret
-    //   );
-    //   if (!status) {
-    //     console.log("cannot verify request");
-    //     return;
-    //   }
-      product.remove({ id: req.body.id })
+      //   let status = verifyShopifyWebhook(
+      //     req,
+      //     settings.shopify_private_app.shared_secret
+      //   );
+      //   if (!status) {
+      //     console.log("cannot verify request");
+      //     return;
+      //   }
+      product
+        .remove({ id: req.body.id })
         .then((deleted) => console.log(`deleted product: ${req.body.id}`))
         .catch((err) => console.log(err));
     }
@@ -345,19 +348,21 @@ export const productDeleteEvent = async (req, res, next) => {
   }
 };
 
-
-
 function processPrd(updatedProduct, store) {
-  console.log("---------------------------------in create/update product -------------------------------------")
   let product_id = updatedProduct.id;
   updatedProduct.store_url = store;
   updatedProduct.id = parseInt(product_id);
   //Insert if the product details are not found, else update it
-  console.log(updatedProduct, "---------------------", updatedProduct.store_url)
-  product.findOneAndUpdate({ id: product_id }, updatedProduct, {
-    upsert: true,
-    setDefaultsOnInsert: true,
-  })
+  console.log(
+    updatedProduct,
+    "---------------------",
+    updatedProduct.store_url
+  );
+  product
+    .findOneAndUpdate({ id: product_id }, updatedProduct, {
+      upsert: true,
+      setDefaultsOnInsert: true,
+    })
     .then((res2) => {
       console.log("-----------processed", product_id);
     })
