@@ -35,6 +35,54 @@ export const verifyGetGiftcard = async (req, res, next) => {
   }
 };
 
+/**
+ * Validation for API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateAddToWallet = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      store_url: "required|string",
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+export const validateUpdateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      store_url: "required|string",
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+export const validatecreateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      store_url: "required|string",
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
 
 /**
  * Validation for  getWalletBalance API
