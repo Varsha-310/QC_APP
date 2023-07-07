@@ -11,9 +11,14 @@ let storeSchema = mongoose.Schema({
   email: { type: String },
   plan: {
     plan_name: String,
+    expires_at: Date,
     created_at: Date,
     updated_at: Date,
   },
+  
+is_kyc_done: Boolean,
+  is_plan_done: Boolean,
+  is_payment_done : Boolean
 });
 
 export default mongoose.model("Store", storeSchema);

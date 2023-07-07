@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 const TransactionSchema = mongoose.Schema({
-  omni_ref: { type: String, default: null },
+ store_id: {type : string},
+ invoice_number: {type:string},
   status: {
     type: String,
     enum: [

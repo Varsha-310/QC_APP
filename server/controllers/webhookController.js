@@ -308,16 +308,14 @@ export const productUpdateEvent = async (req, res) => {
         new processPrd(updatedProduct, shopName); //Update the data in DB
       }
     }
-  } catch (err) {
-
-  }
+  } catch (err) {}
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 export const productDeleteEvent = async (req, res, next) => {
   //Send a response back immediately, as a delay in response will cause the webhooks to be removed

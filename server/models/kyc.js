@@ -4,12 +4,12 @@ const mongoose = require("mongoose");
 
 var UserSchema = mongoose.Schema({
   store_url: { type: String },
-  kyc_user_data: [
+  merchant_data: [
     {
       name: { type: String },
       email: { type: String },
       phone: { type: Number },
-      organization: { type: String },
+      
     },
   ],
   kyc_response: [

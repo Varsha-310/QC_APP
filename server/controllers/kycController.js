@@ -15,7 +15,7 @@ import store from "../models/store";
 export const initiatieKyc = async (req, res) => {
   try {
     let storeUrl = req.token.store_url;
-    let storeData = await store.findOne({store_url : storeUrl});
+    let storeData = await store.findOne({ store_url: storeUrl });
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
     let securekey = process.env.MANCH_SECURE_KEY;
@@ -44,7 +44,7 @@ export const initiatieKyc = async (req, res) => {
         secondPartyDetails: {
           name: storeData.name,
           email: storeData.email,
-          phone : "987654321"
+          phone: "987654321",
         },
       }),
     };
@@ -66,9 +66,9 @@ export const initiatieKyc = async (req, res) => {
           dispatchResponse.status == "200" &&
           dispatchResponse.data.status == "SUCCESS"
         ) {
-          let storeDetails =await store.updateOne(
+          let storeDetails = await store.updateOne(
             { store_url: storeUrl },
-            { status: "kYC initiated"},
+            { status: "kYC initiated" },
             { upsert: true }
           );
           res.json({
@@ -80,10 +80,8 @@ export const initiatieKyc = async (req, res) => {
     }
   } catch (err) {
     logger.info(err);
-    console.log(err)
-    res.json(
-      respondInternalServerError()
-    );
+    console.log(err);
+    res.json(respondInternalServerError());
   }
 };
 
@@ -115,8 +113,8 @@ export const fillForm = async (formUrl, shop) => {
         shopifyID: shop.shopify_id,
         firstName: shop.name,
         lastName: "qwertyu",
-        mobile : "987654321",
-        queryParam: "asdfghjkl"
+        mobile: "987654321",
+        queryParam: "asdfghjkl",
       }),
     };
     let result = await axios(formData);
@@ -168,20 +166,22 @@ export const dispatchTransaction = async (txnId) => {
   }
 };
 
-
-export const statusKyc = (req,res) => {
-  try{
-   const  checkStatus = store.findOne({ store_url :  req.token.store_url});
-   res.json({
-    ...respondWithData("store status"),
-    data: checkStatus.status
-  });
-  }
-  catch(err){
+export const statusKyc = async (req, res) => {
+  try {
+    let stores = req.token.store_url;
+    console.log(stores);
+    const checkStatus = await store.findOne({ store_url: stores });
+    console.log(checkStatus);
+    res.json({
+      ...respondWithData("Merchant status"),
+      data: {
+        kyc: checkStatus.is_kyc_done,
+        plan: checkStatus.is_plan_done,
+        payment: checkStatus.is_payment_done,
+      },
+    });
+  } catch (err) {
     console.log(err);
-    res.json(
-      respondInternalServerError()
-    );
+    res.json(respondInternalServerError());
   }
-
-}
+};

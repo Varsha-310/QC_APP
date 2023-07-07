@@ -7,6 +7,7 @@ var productSchema = mongoose.Schema({
   id: { type: Number,  unique: true  },
   title: { type: String },
   body_html: { type: String },
+  validity: {type : Number},
   vendor: { type: String },
   product_type: { type: String },
   created_at: { type: Date },

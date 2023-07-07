@@ -29,6 +29,9 @@ giftcardRoute.post("/wallet/addgc" , validateAddToWallet , addGiftcardtoWallet);
 // route to get wallet balance
 giftcardRoute.post("/wallet/balance" , validateGetBalance , getWalletBalance );
 
+// route to resend email
+giftcardRoute.post("/email" , validateAddToWallet , getWalletBalance );
+
 
 
 export default giftcardRoute;

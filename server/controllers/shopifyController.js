@@ -109,7 +109,7 @@ export const installCallback = async (req, res) => {
 export const saveStoreData = async (shopData, shop, accessToken) => {
   try {
     const data = {
-      shopify_id :shopData.shop.id,
+      shopify_id: shopData.shop.id,
       name: shopData.shop.name,
       email: shopData.shop.email,
       store_url: shop.toString(),
@@ -118,13 +118,16 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       country_code: shopData.shop?.country_code.toLowerCase(),
     };
     console.log(data);
-    let storeDetails =await store.updateOne(
+    let storeDetails = await store.updateOne(
       { store_url: data.store_url },
       { $set: data },
       { upsert: true }
     );
 
-    console.log(storeDetails, "---------------------saved to db------------------")
+    console.log(
+      storeDetails,
+      "---------------------saved to db------------------"
+    );
     return true;
   } catch (error) {
     console.log(error);
@@ -155,7 +158,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
 
     shopData =
       shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
-    console.log("----------------------------",shopData)
+    console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {
     res.json(

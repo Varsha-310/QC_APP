@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 
 const SessionSchema = mongoose.Schema({
-  checkout_id: { type: String, default: null },
   gid: { type: String, default: null },
-  omni_ref: { type: String, default: null },
   request_id: { type: String },
   status: {
     type: String,
