@@ -1,10 +1,10 @@
-import { getShopifyObject } from "../helper/shopify";
-import Product from "../models/product";
-import { respondInternalServerError, respondSuccess , respondUnauthorized , respondNotFound , respondWithData} from "../helper/response"; 
-import Store from "../models/store";
+import { getShopifyObject } from "../helper/shopify.js";
+import Product from "../models/product.js";
+import { respondInternalServerError, respondSuccess , respondUnauthorized , respondNotFound , respondWithData} from "../helper/response.js"; 
+import Store from "../models/store.js";
 import axios from "axios";
 import  base64 from "base64-js";
-import Wallet from "../models/wallet";
+import Wallet from "../models/wallet.js";
 
 
 //Create QC Giftcard Product

@@ -1,4 +1,4 @@
-import store from "../models/store";
+import store from "../models/store.js";
 import axios from "axios"
 
 const webhooks = [

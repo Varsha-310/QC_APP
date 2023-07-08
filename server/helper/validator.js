@@ -1,5 +1,5 @@
 import  Validator from "validatorjs";
-import { respondInternalServerError, respondUnauthorized } from "./response";
+import { respondInternalServerError, respondUnauthorized } from "./response.js";
 import crypto from "crypto";
 
 /**

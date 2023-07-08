@@ -1,6 +1,6 @@
 import  Jwt  from "jsonwebtoken";
-import store from "../models/store";
-import { respondInternalServerError, respondUnauthorized } from "./response";
+import store from "../models/store.js";
+import { respondInternalServerError, respondUnauthorized } from "./response.js";
 
 /**
  * Create jwt token for api authorization

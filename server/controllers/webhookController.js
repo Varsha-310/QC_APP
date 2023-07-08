@@ -1,11 +1,11 @@
-import { respondSuccess } from "../helper/response";
-import { logger } from "../helper/utility";
+import { respondSuccess } from "../helper/response.js";
+import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
-import store from "../models/store";
-import product from "../models/product";
-import { getShopifyObject } from "../helper/shopify";
-import { sendEmailViaSendGrid } from "../middleware/sendEmail";
-import {createVoucher} from "../middleware/qwikcilverHelper"
+import store from "../models/store.js";
+import product from "../models/product.js";
+import { getShopifyObject } from "../helper/shopify.js";
+import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+import {createVoucher} from "../middleware/qwikcilverHelper.js"
 
 /**
  * To handle order creation webhook

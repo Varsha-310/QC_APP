@@ -1,13 +1,13 @@
 import axios from "axios";
-import store from "../models/store";
+import store from "../models/store.js";
 import {
   respondInternalServerError,
   respondNotAcceptable,
-} from "../helper/response";
+} from "../helper/response.js";
 import cookie from "cookie";
 import crypto from "crypto";
-import { checkWebhooks } from "../config/custom";
-import { createJwt } from "../helper/jwtHelper";
+import { checkWebhooks } from "../config/custom.js";
+import { createJwt } from "../helper/jwtHelper.js";
 
 /**
  * Method for installation method

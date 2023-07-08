@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { addGiftcardtoWallet, createGiftcardProducts, getGiftcardProducts , updateGiftcardProduct } from "../controllers/giftcard";
-import { verifyJwt } from "../helper/jwtHelper";
-import {  validateGetBalance , validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator";
-import { getWalletBalance } from "../controllers/giftcard";
+import { addGiftcardtoWallet, createGiftcardProducts, getGiftcardProducts , updateGiftcardProduct } from "../controllers/giftcard.js";
+import { verifyJwt } from "../helper/jwtHelper.js";
+import {  validateGetBalance , validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator.js";
+import { getWalletBalance } from "../controllers/giftcard.js";
 
 const giftcardRoute = Router();
 

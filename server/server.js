@@ -4,15 +4,15 @@ dotenv.config();
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
-import gdprRoute from "./routes/gdpr";
-import shopifyRoute from "./routes/shopify";
-import { respondSuccess, respondInternalServerError } from "./helper/response";
+import gdprRoute from "./routes/gdpr.js";
+import shopifyRoute from "./routes/shopify.js";
+import { respondSuccess, respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
-import { logger } from "./helper/utility";
-import kycRoute from "./routes/kyc";
-import webhookRoute from "./routes/webhooks";
-import giftcardRoute from "./routes/giftcard";
-import { cronToCheckWebhooks } from "./config/custom";
+import { logger } from "./helper/utility.js";
+import kycRoute from "./routes/kyc.js";
+import webhookRoute from "./routes/webhooks.js";
+import giftcardRoute from "./routes/giftcard.js";
+import { cronToCheckWebhooks } from "./config/custom.js";
 
 export const app = express();
 

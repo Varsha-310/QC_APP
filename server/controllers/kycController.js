@@ -1,7 +1,7 @@
 import axios from "axios";
-import { respondInternalServerError } from "../helper/response";
+import { respondInternalServerError } from "../helper/response.js";
 import crypto from "crypto";
-import { logger } from "../helper/utility";
+import { logger } from "../helper/utility.js";
 
 /**
  * Method to initiate kyc
