@@ -36,24 +36,11 @@ export const verifyGetGiftcard = async (req, res, next) => {
 };
 
 /**
-<<<<<<< HEAD
- * Validation for API
-=======
  * Validation to resend email
->>>>>>> db59a6f235ffad2222f4e57953ef2737a59a5b24
  * @param {*} req
  * @param {*} res
  * @param {*} next
  */
-<<<<<<< HEAD
-export const validateAddToWallet = async (req, res, next) => {
-  try {
-    console.log("api validation")
-    const validationRule = {
-      store_url: "required|string",
-    };
-    await validateMethod(req,  validationRule, res , next);
-=======
 export const verifySendEmail = async (req, res, next) => {
   try {
     console.log("api validation")
@@ -61,45 +48,12 @@ export const verifySendEmail = async (req, res, next) => {
       order_id: "required|string",
     };
     await validateParamsMethod(req,  validationRule, res , next);
->>>>>>> db59a6f235ffad2222f4e57953ef2737a59a5b24
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
   }
 };
-<<<<<<< HEAD
-
-export const validateUpdateGiftcard = async (req, res, next) => {
-  try {
-    console.log("api validation")
-    const validationRule = {
-      store_url: "required|string",
-    };
-    await validateMethod(req,  validationRule, res , next);
-  } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
-};
-
-export const validatecreateGiftcard = async (req, res, next) => {
-  try {
-    console.log("api validation")
-    const validationRule = {
-      store_url: "required|string",
-    };
-    await validateMethod(req,  validationRule, res , next);
-  } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
-};
-
-=======
->>>>>>> db59a6f235ffad2222f4e57953ef2737a59a5b24
 
 /**
  * Validation for  getWalletBalance API
