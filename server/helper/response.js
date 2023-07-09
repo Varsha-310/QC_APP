@@ -36,7 +36,7 @@ export const respondCreated = (msg) => {
  * @param msg
  * @returns {json}
  */
-export const respondSuccess = (msg , data) => {
+export const respondSuccess = (msg, data) => {
   return respond(true, msg, 200);
 };
 
@@ -124,16 +124,12 @@ export const respondInternalServerError = () => {
   return respond(false, errorMsg["500"], 500);
 };
 
-// module.exports = {
-//     respondInternalServerError,
-//     respondNotFound,
-//     respondForbidden,
-//     respondUnauthorized,
-//     respondCreated,
-//     respondSuccess,
-//     respondWithData,
-//     respondError,
-//     multipleResponse,
-//     respondNotAcceptable,
-//     errorMsg
-// }
+/**
+ * return route not found error
+ *
+ * @param {string} msg
+ * @returns {json}
+ */
+export const respondValidationError = (msg) => {
+  return respond(false, msg, 422);
+};

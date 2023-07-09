@@ -6,7 +6,7 @@ import { appUninstalled } from "../controllers/shopifyController.js";
 const webhookRoute = Router();
 
 // api for order create webhook
-webhookRoute.post("/ordercreated", orderCreated);
+webhookRoute.post("/ordercreated",verifyShopifyHook, orderCreated);
 
 // api for order update webhook
 webhookRoute.post("/orderupdated", verifyShopifyHook, orderUpdated);

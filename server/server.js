@@ -5,6 +5,7 @@ import express from "express";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
+import planRoute from "./routes/plan.js";
 import shopifyRoute from "./routes/shopify.js";
 import { respondSuccess, respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
@@ -12,7 +13,10 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
+<<<<<<< HEAD
 import { cronToCheckWebhooks } from "./config/custom.js";
+=======
+>>>>>>> db59a6f235ffad2222f4e57953ef2737a59a5b24
 
 export const app = express();
 
@@ -69,6 +73,9 @@ app.use("/webhooks",webhookRoute);
 
 //kyc routes
 app.use("/kyc", kycRoute);
+
+// plan routes
+app.use("/plan" , planRoute)
 
 // giftcard routes
 app.use("/giftcard" , giftcardRoute)
