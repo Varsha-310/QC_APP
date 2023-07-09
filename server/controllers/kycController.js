@@ -2,10 +2,10 @@ import axios from "axios";
 import {
   respondInternalServerError,
   respondWithData,
-} from "../helper/response";
+} from "../helper/response.js";
 import CryptoJS from "crypto-js";
-import { logger } from "../helper/utility";
-import store from "../models/store";
+import { logger } from "../helper/utility.js";
+import store from "../models/store.js";
 
 /**
  * Method to initiate kyc
@@ -178,7 +178,9 @@ export const statusKyc = async (req, res) => {
         kyc: checkStatus.is_kyc_done,
         plan: checkStatus.is_plan_done,
         payment: checkStatus.is_payment_done,
-      },
+        email:checkStatus.email,
+        name: checkStatus.name
+      }
     });
   } catch (err) {
     console.log(err);

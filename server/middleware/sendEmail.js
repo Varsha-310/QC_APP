@@ -1,5 +1,5 @@
 import NodeMailer from "nodemailer";
-import email_template from "../views/email_template";
+import email_template from "../views/email_template.js";
 
 export const sendEmailViaSendGrid = async (
   // giftCardDetails,

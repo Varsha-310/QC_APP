@@ -1,6 +1,6 @@
-import { respondInternalServerError } from "../helper/response";
+import { respondInternalServerError } from "../helper/response.js";
 import axios from "axios";
-import store from "../models/store";
+import store from "../models/store.js";
 
 export const createGiftcard = async () => {
   try {

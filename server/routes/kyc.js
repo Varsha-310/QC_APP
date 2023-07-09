@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {  initiatieKyc , statusKyc } from "../controllers/kycController";
-import { verifyJwt } from "../helper/jwtHelper";
+import {  initiatieKyc , statusKyc } from "../controllers/kycController.js";
+import { verifyJwt } from "../helper/jwtHelper.js";
 
 const kycRoute = Router();
 

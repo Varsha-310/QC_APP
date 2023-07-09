@@ -1,10 +1,10 @@
 import { respondSuccess } from "../helper/response";
 import { logger } from "../helper/utility";
 import Queue from "better-queue";
-import store from "../models/store";
-import product from "../models/product";
-import { getShopifyObject } from "../helper/shopify";
-import { sendEmailViaSendGrid } from "../middleware/sendEmail";
+import store from "../models/store.js";
+import product from "../models/product.js";
+import { getShopifyObject } from "../helper/shopify.js";
+import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 
 /**
  * To handle order creation webhook

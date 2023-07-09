@@ -1,5 +1,5 @@
 import  Validator from "validatorjs";
-import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response";
+import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response.js";
 import crypto from "crypto";
 
 /**
@@ -26,6 +26,26 @@ export const verifyGetGiftcard = async (req, res, next) => {
     console.log("api validation")
     const validationRule = {
       store: "required|string",
+    };
+    await validateParamsMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation to resend email
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const verifySendEmail = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      order_id: "required|string",
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
@@ -139,7 +159,9 @@ export const validateAddToWallet = async (req, res, next) => {
   try {
     console.log("api validation")
     const validationRule = {
-      order_id : "required|string"
+      customer_id : "required|string",
+      store : "required|string"
+
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {

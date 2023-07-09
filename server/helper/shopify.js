@@ -1,5 +1,5 @@
 import Shopify from 'shopify-api-node';
-import Store from "../models/store";
+import Store from "../models/store.js";
 
 /**
  * Get shopify object

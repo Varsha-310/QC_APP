@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   install,
   installCallback
-} from "../controllers/shopifyController";
+} from "../controllers/shopifyController.js";
 
 const shopifyRoute = Router();
 

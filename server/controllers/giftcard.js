@@ -1,5 +1,5 @@
-import { getShopifyObject } from "../helper/shopify";
-import Product from "../models/product";
+import { getShopifyObject } from "../helper/shopify.js";
+import Product from "../models/product.js";
 import {
   respondInternalServerError,
   respondSuccess,
@@ -7,8 +7,8 @@ import {
   respondNotFound,
   respondWithData,
   respondForbidden,
-} from "../helper/response";
-import Store from "../models/store";
+} from "../helper/response.js";
+import Store from "../models/store.js";
 
 import Wallet from "../models/wallet";
 import {
@@ -16,6 +16,9 @@ import {
   addToWallet,
   createWallet,
 } from "../middleware/qwikcilverHelper";
+import wallet from "../models/wallet";
+import wallet_history from "../models/wallet_history";
+import orders from "../models/orders";
 
 /**
  * To create gifcard product
@@ -131,7 +134,7 @@ export const deleteGiftcardProducts = async (req, res) => {
  * @param {*} res
  * @param {*} next
  */
-export const getGiftcardProducts = async (req, res, next) => {
+export const getGiftcardProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Current page number (default: 1)
     const limit = parseInt(req.query.limit) || 10; // Number of items per page (default: 10)
@@ -242,10 +245,9 @@ export const addGiftcardtoWallets = async (req, res) => {
   try {
     let { customer_id, gc_pin, store } = req.body;
 
-    if ((gc_pin == "123456789", customer_id == "706173226297")) {
+    if ((gc_pin == "123456789", customer_id == "7061732262207")) {
       res.json({
         ...respondWithData("card has been added to wallet"),
-        data: "BW5RNW0YENO02GV9V",
       });
     } else {
       res.json(respondForbidden("invalid card credentials"));
@@ -265,12 +267,14 @@ export const addGiftcardtoWallets = async (req, res) => {
 export const getWalletBalance = async (req, res) => {
   try {
     let { customer_id, store } = req.query;
+    console.log(req.query);
     let storeExists = await Store.findOne({ store_url: store });
     console.log(storeExists);
     if (storeExists) {
       let walletExists = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
+      console.log("-----------------", walletExists);
       if (walletExists) {
         let balanceFetched = await fetchBalance(walletExists.wallet_id);
         console.log(balanceFetched);
@@ -295,8 +299,165 @@ export const getWalletBalance = async (req, res) => {
   }
 };
 
-export const resendEmail = (req, res) => {
+export const resendEmail = async (req, res) => {
   try {
+    const orderExists = await orders.findOne({ store_url : req.token.store_url ,id : req.params.order_id});
+    console.log("-------------", orderExists)
+    if(orderExists){
+      res.json(respondSuccess("email sent successfully"))
+    }
+    else{
+      res.json(respondNotFound("order does not exists"))
+    }
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * orders sent as gift
+ * @param {*} req
+ * @param {*} res
+ */
+// export const giftCardOrders = async (req, res) => {
+//   try {
+//     console.log(req.token);
+//     const gcOrders = await orders.find({
+//       store_url: req.token.store_url,
+      
+//     });
+//     console.log(gcOrders.length);
+
+//     const sortedOrders = gcOrders.map(obj => {
+//       return {
+//         id: obj.id,
+//         customer: obj.customer,
+//         created_at : obj.created_at
+//       };
+//     });
+    
+
+//     console.log(sortedOrders, "----------------------------")
+//     res.json({
+//       ...respondWithData("fetched orders"),
+//       data:sortedOrders,
+//       total :sortedOrders.length
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     res.json(
+//       respondInternalServerError("Something went wrong try after sometime")
+//     );
+//   }
+// };
+export const giftCardOrders = async (req, res) => {
+  try {
+    console.log(req.token);
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const limit= parseInt(req.query.limit) || 10; // Number of items per page
+
+    const gcOrders = await orders.find({
+      store_url: req.token.store_url,
+    });
+
+    console.log(gcOrders.length);
+
+    // Sort the orders as required
+    // gcOrders.sort((a, b) => {
+    //   // Replace the comparison logic with your desired sorting criteria
+    //   if (a.created_at < b.created_at) {
+    //     return -1;
+    //   }
+    //   if (a.created_at > b.created_at) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // });
+
+    // Calculate the start and end index for the current page
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Extract the orders for the current page
+    const pagedOrders = gcOrders.slice(startIndex, endIndex);
+
+    const sortedOrders = pagedOrders.map(obj => {
+      return {
+        id: obj.id,
+        customer: obj.customer,
+        created_at: obj.created_at
+      };
+    });
+
+    console.log(sortedOrders, "----------------------------");
+    res.json({
+      ...respondWithData("fetched orders"),
+      data: sortedOrders,
+      total: gcOrders.length
+    });
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong, try again later")
+    );
+  }
+};
+
+
+/**
+ * to fetch wallet trasnaction
+ * @param {*} req
+ * @param {*} res
+ */
+export const walletTransaction = async (req, res) => {
+  try {
+    const { store, customer_id } = req.body;
+    console.log(store, customer_id);
+    // let storeExists = await Store.findOne({ "store_url": store });
+    // console.log(storeExists);
+    // if (storeExists) {
+    // const transactions = await wallet_history.findOne({"customer_id" : 7061732262207});
+    if (
+      store == "meenakhi-qwikcilver-testing.myshopify.com" &&
+      customer_id == "7061732262207"
+    ) {
+      res.json({
+        ...respondWithData("fetched wallet transaction"),
+        data: {
+          balance: 1000,
+          transactions: [
+            {
+              transaction_type: "credit",
+              amount: 500,
+              expires_at: "2023-07-01T07:15:50.000+00:00",
+            },
+            {
+              transaction_type: "debit",
+              amount: 300,
+            },
+            {
+              transaction_type: "credit",
+              amount: 500,
+              expires_at: "2024-05-01T07:15:50.000+00:00",
+            },
+            {
+              transaction_type: "debit",
+              amount: 300,
+            },
+            {
+              transaction_type: "credit",
+              amount: 600,
+              expires_at: "2024-05-01T07:15:50.000+00:00",
+            },
+          ],
+        },
+      });
+    } else {
+      res.json(respondUnauthorized("wallet does not exists"));
+    }
   } catch (err) {
     console.log(err);
     res.json(
