@@ -1,8 +1,9 @@
 import axios from "axios";
-import { respondInternalServerError } from "../helper/response.js";
-import crypto from "crypto";
+import { respondInternalServerError, respondSuccess, respondWithData } from "../helper/response.js";
+// import crypto from "crypto";
+import CryptoJS from "crypto-js";
 import { logger } from "../helper/utility.js";
-
+import plan from "../models/plan.js";
 /**
  * Method to initiate kyc
  * @param {*} req
@@ -10,22 +11,18 @@ import { logger } from "../helper/utility.js";
  */
 export const initiatieKyc = async (req, res) => {
   try {
-    let key = process.env.MANCH_SECURE_KEY;
-    let message = "Please fill the details and submit";
-    const hmac = crypto.createHmac("sha256", key);
-    hmac.update(message);
-    const hmacDigest = hmac.digest("hex");
-    console.log(hmacDigest, "hmac for kyc auth");
-
-    const { email, phone, store, name } = req.body;
-    logger.info("kyc transaction requested for", email, store);
+    let time = Date.now().toString();
+    let orgId = process.env.KYC_ORG_KEY
+    let securekey = process.env.MANCH_SECURE_KEY;
+    logger.info("kyc transaction requested for");
     const transactionData = {
       method: "POST",
       url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction`,
       headers: {
-        "Content-Type": "application / vnd.manch.v1 + json",
-        "request-id": "2wdc4rtg6yuj",
-        authorization: hmacDigest,
+        "Content-Type": "application/vnd.manch.v1+json",
+        "request-id": time,
+        "Authorization": "HS256"+ " " + orgId + ":" + CryptoJS.HmacSHA256(orgId + time, securekey),
+       
       },
       data: JSON.stringify({
         companyKey: process.env.COMPANY_KEY,
@@ -36,17 +33,42 @@ export const initiatieKyc = async (req, res) => {
         title: "e-KYC process",
         message: "Please fill the details and submit",
         secondPartyDetails: {
-          organization: store,
-          name: name,
-          email: email,
-          phone: phone,
+          organization: "tetsing",
+          name: "varsha",
+          email: "varshaa@test.com",
+          phone: "123456789",
         },
       }),
     };
-    const result = await axios(transactionData);
-    console.log(result);
+    console.log(transactionData)
+     let result =await axios(transactionData)
+ 
+    console.log("result +++++++++++++++++++++++++++++++++++++++",result);
+if(result.status == "200" && result.data.transactionId){
+  let docFillUrls = result.data.docFillUrls;
+  let txnId = result.data.transactionId;
+  const keys = Object.keys(docFillUrls);
+  const dynamicKey = keys.find((key, index) => index === 0);
+  const formUrl = docFillUrls[dynamicKey];
+  console.log(formUrl);
+  
+  let formresult = await fillForm(formUrl);
+  console.log(formresult, "------------------");
+  if(formresult.status == 200 && formresult.data.status == "SUCCESS"){
+    let dispatchResponse = await dispatchTransaction(txnId);
+    console.log(dispatchResponse);
+    if(dispatchResponse.status == "200" && dispatchResponse.data.status == "SUCCESS"){
+      res.json({
+        ...respondWithData("KYC URL"),
+        data: dispatchResponse.data.signURL
+      });
+    }
+  }
+  
+}
+
   } catch (err) {
-    console.log(err);
+    console.log("err--------------------------------------",err);
     logger.info(err);
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
@@ -54,23 +76,35 @@ export const initiatieKyc = async (req, res) => {
   }
 };
 
+
 /**
  * Method to submit the form filled
  * @param {*} data
  * @param {*} res
  */
-export const fillForm = (data, res) => {
+export const fillForm = async(formUrl) => {
   try {
-    let { transaction_id, template_id, doctype_id } = data;
-    logger.info("form fill api called for", transaction_id);
+    let time = Date.now().toString();
+    let orgId = process.env.KYC_ORG_KEY
+    let securekey = process.env.MANCH_SECURE_KEY;
+    // logger.info("form fill api called for", transaction_id);
     const formData = {
       method: "PUT",
-      url: `${process.env.KYC_BASE_URL}/app/fill-data/transaction/${transaction_id}/template/${template_id}/docType/${doctype_id}`,
+      url : formUrl,
       headers: {
-        "Content-Type": application / vnd.manch.v1 + json,
+        "Content-Type": "application/vnd.manch.v1+json",
+        "request-id": time,
+        "Authorization": "HS256"+ " " + orgId + ":" + CryptoJS.HmacSHA256(orgId + time, securekey),
       },
-      data: JSON.stringify({}),
+      data: JSON.stringify({
+        "shopifyID":"SHOP256",
+        "pan":"AYDPK1509P",
+        "firstName":"varsha",
+        "lastName":"Antargangi"
+      }),
     };
+    let result =await axios(formData)
+  return result;
   } catch (err) {
     console.log(err);
     logger.info(err);
@@ -85,26 +119,32 @@ export const fillForm = (data, res) => {
  * @param {*} data
  * @param {*} res
  */
-export const dispatchTransaction = (data, res) => {
+export const dispatchTransaction = async (txnId) => {
   try {
-    
-    let { transaction_id } = data;
-    logger.info("dispatch api called for", transaction_id);
+    let time = Date.now().toString();
+    let orgId = process.env.KYC_ORG_KEY
+    let securekey = process.env.MANCH_SECURE_KEY;
+
+    logger.info("dispatch api called for", txnId);
     const dispatchData = {
       method: "PATCH",
-      url: `${process.env.KYC_BASE_URL}//fill-data/transaction/${transaction_id}`,
+      url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction/${txnId}`,
       headers: {
-        "Content-Type": application / vnd.manch.v1 + json,
+        "Content-Type": "application/vnd.manch.v1+json",
+        "request-id": time,
+        "Authorization": "HS256"+ " " + orgId + ":" + CryptoJS.HmacSHA256(orgId + time, securekey)
       },
       data: JSON.stringify({
         action: "SENT_TO_SECOND_PARTY",
       }),
     };
+    let result = await axios(dispatchData);
+    console.log(dispatchData)
+  return result;
   } catch (err) {
     console.log(err);
     logger.info(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    
   }
 };
+
