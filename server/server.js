@@ -13,7 +13,6 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
-import { cronToCheckWebhooks } from "./config/custom.js";
 
 export const app = express();
 
