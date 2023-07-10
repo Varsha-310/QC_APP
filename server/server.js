@@ -4,26 +4,18 @@ dotenv.config();
 import express from "express";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
-import gdprRoute from "./routes/gdpr";
-import planRoute from "./routes/plan";
-import shopifyRoute from "./routes/shopify";
-import webhookRoute from "./routes/webhooks";
-import refundSettingRoute from "./routes/refund";
-import storesRoute from "./routes/store";
-import calculateRefundAmount from "./routes/calculateRefund";
-import checkamount from "./routes/giftcardamount";
-import { respondSuccess, respondInternalServerError } from "./helper/response";
+import gdprRoute from "./routes/gdpr.js";
+import planRoute from "./routes/plan.js";
+import shopifyRoute from "./routes/shopify.js";
+import { respondSuccess, respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
-import { logger } from "./helper/utility";
-import { createJwt } from "./helper/jwtHelper";
-import cors from "cors";
-import kycRoute from "./routes/kyc";
-import giftcardRoute from "./routes/giftcard";
-import { cronToCheckWebhooks } from "./config/custom";
+import { logger } from "./helper/utility.js";
+import kycRoute from "./routes/kyc.js";
+import webhookRoute from "./routes/webhooks.js";
+import giftcardRoute from "./routes/giftcard.js";
 
 export const app = express();
 
-app.use(cors())
 // CORS configuration
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -83,16 +75,16 @@ app.use("/gdpr", gdprRoute);
 app.use("/webhooks", webhookRoute)
 
 //refund setting route
-app.use("/refund", refundSettingRoute)
+// app.use("/refund", ref)
 
-//Store details route
-app.use("/stores", storesRoute)
+// //Store details route
+// app.use("/stores", storesRoute)
 
-//Calculate refund roure
-app.use("/calculateRefund", calculateRefundAmount)
+// //Calculate refund roure
+// app.use("/calculateRefund", calculateRefundAmount)
 
-//Checking giftcard amount
-app.use("/giftcardamount", checkamount)
+// //Checking giftcard amount
+// app.use("/giftcardamount", checkamount)
 
 //kyc routes
 app.use("/kyc", kycRoute);

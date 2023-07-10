@@ -1,6 +1,6 @@
 import Jwt from "jsonwebtoken";
-import Store from "../models/store";
-import { respondInternalServerError, respondUnauthorized } from "./response";
+import Store from "../models/store.js";
+import { respondInternalServerError, respondUnauthorized } from "./response.js";
 
 /**
  * Create jwt token for api authorization
@@ -11,15 +11,13 @@ export const createJwt = async (shop) => {
   console.log("create jwt start");
   try {
     let secretKey = process.env.JWT_SECRET;
-    // const storeData = await Store.findOne({ store_url: shop });
-    console.log(storeData);
     let payload = { store_url: shop };
     console.log("----payload--------", payload);
     let jwtToken = await Jwt.sign(payload, secretKey);
     console.log("JWT TOken TEst");
     return jwtToken;
   } catch (err) {
-    // console.log(err)
+    console.log(err)
     console.log("Error in JWT helper tokem");
     return false;
   }

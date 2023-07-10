@@ -3,8 +3,8 @@ import {
   getUserDetails,
   deleteStoreData,
   deleteUserData,
-} from "../controllers/gdprController";
-import { verifyShopifyHook } from "../helper/validator";
+} from "../controllers/gdprController.js";
+import { verifyShopifyHook } from "../helper/validator.js";
 
 const gdprRoute = Router();
 

@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema({
     store_url: { type: String },
     id: { type: Number, required: true },
+    is_email_sent : {type : Boolean , default : false},
+    is_giftcard_order: {type : Boolean , default : false},
     app_id: { type: Number },
     browser_ip: { type: String },
     cancel_reason: { type: String },

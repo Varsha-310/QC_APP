@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { verifyShopifyHook } from "../helper/validator";
-import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent } from "../controllers/webhookController";
-import { appUninstalled } from "../controllers/shopifyController";
+import { verifyShopifyHook } from "../helper/validator.js";
+import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent } from "../controllers/webhookController.js";
+import { appUninstalled } from "../controllers/shopifyController.js";
 
 const webhookRoute = Router();
 

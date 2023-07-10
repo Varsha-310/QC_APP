@@ -1,6 +1,7 @@
-import Validator from "validatorjs";
-import { respondInternalServerError, respondUnauthorized } from "./response";
+import  Validator from "validatorjs";
+import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response.js";
 import crypto from "crypto";
+import store from "../models/store.js";
 
 /**
  * Created validator for Api
@@ -36,6 +37,26 @@ export const verifyGetGiftcard = async (req, res, next) => {
 };
 
 /**
+ * Validation to resend email
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const verifySendEmail = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      order_id: "required|string",
+    };
+    await validateParamsMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
  * Validation for  getWalletBalance API
  * @param {*} req
  * @param {*} res
@@ -46,7 +67,7 @@ export const validateGetBalance = async (req, res, next) => {
     console.log("api validation")
     const validationRule = {
       store: "required|string",
-      customerId : "required|string"
+      customer_id : "required|string"
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
@@ -69,7 +90,9 @@ const validateParamsMethod = async (req, validationRule,res , next) => {
   try {
     await validator(req.query, validationRule, {}, (err, status) => {
       if (!status) {
-        res.send(err);
+        res.json(
+          respondValidationError(err)
+        );
       } else {
         console.log("api validation done");
         next();
@@ -95,7 +118,8 @@ export const validatecreateGiftcard = async (req, res, next) => {
     const validationRule = {
       title: "required|string",
       variants: "required|array",
-      images: "required|array"
+      images: "required|array",
+      validity: "required|string"
 
     };
     await validateMethod(req,  validationRule, res , next);
@@ -136,8 +160,9 @@ export const validateAddToWallet = async (req, res, next) => {
   try {
     console.log("api validation")
     const validationRule = {
-      gc_pin: "required|string",
-      customer_id : "required|string"
+      customer_id : "required|string",
+      store : "required|string"
+
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
@@ -158,7 +183,9 @@ const validateMethod = async (req, res, next, validationRule) => {
   try {
     await validator(req.body, validationRule, {}, (err, status) => {
       if (!status) {
-        res.send(err);
+        res.json(
+          respondValidationError(err)
+        );
       } else {
         console.log("api validation done");
         next();
@@ -259,9 +286,9 @@ export const validateCalculateRefundApi = async (req, res, next) => {
  */
 export const verifyShopifyHook = async (req, res, next) => {
   try {
-    console.log("in shopify webhook verification")
-    const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
-    
+    console.log("in shopify webhook verification");
+    const storeData = store.findOne({store_url : req.headers['X-Shopify-Shop-Domain']})
+    const api_secret = storeData.access_token ?? "";
     const body = req.rawBody;
     console.log(body);
   

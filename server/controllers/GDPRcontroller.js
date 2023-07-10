@@ -1,4 +1,4 @@
-import { respondSuccess } from "../helper/response";
+import { respondSuccess } from "../helper/response.js";
 
 /**
  * Webhook to handle show user details

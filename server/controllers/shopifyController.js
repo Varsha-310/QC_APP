@@ -1,13 +1,13 @@
 import axios from "axios";
-import store from "../models/store";
+import store from "../models/store.js";
 import {
   respondInternalServerError,
   respondNotAcceptable,
-} from "../helper/response";
+} from "../helper/response.js";
 import cookie from "cookie";
 import crypto from "crypto";
-import { checkWebhooks } from "../config/custom";
-import { createJwt } from "../helper/jwtHelper";
+import { checkWebhooks } from "../config/custom.js";
+import { createJwt } from "../helper/jwtHelper.js";
 
 /**
  * Method for installation method
@@ -109,18 +109,26 @@ export const installCallback = async (req, res) => {
 export const saveStoreData = async (shopData, shop, accessToken) => {
   try {
     const data = {
+      shopify_id: shopData.shop.id,
       name: shopData.shop.name,
       email: shopData.shop.email,
+      phone: shopData.shop.phone,
       store_url: shop.toString(),
       access_token: accessToken,
+      status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
     };
     console.log(data);
-    const storeObj = await store.updateOne({
-      store_url: data.store_url},
-      {$set: data},
-      {upsert: true},
-);
+    let storeDetails = await store.updateOne(
+      { store_url: data.store_url },
+      { $set: data },
+      { upsert: true }
+    );
+
+    console.log(
+      storeDetails,
+      "---------------------saved to db------------------"
+    );
     return true;
   } catch (error) {
     console.log(error);
@@ -151,7 +159,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
 
     shopData =
       shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
-
+    console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {
     res.json(
