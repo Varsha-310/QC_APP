@@ -112,6 +112,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       shopify_id: shopData.shop.id,
       name: shopData.shop.name,
       email: shopData.shop.email,
+      phone: shopData.shop.phone,
       store_url: shop.toString(),
       access_token: accessToken,
       status: "installed",

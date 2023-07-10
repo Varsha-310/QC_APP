@@ -5,6 +5,7 @@ import store from "../models/store.js";
 import product from "../models/product.js";
 import { getShopifyObject } from "../helper/shopify.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+import { createGiftcard } from "../middleware/qwikcilverHelper.js";
 
 /**
  * To handle order creation webhook
@@ -12,8 +13,9 @@ import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
-  console.log("order created");
-  const shop = req.headers.shop;
+  console.log("order created", req.headers);
+  // const shop = req.headers.x-shopify-shop-domain;
+  const shop = "mmtteststore*.myshopify.com"
   const order = req.body;
   ordercreateEvent({ shop, order });
   res.json(respondSuccess("webhook received"));
@@ -42,15 +44,15 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (input, done) => {
+const ordercreateEvent = async (input,done) => {
   console.log("------------order create event-----------------");
   try {
     const { shop, order } = input;
 
     let isGiftcardOrder = false;
-    // let shopName = req.get("x-shopify-shop-domain");
+    // let shopName = shop
     let shopName = "mmtteststore8.myshopify.com";
-    console.log("Shop Name", shopName);
+    console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
     // if(settings.qwikcilver_web_properties.emailTemplate){
     //      template=settings.qwikcilver_web_properties.emailTemplate;
@@ -181,17 +183,17 @@ const ordercreateEvent = async (input, done) => {
               for (let quantity of item_quantity) {
                 //Loop through the quantity
                 //Create a QC Giftcard
-                // giftCardDetails = await createVoucher(
-                //   shopName,
-                //   parseInt(qwikcilver_gift_card.price),
-                //   newOrder.id,
-                //   "Giftcard created for " +
-                //   newOrder.name +
-                //   " - " +
-                //   qwikcilver_gift_card.name,
-                //   qwikcilver_gift_card.cpg_name
-                // );
-                // console.log(giftCardDetails);
+                let giftCardDetails = await createGiftcard(
+                  shopName,
+                  parseInt(qwikcilver_gift_card.price),
+                  newOrder.id,
+                  "Giftcard created for " +
+                  newOrder.name +
+                  " - " +
+                  qwikcilver_gift_card.name,
+                  qwikcilver_gift_card.cpg_name
+                );
+                console.log(giftCardDetails);
                 // console.log(giftCardDetails.createGiftCardResponse);
                 // Save the information
                 // await saveLogs(
@@ -328,14 +330,6 @@ export const productDeleteEvent = async (req, res, next) => {
     let shopName = req.get("x-shopify-shop-domain");
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {
-      //   let status = verifyShopifyWebhook(
-      //     req,
-      //     settings.shopify_private_app.shared_secret
-      //   );
-      //   if (!status) {
-      //     console.log("cannot verify request");
-      //     return;
-      //   }
       product
         .remove({ id: req.body.id })
         .then((deleted) => console.log(`deleted product: ${req.body.id}`))

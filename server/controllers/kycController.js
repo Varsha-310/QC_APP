@@ -44,7 +44,7 @@ export const initiatieKyc = async (req, res) => {
         secondPartyDetails: {
           name: storeData.name,
           email: storeData.email,
-          phone: "987654321",
+          phone: storeData.phone,
         },
       }),
     };
@@ -113,7 +113,7 @@ export const fillForm = async (formUrl, shop) => {
         shopifyID: shop.shopify_id,
         firstName: shop.name,
         lastName: "qwertyu",
-        mobile: "987654321",
+        mobile: shop.phone,
         queryParam: "asdfghjkl",
       }),
     };
@@ -187,3 +187,10 @@ export const statusKyc = async (req, res) => {
     res.json(respondInternalServerError());
   }
 };
+
+
+export const kycDetails = (req,res) => {
+  console.log(req.body);
+  logger.info(req.body , "kyc webhook for merchant details");
+
+}

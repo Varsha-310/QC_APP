@@ -1,41 +1,64 @@
 import { respondInternalServerError } from "../helper/response.js";
 import axios from "axios";
-import store from "../models/store.js";
+import Store from "../models/store.js";
 
-export const createGiftcard = async () => {
+export const createGiftcard = async (store, amount, order_id, notes, cpg_name) => {
   try {
-    let setting = await store.findOne({ store_url: store });
-    let transactionId = setting.qwikcilver_account.unique_transaction_id;
+    let setting = await Store.findOne({ store_url: store });
+  
+    // let data = {
+    //   TransactionTypeId: "305",
+    //   InputType: "3",
+    //   TransactionModeId : "0",
+    //   BusinessReferenceNumber: "",
+    //   InvoiceNumber: "ORD-" + order_id,
+    //   NumberOfCards: "1",
+    //   Cards: [
+    //     {
+    //       CardProgramGroupName: "Ayur Mall Corporate CPG",
+    //       Amount: amount,
+    //       CurrencyCode: "INR",
+    //     },
+    //   ],
+    //   Purchaser: {
+    //     FirstName: "varsha",
+    //     LastName: "One",
+    //     Mobile: "+8095379504",
+    //     Email: "testinguser@gmail.com",
+    //   },
+    //   Notes: "CreateAndIssue Testing",
+    // };
+
     let data = {
-      TransactionTypeId: "305",
-      InputType: "3",
-      BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order_id,
-      NumberOfCards: "1",
-      Cards: [
-        {
-          CardProgramGroupName: setting.qwikcilver_account.CardProgramGroupName,
-          Amount: Amount,
-          CurrencyCode: "INR",
-        },
-      ],
-      Purchaser: {
-        FirstName: "varsha",
-        LastName: "One",
-        Mobile: "+8095379504",
-        Email: "testinguser@gmail.com",
+      "TransactionTypeId": "305",
+      "InputType": "3",
+      "TransactionModeId" : "0",
+      "BusinessReferenceNumber" :"",
+      "InvoiceNumber":"1",
+      "NumberOfCards": "1",
+      "Cards": [{
+      "CardProgramGroupName": "Ayur Mall Corporate CPG",
+      "Amount": "100",
+      "CurrencyCode": "INR",
+        "ExpiryDate": "2023-12-25T14:16:41+05:30"
+      }],
+      "Purchaser": {
+      "FirstName":"Test",
+      "LastName":"User",
+      "Mobile":"0401202301",
+      "Email":"0401202301@testmail.com"
       },
-      Notes: "CreateAndIssue Testing",
-    };
+      "Notes": "CreateAndIssue Testing"
+      }
 
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/19/2023",
-        TransactionId: transactionId,
-        Authorization: "",
+        DateAtClient: "07/10/2023",
+        TransactionId: 9,
+        Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
     };
@@ -44,14 +67,16 @@ export const createGiftcard = async () => {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
+        return response.data
       })
       .catch((error) => {
         console.log(error);
       });
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    console.log(err)
+    // res.json(
+    //   respondInternalServerError("Something went wrong try after sometime")
+    // );
   }
 };
 
@@ -111,14 +136,14 @@ export const fetchBalance = async (walletData) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/22/2023",
-        TransactionId: "024226",
+        TransactionId: "024",
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
     };
 
     let walletDetails = await axios(config);
-    console.log(walletDetails);
+    console.log(walletDetails.data);
     if (
       walletDetails.status == "200" &&
       walletDetails.data.ResponseCode == "0"

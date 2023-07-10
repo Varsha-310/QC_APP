@@ -194,8 +194,7 @@ export const getSelectedGc = async (req, res) => {
  */
 export const addGiftcardtoWallet = async (req, res) => {
   try {
-    let { customer_id, gc_pin, store } = req.body;
-    let Amount = 600;
+    let { customer_id, gc_pin, store } = req.body;                               
     let walletExists = await Wallet.findOne({
       shopify_customer_id: customer_id,
     });
@@ -281,7 +280,7 @@ export const getWalletBalance = async (req, res) => {
         res.json({
           ...respondWithData("balance fetched"),
           data: {
-            balance: walletExists.balance,
+            balance: balanceFetched,
             gc_id: walletExists.shopify_giftcard_id,
           },
         });
