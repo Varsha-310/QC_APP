@@ -3,9 +3,13 @@ import "./styles/RefundSetting.css";
 import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
 import axios from "axios";
 import { baseUrl2 } from "../../axios";
+import Spinner from "../../components/Loaders/Spinner";
+import { createPortal } from "react-dom";
 
 const RefundSetting = () => {
   const [configuration, setConfiguration] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
   console.log(configuration);
 
   const updateConfig = async () => {
@@ -44,6 +48,7 @@ const RefundSetting = () => {
 
   // update configuration
   const handleUpdate = async (event) => {
+    setIsLoading(true);
     const url = baseUrl2 + "/refund/updateSetting";
     const headers = {
       Authorization:
@@ -62,6 +67,8 @@ const RefundSetting = () => {
 
     try {
       res = await axios.put(url, body, { headers });
+
+      alert(res?.data?.message);
       console.log(res);
     } catch (error) {
       if (error.response) {
@@ -80,11 +87,15 @@ const RefundSetting = () => {
     // }
 
     console.log(res.data);
+    setIsLoading(false);
   };
 
   return (
     configuration && (
       <div className="refund-setting__component component">
+        {isLoading &&
+          createPortal(<Spinner />, document.getElementById("portal"))}
+
         <div className="section-box-container">
           <div className="section-box-title">Store Credit Configuration</div>
           <div className="section-box-subtitle">
