@@ -59,15 +59,17 @@ const AccountPage = () => {
       </div>
 
       <CustomContainer margin="30px 0px" align="center">
-        <PlanCard
-          plan={planData?.data.plans.find(
-            (item) =>
-              item.plan_name.toUpperCase() === planData.data.selectedPlan
-          )}
-          active={false}
-          // popular={}
-          btnText={"Upgrade"}
-        />
+        {planData?.data?.plans && (
+          <PlanCard
+            plan={planData?.data?.plans.find(
+              (item) =>
+                item.plan_name.toUpperCase() === planData.data.selectedPlan
+            )}
+            active={false}
+            // popular={}
+            btnText={"Upgrade"}
+          />
+        )}
       </CustomContainer>
 
       <CustomContainer margin="50px 0px">

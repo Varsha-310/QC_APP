@@ -47,7 +47,7 @@ body {
   min-height: 90%;
 }
 .container_padding {
-  padding: 30px 70px;
+  padding: 30px 50px;
 }
 
 .section-box-container {
@@ -88,7 +88,12 @@ li {
 /* for tabview */
 @media only screen and (max-width: 900px) {
   .container_padding {
-    padding: 10px 40px;
+    padding: 10px 20px;
+  }
+  .dashboard-container {
+    gap: 0;
+    min-height: auto;
+    overflow: auto;
   }
   /* .main-component{
     min-height: 60%;

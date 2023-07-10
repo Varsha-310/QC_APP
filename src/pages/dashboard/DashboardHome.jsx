@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./styles/DashboardHome.css";
+import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
 import Giftbox from "../../assets/images/Giftbox.png";
@@ -11,6 +12,7 @@ import {
 } from "../../components/BasicComponents";
 import axios from "axios";
 import { baseUrl1 } from "../../axios";
+import { createPortal } from "react-dom";
 
 const DashboardHome = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +33,6 @@ const DashboardHome = () => {
         setKycData(resData.data);
       }
       console.log(resData);
-      
     } catch (error) {
       console.log(error);
     }
@@ -48,9 +49,10 @@ const DashboardHome = () => {
     const res = await axios.post(url, {}, { headers });
     const resData = res.data;
 
-    setIsLoading(false);
+    console.log(res);
 
     window.open(resData.data, "_blank");
+    setIsLoading(false);
     // console.log(resData);
   };
 
@@ -60,6 +62,9 @@ const DashboardHome = () => {
 
   return (
     <div className="dashboard-home-container">
+      {isLoading &&
+        createPortal(<Spinner />, document.getElementById("portal"))}
+
       <div className="section-box-container">
         <div className="section-box-title">Welcome to Your Dashboard</div>
       </div>

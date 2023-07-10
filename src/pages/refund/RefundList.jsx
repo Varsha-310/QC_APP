@@ -35,7 +35,7 @@ const RefundList = () => {
     try {
       const res = await axios.post(url, {}, { headers });
       const resData = await res.data;
-      
+
       setRefundData(resData.data);
       console.log(res);
     } catch (error) {
@@ -52,12 +52,17 @@ const RefundList = () => {
   }, [currentPage]);
 
   return (
-    <div className="refund-list__container " style={{ width: "100%" }}>
+    <div
+      className="refund-list__container"
+      style={{ width: "100%", overflowY: "auto" }}
+    >
       {isLoading ? (
         <BarLoading />
       ) : (
         <>
-          <RefundListTable headings={Heading} data={refundData?.orders} />
+          <div className="refund-list__containe-table">
+            <RefundListTable headings={Heading} data={refundData?.orders} />
+          </div>
           <Pagination
             total={refundData?.totalOrders}
             perPage={PER_PAGE_ITEM}
