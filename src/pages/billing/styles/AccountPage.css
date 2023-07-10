@@ -3,8 +3,8 @@
   grid-template-columns: 1fr 4fr;
   margin: 20px 0px;
 }
-.contact-input input {
-  width: 90%;
+.account-page__store-detail {
+  width: 100%;
   padding: 15px 50px;
   border: 1px solid #b72028;
 
@@ -17,4 +17,8 @@
 }
 .contact-input input:focus {
   outline: none;
+}
+
+.account-page__link {
+  text-decoration: none;
 }

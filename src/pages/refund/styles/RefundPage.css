@@ -70,12 +70,11 @@
 .horinzontal-bar {
   height: 0.5px;
   background-color: #b1b6be;
-  margin: 0px 10px;
+  margin: 10px 10px;
 }
 /* summary price estimation */
 .refund-page__price-summary-table {
   width: 100%;
-
 }
 .refund-page__price-summary-table tr {
   width: 100%;
@@ -94,6 +93,6 @@
   font-weight: 500;
 }
 
-.bold{
+.bold {
   font-weight: 600;
 }

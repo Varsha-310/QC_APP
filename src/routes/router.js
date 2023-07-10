@@ -84,7 +84,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/plan_select", element: <PlanSelection /> },
+  { path: "/select-plan", element: <PlanSelection /> },
   { path: "/submission_success", element: <ConfirmationPage /> },
   { path: "/refund_success", element: <RefundConfirmation /> },
 ]);

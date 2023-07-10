@@ -17,8 +17,8 @@ const ResendGiftCard = ({ data, resendMail }) => {
       </thead>
 
       <tbody>
-        {data.map((row) => (
-          <tr>
+        {data.map((row, index) => (
+          <tr key={index}>
             <td>#{row?.id}</td>
             <td>{row?.created_at?.slice(0, 10)}</td>
             <td>{row?.customer?.first_name}</td>

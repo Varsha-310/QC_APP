@@ -6,7 +6,8 @@ import { CustomBtn } from "./BasicComponents";
 const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
   return (
     <div className={`plan-card ${active ? "card-shadow" : ""}`}>
-      {popular && (
+      {/* popular plan */}
+      {plan?.plan_name.toLowerCase() === "pro" && (
         <div className="popular-banner">
           <img src={require("../assets/icons/pngs/cardcap.png")} />
           <div className="text">Most Popular</div>
