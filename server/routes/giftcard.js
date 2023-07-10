@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addGiftcardtoWallet, addGiftcardtoWallets, createGiftcardProducts, deleteGiftcardProducts, getGiftcardProducts , updateGiftcardProduct } from "../controllers/giftcard";
+import { addGiftcardtoWallets, createGiftcardProducts, deleteGiftcardProducts, getGiftcardProducts , updateGiftcardProduct } from "../controllers/giftcard";
 import { verifyJwt } from "../helper/jwtHelper";
 import {  validateGetBalance , validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator";
 import { getWalletBalance } from "../controllers/giftcard";
@@ -23,7 +23,5 @@ giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcardtoWa
 
 // route to get wallet balance
 giftcardRoute.get("/wallet/balance" , validateGetBalance , getWalletBalance );
-
-
 
 export default giftcardRoute;

@@ -19,6 +19,7 @@ const webhooks = [
  */
 export const cronToCheckWebhooks = async () => {
   let stores = await store.find();
+  
   console.log(stores);
   for (const store of stores) {
     console.log(store);
@@ -75,6 +76,6 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    console.log("An error occured",err);
   }
 };

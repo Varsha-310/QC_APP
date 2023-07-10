@@ -1,4 +1,4 @@
-import  Validator from "validatorjs";
+import Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized } from "./response";
 import crypto from "crypto";
 
@@ -16,7 +16,7 @@ const validator = async (body, rules, customMessages, callback) => {
 };
 
 /**
- * Validation for API
+ * Validation for get giftcard products
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -25,16 +25,15 @@ export const verifyGetGiftcard = async (req, res, next) => {
   try {
     console.log("api validation")
     const validationRule = {
-      store_url: "required|string",
+      store: "required|string",
     };
-    await validateMethod(req,  validationRule, res , next);
+    await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
   }
 };
-
 
 /**
  * Validation for  getWalletBalance API
@@ -49,6 +48,56 @@ export const validateGetBalance = async (req, res, next) => {
       store: "required|string",
       customerId : "required|string"
     };
+    await validateParamsMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+
+
+
+/**
+ * Validation for api
+ * @param {*} req 
+ * @param {*} validationRule 
+ * @param {*} next 
+ */
+const validateParamsMethod = async (req, validationRule,res , next) => {
+  try {
+    await validator(req.query, validationRule, {}, (err, status) => {
+      if (!status) {
+        res.send(err);
+      } else {
+        console.log("api validation done");
+        next();
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation for  createGiftcard API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validatecreateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      title: "required|string",
+      variants: "required|array",
+      images: "required|array"
+
+    };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
     res.json(
@@ -58,12 +107,54 @@ export const validateGetBalance = async (req, res, next) => {
 };
 
 /**
+ * Validation for  updateGiftcard API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateUpdateGiftcard = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      product_id: "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+/**
+ * Validation for  addGiftcardtoWallet API
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const validateAddToWallet = async (req, res, next) => {
+  try {
+    console.log("api validation")
+    const validationRule = {
+      gc_pin: "required|string",
+      customer_id : "required|string"
+    };
+    await validateMethod(req,  validationRule, res , next);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+
+/**
  * Validation for api
  * @param {*} req 
  * @param {*} validationRule 
  * @param {*} next 
  */
-const validateMethod = async (req, validationRule,res , next) => {
+const validateMethod = async (req, res, next, validationRule) => {
   try {
     await validator(req.body, validationRule, {}, (err, status) => {
       if (!status) {
@@ -81,6 +172,86 @@ const validateMethod = async (req, validationRule,res , next) => {
   }
 };
 
+
+/**
+ * Validation rules for the getting store details route
+ */
+
+
+export const validategetStoresDataApi = async (req, res, next) => {
+  try {
+    const validationRule = {
+      store_url:"required|string",
+      // Refund_Mode: "required|string",
+      // payment_gateway_names: "required|string"
+    };
+    await validategetStoresDataMethod(req, res, next, validationRule);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+export const validategetStoresDataMethod = async (req, res, next, validationRule) => {
+  try {
+     await validator(req.query, validationRule, {}, (err, status) => {
+      if (!status) {
+        console.log(err)
+        res.send(err);
+      } else {
+        next();
+      }
+    });
+  }
+  catch (err) {
+    res.json( err,respondInternalServerError("Something went wrong try after sometime")
+    )
+  }
+};
+
+
+/**
+ * Validation rules for the updateConfigapi route
+ */
+export const validateUpdateConfigApi = async (req, res, next) => {
+  try {
+    const validationRule = {
+      prepaid: "required|string",
+      cod: "required|string",
+      giftCard: "required|string",
+      giftcard_cash: "required|string",
+      restock_type: "required|string",
+      // location_id:"required|numeric",
+    };
+    await validateMethod(req, res, next, validationRule);
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
+
+/**
+ * Validation rules for calculate refund
+ */
+
+export const validateCalculateRefundApi = async (req, res, next) => {
+  try {
+    const validationRule = {
+      // store_url: "required|string",
+      id:"required|integer"
+    };
+    await validateMethod(req, res, next, validationRule);
+  } catch (err) {
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
+  }
+};
+
 /**
  * Compare received and generated hash to verify the webhook
  * @param req
@@ -90,7 +261,10 @@ export const verifyShopifyHook = async (req, res, next) => {
   try {
     console.log("in shopify webhook verification")
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
+    
     const body = req.rawBody;
+    console.log(body);
+  
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)
@@ -103,11 +277,9 @@ export const verifyShopifyHook = async (req, res, next) => {
     } else {
       res.json(respondUnauthorized("not shopify webhook"));
     }
-  } catch(e){
-    console.log(e)
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+  } catch (e) {
+    console.log(e);
+    res.json(respondInternalServerError());
   }
 };
 

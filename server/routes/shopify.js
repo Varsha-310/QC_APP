@@ -3,7 +3,6 @@ import {
   install,
   installCallback
 } from "../controllers/shopifyController";
-
 const shopifyRoute = Router();
 
 // Route of app installation

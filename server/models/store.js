@@ -12,8 +12,7 @@ let storeSchema = mongoose.Schema(
       updated_at: Date,
     }
   }
-    
-
+  
 );
 
 export default mongoose.model("Store", storeSchema);

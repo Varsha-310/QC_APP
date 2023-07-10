@@ -1,6 +1,7 @@
-import { respondSuccess } from "../helper/response";
+import { respondSuccess, respondInternalServerError } from "../helper/response";
 import { logger } from "../helper/utility";
 import Queue from "better-queue";
+import orders from "../models/orders"
 import store from "../models/store";
 import product from "../models/product";
 import { getShopifyObject } from "../helper/shopify";
@@ -12,7 +13,10 @@ import {createVoucher} from "../middleware/qwikcilverHelper"
  * @param {*} req
  * @param {*} res
  */
+
 export const orderCreated = (req, res) => {
+
+  handleOrderCreatewebhook(req, res);
   console.log("order created");
   const shop = req.headers.shop;
   const order = req.body;
@@ -25,8 +29,11 @@ export const orderCreated = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
+
 export const orderUpdated = (req, res) => {
-  res.json(respondSuccess("webhook received"));
+  // console.log(req.body);
+  handleOrderCreatewebhook(req, res)
+  res.send(respondSuccess("webhook received"));
 };
 
 /**
@@ -35,7 +42,7 @@ export const orderUpdated = (req, res) => {
  * @param {*} res
  */
 export const orderDeleted = (req, res) => {
-  res.json(respondSuccess("webhook received"));
+  // res.json(respondSuccess("webhook received"));
 };
 
 /**
@@ -290,6 +297,31 @@ export const productCreateEvent = async (req, res, next) => {
       var err = new Error("Internal Server Error");
       err.status = 500;
     }
+  }
+};
+
+
+/** 
+ * to handle order while creating and updating
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+export const handleOrderCreatewebhook = async (req, res) => {
+  try {
+
+    const orderData = req.body;
+    console.log(orderData.id);
+
+    const store = req.headers["x-shopify-shop-domain"];
+    orderData.store_url = store;
+
+    await orders.updateOne({ store_url: store, id: orderData.id }, orderData, { upsert: true });
+    console.log("Webhook Complieted");
+
+  } catch (err) {
+    logger.info(err);
+    console.log(err);
   }
 };
 

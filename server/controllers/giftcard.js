@@ -159,7 +159,7 @@ export const getGiftcardProducts = async (req, res, next) => {
     }
 
 
-    export const addGiftcardtoWallet = (req,res) => {
+    export const addGiftcardtoWallets = (req,res) => {
       try{
         let { customer_id , gc_card , gc_pin} = req.body;
 
@@ -172,7 +172,19 @@ export const getGiftcardProducts = async (req, res, next) => {
       }
 
     }
+    export const deleteGiftcardProducts = (req,res) => {
+      try{
+        
 
+
+      }
+      catch(err){
+        res.json(
+          respondInternalServerError("Something went wrong try after sometime")
+        );
+      }
+
+    }
     export const  getWalletBalance = async(req,res) => {
       try{ 
         let {customerId , store} = req.body;
