@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/DashboardHome.css";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
@@ -14,6 +14,28 @@ import { baseUrl1 } from "../../axios";
 
 const DashboardHome = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [kycData, setKycData] = useState(null);
+
+  const getKycStatus = async () => {
+    const url = baseUrl1 + "/kyc/status";
+    const headers = {
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+    };
+
+    try {
+      const res = await axios.post(url, {}, { headers });
+      const resData = res.data;
+
+      if (resData.code === 200) {
+        setKycData(resData.data);
+      }
+      console.log(resData);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleKYC = async () => {
     setIsLoading(true);
@@ -31,6 +53,10 @@ const DashboardHome = () => {
     window.open(resData.data, "_blank");
     // console.log(resData);
   };
+
+  useEffect(() => {
+    getKycStatus();
+  }, []);
 
   return (
     <div className="dashboard-home-container">
@@ -53,15 +79,15 @@ const DashboardHome = () => {
         <section className="status-progress-contain">
           <ul className="status-progress-list">
             <li className="status-progress-item">
-              <Dot size="18px" fill={"true"} />
+              <Dot size="18px" fill={kycData?.kyc} />
               <span className="progress-label">Company Details</span>
             </li>
             <li className="status-progress-item">
-              <Dot size="18px" fill={"false"} />
+              <Dot size="18px" fill={kycData?.plan} />
               <span className="progress-label">Plan Selection</span>
             </li>
             <li className="status-progress-item">
-              <Dot size="18px" fill={"false"} />
+              <Dot size="18px" fill={kycData?.payment} />
               <span className="progress-label">Payment Status</span>
             </li>
           </ul>

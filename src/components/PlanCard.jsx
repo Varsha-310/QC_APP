@@ -3,7 +3,7 @@ import "./styles/PlanCard.css";
 import RoundedTick from "../assets/icons/svgs/cicletick.svg";
 import { CustomBtn } from "./BasicComponents";
 
-const PlanCard = ({ title, price, active, popular,btnText }) => {
+const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
   return (
     <div className={`plan-card ${active ? "card-shadow" : ""}`}>
       {popular && (
@@ -13,9 +13,9 @@ const PlanCard = ({ title, price, active, popular,btnText }) => {
         </div>
       )}
 
-      <div className="plan-card-title">{title}</div>
+      <div className="plan-card-title">{plan?.plan_name}</div>
       <div className="plan-card-price">
-        ₹ {price}
+        ₹ {plan?.price}
         <span>/Month</span>
       </div>
 
@@ -24,7 +24,7 @@ const PlanCard = ({ title, price, active, popular,btnText }) => {
       <div className="plan-card-subtitle">Monthly Subscription Limits</div>
       <div className="plan-card-value">
         <img src={RoundedTick} />
-        Plan Issuance Value - Rs 5,000,000
+        Plan Issuance Value - Rs {plan?.plan_limit}
       </div>
 
       <div className="bar"></div>
@@ -34,11 +34,13 @@ const PlanCard = ({ title, price, active, popular,btnText }) => {
       </div>
       <div className="plan-card-value">
         <img src={RoundedTick} />
-        As of (%) value of Issuance - 1.70%
+        As of (%) value of Issuance - {plan?.usage_charge}%
       </div>
 
       <div className="plan-card-btn">
-        <CustomBtn active={active}>{btnText}</CustomBtn>
+        <CustomBtn active={active} onClick={() => setPlan(plan)}>
+          {btnText}
+        </CustomBtn>
       </div>
     </div>
   );

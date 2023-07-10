@@ -1,5 +1,5 @@
 export default function fieldValidate(field_value, length) {
-  if (field_value.length > length) {
+  if (field_value?.length > length) {
     return true;
   }
 

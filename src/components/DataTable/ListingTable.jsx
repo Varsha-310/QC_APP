@@ -17,15 +17,15 @@ const ListingTable = ({ headings, data }) => {
       <tbody>
         {data.map((row, index) => (
           <tr key={index}>
-            <td>{row.plan_name}</td>
-            <td>{row.invoice_date}</td>
-            <td>{row.invoice_number}</td>
-            <td>INR {row.amount}</td>
-            <td>{row.next_payment_date}</td>
+            <td>{row?.monthly_plan}</td>
+            <td>{row?.invoice_bill_date.slice(0, 10)}</td>
+            <td>#{row?.invoice_number}</td>
+            <td>INR {row?.total_amount}</td>
+            <td>{row?.next_payment_date.slice(0,10)}</td>
             <td id="action">
-              <Link to={"/transactions/" + row.action}>
+              <a href={row?.invoice_pdf_url} target="_blank" rel="noreferrer">
                 <img src={DownloadIcon} alt="" />
-              </Link>
+              </a>
             </td>
           </tr>
         ))}
@@ -37,5 +37,5 @@ const ListingTable = ({ headings, data }) => {
 export default ListingTable;
 
 // {keys.map((key) => (
-//   <td className={`listing-table__${key}`}>{row[key]}</td>
+//   <td className={`listing-table__${key}`}>{row?[key]}</td>
 // ))}

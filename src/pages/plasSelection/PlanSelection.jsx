@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/PlanSelection.css";
 import Tick from "../../assets/icons/svgs/tick.svg";
 import {
@@ -11,6 +11,8 @@ import {
 } from "../../components/BasicComponents";
 import { Link } from "react-router-dom";
 import PlanCard from "../../components/PlanCard";
+import axios from "axios";
+import { baseUrl1 } from "../../axios";
 
 const PlanSelection = () => {
   const tableContent = [
@@ -85,6 +87,31 @@ const PlanSelection = () => {
       enterprise: true,
     },
   ];
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [plans, setPlans] = useState(null);
+
+  // get plans
+  const fetchPlan = async () => {
+    const url = baseUrl1 + "/plan/list";
+    const headers = {
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+    };
+
+    try {
+      const res = await axios.post(url, {}, { headers });
+      setPlans(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // console.log(res);
+  };
+
+  useEffect(() => {
+    fetchPlan();
+  }, []);
 
   return (
     <div className="plan-selection-container container_padding">
@@ -130,15 +157,20 @@ const PlanSelection = () => {
         </RectBtn>
       </div>
       <div className="plans">
-        <PlanCard title={"Basic"} price={399} btnText={"Select"} />
-        <PlanCard
-          title={"Pro"}
-          price={799}
-          active={true}
-          popular={true}
-          btnText={"Selected"}
-        />
-        <PlanCard title={"Premium"} price={1599} btnText={"Select"} />
+        {plans?.data?.plans.map((plan, index) => {
+          return (
+            <PlanCard
+              key={index}
+              plan={plan}
+              popular={plan?.plan_name === "Pro" ? true : false}
+              btnText={"Select"}
+              active={
+                selectedPlan?.plan_name === plan?.plan_name ? true : false
+              }
+              setPlan={setSelectedPlan}
+            />
+          );
+        })}
       </div>
 
       <div className="section-box-container">

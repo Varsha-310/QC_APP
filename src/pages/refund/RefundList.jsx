@@ -32,12 +32,17 @@ const RefundList = () => {
     };
 
     // let res;
-    const res = await axios.post(url, {}, { headers });
-    console.log(res);
+    try {
+      const res = await axios.post(url, {}, { headers });
+      const resData = await res.data;
+      
+      setRefundData(resData.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
 
-    const resData = await res.data;
-    console.log(resData.data);
-    setRefundData(resData.data);
+    // console.log(resData.data);
 
     setIsLoading(false);
   };

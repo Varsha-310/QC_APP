@@ -12,20 +12,22 @@ const RefundSetting = () => {
     const url = baseUrl2 + "/refund/getSetting";
     const headers = {
       Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODg3OTI1ODF9.NWn6qMEiUrvrIrHGkphuf9p7xJVJ0_6-GL0jbZKZa_k",
     };
 
-    const res = await axios.post(
-      url,
-      { store_url: "qwickcilver-dev.myshopify.com" },
-      { headers }
-    );
+    try {
+      const res = await axios.post(
+        url,
+        { store_url: "qwickcilver-dev.myshopify.com" },
+        { headers }
+      );
 
-    const resData = res.data;
-
-    console.log(resData);
-    // console.log(redData.message.data.cod)
-    setConfiguration(resData.data);
+      const resData = res.data;
+      console.log(resData);
+      setConfiguration(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

@@ -17,7 +17,7 @@
 
 /* resend mail table grid */
 .resend-table tr {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
 /* for all table fields */

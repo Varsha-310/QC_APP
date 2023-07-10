@@ -201,7 +201,7 @@ const EditGiftCard = () => {
       setIsError("* Title can't be empty (min 4)");
       setIsLoading(false);
       return;
-    } else if (!fieldValidate(cardData.validity, 0)) {
+    } else if (!fieldValidate(cardData?.validity, 0)) {
       setIsError("* Validity can't be empty");
       setIsLoading(false);
       return;
