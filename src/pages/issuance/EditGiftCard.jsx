@@ -14,6 +14,9 @@ import CustomDropdown from "../../components/CustomDropdown";
 import axios from "axios";
 import { baseUrl1 } from "../../axios";
 import { useParams } from "react-router";
+import fieldValidate from "../../utils/fieldValidate";
+import { createPortal } from "react-dom";
+import Spinner from "../../components/Loaders/Spinner";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -25,9 +28,14 @@ const ActiveDot = styled.div`
 `;
 
 const EditGiftCard = () => {
+  // id by params
   const { id } = useParams();
 
+  // data values
   const [cardData, setCardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
+
   console.log(cardData);
   // fetched images
   const [images, setImages] = useState([
@@ -95,7 +103,7 @@ const EditGiftCard = () => {
   const handleAppend = () => {
     setCardData((prev) => ({
       ...prev,
-      variants: [...prev.variants, { option1: "dummy111", price: "100011" }],
+      variants: [...prev.variants, { option1: "", price: "" }],
     }));
   };
 
@@ -149,34 +157,9 @@ const EditGiftCard = () => {
   //     }
   //   };
 
-  const handleSubmit = async () => {
-    const url = baseUrl1 + "/giftcard/products/add";
-    const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
-    };
-
-    try {
-      const res = await axios.post(
-        url,
-        {
-          title: cardData.title,
-          description: cardData.description,
-          published: "true",
-          variants: cardData.variants,
-          images: previewImage,
-          terms: cardData.terms,
-          validity: cardData.validity,
-        },
-        { headers }
-      );
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   //   fetch
-  const updateData = async () => {
+  const fetchData = async () => {
+    setIsLoading(true);
     const url = baseUrl1 + "/giftcard/products/select";
     const headers = {
       Authorization:
@@ -190,14 +173,16 @@ const EditGiftCard = () => {
     const resData = res.data;
 
     setCardData(resData.data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    updateData();
+    fetchData();
   }, []);
 
   //   update data
   const handleUpdate = async () => {
+    setIsLoading(true);
     const url = baseUrl1 + "/giftcard/products/update";
     const headers = {
       Authorization:
@@ -210,9 +195,33 @@ const EditGiftCard = () => {
       variants: cardData.variants,
       //   images:
     };
+
+    // field validation
+    if (!fieldValidate(cardData.title, 3)) {
+      setIsError("* Title can't be empty (min 4)");
+      setIsLoading(false);
+      return;
+    } else if (!fieldValidate(cardData.validity, 0)) {
+      setIsError("* Validity can't be empty");
+      setIsLoading(false);
+      return;
+    } else if (
+      cardData.variants.length === 0 ||
+      cardData.variants.some((item) => item.option1 === "" || item.price === "")
+    ) {
+      setIsError("* Variants can't be empty");
+      setIsLoading(false);
+      return;
+    } else {
+      setIsError(null);
+    }
+
     const res = await axios.put(url, body, { headers });
 
     const resData = res.data;
+    console.log(resData);
+
+    setIsLoading(false);
   };
 
   return (
@@ -221,6 +230,10 @@ const EditGiftCard = () => {
         <div className="gift-card__active-status">
           Active Account <ActiveDot active={true} />
         </div>
+
+        {isLoading &&
+          createPortal(<Spinner />, document.getElementById("portal"))}
+
         <div className="gift-card__card-details">
           <div className="gift-card__card-preview">
             {/* <div className="gift-card__upload-image">
@@ -291,7 +304,9 @@ const EditGiftCard = () => {
           </div>
 
           <div className="gift-card__card-data">
-            <label className="gift-card__label">Title</label>
+            <label className="gift-card__label">
+              Title <span className="mandatory">*</span>
+            </label>
             <input
               type="text"
               className="gift-card__input"
@@ -317,14 +332,8 @@ const EditGiftCard = () => {
               value={cardData.terms}
               onChange={handleChange}
             />
-            <div className="gift-card__validity">
-              {/* <input
-            type="checkbox"
-            className="gift-card__validity-checkbox"
-            onChange={() => setIsValidityCheck(!isValidityCheck)}
-            checked={isValidityCheck}
-          /> */}
-              Gift Card Validity
+            <div className="gift-card__label">
+              Gift Card Validity <span className="mandatory">*</span>
             </div>
 
             <div className="gift-card__validity">
@@ -344,8 +353,12 @@ const EditGiftCard = () => {
 
         <div className="gift-card__variant-data">
           <div className="gift-card__variant-grid-row">
-            <label className="gift-card__label">Variant Name</label>
-            <label className="gift-card__label">Gift Card Price</label>
+            <label className="gift-card__label">
+              Variant Name <span className="mandatory">*</span>
+            </label>
+            <label className="gift-card__label">
+              Gift Card Price <span className="mandatory">*</span>
+            </label>
             <label></label>
           </div>
 
@@ -377,6 +390,9 @@ const EditGiftCard = () => {
             <FaPlus />
           </span>
         </div>
+
+        {/* error */}
+        {isError && <div className="gift-card__error">{isError}</div>}
 
         <PrimaryBtn $primary onClick={handleUpdate}>
           Save

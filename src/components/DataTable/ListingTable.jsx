@@ -8,15 +8,15 @@ const ListingTable = ({ headings, data }) => {
     <table className="listing-table trasaction-table">
       <thead>
         <tr>
-          {headings.map((item) => (
-            <th>{item}</th>
+          {headings.map((item, index) => (
+            <th key={index}>{item}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
-        {data.map((row) => (
-          <tr>
+        {data.map((row, index) => (
+          <tr key={index}>
             <td>{row.plan_name}</td>
             <td>{row.invoice_date}</td>
             <td>{row.invoice_number}</td>

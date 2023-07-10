@@ -7,8 +7,8 @@ const RefundListTable = ({ headings, data }) => {
     <table className="listing-table refund-table">
       <thead>
         <tr>
-          {headings.map((item) => (
-            <th>{item}</th>
+          {headings.map((item, index) => (
+            <th key={index}>{item}</th>
           ))}
         </tr>
       </thead>
@@ -17,7 +17,7 @@ const RefundListTable = ({ headings, data }) => {
         {data?.map((row, index) => (
           <tr key={index}>
             <td>#{row.id}</td>
-            <td>{row.updated_at?.slice(0,10)}</td>
+            <td>{row.updated_at?.slice(0, 10)}</td>
             <td>{row.customer?.first_name}</td>
             <td>₹ {row.total_price}</td>
             <td>{row.status}</td>

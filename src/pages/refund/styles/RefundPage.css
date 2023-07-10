@@ -67,10 +67,15 @@
 .refund-page__quantity {
   text-align: center;
 }
-
+.horinzontal-bar {
+  height: 0.5px;
+  background-color: #b1b6be;
+  margin: 0px 10px;
+}
 /* summary price estimation */
 .refund-page__price-summary-table {
   width: 100%;
+
 }
 .refund-page__price-summary-table tr {
   width: 100%;

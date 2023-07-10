@@ -140,18 +140,6 @@ const NestedTabBox = styled(Link)`
   padding: 0px 0px 0px 15px;
   align-items: center;
   // justify-content: space-between;
-
-  // &:after {
-  //   content: "";
-  //   position: absolute;
-  //   background: var(--frame-color);
-  //   height: 100%;
-  //   width: 2px;
-  //   left: 26px;
-  //   top: 0px;
-  //   /* z-index: -10; */
-  //   transform: translateY(-50%);
-  // }
 `;
 
 const SectionHeading1 = styled.div`

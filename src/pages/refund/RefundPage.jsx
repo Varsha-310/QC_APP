@@ -101,6 +101,7 @@ const RefundPage = () => {
                   <td>₹1500</td>
                 </tr>
               </table>
+                <div className="horinzontal-bar"></div>
             </div>
 
             <div className="refund-page__refund-shipping">

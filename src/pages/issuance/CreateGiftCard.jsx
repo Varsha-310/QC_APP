@@ -251,8 +251,9 @@ const CreateGiftCard = () => {
               />
               <img src={UploadIcon} alt="" />
               <label htmlFor="file-input" className="file-input-label">
-                Change image <span className="mandatory">*</span>
+                Change image 
               </label>
+              <div className="mandatory">*</div>
             </div>
           </div>
           <div className="gift-card__preview-img">

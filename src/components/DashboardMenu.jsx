@@ -70,7 +70,7 @@ const DashboardMenu = () => {
 
               {activeDropDown?.myplan && (
                 <ul>
-                  <li>
+                  <li className="dashboard__menu-connect">
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/my-invoices"}>
@@ -78,7 +78,7 @@ const DashboardMenu = () => {
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
-                  <li>
+                  <li className="dashboard__menu-connect">
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/current-usage"}>
@@ -205,7 +205,7 @@ const DashboardMenu = () => {
 
               {activeDropDown?.myplan && (
                 <ul>
-                  <li>
+                  <li className="dashboard__menu-connect">
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/my-invoices"}>
@@ -213,7 +213,7 @@ const DashboardMenu = () => {
                       </TabSubItemLable>
                     </NestedTabBox>
                   </li>
-                  <li>
+                  <li className="dashboard__menu-connect">
                     <NestedTabBox>
                       <Dot size="5px" fill={true} />
                       <TabSubItemLable to={"/current-usage"}>
