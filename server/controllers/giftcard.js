@@ -210,7 +210,7 @@ export const addGiftcardtoWallet = async (req, res) => {
       let updateShopifyGc = await shopify.giftCard.create({
         initial_value: 100,
       });
-      console.log(updateShopifyGc, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+      console.log(updateShopifyGc);
       let transaction = await addToWallet(wallet_id, gc_pin);
       console.log(transaction.data);
       if (transaction.status == 200) {
@@ -234,6 +234,7 @@ export const addGiftcardtoWallet = async (req, res) => {
       console.log(walletCreated);
     }
   } catch (err) {
+    console.log(err)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -243,8 +244,9 @@ export const addGiftcardtoWallet = async (req, res) => {
 export const addGiftcardtoWallets = async (req, res) => {
   try {
     let { customer_id, gc_pin, store } = req.body;
+    console.log(gc_pin)
 
-    if ((gc_pin == "123456789", customer_id == "7061732262207")) {
+    if (gc_pin == "PG5DN8GTX4BHYB" && customer_id == "7061732262207") {
       res.json({
         ...respondWithData("card has been added to wallet"),
       });
@@ -280,7 +282,7 @@ export const getWalletBalance = async (req, res) => {
         res.json({
           ...respondWithData("balance fetched"),
           data: {
-            balance: balanceFetched,
+            balance: walletExists.balance,
             gc_id: walletExists.shopify_giftcard_id,
           },
         });
@@ -300,7 +302,9 @@ export const getWalletBalance = async (req, res) => {
 
 export const resendEmail = async (req, res) => {
   try {
-    const orderExists = await orders.findOne({ store_url : req.token.store_url ,id : req.params.order_id});
+    console.log(req.token.store_url , req.query.order_id)
+    const orderExists = await orders.findOne({ store_url : req.token.store_url ,id : req.query.order_id});
+
     console.log("-------------", orderExists)
     if(orderExists){
       res.json(respondSuccess("email sent successfully"))
@@ -363,18 +367,6 @@ export const giftCardOrders = async (req, res) => {
     });
 
     console.log(gcOrders.length);
-
-    // Sort the orders as required
-    // gcOrders.sort((a, b) => {
-    //   // Replace the comparison logic with your desired sorting criteria
-    //   if (a.created_at < b.created_at) {
-    //     return -1;
-    //   }
-    //   if (a.created_at > b.created_at) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
 
     // Calculate the start and end index for the current page
     const startIndex = (page - 1) * limit;

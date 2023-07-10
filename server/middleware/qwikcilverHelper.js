@@ -1,10 +1,11 @@
 import { respondInternalServerError } from "../helper/response.js";
 import axios from "axios";
 import Store from "../models/store.js";
+import qcCredentials from "../models/qcCredentials.js";
 
-export const createGiftcard = async (store, amount, order_id, notes, cpg_name) => {
+export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
   try {
-    let setting = await Store.findOne({ store_url: store });
+    let setting = await qcCredentials.findOne({ store_url: store });
   
     // let data = {
     //   TransactionTypeId: "305",
@@ -37,10 +38,10 @@ export const createGiftcard = async (store, amount, order_id, notes, cpg_name) =
       "InvoiceNumber":"1",
       "NumberOfCards": "1",
       "Cards": [{
-      "CardProgramGroupName": "Ayur Mall Corporate CPG",
-      "Amount": "100",
+      "CardProgramGroupName": setting.cpgn,
+      "Amount": amount,
       "CurrencyCode": "INR",
-        "ExpiryDate": "2023-12-25T14:16:41+05:30"
+        "ExpiryDate": ExpiryDate
       }],
       "Purchaser": {
       "FirstName":"Test",
@@ -57,22 +58,30 @@ export const createGiftcard = async (store, amount, order_id, notes, cpg_name) =
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "07/10/2023",
-        TransactionId: 9,
+        TransactionId: setting.transaction_id + 1,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        return response.data
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } catch (err) {
+   const gcCreation = await axios(config);
+   console.log(gcCreation, "******************")
+   if (
+    gcCreation.status == "200" &&
+    gcCreation.data.ResponseCode == "0"
+  ) {
+    return gcCreation.data.Cards[0]
+  }
+
+}
+      // .then((response) => {
+      //   console.log(JSON.stringify(response.data));
+      //   return response.data
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
+  catch (err) {
     console.log(err)
     // res.json(
     //   respondInternalServerError("Something went wrong try after sometime")

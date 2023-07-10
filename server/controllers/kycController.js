@@ -44,7 +44,7 @@ export const initiatieKyc = async (req, res) => {
         secondPartyDetails: {
           name: storeData.name,
           email: storeData.email,
-          phone: storeData.phone,
+          phone: 8095379504,
         },
       }),
     };
