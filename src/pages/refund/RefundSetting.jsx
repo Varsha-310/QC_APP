@@ -78,6 +78,8 @@ const RefundSetting = () => {
       } else {
         console.log(error);
       }
+    } finally {
+      setIsLoading(false);
     }
 
     // if (res.data.message === 200) {
@@ -87,7 +89,6 @@ const RefundSetting = () => {
     // }
 
     console.log(res.data);
-    setIsLoading(false);
   };
 
   return (
