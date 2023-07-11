@@ -13,6 +13,9 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
+import path from "path";
+import { fileURLToPath } from 'url';
+
 
 export const app = express();
 
@@ -56,6 +59,20 @@ const apiLimiter = rateLimit({
 // route to check app status
 app.get("/", (req, res) => {
   res.json(respondSuccess("App is live"));
+});
+
+
+// const publicPath = path.join(__dirname, './client/build');
+
+const __filename = fileURLToPath(import.meta.url);
+
+const publicPath = path.dirname('./client/build');
+app.use(express.static(publicPath));
+app.use(express.static(path.join(__dirname, "js")));
+
+app.get('*', function (req, res) {
+  // console.log(req.url);
+  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
 });
 
 // shopify routes

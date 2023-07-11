@@ -125,10 +125,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       { upsert: true }
     );
 
-    console.log(
-      storeDetails,
-      "---------------------saved to db------------------"
-    );
+    console.log(storeDetails,"---------------------saved to db------------------");
     return true;
   } catch (error) {
     console.log(error);

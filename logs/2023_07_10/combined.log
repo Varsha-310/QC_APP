@@ -193,3 +193,64 @@
 {"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T11:00:37.942Z"}
 {"level":"info","message":"kyc transaction requested for","timestamp":"2023-07-10T11:21:13.530Z"}
 {"level":"info","message":"dispatch api called for","timestamp":"2023-07-10T11:21:14.528Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:13:23.294Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:13:39.078Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:16:15.486Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:16:24.060Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:16:26.980Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:17:26.075Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:17:32.390Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:18:18.910Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:18:34.428Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:19:02.400Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:19:14.130Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:19:25.319Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:19:28.619Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:19:40.482Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:19:46.283Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:21:16.617Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:21:18.925Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:21:32.203Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:21:43.289Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:23:40.686Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:23:54.740Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:23:56.539Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:25:26.496Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:25:28.220Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:25:31.245Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:25:34.504Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:27:57.536Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:02.789Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:04.229Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:07.874Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:10.274Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:13.592Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:19.794Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:23.873Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:28:25.894Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:28:27.211Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:29:05.199Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:29:11.432Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:29:14.317Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:24.937Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:26.622Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:30.001Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:34.329Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:32:35.359Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:49.393Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:32:56.491Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:32:58.752Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:33:16.305Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:33:17.040Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:33:37.692Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:33:50.027Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:35:32.165Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:36:21.611Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:36:22.272Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:37:11.752Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:37:13.197Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:37:36.703Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:37:38.139Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:38:27.564Z"}
+{"level":"info","message":{},"timestamp":"2023-07-10T18:38:29.037Z"}
+{"level":"info","message":"server is running at 8000","timestamp":"2023-07-10T18:53:57.638Z"}
