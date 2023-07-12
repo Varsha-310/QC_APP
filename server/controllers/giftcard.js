@@ -10,7 +10,7 @@ import {
 } from "../helper/response.js";
 import Store from "../models/store.js";
 
-import Wallet from "../models/wallet";
+import Wallet from "../models/wallet.js";
 import {
   fetchBalance,
   addToWallet,

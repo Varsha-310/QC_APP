@@ -7,7 +7,7 @@ import { getShopifyObject } from "../helper/shopify.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 import { createGiftcard } from "../middleware/qwikcilverHelper.js";
 import { addGiftcardtoWallet } from "./giftcard.js";
-import orders from "../models/orders";
+import orders from "../models/orders.js";
 
 /**
  * To handle order creation webhook
