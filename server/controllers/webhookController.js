@@ -17,7 +17,7 @@ import orders from "../models/orders";
 export const orderCreated = (req, res) => {
   console.log("order created", req.headers);
   // const shop = req.headers.x-shopify-shop-domain;
-  const shop = "mmtteststore*.myshopify.com";
+  const shop = "qwikcilver-public-app-teststore.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order });
   res.json(respondSuccess("webhook received"));
@@ -52,7 +52,7 @@ const ordercreateEvent = async (input, done) => {
     const { shop, order } = input;
 
     let isGiftcardOrder = false;
-    let shopName = "mmtteststore8.myshopify.com";
+    let shopName = "qwikcilver-public-app-teststore.myshopify.com";
     console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {
@@ -72,15 +72,22 @@ const ordercreateEvent = async (input, done) => {
             id: line_item.product_id,
           })
           .lean(); //Get the product from DB
+        console.log(gift_card_product);
         if (gift_card_product) {
+          console.log("product id found");
           //Check the product type
           isGiftcardOrder = true;
           let cpg_name = "12345";
           const storeOrder = await orders.create(order);
-          console.log("-------order created-----------",storeOrder)
+          console.log("-------order created-----------", storeOrder);
           qwikcilver_gift_cards.push(line_item);
           //If yes, push the line item to an array
         }
+        console.log(
+          "......",
+          qwikcilver_gift_cards,
+          qwikcilver_gift_cards.length
+        );
         if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
           if (
             newOrder.financial_status == "paid" ||
@@ -103,8 +110,14 @@ const ordercreateEvent = async (input, done) => {
                     qwikcilver_gift_card.properties[i].name === "Gift to Email"
                   ) {
                     sent_as_gift = true;
-                    let updateOrder = await orders.findOneAndUpdate({id : newOrder.id}, {is_giftcard_order : true});
-                    console.log("--------send as a gift--------------", updateOrder);
+                    let updateOrder = await orders.findOneAndUpdate(
+                      { id: newOrder.id },
+                      { is_giftcard_order: true }
+                    );
+                    console.log(
+                      "--------send as a gift--------------",
+                      updateOrder
+                    );
                   }
                 }
                 if (sent_as_gift == true) {
@@ -159,18 +172,24 @@ const ordercreateEvent = async (input, done) => {
                       receiver
                     );
                   }
-                }
-                else{
+                } else {
+                  console.log("---creating gc for self-----")
                   let giftCardDetails = await createGiftcard(
                     shopName,
                     parseInt(qwikcilver_gift_card.price),
                     newOrder.id,
                     gift_card_product.expiry_date
                   );
-                  console.log(giftCardDetails , "--------successs-----------------")
-                  const addCard = await addGiftcardtoWallet(shopName,newOrder.customer.id , giftCardDetails.CardPin, giftCardDetails.Balance )
-
-
+                  console.log(
+                    giftCardDetails,
+                    "--------successs-----------------"
+                  );
+                  const addCard = await addGiftcardtoWallet(
+                    shopName,
+                    newOrder.customer.id,
+                    giftCardDetails.CardPin,
+                    giftCardDetails.Balance
+                  );
                 }
               }
             }
@@ -189,8 +208,8 @@ const Event = async (input, done) => {
 
     let isGiftcardOrder = false;
     // let shopName = shop
-    let shopName = "mmtteststore8.myshopify.com";
-    console.log("Shop Name", shop);
+    let shopName = "qwikcilver-public-app-teststore.myshopify.com";
+    // console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {
       let newOrder = order;
@@ -226,12 +245,6 @@ const Event = async (input, done) => {
           const storeOrder = await orders.create(order);
           qwikcilver_gift_cards.push(line_item);
 
-          let giftCardDetails = await createGiftcard(
-            shopName,
-            parseInt(qwikcilver_gift_card.price),
-            newOrder.id,
-            gift_card_product.expiry_date
-          );
         }
       }
 
@@ -239,7 +252,7 @@ const Event = async (input, done) => {
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
         if (
           newOrder.financial_status == "paid" ||
-          shopName === "mmtteststore8.myshopify.com"
+          shopName === "qwikcilver-public-app-teststore.myshopify.com"
         ) {
           for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
             var email = null;
@@ -293,9 +306,17 @@ const Event = async (input, done) => {
                   newOrder.id,
                   gift_card_product.expiry_date
                 );
-                console.log(giftCardDetails.CardPin, "------------gc details---------------");
-                const walletCreated = await addGiftcardtoWallet(order.customer.id , giftCardDetails.CardPin, store);
-              
+                console.log(
+                  giftCardDetails.CardPin,
+                  "------------gc details---------------"
+                );
+                const walletCreated = await addGiftcardtoWallet(
+                  store,
+                  order.customer.id,
+                  giftCardDetails.CardPin,
+                  parseInt(qwikcilver_gift_card.price),
+                );
+
                 console.log(
                   "---Done Processing",
                   quantity,
@@ -311,8 +332,8 @@ const Event = async (input, done) => {
       //     shopName: shopName,
       //     orderId: newOrder.id,
       //   };
-        
-    //   }
+
+      //   }
     }
   } catch (error) {
     console.log(error);
