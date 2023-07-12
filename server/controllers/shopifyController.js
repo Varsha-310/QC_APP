@@ -85,7 +85,7 @@ export const installCallback = async (req, res) => {
           let response = await saveStoreData(storeData, shop, accessToken);
           await checkWebhooks(shop, accessToken);
           let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}/config/${shop}/${token}`);
+          return res.redirect(`${CLIENT_URL}?${shop}?${token}`);
         }
       }
     } else {
@@ -112,6 +112,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       shopify_id: shopData.shop.id,
       name: shopData.shop.name,
       email: shopData.shop.email,
+      phone: shopData.shop.phone,
       store_url: shop.toString(),
       access_token: accessToken,
       status: "installed",
@@ -124,10 +125,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       { upsert: true }
     );
 
-    console.log(
-      storeDetails,
-      "---------------------saved to db------------------"
-    );
+    console.log(storeDetails,"---------------------saved to db------------------");
     return true;
   } catch (error) {
     console.log(error);

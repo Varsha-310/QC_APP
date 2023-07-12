@@ -15,6 +15,7 @@ import {
   fetchBalance,
   addToWallet,
   createWallet,
+  activateCard
 } from "../middleware/qwikcilverHelper";
 import wallet from "../models/wallet";
 import wallet_history from "../models/wallet_history";
@@ -188,43 +189,54 @@ export const getSelectedGc = async (req, res) => {
 };
 
 /**
+ * adding giftcard to wallet
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const addGiftcard = (req,res) =>{
+  let{store , customer_id , gc_pin} = req.body;
+  addGiftcardtoWallet(store,customer_id,gc_pin);
+}
+
+/**
  * to add giftcards to the wallet
  * @param {*} req
  * @param {*} res
  */
-export const addGiftcardtoWallet = async (req, res) => {
+export const addGiftcardtoWallet = async (store ,customer_id, gc_pin ) => {
   try {
-    let { customer_id, gc_pin, store } = req.body;
-    let Amount = 600;
     let walletExists = await Wallet.findOne({
       shopify_customer_id: customer_id,
     });
     console.log(walletExists, "-------***********----------");
     if (walletExists) {
       let wallet_id = walletExists.wallet_id;
+      const shopify_gc_id = walletExists.shopify_giftcard_id;
       let shopify = await getShopifyObject(store);
       console.log("back ", shopify, walletExists.shopify_giftcard_id);
       let giftcard_req = {
         initial_value: parseInt(Amount),
         note: "Referrence: Qwikcilver Gift Card - ",
       };
-      let updateShopifyGc = await shopify.giftCard.create({
-        initial_value: 100,
+      let activatedCard = await activateCard(store ,gc_pin);
+      let updateShopifyGc = await shopify.giftCardAdjustment.create({shopify_gc_id, amount : activatedCard.Balance
       });
-      console.log(updateShopifyGc, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-      let transaction = await addToWallet(wallet_id, gc_pin);
-      console.log(transaction.data);
-      if (transaction.status == 200) {
+      console.log(updateShopifyGc);
+      let transaction = await addToWallet(store ,wallet_id, gc_pin ,activatedCard.CardNumber );
+      console.log(transaction)
+      if (transaction.status == "200" , transaction.data.ResponseCode == "0") {
         res.json({
-          ...respondWithData("giftcard added to wallet"),
-          // data: updateShopifyGc.id,
+          ...respondWithData("giftcard added to wallet")
         });
+        if(transaction.status == 200 , transaction.data.ResponseCode == 10838){
+          res.json(respondUnauthorized("card already added to wallet"))
+        }
       } else {
         res.json(respondForbidden("invalid card credentials"));
       }
     } else {
       console.log("wallet doesnt exists");
-      let walletCreated = await createWallet(customer_id);
+      let walletCreated = await createWallet(store ,customer_id);
       let giftcard_req = {
         initial_value: parseInt(amount),
         customer_id: customer_id,
@@ -233,8 +245,22 @@ export const addGiftcardtoWallet = async (req, res) => {
       let gift_card = await shopify.giftCard.create(giftcard_req);
       console.log("Shopify Gift Card Generated - ", gift_card.id);
       console.log(walletCreated);
+      let transaction = await addToWallet(store ,walletCreated.WalletNumber, gc_pin);
+      console.log(transaction)
+      if (transaction.status == "200" , transaction.data.ResponseCode == "0") {
+        res.json({
+          ...respondWithData("giftcard added to wallet")
+        });
+        if(transaction.status == 200 , transaction.data.ResponseCode == 10838){
+          res.json(respondUnauthorized("card already added to wallet"))
+        }
+        else {
+          res.json(respondForbidden("invalid card credentials"));
+        }
+      }
     }
   } catch (err) {
+    console.log(err)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -244,8 +270,9 @@ export const addGiftcardtoWallet = async (req, res) => {
 export const addGiftcardtoWallets = async (req, res) => {
   try {
     let { customer_id, gc_pin, store } = req.body;
+    console.log(gc_pin)
 
-    if ((gc_pin == "123456789", customer_id == "7061732262207")) {
+    if (gc_pin == "PG5DN8GTX4BHYB" && customer_id == "7061732262207") {
       res.json({
         ...respondWithData("card has been added to wallet"),
       });
@@ -276,7 +303,7 @@ export const getWalletBalance = async (req, res) => {
       });
       console.log("-----------------", walletExists);
       if (walletExists) {
-        let balanceFetched = await fetchBalance(walletExists.wallet_id);
+        let balanceFetched = await fetchBalance(store ,walletExists.wallet_id);
         console.log(balanceFetched);
         res.json({
           ...respondWithData("balance fetched"),
@@ -301,7 +328,9 @@ export const getWalletBalance = async (req, res) => {
 
 export const resendEmail = async (req, res) => {
   try {
-    const orderExists = await orders.findOne({ store_url : req.token.store_url ,id : req.params.order_id});
+    console.log(req.token.store_url , req.query.order_id)
+    const orderExists = await orders.findOne({ store_url : req.token.store_url ,id : req.query.order_id});
+
     console.log("-------------", orderExists)
     if(orderExists){
       res.json(respondSuccess("email sent successfully"))
@@ -364,18 +393,6 @@ export const giftCardOrders = async (req, res) => {
     });
 
     console.log(gcOrders.length);
-
-    // Sort the orders as required
-    // gcOrders.sort((a, b) => {
-    //   // Replace the comparison logic with your desired sorting criteria
-    //   if (a.created_at < b.created_at) {
-    //     return -1;
-    //   }
-    //   if (a.created_at > b.created_at) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
 
     // Calculate the start and end index for the current page
     const startIndex = (page - 1) * limit;

@@ -1,6 +1,7 @@
 import  Validator from "validatorjs";
 import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response.js";
 import crypto from "crypto";
+import store from "../models/store.js";
 
 /**
  * Created validator for Api
@@ -205,8 +206,9 @@ const validateMethod = async (req, validationRule,res , next) => {
  */
 export const verifyShopifyHook = async (req, res, next) => {
   try {
-    console.log("in shopify webhook verification")
-    const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
+    console.log("in shopify webhook verification");
+    const storeData = store.findOne({store_url : req.headers['X-Shopify-Shop-Domain']})
+    const api_secret = storeData.access_token ?? "";
     const body = req.rawBody;
     const digest = crypto
       .createHmac("sha256", api_secret)

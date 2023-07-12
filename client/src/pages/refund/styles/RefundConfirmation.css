@@ -1,0 +1,18 @@
+.refund-conf-page__container {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.refund-conf-page__container img {
+    width: 100%;
+    height: 80px;
+}
+.refund-conf-page__container p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  margin: 20px 0px;
+  color: var(--text-dark-color);
+}

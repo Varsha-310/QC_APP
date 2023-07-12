@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+
 const orderSchema = new Schema({
     store_url: { type: String },
     id: { type: Number, required: true },

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addGiftcardtoWallet, addGiftcardtoWallets, createGiftcardProducts, deleteGiftcardProducts, getSelectedGc , getGiftcardProducts , updateGiftcardProduct, resendEmail, giftCardOrders , walletTransaction} from "../controllers/giftcard.js";
+import { addGiftcard, createGiftcardProducts, deleteGiftcardProducts, getSelectedGc , getGiftcardProducts , updateGiftcardProduct, resendEmail, giftCardOrders , walletTransaction} from "../controllers/giftcard.js";
 import { verifyJwt } from "../helper/jwtHelper.js";
 import {  validateGetBalance , verifySendEmail ,validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator.js";
 import { getWalletBalance } from "../controllers/giftcard.js";
@@ -22,7 +22,7 @@ giftcardRoute.post("/products/list", verifyJwt,  getGiftcardProducts);
 giftcardRoute.post("/products/select", verifyJwt, validateUpdateGiftcard , getSelectedGc);
 
 // route to add giftcard to wallet
-giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcardtoWallets);
+giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcard);
 
 // route to get wallet balance
 giftcardRoute.post("/wallet/balance" , validateGetBalance , getWalletBalance );

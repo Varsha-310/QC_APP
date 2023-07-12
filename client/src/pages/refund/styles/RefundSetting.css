@@ -1,0 +1,47 @@
+.refund-setting__title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+}
+.refund-setting__table-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+.refund-setting__headings {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  margin: 20px 0px;
+  color: var(--text-dark-color);
+}
+.refund-setting__options {
+  position: relative;
+  margin: 30px 0px;
+}
+.refund-setting__type-name {
+  width: 100%;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  padding: 8px 10px;
+  color: var(--text-dark-color);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+.refund-setting__radio {
+  height: 20px;
+  accent-color: var(--secondary-bold-btn);
+}
+.refund-setting__radio#default::after {
+  content: "(Default)";
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 100px;
+
+  font-weight: 500;
+  font-size: 14px;
+  color: #7e7e7e;
+}

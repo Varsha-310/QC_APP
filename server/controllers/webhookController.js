@@ -5,6 +5,9 @@ import store from "../models/store.js";
 import product from "../models/product.js";
 import { getShopifyObject } from "../helper/shopify.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+import { createGiftcard } from "../middleware/qwikcilverHelper.js";
+import { addGiftcardtoWallet } from "./giftcard.js";
+import orders from "../models/orders";
 
 /**
  * To handle order creation webhook
@@ -12,8 +15,9 @@ import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
-  console.log("order created");
-  const shop = req.headers.shop;
+  console.log("order created", req.headers);
+  // const shop = req.headers.x-shopify-shop-domain;
+  const shop = "mmtteststore*.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order });
   res.json(respondSuccess("webhook received"));
@@ -43,19 +47,151 @@ export const orderDeleted = (req, res) => {
  * @param {*} res
  */
 const ordercreateEvent = async (input, done) => {
+  try {
+    console.log("------------order create event-----------------");
+    const { shop, order } = input;
+
+    let isGiftcardOrder = false;
+    let shopName = "mmtteststore8.myshopify.com";
+    console.log("Shop Name", shop);
+    let settings = await store.findOne({ store_url: shopName });
+    if (settings) {
+      let newOrder = order;
+      let qwikcilver_gift_cards = [];
+      let shopify = await getShopifyObject(shopName); //Get the shopify object
+      console.log(
+        shopify,
+        "----------------shopify object----------------------"
+      );
+      for (let line_item of newOrder.line_items) {
+        //Check for the order lineitems whether it contains a QC Giftcard Product
+        // gift_card_product = "";
+        console.log(line_item);
+        let gift_card_product = await product
+          .findOne({
+            id: line_item.product_id,
+          })
+          .lean(); //Get the product from DB
+        if (gift_card_product) {
+          //Check the product type
+          isGiftcardOrder = true;
+          let cpg_name = "12345";
+          const storeOrder = await orders.create(order);
+          console.log("-------order created-----------",storeOrder)
+          qwikcilver_gift_cards.push(line_item);
+          //If yes, push the line item to an array
+        }
+        if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
+          if (
+            newOrder.financial_status == "paid" ||
+            shopName === "qwikcilver-demo.myshopify.com"
+          ) {
+            for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
+              console.log("____________QC giftcard created___________________");
+              var email = null;
+              var message = "";
+              var sender = "";
+              var receiver = "";
+              if (qwikcilver_gift_card.properties) {
+                let sent_as_gift = false;
+                for (
+                  let i = 0;
+                  i < qwikcilver_gift_card.properties.length;
+                  i++
+                ) {
+                  if (
+                    qwikcilver_gift_card.properties[i].name === "Gift to Email"
+                  ) {
+                    sent_as_gift = true;
+                    let updateOrder = await orders.findOneAndUpdate({id : newOrder.id}, {is_giftcard_order : true});
+                    console.log("--------send as a gift--------------", updateOrder);
+                  }
+                }
+                if (sent_as_gift == true) {
+                  for (
+                    let i = 0;
+                    i < qwikcilver_gift_card.properties.length;
+                    i++
+                  ) {
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "Gift to Email"
+                    ) {
+                      email = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Gift to Email"
+                    ) {
+                      email = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name === "_QC Message"
+                    ) {
+                      message = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name === "_sender_name"
+                    ) {
+                      sender = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_recipient_name"
+                    ) {
+                      receiver = qwikcilver_gift_card.properties[i].value;
+                    }
+
+                    let giftCardDetails = await createGiftcard(
+                      shopName,
+                      parseInt(qwikcilver_gift_card.price),
+                      newOrder.id,
+                      gift_card_product.expiry_date
+                    );
+                    console.log(email);
+                    await sendEmailViaSendGrid(
+                      giftCardDetails.createGiftCardResponse,
+                      newOrder,
+                      shopName,
+                      email,
+                      message,
+                      sender,
+                      receiver
+                    );
+                  }
+                }
+                else{
+                  let giftCardDetails = await createGiftcard(
+                    shopName,
+                    parseInt(qwikcilver_gift_card.price),
+                    newOrder.id,
+                    gift_card_product.expiry_date
+                  );
+                  console.log(giftCardDetails , "--------successs-----------------")
+                  const addCard = await addGiftcardtoWallet(shopName,newOrder.customer.id , giftCardDetails.CardPin, giftCardDetails.Balance )
+
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+const Event = async (input, done) => {
   console.log("------------order create event-----------------");
   try {
     const { shop, order } = input;
 
     let isGiftcardOrder = false;
-    // let shopName = req.get("x-shopify-shop-domain");
+    // let shopName = shop
     let shopName = "mmtteststore8.myshopify.com";
-    console.log("Shop Name", shopName);
+    console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
-    // if(settings.qwikcilver_web_properties.emailTemplate){
-    //      template=settings.qwikcilver_web_properties.emailTemplate;
-    // }
-
     if (settings) {
       let newOrder = order;
       let qwikcilver_gift_cards = [];
@@ -67,33 +203,6 @@ const ordercreateEvent = async (input, done) => {
         shopify,
         "----------------shopify object----------------------"
       );
-      // let transactions = await shopify.transaction.list(newOrder.id);
-      //List all the transactions of the order
-      //   transactions.map(async (transaction) => {
-      //     if (transaction.gateway == "gift_card") {
-      //       //See if the transaction is made with Shopify Gift Card
-      //       //Check whether the transaction giftcard ID and the redemption Giftcard ID are same
-      //       if (
-      //         redeemedLogs.shopify_gift_card &&
-      //         redeemedLogs.shopify_gift_card.id ==
-      //         transaction.receipt.gift_card_id
-      //       ) {
-      //         //If yes, mark the redemption as used and store the relevant shopify order as well
-      //         redeemedLogs.isUsed = true;
-      //         redeemedLogs.shopify_order = newOrder;
-      //         redeemedLogs.markModified("isUsed");
-      //         redeemedLogs.markModified("shopify_order");
-      //         console.log(
-      //           newOrder.name,
-      //           "Shopify Gift Card used - ",
-      //           redeemedLogs.shopify_gift_card.id,
-      //           redeemedLogs.shopify_gift_card.code
-      //         );
-      //         await redeemedLogs.save();
-      //       }
-      //     }
-      //   });
-      // }
 
       for (let line_item of newOrder.line_items) {
         //Check for the order lineitems whether it contains a QC Giftcard Product
@@ -105,31 +214,24 @@ const ordercreateEvent = async (input, done) => {
           })
           .lean(); //Get the product from DB
 
-        console.log(gift_card_product);
+        console.log(
+          "----------------------giftvcard product--------------",
+          gift_card_product
+        );
+
         if (gift_card_product) {
-          if (gift_card_product.product_type == "qwikcilver_gift_card") {
-            //Check the product type
-            isGiftcardOrder = true;
-            let cpg_name = "12345";
-            if (gift_card_product.tags.length) {
-              // for (tag of gift_card_product.tags) {
-              // if (tag.includes("cpgn_")) {
-              //   cpg_name = tag;
-              //   cpg_name = cpg_name.replace("cpgn_", "");
-              //   cpg_name = cpg_name.replace(/_/g, " ");
-              //   if (cpg_name.includes(",")) {
-              //     cpg_name = cpg_name.split(",")[0];
-              //     console.log(cpg_name);
-              //   }
-              // }
-              // }
-            }
-            line_item["cpg_name"] = cpg_name;
-            console.log("line_item", line_item);
-            // console.log("cpgn_name", cpg_name);
-            qwikcilver_gift_cards.push(line_item);
-            //If yes, push the line item to an array
-          }
+          //Check the product type
+          isGiftcardOrder = true;
+          let cpg_name = "12345";
+          const storeOrder = await orders.create(order);
+          qwikcilver_gift_cards.push(line_item);
+
+          let giftCardDetails = await createGiftcard(
+            shopName,
+            parseInt(qwikcilver_gift_card.price),
+            newOrder.id,
+            gift_card_product.expiry_date
+          );
         }
       }
 
@@ -149,6 +251,10 @@ const ordercreateEvent = async (input, done) => {
                 if (
                   qwikcilver_gift_card.properties[i].name === "Gift to Email"
                 ) {
+                  const storeOrder = await orders.updateOne({
+                    id: order.id,
+                    is_giftcard_order: true,
+                  });
                   email = qwikcilver_gift_card.properties[i].value;
                 }
                 if (
@@ -173,7 +279,7 @@ const ordercreateEvent = async (input, done) => {
               console.log(email);
               // email=qwikcilver_gift_card.properties["Gift to Email"]
             }
-            if (qwikcilver_gift_card.cpg_name.length) {
+            if (qwikcilver_gift_card) {
               let item_quantity = [];
               for (let i = 0; i < qwikcilver_gift_card.quantity; i++) {
                 item_quantity.push(1);
@@ -181,69 +287,32 @@ const ordercreateEvent = async (input, done) => {
               for (let quantity of item_quantity) {
                 //Loop through the quantity
                 //Create a QC Giftcard
-                // giftCardDetails = await createVoucher(
-                //   shopName,
-                //   parseInt(qwikcilver_gift_card.price),
-                //   newOrder.id,
-                //   "Giftcard created for " +
-                //   newOrder.name +
-                //   " - " +
-                //   qwikcilver_gift_card.name,
-                //   qwikcilver_gift_card.cpg_name
-                // );
-                // console.log(giftCardDetails);
-                // console.log(giftCardDetails.createGiftCardResponse);
-                // Save the information
-                // await saveLogs(
-                //   shopName,
-                //   giftCardDetails.createGiftCardResponse,
-                //   giftCardDetails.options.body,
-                //   newOrder,
-                //   qwikcilver_gift_card.name,
-                //   qwikcilver_gift_card.id
-                // );
-                //If successful, send an email to the customer containg the newly generated QC Giftcard Details
-                // if (
-                //   giftCardDetails.createGiftCardResponse["ResponseCode"] == 0
-                // ) {
-                // await emailHelper.sendEmailViaSendGrid(
-                //   giftCardDetails.createGiftCardResponse,
-                //   newOrder,
-                //   shopName,
-                //   email,
-                //   message,
-                //   sender,
-                //   receiver
-                // );
-                // }
+                let giftCardDetails = await createGiftcard(
+                  shopName,
+                  parseInt(qwikcilver_gift_card.price),
+                  newOrder.id,
+                  gift_card_product.expiry_date
+                );
+                console.log(giftCardDetails.CardPin, "------------gc details---------------");
+                const walletCreated = await addGiftcardtoWallet(order.customer.id , giftCardDetails.CardPin, store);
+              
                 console.log(
                   "---Done Processing",
                   quantity,
-                  qwikcilver_gift_card.name,
-                  "| CPG - ",
-                  qwikcilver_gift_card.cpg_name
+                  qwikcilver_gift_card.name
                 );
               }
             }
           }
         }
       }
-      if (isGiftcardOrder == true) {
-        let data = {
-          shopName: shopName,
-          orderId: newOrder.id,
-        };
-        // addTagToOrder(data);
-        await sendEmailViaSendGrid(
-          // giftCardDetails.createGiftCardResponse,
-          newOrder,
-          shopName,
-          email,
-          message,
-          sender,
-          receiver
-        );
-      }
+      // if (isGiftcardOrder == true) {
+      //   let data = {
+      //     shopName: shopName,
+      //     orderId: newOrder.id,
+      //   };
+        
+    //   }
     }
   } catch (error) {
     console.log(error);
@@ -328,14 +397,6 @@ export const productDeleteEvent = async (req, res, next) => {
     let shopName = req.get("x-shopify-shop-domain");
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {
-      //   let status = verifyShopifyWebhook(
-      //     req,
-      //     settings.shopify_private_app.shared_secret
-      //   );
-      //   if (!status) {
-      //     console.log("cannot verify request");
-      //     return;
-      //   }
       product
         .remove({ id: req.body.id })
         .then((deleted) => console.log(`deleted product: ${req.body.id}`))
