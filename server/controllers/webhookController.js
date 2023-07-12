@@ -293,39 +293,9 @@ const Event = async (input, done) => {
                   newOrder.id,
                   gift_card_product.expiry_date
                 );
-                console.log(
-                  giftCardDetails.CardPin,
-                  "------------gc details---------------"
-                );
-                const walletCreated = await addGiftcardtoWallet(
-                  order.customer.id,
-                  giftCardDetails.CardPin,
-                  store
-                );
-                // console.log(giftCardDetails.createGiftCardResponse);
-                // Save the information
-                // await saveLogs(
-                //   shopName,
-                //   giftCardDetails.createGiftCardResponse,
-                //   giftCardDetails.options.body,
-                //   newOrder,
-                //   qwikcilver_gift_card.name,
-                //   qwikcilver_gift_card.id
-                // );
-                //If successful, send an email to the customer containg the newly generated QC Giftcard Details
-                // if (
-                //   giftCardDetails.createGiftCardResponse["ResponseCode"] == 0
-                // ) {
-                // await emailHelper.sendEmailViaSendGrid(
-                //   giftCardDetails.createGiftCardResponse,
-                //   newOrder,
-                //   shopName,
-                //   email,
-                //   message,
-                //   sender,
-                //   receiver
-                // );
-                // }
+                console.log(giftCardDetails.CardPin, "------------gc details---------------");
+                const walletCreated = await addGiftcardtoWallet(order.customer.id , giftCardDetails.CardPin, store);
+              
                 console.log(
                   "---Done Processing",
                   quantity,
@@ -336,22 +306,13 @@ const Event = async (input, done) => {
           }
         }
       }
-      if (isGiftcardOrder == true) {
-        let data = {
-          shopName: shopName,
-          orderId: newOrder.id,
-        };
-        // addTagToOrder(data);
-        await sendEmailViaSendGrid(
-          // giftCardDetails.createGiftCardResponse,
-          newOrder,
-          shopName,
-          email,
-          message,
-          sender,
-          receiver
-        );
-      }
+      // if (isGiftcardOrder == true) {
+      //   let data = {
+      //     shopName: shopName,
+      //     orderId: newOrder.id,
+      //   };
+        
+    //   }
     }
   } catch (error) {
     console.log(error);

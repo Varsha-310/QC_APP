@@ -58,6 +58,7 @@ app.get("/", (req, res) => {
   res.json(respondSuccess("App is live"));
 });
 
+
 // shopify routes
 app.use("/shopify", shopifyRoute);
 

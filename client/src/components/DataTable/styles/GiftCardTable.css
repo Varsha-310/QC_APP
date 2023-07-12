@@ -1,0 +1,55 @@
+.gift-cards-table {
+  width: 100%;
+  padding: 15px 0px;
+  border-spacing: 0;
+}
+.gift-cards-table tr {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.gift-cards-table thead tr {
+  background: rgba(151, 151, 151, 0.2);
+  padding: 0px 5px;
+  margin-bottom: 10px;
+}
+.gift-cards-table thead tr th {
+  margin: 5px;
+  padding: 10px;
+  background-color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #000000;
+}
+.gift-cards-table td {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gift-cards-table tbody tr {
+  margin: 3px 0px;
+  /* padding: 5px 0px; */
+}
+.gift-cards-table tbody tr td {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  padding: 5px 0px;
+  color: var(--text-dark-color);
+  background: rgba(182, 32, 40, 0.2);
+}
+.gc-table__image img {
+  width: 110px;
+  height: 70px;
+}
+
+.gc-table-icons {
+  width: 20px;
+  height: 15px;
+  margin: 0px 5px;
+}

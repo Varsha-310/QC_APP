@@ -1,0 +1,81 @@
+.transaction-detail__container {
+  width: 100%;
+}
+.transaction-detail__box-bg {
+  padding: 30px 50px;
+  background: rgba(182, 32, 40, 0.1);
+}
+.gift-card__text-box-container {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  column-gap: 15px;
+  margin: 10px 0px;
+}
+.gift-card__text-box {
+  background: #ffffff;
+  width: 100%;
+  padding: 0px 12px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+#total::after {
+  content: "(GST not Incl)";
+  position: absolute;
+  /* top: 50%; */
+  left: 110%;
+  width: 100%;
+  color: #00000099;
+}
+.transaction-detail__plan-data {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 20px;
+}
+.transaction-detail__plan-amount {
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 39px;
+  display: flex;
+  align-items: center;
+
+  color: var(--text-dark-color);
+}
+.transaction-detail__due-amount {
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 32px;
+  margin: 10px 0px;
+  color: var(--text-dark-color);
+}
+.transaction-detail__plan-due-date {
+  background: rgba(182, 32, 40, 0.3);
+  border-radius: 10px;
+  width: 200px;
+  height: 40px;
+
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #b62028;
+}
+
+.transaction-detail__plan-charges {
+  margin: 10px 0px;
+}
+
+.transaction-detail__plan-fees {
+  margin: 10px 0px;
+  padding: 30px 15%;
+}
+
+.transaction-detail__footer-img {
+  position: relative;
+  top: 20px;
+  left: -200px;
+  height: 150px;
+  width: 300px;
+}
