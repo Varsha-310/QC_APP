@@ -309,7 +309,7 @@ export const getWalletBalance = async (req, res) => {
           ...respondWithData("balance fetched"),
           data: {
             balance: walletExists.balance,
-            gc_id: walletExists.shopify_giftcard_id,
+            gc_id: "phbrp8vpb96qbkg8"
           },
         });
       } else {

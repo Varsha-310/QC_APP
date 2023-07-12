@@ -13,6 +13,10 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
+import path from "path";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+let __dirname = path.dirname(__filename);
 
 export const app = express();
 
@@ -52,12 +56,19 @@ const apiLimiter = rateLimit({
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
+console.log("Path Before",__dirname);
+__dirname = __dirname.substring(0,__dirname.length - 7);
+console.log("Path after", __dirname);
+const publicPath = path.join('./client/build');
+app.use(express.static(publicPath));
+app.use(express.static(path.join(__dirname, "js")));
 
 // route to check app status
-app.get("/", (req, res) => {
-  res.json(respondSuccess("App is live"));
-});
+// app.get("/", (req, res) => {
+//   res.json(respondSuccess("App is live"));
+// });
 
+// const publicPath = path.join(process.cwd(), 'client/build');
 
 // shopify routes
 app.use("/shopify", shopifyRoute);
@@ -77,6 +88,12 @@ app.use("/plan" , planRoute)
 // giftcard routes
 app.use("/giftcard" , giftcardRoute)
 
+
+app.get('*', function (req, res) {
+  
+  console.log( "Requested Url", req.url);
+  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
+});
 // cron to check webhooks for every store
 cron.schedule("* * * * *", () => {
   // cronToCheckWebhooks();
@@ -98,10 +115,10 @@ mongoose
 
 // Global error handler
 app.use((err, req, res, next) => {
+  console.log(err);
   if (!err) {
     return next();
   }
-  res.json(
-    respondInternalServerError("Something went wrong try after sometime")
+  res.json(respondInternalServerError()
   );
 });
