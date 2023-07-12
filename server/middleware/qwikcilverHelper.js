@@ -6,51 +6,35 @@ import qcCredentials from "../models/qcCredentials.js";
 export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
   try {
     let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+      await setting.save();
   
-    // let data = {
-    //   TransactionTypeId: "305",
-    //   InputType: "3",
-    //   TransactionModeId : "0",
-    //   BusinessReferenceNumber: "",
-    //   InvoiceNumber: "ORD-" + order_id,
-    //   NumberOfCards: "1",
-    //   Cards: [
-    //     {
-    //       CardProgramGroupName: "Ayur Mall Corporate CPG",
-    //       Amount: amount,
-    //       CurrencyCode: "INR",
-    //     },
-    //   ],
-    //   Purchaser: {
-    //     FirstName: "varsha",
-    //     LastName: "One",
-    //     Mobile: "+8095379504",
-    //     Email: "testinguser@gmail.com",
-    //   },
-    //   Notes: "CreateAndIssue Testing",
-    // };
-
     let data = {
-      "TransactionTypeId": "305",
-      "InputType": "3",
-      "TransactionModeId" : "0",
-      "BusinessReferenceNumber" :"",
-      "InvoiceNumber":"1",
-      "NumberOfCards": "1",
-      "Cards": [{
-      "CardProgramGroupName": setting.cpgn,
-      "Amount": amount,
-      "CurrencyCode": "INR",
-        "ExpiryDate": ExpiryDate
-      }],
-      "Purchaser": {
-      "FirstName":"Test",
-      "LastName":"User",
-      "Mobile":"0401202301",
-      "Email":"0401202301@testmail.com"
+      TransactionTypeId: "305",
+      InputType: "3",
+      TransactionModeId : "0",
+      BusinessReferenceNumber: "",
+      InvoiceNumber: "ORD-" + order_id,
+      NumberOfCards: "1",
+      Cards: [
+        {
+          CardProgramGroupName: setting.cpgn,
+          Amount: amount,
+          CurrencyCode: "INR",
+          ExpiryDate : ExpiryDate
+        },
+      ],
+      Purchaser: {
+        FirstName: "varsha",
+        LastName: "One",
+        Mobile: "+8095379504",
+        Email: "testinguser@gmail.com",
       },
-      "Notes": "CreateAndIssue Testing"
-      }
+      Notes: "CreateAndIssue Testing",
+    };
 
     let config = {
       method: "post",
@@ -58,7 +42,7 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "07/10/2023",
-        TransactionId: setting.transaction_id + 1,
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
@@ -74,18 +58,10 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
   }
 
 }
-      // .then((response) => {
-      //   console.log(JSON.stringify(response.data));
-      //   return response.data
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
+    
   catch (err) {
     console.log(err)
-    // res.json(
-    //   respondInternalServerError("Something went wrong try after sometime")
-    // );
+    return false
   }
 };
 
@@ -100,7 +76,7 @@ const qwikcilverToken = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://qc3.qwikcilver.com/QwikCilver/XNP/api/v3/authorize",
+      url: `${process.env.QC_API_URL}/XNP/api/v3/authorize`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/19/2023",
@@ -123,9 +99,15 @@ const qwikcilverToken = () => {
   }
 };
 
-export const fetchBalance = async (walletData) => {
+export const fetchBalance = async (store ,walletData) => {
   try {
     console.log(walletData);
+    let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+      await setting.save();
     let data = {
       TransactionTypeId: 3503,
       InputType: "1",
@@ -141,11 +123,11 @@ export const fetchBalance = async (walletData) => {
     let config = {
       method: "post",
 
-      url: "https://qc3.qwikcilver.com/QwikCilver/XnP/api/v3/gc/transactions",
+      url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/22/2023",
-        TransactionId: "024",
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
@@ -172,14 +154,19 @@ export const fetchBalance = async (walletData) => {
  * @param {*} req
  * @param {*} res
  */
-export const createWallet = async (customer_id) => {
+export const createWallet = async (store ,customer_id) => {
   try {
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
     let data = {
       TransactionTypeId: 3500,
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
       Quantity: 1,
-      WalletProgramGroupName: "Ayur Mall WPG",
+      WalletProgramGroupName: setting.cpgn ,
       Wallets: [
         {
           ExternalWalletID: customer_id,
@@ -195,7 +182,7 @@ export const createWallet = async (customer_id) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/20/2023",
-        TransactionId: "123008",
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
@@ -222,10 +209,14 @@ export const createWallet = async (customer_id) => {
  * @param {*} wallet_id
  * @param {*} gc_pin
  */
-export const addToWallet = async (wallet_id, gc_pin) => {
+export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
   try {
-    let activatedCard = await activateCard(gc_pin);
-    if (activatedCard.status == "200" && activatedCard.data.Cards) {
+    let setting = await store.findOne({store_url : store});
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+    
       let data = {
         TransactionTypeId: "3508",
         Cards: [
@@ -233,7 +224,7 @@ export const addToWallet = async (wallet_id, gc_pin) => {
             CardNumber: wallet_id,
             PaymentInstruments: [
               {
-                InstrumentNumber: activatedCard.data.Cards.CardNumber,
+                InstrumentNumber: gc_number,
                 InstrumentPin: gc_pin,
               },
             ],
@@ -244,21 +235,20 @@ export const addToWallet = async (wallet_id, gc_pin) => {
 
       let config = {
         method: "post",
-        maxBodyLength: Infinity,
-        url: "https://qc3.qwikcilver.com/QwikCilver/XnP/api/v3/gc/transactions",
+        url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
         headers: {
           "Content-Type": "application/json;charset=UTF-8 ",
           DateAtClient: "06/20/2021",
-          TransactionId: "1283",
+          TransactionId: transactionId,
           Authorization: `Bearer ${process.env.Authorization}`,
         },
         data: data,
       };
 
       let cardAdded = await axios(config);
-      // console.log(cardAdded);
-      return cardAdded
-    }
+     
+    return cardAdded;
+    
   } catch (err) {
     console.log(err.response.status, err.response.data.ResponseCode);
     if (err.response.status == 401 && err.response.data.ResponseCode == 10744) {
@@ -271,8 +261,14 @@ export const addToWallet = async (wallet_id, gc_pin) => {
  * @param {*} gc_pin
  * @returns
  */
-export const activateCard = async (gc_pin) => {
+export const activateCard = async (store ,gc_pin) => {
   try {
+    let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------", setting.unique_transaction_id);
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+      await setting.save();
     console.log(gc_pin);
     let data = {
       TransactionTypeId: 322,
@@ -283,19 +279,85 @@ export const activateCard = async (gc_pin) => {
 
     let config = {
       method: "post",
-      url: "https://qc3.qwikcilver.com/QwikCilver/XNP/api/v3/gc/transactions",
+      url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "07/04/2023",
-        TransactionId: "012531",
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
     };
 
     let activation = await axios(config);
-    return activation;
+    console.log(activation, "******************")
+   if (
+    activation.status == "200" &&
+    activation.data.ResponseCode == "0"
+  ) {
+    return activation.data.Cards[0]
+  }
+  
   } catch (err) {
     console.log(err);
+  }
+};
+
+
+/**
+ * to redeem amount from wallet
+ * @param {*} store 
+ * @param {*} customer_id 
+ * @returns 
+ */
+export const redeemWallet = async (store ,wallet_id,amount) => {
+  try {
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+    let data = {
+      TransactionTypeId: 3504,
+      InputType:"1",
+      PreAuthType:1,
+      BusinessReferenceNumber: "",
+      InvoiceNumber: "Inv-01",
+      Quantity: 1,
+      WalletProgramGroupName: setting.cpgn ,
+      BillAmount: 2000.00,
+      Cards:[{  
+        CardNumber:wallet_id,
+        CurrencyCode:"INR",
+        Amount:amount
+      }],
+      Notes: "Test Wallet Redeem for Testing",
+    };
+
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8 ",
+        DateAtClient: "06/20/2023",
+        TransactionId: transactionId,
+        Authorization: `Bearer ${process.env.Authorization}`,
+      },
+      data: data,
+    };
+
+    let walletRedemption = await axios(config);
+    console.log(walletRedemption);
+    if (
+      (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
+    ) {
+      console.log(walletRedemption.data.Wallets[0]);
+      return walletRedemption.data.Wallets[0];
+    }
+  } catch (err) {
+    console.log(err);
+    res.json(
+      respondInternalServerError("Something went wrong try after sometime")
+    );
   }
 };
