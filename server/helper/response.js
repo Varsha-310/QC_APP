@@ -48,7 +48,7 @@ export const respondSuccess = (msg, data) => {
  * @param data
  * @returns {json}
  */
-export const respondWithData = (msg = "", code = 200, data) => {
+export const respondWithData = (msg = "", data, code = 200) => {
   return {
     ...respond(true, msg, code),
     data: data,

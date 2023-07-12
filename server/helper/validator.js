@@ -180,45 +180,17 @@ export const validateAddToWallet = async (req, res, next) => {
  * @param {*} next 
  */
 const validateMethod = async (req, res, next, validationRule) => {
-  try {
-    await validator(req.body, validationRule, {}, (err, status) => {
-      if (!status) {
-        res.json(
-          respondValidationError(err)
-        );
-      } else {
-        console.log("api validation done");
-        next();
-      }
-    });
-  } catch (err) {
-    console.log(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
+
+  await validator(req.body, validationRule, {}, (err, status) => {
+    if (!status) {
+      res.json(respondValidationError(err));
+    } else {
+      next();
+    }
+  });
 };
 
 
-/**
- * Validation rules for the getting store details route
- */
-
-
-export const validategetStoresDataApi = async (req, res, next) => {
-  try {
-    const validationRule = {
-      store_url:"required|string",
-      // Refund_Mode: "required|string",
-      // payment_gateway_names: "required|string"
-    };
-    await validategetStoresDataMethod(req, res, next, validationRule);
-  } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
-  }
-};
 
 export const validategetStoresDataMethod = async (req, res, next, validationRule) => {
   try {
@@ -261,21 +233,56 @@ export const validateUpdateConfigApi = async (req, res, next) => {
 };
 
 
-/**
- * Validation rules for calculate refund
- */
 
-export const validateCalculateRefundApi = async (req, res, next) => {
+/**
+ * validate calculate refund api 
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+export const validateRefundCalculate = async (req, res, next) => {
+
   try {
+    
     const validationRule = {
-      // store_url: "required|string",
-      id:"required|integer"
+      'orderId': "required|integer",
+      'line_items': "required|array",
+      'line_items.*.id': "required|integer",
+      'line_items.*.qty': "required|integer"
     };
     await validateMethod(req, res, next, validationRule);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+
+    console.log(err);
+    return res.json( respondInternalServerError() );
+  }
+};
+
+
+/**
+ * Validate Refund request
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const validateRefund = async (req, res, next) => {
+
+  try {
+
+    const validationRule = {
+      'orderId': "required|integer",
+      'line_items': "required|array",
+      'line_items.*.id': "required|integer",
+      'line_items.*.qty': "required|integer",
+      "amount": "required|integer"
+    };
+    await validateMethod(req, res, next, validationRule);
+  } catch (err) {
+
+    return res.json(respondInternalServerError());
   }
 };
 
@@ -285,7 +292,9 @@ export const validateCalculateRefundApi = async (req, res, next) => {
  * @returns boolean
  */
 export const verifyShopifyHook = async (req, res, next) => {
+
   try {
+    
     console.log("in shopify webhook verification");
     const storeData = store.findOne({store_url : req.headers['X-Shopify-Shop-Domain']})
     const api_secret = storeData.access_token ?? "";
@@ -297,7 +306,8 @@ export const verifyShopifyHook = async (req, res, next) => {
       .update(body)
       .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
- console.log(providedHmac, digest)
+    console.log(providedHmac, digest)
+    
     if (digest == providedHmac) {
       console.log("shopy webhook verified");
       next();

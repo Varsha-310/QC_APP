@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {
+import { 
   getUserDetails,
   deleteStoreData,
-  deleteUserData,
-} from "../controllers/gdprController.js";
+  deleteUserData
+} from "../controllers/GDPRcontroller.js";
 import { verifyShopifyHook } from "../helper/validator.js";
 
 const gdprRoute = Router();

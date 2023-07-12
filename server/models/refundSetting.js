@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 /*Scheme for storing refundSetting */
-
 const refundSettingSchema = new Schema({
     store_url: {
       type: String,
@@ -37,5 +36,4 @@ const refundSettingSchema = new Schema({
       type:Number
     }
 });
-
 export default mongoose.model("refundSetting", refundSettingSchema);
