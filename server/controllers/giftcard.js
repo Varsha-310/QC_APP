@@ -249,12 +249,13 @@ export const addGiftcardtoWallet = async (
     } else {
       console.log("wallet doesnt exists");
       let walletCreated = await createWallet(store, customer_id);
+      console.log(walletCreated, "wallet created");
       let giftcard_req = {
-        initial_value: amount,
-      
+        initial_value: amount
       };
-
-      let gift_card = await shopify.giftCard.create(giftcard_req);
+      console.log(shopify)
+      let gift_card = await shopify.giftCard.count();
+      console.log("-------------------------",gift_card)
       console.log("Shopify Gift Card Generated - ", gift_card.id);
       console.log(walletCreated);
       let transaction = await addToWallet(
