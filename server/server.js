@@ -16,7 +16,7 @@ import giftcardRoute from "./routes/giftcard.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
-let _dirname = path.dirname(__filename);
+let __dirname = path.dirname(__filename);
 
 export const app = express();
 
@@ -57,13 +57,13 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-__dirname = __dirname(0,__dirname.length - 7);
+__dirname = __dirname.substring(0,__dirname.length - 7);
 const publicPath = path.join('./client/build');
 app.use(express.static(publicPath));
 app.use(express.static(path.join(__dirname, "js")));
 
 // route to check app status
-app.get("/", (req, res) => {
+app.get("/", function (req, res) {
  console.log(req.url);
  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
 });
