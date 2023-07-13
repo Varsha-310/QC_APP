@@ -63,13 +63,6 @@ const publicPath = path.join('./client/build');
 app.use(express.static(publicPath));
 app.use(express.static(path.join(__dirname, "js")));
 
-// route to check app status
-// app.get("/", (req, res) => {
-//   res.json(respondSuccess("App is live"));
-// });
-
-// const publicPath = path.join(process.cwd(), 'client/build');
-
 // shopify routes
 app.use("/shopify", shopifyRoute);
 
@@ -89,7 +82,7 @@ app.use("/plan" , planRoute)
 app.use("/giftcard" , giftcardRoute)
 
 
-app.get('*', function (req, res) {
+app.get('/', function (req, res) {
   
   console.log( "Requested Url", req.url);
   res.sendFile(path.join(__dirname, './client/build', 'index.html'));
