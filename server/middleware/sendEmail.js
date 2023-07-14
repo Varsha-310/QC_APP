@@ -2,55 +2,19 @@ import NodeMailer from "nodemailer";
 import email_template from "../views/email_template.js";
 
 export const sendEmailViaSendGrid = async (
-  // giftCardDetails,
+  giftCardDetails,
   order,
   shopName,
   email_id,
   message,
-  sender,
   receiver
 ) => {;
 console.log("in the mail sender");
-let foundTemplate ;
-order.line_items[0].properties.forEach((obj) => {
-  // console.log(obj)
-  if (obj.name === "template_image") {
-    console.log("Found object:", obj);
-    foundTemplate = obj;
-  }
-});
 
-console.log(order.line_items, "order.line_items[0].template_image");
-
-// import  email_template from ("../views/email_template").template;
-// email_template = email_template.replace("__message__", message);
-// email_template = email_template.replace("__sender__", sender);
-// email_template = email_template.replace("__receiver__", receiver);
-// if (foundTemplate) {
-//   email_template = email_template.replace(
-//     "template_image",
-//     foundTemplate.value
-//   );
-// }
-// email_template = email_template.replace(
-//   "template_image",
-//   "https://cdn.shopify.com/s/files/1/0265/7687/9691/files/image_58.png?v=1599111008"
-// );
 var mail_id = "helpdesk@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
 
-var email;
-if (order.email) {
-  //Check for the email ID in the order data
-  email = order.email;
-} else if (order.customer && order.customer.email) {
-  //If not get it from the customer field in order data
-  email = order.customer.email;
-}
-if (email_id) {
-  email = email_id;
-}
-console.log(email);
+console.log(email_id);
 // email_template = email_template.replace(
 //   "__CardNumber__",
 //   giftCardDetails["CardNumber"]
@@ -69,7 +33,7 @@ console.log(email);
 // );
 // Framing the mail options
 const options = {
-  to: email,
+  to: email_id,
   from: mail_id,
   subject: subject,
   html: email_template,
