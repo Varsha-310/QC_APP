@@ -22,7 +22,7 @@ const DashboardHome = () => {
     const url = baseUrl1 + "/kyc/status";
     const headers = {
       Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODkzMTIxMTh9.kNk4vaidCk2X3MSqHPN4na9-kKiDiAxpSOClF2ckPr0",
     };
 
     try {
@@ -43,16 +43,21 @@ const DashboardHome = () => {
     const url = baseUrl1 + "/kyc/initiate";
     const headers = {
       Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODkzMTIxMTh9.kNk4vaidCk2X3MSqHPN4na9-kKiDiAxpSOClF2ckPr0",
     };
 
-    const res = await axios.post(url, {}, { headers });
-    const resData = res.data;
+    try {
+      const res = await axios.post(url, {}, { headers });
+      const resData = res.data;
 
-    console.log(res);
+      console.log(res);
 
-    window.open(resData.data, "_blank");
-    setIsLoading(false);
+      window.open(resData.data, "_blank");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
     // console.log(resData);
   };
 
