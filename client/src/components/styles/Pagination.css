@@ -1,0 +1,30 @@
+.pagination__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination__page-btn {
+  border: none;
+  appearance: none;
+  display: block;
+  padding: 5px 5px;
+  width: auto;
+  margin: 0;
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--frame-color);
+  font-size: 16px;
+}
+.activePage {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.pagination__chevrons {
+  cursor: pointer;
+  font-size: 18px;
+  /* margin: 10px 5px; */
+  color: var(--frame-color);
+}
+.index-dots{
+  margin: 0px 5px;
+}

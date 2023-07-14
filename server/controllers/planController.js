@@ -1,4 +1,4 @@
-import plan from "../models/plan";
+import plan from "../models/plan.js";
 import {
   respondInternalServerError,
   respondSuccess,

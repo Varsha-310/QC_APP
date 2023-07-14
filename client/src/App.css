@@ -1,0 +1,101 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+@import url(https://fonts.googleapis.com/css?family=Epilogue:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic);
+
+:root {
+  --font-family-main: "Poppins", sans-serif;
+  --font-family-header: "Epilogue", sans-serif;
+
+  /* font sizes */
+  --font-header-size: 24px;
+  --font-body-size: 16px;
+  --font-cta-size: 14px;
+
+  /* colors */
+  --background-color: #f1f3f7;
+  --background-light-color: #ffffff;
+  --secondary-bold-btn: #b62028;
+  --secondary-light-btn: #ffffff;
+  --frame-color: #b62028;
+  --frame-light-color: rgba(182, 32, 40, 0.1);
+  --text-color: #ffffff;
+  --text-light-color: #75859d;
+  --text-dark-color: #000000;
+  --text-bold-color: #182560;
+  --rating-color: #fec600;
+
+  /* default sizes */
+  --header-height: 90px;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-family-main);
+  background-color: var(--background-color);
+}
+
+/* global values */
+.component {
+  width: 100%;
+}
+.main-component {
+  min-height: 90%;
+}
+.container_padding {
+  padding: 30px 50px;
+}
+
+.section-box-container {
+  background-color: var(--background-light-color);
+  padding: 15px 30px;
+  margin: 15px 0px;
+}
+.section-box-title {
+  font-family: var(--font-family-header);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  color: var(--text-dark-color);
+}
+
+.section-box-subtitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+  color: var(--text-dark-color);
+}
+
+/* app js */
+.dashboard-container {
+  display: flex;
+  gap: 20px;
+  min-height: 100vh;
+}
+li {
+  list-style: none;
+}
+
+/* for tabview */
+@media only screen and (max-width: 900px) {
+  .container_padding {
+    padding: 10px 20px;
+  }
+  .dashboard-container {
+    gap: 0;
+    min-height: auto;
+    overflow: auto;
+  }
+  /* .main-component{
+    min-height: 60%;
+  } */
+}
