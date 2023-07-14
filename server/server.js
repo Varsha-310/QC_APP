@@ -17,20 +17,17 @@ import path from "path";
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.dirname(__filename);
+import refundRoute from "./routes/refund.js";
+import orderRoute from "./routes/orderRoute.js";
 
 export const app = express();
 
 // CORS configuration
 app.use(function (req, res, next) {
+
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "*"
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH");
+  res.setHeader("Access-Control-Allow-Headers","*");
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
@@ -49,10 +46,11 @@ app.use(bodyParser.json());
 
 app.enable("trust proxy", true);
 
+
 // Api rate limiter
 const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 1, // Limit each IP to 60requests per `window`
+  max: 60, // Limit each IP to 60requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -63,7 +61,7 @@ const publicPath = path.join('./client/build');
 app.use(express.static(publicPath));
 app.use(express.static(path.join(__dirname, "js")));
 
-// shopify routes
+//a shopify routes
 app.use("/shopify", shopifyRoute);
 
 // GDPR routes
@@ -73,16 +71,13 @@ app.use("/gdpr", gdprRoute);
 app.use("/webhooks", webhookRoute)
 
 //refund setting route
-// app.use("/refund", ref)
+app.use("/refund", refundRoute)
 
-// //Store details route
-// app.use("/stores", storesRoute)
+//Store details route
+app.use("/order", orderRoute)
 
-// //Calculate refund roure
-// app.use("/calculateRefund", calculateRefundAmount)
-
-// //Checking giftcard amount
-// app.use("/giftcardamount", checkamount)
+//Checking giftcard amount
+//app.use("/giftcardamount", checkamount)
 
 //kyc routes
 app.use("/kyc", kycRoute);
@@ -107,10 +102,12 @@ cron.schedule("* * * * *", () => {
 
 // Database and Port connection
 mongoose
+  // .connect(process.env.DB_URL + process.env.DB)
   .connect("mongodb://0.0.0.0:27017/" + process.env.DB)
   .then(() => {
+
     app.listen(process.env.PORT);
-    console.log("server is running at " + process.env.PORT);
+    console.log("server is listening to " + process.env.PORT);
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
@@ -119,10 +116,7 @@ mongoose
 
 // Global error handler
 app.use((err, req, res, next) => {
-  console.log(err);
-  if (!err) {
-    return next();
-  }
-  res.json(respondInternalServerError()
-  );
+  
+  console.log("Error Encountered: ", err);
+  return res.json(respondInternalServerError());
 });

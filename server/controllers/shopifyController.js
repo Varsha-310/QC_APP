@@ -45,6 +45,7 @@ export const install = async (req, res) => {
  * @returns
  */
 export const installCallback = async (req, res) => {
+  
   try {
     const { shop, hmac, code, state } = req.query;
     const apiSecret = process.env.SHOPIFY_API_SECRET ?? "";
