@@ -2,11 +2,13 @@ import { respondInternalServerError } from "../helper/response.js";
 import axios from "axios";
 import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
+import qc_gc from "../models/qc_gc.js";
 
 export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
   try {
+    console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
+    console.log("------------------store qc credeentials-------------------------",setting , store);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
@@ -23,8 +25,7 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
         {
           CardProgramGroupName: setting.cpgn,
           Amount: amount,
-          CurrencyCode: "INR",
-          ExpiryDate : ExpiryDate
+          CurrencyCode: "INR"
         },
       ],
       Purchaser: {
@@ -54,18 +55,20 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
     gcCreation.status == "200" &&
     gcCreation.data.ResponseCode == "0"
   ) {
+    console.log(gcCreation.data.Cards[0], "----------")
+    await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
     return gcCreation.data.Cards[0]
   }
 
 }
-    
+
   catch (err) {
     console.log(err)
     return false
   }
 };
 
-const qwikcilverToken = () => {
+export const qwikcilverToken = () => {
   try {
     let data = {
       TerminalId: "QwikPOS-Corporate-01",
@@ -166,7 +169,8 @@ export const createWallet = async (store ,customer_id) => {
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
       Quantity: 1,
-      WalletProgramGroupName: setting.cpgn ,
+      ExecutionMode:"0",
+      WalletProgramGroupName : setting.wpgn,
       Wallets: [
         {
           ExternalWalletID: customer_id,
@@ -193,8 +197,11 @@ export const createWallet = async (store ,customer_id) => {
     if (
       (walletCreation.status == "200", walletCreation.data.ResponseCode == "0")
     ) {
-      console.log(walletCreation.data.Wallets[0]);
+      console.log(walletCreation.data);
       return walletCreation.data.Wallets[0];
+    }
+    else{
+
     }
   } catch (err) {
     console.log(err);
@@ -211,7 +218,8 @@ export const createWallet = async (store ,customer_id) => {
  */
 export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
   try {
-    let setting = await store.findOne({store_url : store});
+    let setting = await qcCredentials.findOne({store_url : store});
+    console.log(store , setting , "---------------add to wallet----------------------------------------")
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
@@ -246,10 +254,11 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
       };
 
       let cardAdded = await axios(config);
-     
+     console.log(cardAdded.data)
     return cardAdded;
     
   } catch (err) {
+    console.log(err)
     console.log(err.response.status, err.response.data.ResponseCode);
     if (err.response.status == 401 && err.response.data.ResponseCode == 10744) {
     }
