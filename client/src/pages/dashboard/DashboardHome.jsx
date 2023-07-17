@@ -8,13 +8,21 @@ import {
   Dot,
   PrimaryBtn,
   SectionHeading1,
-  SectionTitle,
 } from "../../components/BasicComponents";
 import axios from "axios";
 import { baseUrl1 } from "../../axios";
 import { createPortal } from "react-dom";
+import { useLocation, useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 const DashboardHome = () => {
+  const { store } = useParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  console.log(location.search);
+  console.log(store);
+
   const [isLoading, setIsLoading] = useState(false);
   const [kycData, setKycData] = useState(null);
 

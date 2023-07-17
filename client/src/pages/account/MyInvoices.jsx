@@ -3,7 +3,7 @@ import ListingTable from "../../components/DataTable/ListingTable";
 import { baseUrl1, baseUrl2 } from "../../axios";
 import axios from "axios";
 
-const TransactionHistory = () => {
+const MyInvoices = () => {
   const PAGE_LIMIT = 10;
 
   const [data, setData] = useState(null);
@@ -38,6 +38,7 @@ const TransactionHistory = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  
   return (
     <div style={{ width: "100%" }}>
       {data && <ListingTable headings={Heading} data={data.data.list} />}
@@ -45,4 +46,4 @@ const TransactionHistory = () => {
   );
 };
 
-export default TransactionHistory;
+export default MyInvoices;

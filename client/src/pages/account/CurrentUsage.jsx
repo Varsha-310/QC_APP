@@ -1,6 +1,6 @@
 import React from "react";
 import { CustomContainer } from "../../components/BasicComponents";
-import "./styles/TransactionDetail.css";
+import "./styles/CurrentUsage.css";
 import styled from "styled-components";
 
 import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
@@ -17,7 +17,7 @@ const TextElement = styled.div`
   color: ${(props) => (props.$fade ? "#00000099" : "#000000")};
 `;
 
-const TransactionDetail = () => {
+const CurrentUsages = () => {
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
@@ -120,4 +120,4 @@ const TransactionDetail = () => {
   );
 };
 
-export default TransactionDetail;
+export default CurrentUsages;

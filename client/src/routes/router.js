@@ -9,8 +9,9 @@ import {
   ConfirmationPage,
   RefundPage,
   RefundSetting,
+  MyInvoices,
+  CurrentUsages,
   TransactionDetail,
-  TransactionHistory,
   RefundConfirmation,
   CreateGiftCard,
   RefundList,
@@ -19,6 +20,7 @@ import {
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
+import ProtectedRoute from "../components/ProtectedRoutes/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -27,20 +29,28 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
+        path: "/:token",
+        element: <DashboardHome />,
+      },
+      {
+        path: "/home",
         element: <DashboardHome />,
       },
       {
         path: "/my-account",
-        element: <AccountPage />,
+        element: (
+          <ProtectedRoute isAuthenticated={false}>
+            <AccountPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my-invoices",
-        element: <TransactionHistory />,
+        element: <MyInvoices />,
       },
       {
         path: "/current-usage",
-        element: <TransactionDetail />,
+        element: <CurrentUsages />,
       },
       {
         path: "/kyc-status",

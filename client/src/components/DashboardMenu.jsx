@@ -45,7 +45,7 @@ const DashboardMenu = () => {
       <nav className="dashboard__pc-menu">
         <ul className="dashboard__menu-items">
           <li id="home" className="parent" onClick={handleTab}>
-            <TabBox to={"/"} active={`${activeTab?.home}`}>
+            <TabBox to={"/home"} active={`${activeTab?.home}`}>
               HOME
             </TabBox>
           </li>
