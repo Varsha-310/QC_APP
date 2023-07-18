@@ -12,8 +12,9 @@ import {
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
 import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import { useParams } from "react-router";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -31,16 +32,16 @@ const GiftCardDetail = () => {
   const [isValidityCheck, setIsValidityCheck] = useState(false);
   console.log(cardData);
   const updateData = async () => {
-    const url = baseUrl1 + "/giftcard/products/select";
+    const url = "/giftcard/products/select";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
+      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
     };
     const body = {
       product_id: id,
     };
 
-    const res = await axios.post(url, body, { headers });
+    const res = await instance.post(url, body, { headers });
     const resData = res.data;
 
     setCardData(resData.data);
@@ -108,7 +109,7 @@ const GiftCardDetail = () => {
               >
                 <FaChevronCircleRight />
               </div>
-              <img src={cardData.images[selectedImg]?.src} alt="" />
+              <img src={cardData?.images[selectedImg]?.src} alt="" />
             </div>
 
             <div className="gift-card__scroll-container">
@@ -121,8 +122,8 @@ const GiftCardDetail = () => {
               </div> */}
 
               <div className="gift-card__preview-scroll" ref={scrollContainer}>
-                {cardData.images.length > 0 &&
-                  cardData.images.map((item, index) => (
+                {cardData?.images.length > 0 &&
+                  cardData?.images.map((item, index) => (
                     <figure key={index}>
                       <img
                         src={item?.src}
@@ -145,14 +146,14 @@ const GiftCardDetail = () => {
 
           <div className="gift-card__card-data">
             <label className="gift-card__label">Title</label>
-            <div className="gift-card__input">{cardData.title}</div>
+            <div className="gift-card__input">{cardData?.title}</div>
 
             <label className="gift-card__label">Description</label>
-            <div className="gift-card__input">{cardData.body_html}</div>
+            <div className="gift-card__input">{cardData?.body_html}</div>
 
             <label className="gift-card__label">Terms & Condition</label>
             <div className="gift-card__input">
-              {cardData.terms ? cardData.terms : "N/A"}
+              {cardData?.terms ? cardData?.terms : "N/A"}
             </div>
 
             <div className="gift-card__label">Gift Card Validity</div>
@@ -170,7 +171,7 @@ const GiftCardDetail = () => {
             <label></label>
           </div>
 
-          {cardData.variants.map((item, index) => (
+          {cardData?.variants.map((item, index) => (
             <div className="gift-card__variant-grid-row" key={index}>
               <div className="gift-card__variant-input-title gift-card__input">
                 {item.option1}

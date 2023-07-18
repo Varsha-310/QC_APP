@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import GiftCardTable from "../../components/DataTable/GiftCardTable";
 import Pagination from "../../components/Pagination";
 import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import BarLoading from "../../components/Loaders/BarLoading";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const GiftCardsList = () => {
   const [data, setData] = useState([]);
@@ -14,14 +15,15 @@ const GiftCardsList = () => {
   // fetch card data
   const updateData = async () => {
     setIsLoading(true);
-    const url = `${baseUrl1}/giftcard/products/list?limit=10&page=${currentPage}`;
+    const url = `/giftcard/products/list?limit=10&page=${currentPage}`;
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
+      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODk1Nzk0MzF9.Vn2dWrXhnvViNC5uD_RWFdbqj84rh9CNnfHI23kd8qE",
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
+
       const resData = await res.data;
       setData(resData);
     } catch (error) {
@@ -37,16 +39,15 @@ const GiftCardsList = () => {
   // delete card
   const deleteItem = async (id) => {
     console.log(id);
-    const url = `${baseUrl1}/giftcard/products/delete`;
+    const url = "/giftcard/products/delete";
     const body = {
       product_id: id.toString(),
     };
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
 
-    const res = await axios.post(url, body, { headers });
+    const res = await instance.post(url, body, { headers });
     console.log(res);
 
     updateData();
@@ -54,6 +55,7 @@ const GiftCardsList = () => {
 
   useEffect(() => {
     updateData();
+
     window.scrollTo(0, 0);
   }, [currentPage]);
 

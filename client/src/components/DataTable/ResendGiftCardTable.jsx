@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles/ListingTable.css";
-import { Link } from "react-router-dom";
 import Resend from "../../assets/icons/svgs/resend.svg";
 
 const ResendGiftCard = ({ data, resendMail }) => {
@@ -11,7 +10,6 @@ const ResendGiftCard = ({ data, resendMail }) => {
           <th>Order</th>
           <th>Date</th>
           <th>Customer</th>
-          {/* <th>Total</th> */}
           <th>Action</th>
         </tr>
       </thead>
