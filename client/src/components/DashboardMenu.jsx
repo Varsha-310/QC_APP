@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   MyPlanIcon,
   StoreCredit,
@@ -18,7 +18,6 @@ import {
   TabItemLable,
   TabSubItemLable,
 } from "./BasicComponents";
-import { Link } from "react-router-dom";
 
 const DashboardMenu = () => {
   const [activeTab, setActiveTab] = useState({});
@@ -62,7 +61,8 @@ const DashboardMenu = () => {
                   id="myplan"
                   onClick={handleDropDown}
                 >
-                  <MyPlanIcon />
+                  <MyPlanIcon className="menu-icons" />
+
                   <TabItemLable to={"/my-account"}>My Plan</TabItemLable>
                   <DownArrowIcon />
                 </SubTabBox>
@@ -91,7 +91,7 @@ const DashboardMenu = () => {
 
               <li>
                 <SubTabBox>
-                  <KycIcon />
+                  <KycIcon className="menu-icons" />
                   {/* <img src={KycIcon} alt="" /> */}
                   <TabItemLable to={"/kyc-status"}>KYC Status</TabItemLable>
                 </SubTabBox>
@@ -107,7 +107,7 @@ const DashboardMenu = () => {
             <ul>
               <li>
                 <SubTabBox>
-                  <GiftCardIcon />
+                  <GiftCardIcon className="menu-icons"/>
                   {/* <img src={GiftCardIcon} alt="" /> */}
                   <TabItemLable to={"/create-giftcard"}>
                     Create Gift Card
@@ -117,7 +117,7 @@ const DashboardMenu = () => {
 
               <li>
                 <SubTabBox>
-                  <MyGiftCardsIcon />
+                  <MyGiftCardsIcon className="menu-icons"/>
                   {/* <img src={MyGiftCardsIcon} alt="" /> */}
                   <TabItemLable to={"/my-gift-card"}>
                     My Gift Cards
@@ -128,7 +128,7 @@ const DashboardMenu = () => {
               <li>
                 <SubTabBox>
                   {/* <img src={ResendMail} alt="" /> */}
-                  <ResendMail />
+                  <ResendMail className="menu-icons"/>
                   <TabItemLable to={"resend-gift-card"}>
                     Re-send Gift Card
                   </TabItemLable>
@@ -148,7 +148,7 @@ const DashboardMenu = () => {
                   id="credits"
                   onClick={handleDropDown}
                 >
-                  <StoreCredit />
+                  <StoreCredit className="menu-icons"/>
                   <TabItemLable to={"/refunds"}>
                     Issue Store Credits
                   </TabItemLable>
@@ -165,7 +165,7 @@ const DashboardMenu = () => {
               </li>
               <li>
                 <SubTabBox>
-                  <ConfigIcon />
+                  <ConfigIcon className="menu-icons"/>
                   <TabItemLable to={"/configuration"}>
                     Configuration
                   </TabItemLable>

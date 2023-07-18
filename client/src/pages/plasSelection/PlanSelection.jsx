@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import PlanCard from "../../components/PlanCard";
 import axios from "axios";
 import instance from "../../axios";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const PlanSelection = () => {
   const tableContent = [
@@ -92,14 +93,13 @@ const PlanSelection = () => {
 
   // get plans
   const fetchPlan = async () => {
-    const url = instance + "/plan/list";
+    const url = "/plan/list";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
       setPlans(res.data);
       console.log(res.data);
     } catch (error) {

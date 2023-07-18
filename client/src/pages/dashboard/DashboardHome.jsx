@@ -6,13 +6,12 @@ import {
   PrimaryBtn,
   SectionHeading1,
 } from "../../components/BasicComponents";
-import axios from "axios";
+
 import instance from "../../axios";
 import { createPortal } from "react-dom";
 import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
 
 import { useLocation, useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
 
 import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
@@ -69,11 +68,16 @@ const DashboardHome = () => {
   };
 
   useEffect(() => {
-    const token = window.location.search.split("?");
-    // const urlData=new URLSearchParams(location.search);
+    // const token = window.location.search.split("?");
 
-    if (token[2]) {
-      setUserToken(token[2]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    // console.log(window.location.search);
+
+    if (token) {
+      setUserToken(token);
+      localStorage.setItem("qcUserStatus", true);
     }
 
     getKycStatus();
@@ -89,17 +93,7 @@ const DashboardHome = () => {
       </div>
 
       <div className="section-box-container">
-        <p className="section-para">Share your thoughts about us with us.</p>
-        <div className="rating-stars">
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarNull} alt="" />
-        </div>
-      </div>
-
-      <div className="section-box-container">
+        <div className="section-box-title">Registration Progess</div>
         <section className="status-progress-contain">
           <ul className="status-progress-list">
             <li className="status-progress-item">
@@ -132,13 +126,26 @@ const DashboardHome = () => {
           Account. To start issuing pre-paid gift cards from your website,
           complete the KYC process.
         </p>
+
+        <div style={{ height: "70px" }}></div>
+
+        <PrimaryBtn $primary onClick={handleKYC}>
+          Start Your Registration
+        </PrimaryBtn>
       </div>
 
-      <PrimaryBtn $primary onClick={handleKYC}>
-        Start KYC
-      </PrimaryBtn>
+      <div className="section-box-container">
+        <p className="section-para">Share your thoughts about us with us.</p>
+        <div className="rating-stars">
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarNull} alt="" />
+        </div>
+      </div>
 
-      <img src={Giftbox} alt="" className="giftbox" />
+      {/* <img src={Giftbox} alt="" className="giftbox" />   */}
     </div>
   );
 };
