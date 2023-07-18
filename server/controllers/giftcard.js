@@ -16,10 +16,10 @@ import {
   addToWallet,
   createWallet,
   activateCard
-} from "../middleware/qwikcilverHelper";
-import wallet from "../models/wallet";
-import wallet_history from "../models/wallet_history";
-import orders from "../models/orders";
+} from "../middleware/qwikcilverHelper.js";
+import wallet from "../models/wallet.js";
+import wallet_history from "../models/wallet_history.js";
+import orders from "../models/orders.js";
 import giftcard from "../models/giftcard.js";
 import qc_gc from "../models/qc_gc.js";
 
