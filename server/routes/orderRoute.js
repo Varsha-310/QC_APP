@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { handleOrderDataList, handleOrderDetails, handleSyncOrder} from "../controllers/OrderController";
-import {verifyJwt , createJwt} from "../helper/jwtHelper"
+import { handleOrderDataList, handleOrderDetails, handleSyncOrder} from "../controllers/OrderController.js";
+import {verifyJwt , createJwt} from "../helper/jwtHelper.js"
 
 const orderRoute = Router();
 

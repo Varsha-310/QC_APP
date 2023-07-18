@@ -1,5 +1,5 @@
-import { respondSuccess, respondInternalServerError } from "../helper/response";
-import { logger } from "../helper/utility";
+import { respondSuccess, respondInternalServerError } from "../helper/response.js";
+import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
 import product from "../models/product.js";
