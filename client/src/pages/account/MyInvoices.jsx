@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ListingTable from "../../components/DataTable/ListingTable";
-import { baseUrl1, baseUrl2 } from "../../axios";
 import axios from "axios";
+import instance from "../../axios";
 
-const TransactionHistory = () => {
+const MyInvoices = () => {
   const PAGE_LIMIT = 10;
 
   const [data, setData] = useState(null);
@@ -19,7 +19,7 @@ const TransactionHistory = () => {
   // fetching giftcard orders
   const fetchData = async () => {
     const url =
-      baseUrl2 +
+      instance +
       `/planHistory/checkPlanHistory?page=${currentPage}&limit=${PAGE_LIMIT}`;
     const headers = {
       Authorization:
@@ -38,6 +38,7 @@ const TransactionHistory = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <div style={{ width: "100%" }}>
       {data && <ListingTable headings={Heading} data={data.data.list} />}
@@ -45,4 +46,4 @@ const TransactionHistory = () => {
   );
 };
 
-export default TransactionHistory;
+export default MyInvoices;

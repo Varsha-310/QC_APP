@@ -15,16 +15,15 @@ const Navbar = () => {
   return (
     <div className="navbar-container">
       <GiHamburgerMenu onClick={handleMenu} className="navbar-menu-btn" />
-
       <div className="navbar-items">
         <img
-          src={require("../assets/icons/pngs/qc_logo_transparent.png")}
+          src={require("../assets/icons/pngs/qc_logo_transparent1.png")}
           alt="qwikcilver_logo"
           className="navbar-logo_icon"
         />
 
         <div className="navbar-menu">
-          <ul>
+          {/* <ul>
             <li className="navbar-menu-item">
               <img src={SearchIcon} alt="" />
             </li>
@@ -32,7 +31,7 @@ const Navbar = () => {
               <img src={UserIcon} alt="" />
               <img src={DownArrow} alt="" />
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     </div>

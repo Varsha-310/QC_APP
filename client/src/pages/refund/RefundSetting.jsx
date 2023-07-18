@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./styles/RefundSetting.css";
-import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
+import { PrimaryBtn } from "../../components/BasicComponents";
 import axios from "axios";
-import { baseUrl2 } from "../../axios";
+import instance from "../../axios";
+import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import { createPortal } from "react-dom";
 
@@ -13,18 +14,19 @@ const RefundSetting = () => {
   console.log(configuration);
 
   const updateConfig = async () => {
-    const url = baseUrl2 + "/refund/getSetting";
+    const url = "/refund/getSetting";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODg3OTI1ODF9.NWn6qMEiUrvrIrHGkphuf9p7xJVJ0_6-GL0jbZKZa_k",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(
-        url,
-        { store_url: "qwickcilver-dev.myshopify.com" },
-        { headers }
-      );
+      // const res = await axios.post(
+      //   url,
+      //   { store_url: "qwickcilver-dev.myshopify.com" },
+      //   { headers }
+      // );
+      const res = await instance.get(url, {}, { headers });
+      console.log(res);
 
       const resData = res.data;
       console.log(resData);
@@ -49,7 +51,7 @@ const RefundSetting = () => {
   // update configuration
   const handleUpdate = async (event) => {
     setIsLoading(true);
-    const url = baseUrl2 + "/refund/updateSetting";
+    const url = instance + "/refund/updateSetting";
     const headers = {
       Authorization:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",

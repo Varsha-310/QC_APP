@@ -10,12 +10,12 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
-import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import Spinner from "../../components/Loaders/Spinner";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router";
 import fieldValidate from "../../utils/fieldValidate";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -166,10 +166,10 @@ const CreateGiftCard = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/add";
+    const url = "/giftcard/products/add";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
+      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
     };
 
     // field validation
@@ -198,7 +198,7 @@ const CreateGiftCard = () => {
 
     // post request
     try {
-      const res = await axios.post(
+      const res = await instance.post(
         url,
         {
           title: cardData.title,
@@ -251,7 +251,7 @@ const CreateGiftCard = () => {
               />
               <img src={UploadIcon} alt="" />
               <label htmlFor="file-input" className="file-input-label">
-                Change image 
+                Change image
               </label>
               <div className="mandatory">*</div>
             </div>

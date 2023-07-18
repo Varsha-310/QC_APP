@@ -1,32 +1,40 @@
 import React, { useEffect, useState } from "react";
 import "./styles/DashboardHome.css";
-import Spinner from "../../components/Loaders/Spinner";
-import StarFull from "../../assets/icons/pngs/Star.png";
-import StarNull from "../../assets/icons/pngs/StarNull.png";
-import Giftbox from "../../assets/images/Giftbox.png";
+
 import {
   Dot,
   PrimaryBtn,
   SectionHeading1,
-  SectionTitle,
 } from "../../components/BasicComponents";
-import axios from "axios";
-import { baseUrl1 } from "../../axios";
+
+import instance from "../../axios";
 import { createPortal } from "react-dom";
+import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
+
+import { useLocation, useParams } from "react-router";
+
+import Spinner from "../../components/Loaders/Spinner";
+import StarFull from "../../assets/icons/pngs/Star.png";
+import StarNull from "../../assets/icons/pngs/StarNull.png";
+import Giftbox from "../../assets/images/Giftbox.png";
 
 const DashboardHome = () => {
+  const { store } = useParams();
+  const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
+
   const [isLoading, setIsLoading] = useState(false);
   const [kycData, setKycData] = useState(null);
 
   const getKycStatus = async () => {
-    const url = baseUrl1 + "/kyc/status";
+    const url = "/kyc/status";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODkzMTIxMTh9.kNk4vaidCk2X3MSqHPN4na9-kKiDiAxpSOClF2ckPr0",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
+
       const resData = res.data;
 
       if (resData.code === 200) {
@@ -40,14 +48,13 @@ const DashboardHome = () => {
 
   const handleKYC = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/kyc/initiate";
+    const url = "/kyc/initiate";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODkzMTIxMTh9.kNk4vaidCk2X3MSqHPN4na9-kKiDiAxpSOClF2ckPr0",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
       const resData = res.data;
 
       console.log(res);
@@ -58,12 +65,23 @@ const DashboardHome = () => {
     } finally {
       setIsLoading(false);
     }
-    // console.log(resData);
   };
 
   useEffect(() => {
+    // const token = window.location.search.split("?");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    // console.log(window.location.search);
+
+    if (token) {
+      setUserToken(token);
+      localStorage.setItem("qcUserStatus", true);
+    }
+
     getKycStatus();
-  }, []);
+  }, [getUserToken]);
 
   return (
     <div className="dashboard-home-container">
@@ -75,17 +93,7 @@ const DashboardHome = () => {
       </div>
 
       <div className="section-box-container">
-        <p className="section-para">Share your thoughts about us with us.</p>
-        <div className="rating-stars">
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarFull} alt="" />
-          <img src={StarNull} alt="" />
-        </div>
-      </div>
-
-      <div className="section-box-container">
+        <div className="section-box-title">Registration Progess</div>
         <section className="status-progress-contain">
           <ul className="status-progress-list">
             <li className="status-progress-item">
@@ -118,13 +126,26 @@ const DashboardHome = () => {
           Account. To start issuing pre-paid gift cards from your website,
           complete the KYC process.
         </p>
+
+        <div style={{ height: "70px" }}></div>
+
+        <PrimaryBtn $primary onClick={handleKYC}>
+          Start Your Registration
+        </PrimaryBtn>
       </div>
 
-      <PrimaryBtn $primary onClick={handleKYC}>
-        Start KYC
-      </PrimaryBtn>
+      <div className="section-box-container">
+        <p className="section-para">Share your thoughts about us with us.</p>
+        <div className="rating-stars">
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarFull} alt="" />
+          <img src={StarNull} alt="" />
+        </div>
+      </div>
 
-      <img src={Giftbox} alt="" className="giftbox" />
+      {/* <img src={Giftbox} alt="" className="giftbox" />   */}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import RefundListTable from "../../components/DataTable/RefundListTable";
 import Pagination from "../../components/Pagination";
-import axios from "axios";
-import { baseUrl2 } from "../../axios";
+import { getUserToken } from "../../utils/userAuthenticate";
+import instance from "../../axios";
 import BarLoading from "../../components/Loaders/BarLoading";
 
 const RefundList = () => {
@@ -25,15 +25,15 @@ const RefundList = () => {
 
   const updateData = async () => {
     setIsLoading(true);
-    const url = `${baseUrl2}/stores/getStoreData?page=${currentPage}&limit=${PER_PAGE_ITEM}&store_url=qwickcilver-dev.myshopify.com`;
+    const url = `/order/list`;
     const headers = {
       Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4Nzg3MDYzMn0.RaURbIwQG9v97h02SrsTEhPmSzlksrpD4WbBavcxXYA",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODk1Nzk0MzF9.Vn2dWrXhnvViNC5uD_RWFdbqj84rh9CNnfHI23kd8qE",
     };
 
     // let res;
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.get(url, {}, { headers });
       const resData = await res.data;
 
       setRefundData(resData.data);
