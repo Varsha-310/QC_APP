@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-/*Scheme for storing giftcard products */
+/*Scheme for shopify giftcards */
 
 const giftcardSchema = mongoose.Schema({
   id: { type: String },
@@ -8,7 +8,6 @@ const giftcardSchema = mongoose.Schema({
   created_at: { type: Date },
   updated_at: { type: Date },
   customer_id: { type: String },
-  expires_on: { type: Date },
   qc_request: ({}),
   qc_response: ({}),
   code: { type: String },

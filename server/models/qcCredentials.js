@@ -7,6 +7,7 @@ const qc_credentials = mongoose.Schema({
   terminal_id: String,
   date_at_client: String,
   cpgn: String,
+  wpgn: String,
   unique_transaction_id: Number
 });
 

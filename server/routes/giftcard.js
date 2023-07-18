@@ -22,7 +22,7 @@ giftcardRoute.post("/products/list", verifyJwt,  getGiftcardProducts);
 giftcardRoute.post("/products/select", verifyJwt, validateUpdateGiftcard , getSelectedGc);
 
 // route to add giftcard to wallet
-giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcardtoWallets);
+giftcardRoute.post("/wallet/addgiftcard" , validateAddToWallet , addGiftcard);
 
 // route to get wallet balance
 giftcardRoute.post("/wallet/balance" , validateGetBalance , getWalletBalance );

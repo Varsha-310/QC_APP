@@ -6,6 +6,7 @@ var walletSchema = mongoose.Schema({
   store_url: { type: String },
   shopify_customer_id: { type: String },
   shopify_giftcard_id: { type: String },
+  shopify_giftcard_pin: { type: String },
   wallet_id: {type:String},
   balance: { type: Number }
 });
