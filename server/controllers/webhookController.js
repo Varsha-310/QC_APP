@@ -67,7 +67,8 @@ const ordercreateEvent = async (input, done, res) => {
       let qwikcilver_gift_cards = [];
       if (newOrder.payment_gateway_names.includes("gift_card")) {
         console.log("giftcard redeemed");
-        const checkAmount = await giftCardAmount(store, id);
+        const checkAmount = await giftCardAmount(shopName, newOrder.id);
+        console.log("--------redeemed amount--------------", checkAmount)
         if (checkAmount != false) {
           const redeemed = await redeemWallet(
             store,
