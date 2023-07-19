@@ -130,10 +130,10 @@ const PlanSelection = () => {
         </SectionTitle>
       </div>
 
-      <div className="plan-selection__plan-type">
+      {/* <div className="plan-selection__plan-type">
         <div className="plan-selection__plan-annually">Annually</div>
         <div className="plan-selection__plan-monthly">Monthly</div>
-      </div>
+      </div> */}
 
       {/* plans */}
       <div className="package-detail">

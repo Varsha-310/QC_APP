@@ -14,8 +14,7 @@ const ConfirmationPage = () => {
       </div>
 
       <p className="confirmaiton-desc">
-        Your account will be activated within 2 hours. You will now be
-        redirected to Qwikcilver Dashboard in 10 seconds.
+        Your account will be activated within 2 hours.
       </p>
     </div>
   );

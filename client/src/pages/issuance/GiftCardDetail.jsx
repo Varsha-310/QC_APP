@@ -1,17 +1,7 @@
 import styled from "styled-components";
-import DeleteIcon from "../../assets/icons/svgs/delete.svg";
-import AddIcon from "../../assets/icons/svgs/plus-sign.svg";
-import UploadIcon from "../../assets/icons/svgs/upload.svg";
-import { PrimaryBtn } from "../../components/BasicComponents";
 import "./styles/CreateGiftCard.css";
 import { useState, useRef, useEffect } from "react";
-import {
-  FaChevronCircleRight,
-  FaChevronCircleLeft,
-  FaPlus,
-} from "react-icons/fa";
-import CustomDropdown from "../../components/CustomDropdown";
-import axios from "axios";
+import { FaChevronCircleRight, FaChevronCircleLeft } from "react-icons/fa";
 import instance from "../../axios";
 import { useParams } from "react-router";
 import { getUserToken } from "../../utils/userAuthenticate";
@@ -35,7 +25,6 @@ const GiftCardDetail = () => {
     const url = "/giftcard/products/select";
     const headers = {
       Authorization: getUserToken(),
-      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
     };
     const body = {
       product_id: id,
@@ -159,7 +148,7 @@ const GiftCardDetail = () => {
             <div className="gift-card__label">Gift Card Validity</div>
 
             <div className="gift-card__validity-show">
-              {cardData?.validity || "NA"}
+              {cardData?.validity === 180 ? "6 Months" : "12 Months" || "NA"}
             </div>
           </div>
         </div>

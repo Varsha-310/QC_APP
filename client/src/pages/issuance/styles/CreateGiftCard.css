@@ -11,7 +11,7 @@
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   column-gap: 50px;
-  margin: 50px 0px;
+  margin: 20px 0px;
 }
 
 .gift-card__card-data {
@@ -36,6 +36,7 @@
   margin: 10px 0px;
   color: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 .gift-card__validity input[type="checkbox"] {
   accent-color: var(--secondary-bold-btn);
@@ -74,7 +75,7 @@ option {
 }
 .gift-card__variant-grid-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 0.5fr;
+  grid-template-columns: 1fr 1fr 0.1fr;
   align-items: center;
   column-gap: 20px;
   /* margin: 10px 0px; */
@@ -231,6 +232,7 @@ option {
   justify-content: space-between;
   padding: 5px 10px;
   border: 1.5px solid rgba(182, 32, 40, 0.6);
+  border-radius: 5px;
   color: rgba(0, 0, 0, 0.6);
   font-weight: 400;
   font-size: 14px;

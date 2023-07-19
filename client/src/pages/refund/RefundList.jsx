@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import RefundListTable from "../../components/DataTable/RefundListTable";
 import Pagination from "../../components/Pagination";
 import { getUserToken } from "../../utils/userAuthenticate";
-import instance from "../../axios";
 import BarLoading from "../../components/Loaders/BarLoading";
+import instance from "../../axios";
 
 const RefundList = () => {
   const PER_PAGE_ITEM = 10;
@@ -14,7 +14,7 @@ const RefundList = () => {
 
   const Heading = [
     "Order",
-    "Date",
+    "Created Date",
     "Customer",
     "Total",
     "Return Status",
@@ -23,32 +23,27 @@ const RefundList = () => {
     "Initiate Refund",
   ];
 
-  const updateData = async () => {
+  const fetchData = async () => {
     setIsLoading(true);
-    const url = `/order/list`;
+    const url = "/order/list";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODk1Nzk0MzF9.Vn2dWrXhnvViNC5uD_RWFdbqj84rh9CNnfHI23kd8qE",
+      Authorization: getUserToken(),
     };
 
-    // let res;
     try {
-      const res = await instance.get(url, {}, { headers });
-      const resData = await res.data;
-
+      const res = await instance.get(url, { headers });
+      const resData = res.data;
       setRefundData(resData.data);
       console.log(res);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-
-    // console.log(resData.data);
-
-    setIsLoading(false);
   };
 
   useEffect(() => {
-    updateData();
+    fetchData();
   }, [currentPage]);
 
   return (
@@ -60,6 +55,9 @@ const RefundList = () => {
         <BarLoading />
       ) : (
         <>
+          <div className="section-box-container">
+            <div className="section-box-title">Issue Store Credits</div>
+          </div>
           <div className="refund-list__containe-table">
             <RefundListTable headings={Heading} data={refundData?.orders} />
           </div>

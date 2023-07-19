@@ -1,7 +1,5 @@
 import React from "react";
-import SearchIcon from "../assets/icons/svgs/magnifier.svg";
-import DownArrow from "../assets/icons/svgs/DownArr.svg";
-import UserIcon from "../assets/icons/svgs/user.svg";
+
 import "./styles/Navbar.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 
@@ -17,7 +15,7 @@ const Navbar = () => {
       <GiHamburgerMenu onClick={handleMenu} className="navbar-menu-btn" />
       <div className="navbar-items">
         <img
-          src={require("../assets/icons/pngs/qc_logo_transparent1.png")}
+          src={require("../assets/icons/pngs/qc_logo_transparent.png")}
           alt="qwikcilver_logo"
           className="navbar-logo_icon"
         />

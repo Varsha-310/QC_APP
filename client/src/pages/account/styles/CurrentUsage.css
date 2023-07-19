@@ -2,27 +2,30 @@
   width: 100%;
 }
 .transaction-detail__box-bg {
-  padding: 30px 50px;
-  background: rgba(182, 32, 40, 0.1);
+  padding: 20px 50px;
+  background: #ffffff;
 }
 .gift-card__text-box-container {
   display: grid;
   grid-template-columns: 5fr 1fr;
   column-gap: 15px;
-  margin: 10px 0px;
+  margin: 0px 0px;
+}
+.transaction-detail__plan-fees {
+  padding: 20px 50px 40px 50px;
 }
 .gift-card__text-box {
   background: #ffffff;
   width: 100%;
   padding: 0px 12px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
+  /* border: 2px solid rgba(0, 0, 0, 0.2); */
   position: relative;
 }
 #total::after {
   content: "(GST not Incl)";
   position: absolute;
-  /* top: 50%; */
-  left: 110%;
+  top: 70%;
+  /* left: 100%; */
   width: 100%;
   color: #00000099;
 }
@@ -48,17 +51,12 @@
   color: var(--text-dark-color);
 }
 .transaction-detail__plan-due-date {
-  background: rgba(182, 32, 40, 0.3);
-  border-radius: 10px;
-  width: 200px;
-  height: 40px;
-
   font-weight: 600;
   font-size: 14px;
   line-height: 21px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
 
   color: #b62028;
 }
@@ -69,13 +67,9 @@
 
 .transaction-detail__plan-fees {
   margin: 10px 0px;
-  padding: 30px 15%;
 }
 
-.transaction-detail__footer-img {
-  position: relative;
-  top: 20px;
-  left: -200px;
-  height: 150px;
-  width: 300px;
+.transaction-detail__detail-heading {
+  font-weight: 500;
+  margin-bottom: 20px;
 }

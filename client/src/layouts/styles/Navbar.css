@@ -20,7 +20,7 @@
 }
 .navbar-logo_icon {
   width: 200px;
-  height: 50px;
+  height: auto;
 }
 
 .navbar-menu ul,
