@@ -53,10 +53,6 @@ const AccountPage = () => {
         <div className="section-box-title">My Plan</div>
       </div>
 
-      <div className="section-box-container">
-        <div className="section-box-title">Current Plan</div>
-      </div>
-
       <CustomContainer margin="30px 0px" align="center">
         {planData?.data?.plans && (
           <PlanCard
@@ -66,19 +62,19 @@ const AccountPage = () => {
             )}
             active={false}
             // popular={}
-            btnText={"Upgrade"}
+            btnText={""}
           />
         )}
       </CustomContainer>
 
       <CustomContainer margin="50px 0px">
         <Link to={"/select-plan"} className="account-page__link">
-          <PrimaryBtn $primary>View All Plans</PrimaryBtn>
+          <PrimaryBtn $primary>Upgrade Plan</PrimaryBtn>
         </Link>
       </CustomContainer>
 
       <div className="section-box-container">
-        <div className="section-box-title">Setttings</div>
+        <div className="section-box-title">Store Contact</div>
       </div>
 
       <div className="section-box-container">

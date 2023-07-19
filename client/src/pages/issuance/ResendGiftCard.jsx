@@ -76,15 +76,21 @@ const ResendGiftCard = () => {
           <div className="section-box-title"> There is 0 Gift cards</div>
         </div>
       ) : (
-        <ResendGiftCardTable data={orders.data} resendMail={resendMail} />
-      )}
+        <>
+          <div className="section-box-container">
+            <div className="section-box-title">Resend Gift Card</div>
+          </div>
 
-      <Pagination
-        total={orders.total}
-        perPage={10}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage}
-      />
+          <ResendGiftCardTable data={orders.data} resendMail={resendMail} />
+
+          <Pagination
+            total={orders.total}
+            perPage={10}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+          />
+        </>
+      )}
     </div>
   ) : (
     createPortal(<Spinner />, document.getElementById("portal"))

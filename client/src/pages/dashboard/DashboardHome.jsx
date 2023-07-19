@@ -119,7 +119,7 @@ const DashboardHome = () => {
           align="center"
           lineheight="26px"
         >
-          Start Your KYC
+          Start Your Registration
         </SectionHeading1>
         <p className="section-para" style={{ marginTop: "30px" }}>
           Qwikcilver App has been successfully installed on your Shopify
@@ -127,11 +127,11 @@ const DashboardHome = () => {
           complete the KYC process.
         </p>
 
-        <div style={{ height: "70px" }}></div>
-
-        <PrimaryBtn $primary onClick={handleKYC}>
-          Start Your Registration
-        </PrimaryBtn>
+        <div style={{ margin: "30px 0px" }}>
+          <PrimaryBtn $primary onClick={handleKYC}>
+            Start Registration
+          </PrimaryBtn>
+        </div>
       </div>
 
       <div className="section-box-container">

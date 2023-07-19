@@ -22,6 +22,8 @@
   --text-dark-color: #000000;
   --text-bold-color: #182560;
   --rating-color: #fec600;
+  --icon-color: #2b3951;
+  /* --icon-color: #1E293b; */
 
   /* default sizes */
   --header-height: 90px;
@@ -84,7 +86,14 @@ body {
 li {
   list-style: none;
 }
-
+/* table action icons */
+.gc-table-icons {
+  width: 20px;
+  height: 20px;
+  margin: 0px 10px;
+  cursor: pointer;
+  color: var(--icon-color);
+}
 /* for tabview */
 @media only screen and (max-width: 900px) {
   .container_padding {

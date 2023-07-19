@@ -16,6 +16,7 @@ import instance from "../../axios";
 import { useParams } from "react-router";
 import fieldValidate from "../../utils/fieldValidate";
 import { createPortal } from "react-dom";
+import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 
 const ActiveDot = styled.div`
@@ -162,8 +163,7 @@ const EditGiftCard = () => {
     setIsLoading(true);
     const url = "/giftcard/products/select";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,
@@ -185,8 +185,7 @@ const EditGiftCard = () => {
     setIsLoading(true);
     const url = instance + "/giftcard/products/update";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,

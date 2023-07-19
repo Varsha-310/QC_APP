@@ -11,7 +11,6 @@ import {
   RefundSetting,
   MyInvoices,
   CurrentUsages,
-  TransactionDetail,
   RefundConfirmation,
   CreateGiftCard,
   RefundList,

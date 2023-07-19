@@ -65,6 +65,9 @@ const GiftCardsList = () => {
         <BarLoading />
       ) : (
         <>
+          <div className="section-box-container">
+            <div className="section-box-title">My Gift Cards</div>
+          </div>
           <GiftCardTable data={data.data} deleteItem={deleteItem} />
           <Pagination
             total={data.count}

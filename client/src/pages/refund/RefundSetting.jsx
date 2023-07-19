@@ -100,7 +100,7 @@ const RefundSetting = () => {
           createPortal(<Spinner />, document.getElementById("portal"))}
 
         <div className="section-box-container">
-          <div className="section-box-title">Store Credit Configuration</div>
+          <div className="section-box-title">Store Credit Preferences</div>
           <div className="section-box-subtitle">
             This settings allows you to credit the refund to a store credit.
           </div>
@@ -126,7 +126,9 @@ const RefundSetting = () => {
           </div>
 
           <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">Prepaid</div>
+            <div className="refund-setting__type-name">
+              Prepaid (CC / DC / UPI / Net Banking)
+            </div>
             <input
               type="checkbox"
               className="refund-setting__radio"
@@ -145,7 +147,7 @@ const RefundSetting = () => {
             />
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">COD</div>
+            <div className="refund-setting__type-name">Cash On Delivery</div>
 
             <input
               type="checkbox"
