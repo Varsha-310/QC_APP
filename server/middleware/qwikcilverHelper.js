@@ -334,19 +334,17 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
       Quantity: 1,
-      WalletProgramGroupName: setting.cpgn ,
-      BillAmount: amount,
-      Cards:[{  
+         Cards:[{  
         CardNumber:wallet_id,
         CurrencyCode:"INR",
-        Amount: 10.00
+        Amount: amount
       }],
       Notes: "Test Wallet Redeem for Testing",
     };
 
     let config = {
       method: "post",
-      url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/20/2023",
@@ -357,11 +355,11 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     };
 
     let walletRedemption = await axios(config);
-    console.log(walletRedemption.data.Wallets);
+    console.log(walletRedemption.data)
     if (
       (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
     ) {
-      console.log(walletRedemption.data.Wallets[0]);
+      console.log(walletRedemption.data.Wallets;
       await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
 
       return walletRedemption.data.Wallets[0];

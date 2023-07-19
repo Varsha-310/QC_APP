@@ -469,13 +469,13 @@ export const walletTransaction = async (req, res) => {
     // let storeExists = await Store.findOne({ "store_url": store });
     // console.log(storeExists);
     // if (storeExists) {
-    const history = await wallet_history.findOne({"customer_id" : 0});
-    // console.log(transactions , "-----------------")
+    const history = await wallet_history.findOne({"customer_id" : customer_id});
+     console.log(history , "-----wallethistory------------")
     
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
-          balance: 1000,
+          balance: 980,
           transactions: history.transactions
         },
       });
