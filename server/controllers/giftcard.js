@@ -469,45 +469,17 @@ export const walletTransaction = async (req, res) => {
     // let storeExists = await Store.findOne({ "store_url": store });
     // console.log(storeExists);
     // if (storeExists) {
-    // const transactions = await wallet_history.findOne({"customer_id" : 7061732262207});
-    if (
-      store == "meenakhi-qwikcilver-testing.myshopify.com" &&
-      customer_id == "7061732262207"
-    ) {
+    const history = await wallet_history.findOne({"customer_id" : 0});
+    // console.log(transactions , "-----------------")
+    
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
           balance: 1000,
-          transactions: [
-            {
-              transaction_type: "credit",
-              amount: 500,
-              expires_at: "2023-07-01T07:15:50.000+00:00",
-            },
-            {
-              transaction_type: "debit",
-              amount: 300,
-            },
-            {
-              transaction_type: "credit",
-              amount: 500,
-              expires_at: "2024-05-01T07:15:50.000+00:00",
-            },
-            {
-              transaction_type: "debit",
-              amount: 300,
-            },
-            {
-              transaction_type: "credit",
-              amount: 600,
-              expires_at: "2024-05-01T07:15:50.000+00:00",
-            },
-          ],
+          transactions: history.transactions
         },
       });
-    } else {
-      res.json(respondUnauthorized("wallet does not exists"));
-    }
+  
   } catch (err) {
     console.log(err);
     res.json(

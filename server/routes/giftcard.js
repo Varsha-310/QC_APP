@@ -34,7 +34,7 @@ giftcardRoute.post("/email" , verifyJwt , verifySendEmail ,resendEmail );
 giftcardRoute.post("/orders" ,  verifyJwt, giftCardOrders );
 
 // cards history within a wallet
-giftcardRoute.post("/wallet/transaction" , validateAddToWallet , walletTransaction );
+giftcardRoute.post("/wallet/transaction"  , walletTransaction );
 
 // to reedem qc giftcard
 giftcardRoute.post("/redeem" ,   giftCardAmount);
