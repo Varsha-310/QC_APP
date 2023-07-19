@@ -71,7 +71,7 @@ const ordercreateEvent = async (input, done, res) => {
         console.log("--------redeemed amount--------------", checkAmount)
         if (checkAmount != false) {
           const redeemed = await redeemWallet(
-            store,
+            shopName,
             checkAmount.id,
             checkAmount.amount
           );

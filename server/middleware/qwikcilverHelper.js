@@ -322,10 +322,11 @@ export const activateCard = async (store ,gc_pin) => {
 export const redeemWallet = async (store ,wallet_id,amount) => {
   try {
     let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
-    setting.unique_transaction_id = transactionId + 1; // Append it by 1
-    setting.markModified("unique_transaction_id");
-    await setting.save();
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+      await setting.save();
     let data = {
       TransactionTypeId: 3504,
       InputType:"1",
@@ -334,11 +335,11 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       InvoiceNumber: "Inv-01",
       Quantity: 1,
       WalletProgramGroupName: setting.cpgn ,
-      BillAmount: 2000.00,
+      BillAmount: amount,
       Cards:[{  
         CardNumber:wallet_id,
         CurrencyCode:"INR",
-        Amount:amount
+        Amount: 10.00
       }],
       Notes: "Test Wallet Redeem for Testing",
     };
@@ -356,17 +357,17 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     };
 
     let walletRedemption = await axios(config);
-    console.log(walletRedemption);
+    console.log(walletRedemption.data.Wallets);
     if (
       (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
     ) {
       console.log(walletRedemption.data.Wallets[0]);
+      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
+
       return walletRedemption.data.Wallets[0];
     }
   } catch (err) {
     console.log(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    return false;
   }
 };
