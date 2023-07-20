@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const walletHistorySchema = mongoose.Schema({
   wallet_id: { type: String },
-  total_balance: { type: String },
+  total_balance: { type: Number , default : 0 },
   customer_id: { typ: String },
   transactions: [
     {
@@ -11,6 +11,7 @@ const walletHistorySchema = mongoose.Schema({
       amount: { type: Number },
       gc_pin: String,
       expires_at: Date,
+      transaction_date: Date,
     },
   ],
   logs: [],
