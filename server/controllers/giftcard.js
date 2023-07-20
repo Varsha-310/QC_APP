@@ -253,8 +253,7 @@ export const addGiftcardtoWallet = async (store ,customer_id, gc_pin, amount) =>
         store,
         wallet_id,
         gc_pin,
-        activatedCard.CardNumber
-        
+        activatedCard.CardNumber 
       );
       console.log(transaction);
       if ((transaction.status == "200", transaction.data.ResponseCode == "0")) {

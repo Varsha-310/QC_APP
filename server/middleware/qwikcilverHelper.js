@@ -3,6 +3,7 @@ import axios from "axios";
 import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
+import wallet_history from "../models/wallet_history.js";
 
 export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
   try {
@@ -360,7 +361,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
     ) {
       console.log(walletRedemption.data.Wallets);
-      await wallet_history.updateOne({wallet_id :  wallet_id},{total_balance : total_balance - amount,$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
+      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
 
       return walletRedemption.data.Wallets[0];
     }
