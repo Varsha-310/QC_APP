@@ -469,12 +469,9 @@ export const walletTransaction = async (req, res) => {
   try {
     const { store, customer_id } = req.body;
     console.log(store, customer_id);
-    // let storeExists = await Store.findOne({ "store_url": store });
-    // console.log(storeExists);
-    // if (storeExists) {
     const history = await wallet_history.findOne({"customer_id" : customer_id});
      console.log(history , "-----wallethistory------------")
-     if (history == "null") {
+     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
      }
      else{

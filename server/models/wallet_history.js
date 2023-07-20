@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const walletHistorySchema = mongoose.Schema({
   wallet_id: { type: String },
-  total_balance: { type: String },
+  total_balance: { type: Number , default : 0 },
   customer_id: { typ: String },
   transactions: [
     {
