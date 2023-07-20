@@ -258,7 +258,7 @@ export const addGiftcardtoWallet = async (store ,customer_id, gc_pin, amount) =>
         let updateShopifyGc = await updateShopifyGiftcard(store,setting.access_token,shopify_gc_id,amount);
       console.log(updateShopifyGc);
         await wallet.updateOne({ shopify_customer_id :customer_id },{ balance:newAmount}, {upsert : true});
-        await wallet_history.updateOne({wallet_id : wallet_id, customer_id : customer_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , gc_pin : gc_pin, expires_at:activatedCard.ExpiryDate}}},{upsert:true})
+        await wallet_history.updateOne({wallet_id : wallet_id, customer_id : customer_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , gc_pin : gc_pin, expires_at:activatedCard.ExpiryDate , transaction_date:Date.now()}}},{upsert:true})
 
         return transaction.data
       

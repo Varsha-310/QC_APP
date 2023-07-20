@@ -11,6 +11,7 @@ const walletHistorySchema = mongoose.Schema({
       amount: { type: Number },
       gc_pin: String,
       expires_at: Date,
+      transaction_date: Date,
     },
   ],
   logs: [],
