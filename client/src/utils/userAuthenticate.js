@@ -12,7 +12,6 @@ const setUserToken = (token) => {
  */
 const getUserToken = () => {
   const token = localStorage.getItem("qcUserToken");
-
   return token ? token : null;
 };
 
