@@ -78,7 +78,7 @@ export const createGiftcardProducts = async (req, res) => {
 export const updateGiftcardProduct = async (req, res) => {
   try {
     let store = req.token.store_url;
-    let { images, title, description, variants, product_id } = req.body;
+    let { images, title, description, variants, product_id , validity} = req.body;
     let shopify = await getShopifyObject(store); // Get Shopify Object
     let updateObj = {};
     //Update only the fields sent in request
@@ -93,6 +93,9 @@ export const updateGiftcardProduct = async (req, res) => {
     }
     if (variants) {
       updateObj["variants"] = variants;
+    }
+    if (validity) {
+      updateObj["validity"] = validity;
     }
     console.log(updateObj);
     let updatedProduct = await shopify.product.update(product_id, updateObj);
@@ -471,7 +474,10 @@ export const walletTransaction = async (req, res) => {
     // if (storeExists) {
     const history = await wallet_history.findOne({"customer_id" : customer_id});
      console.log(history , "-----wallethistory------------")
-    
+     if (history == "null") {
+      res.json(respondNotFound("wallet does not exists"));
+     }
+     else{
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
@@ -479,6 +485,7 @@ export const walletTransaction = async (req, res) => {
           transactions: history.transactions
         },
       });
+    }
   
   } catch (err) {
     console.log(err);
