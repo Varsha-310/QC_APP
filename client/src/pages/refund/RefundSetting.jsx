@@ -51,10 +51,9 @@ const RefundSetting = () => {
   // update configuration
   const handleUpdate = async (event) => {
     setIsLoading(true);
-    const url = instance + "/refund/updateSetting";
+    const url = "/refund/updateSetting";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
+      Authorization: getUserToken(),
     };
     const body = {
       location_id: configuration.location_id,
@@ -68,7 +67,7 @@ const RefundSetting = () => {
     let res = null;
 
     try {
-      res = await axios.put(url, body, { headers });
+      res = await instance.put(url, body, { headers });
 
       alert(res?.data?.message);
       console.log(res);

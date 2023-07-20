@@ -39,18 +39,6 @@ const CreateGiftCard = () => {
   // error
   const [isError, setIsError] = useState(null);
 
-  // const [isValidityCheck, setIsValidityCheck] = useState(false);
-  // fetched images
-  const [images, setImages] = useState([
-    "download (6).png",
-    "download.jpg",
-    "download (1).jpg",
-    "download (2).jpg",
-    "download (3).jpg",
-    "download (4).jpg",
-    "download (5).jpg",
-  ]);
-
   // selected or current image
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
@@ -60,9 +48,6 @@ const CreateGiftCard = () => {
 
   const navigate = useNavigate();
 
-  // console.log(selectedImage);
-  // console.log(previewImage);
-
   const scrollContainer = useRef(null);
 
   // image preview slider scroll values
@@ -71,7 +56,7 @@ const CreateGiftCard = () => {
 
   // image slider next and prev btns
   const imageSlider = (val) => {
-    if (val === "next" && selectedImg < images.length - 1) {
+    if (val === "next" && selectedImg < previewImage.length - 1) {
       setSelectedImg(selectedImg + 1);
       console.log("hit");
     } else if (val === "prev" && selectedImg > 0) {
@@ -169,7 +154,6 @@ const CreateGiftCard = () => {
     const url = "/giftcard/products/add";
     const headers = {
       Authorization: getUserToken(),
-      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
     };
 
     // field validation
@@ -229,7 +213,7 @@ const CreateGiftCard = () => {
   };
 
   return (
-    <div className="gift-card__container ">
+    <div className="gift-card__container component">
       <div className="section-box-container">
         <div className="section-box-title">Create Gift Card</div>
       </div>

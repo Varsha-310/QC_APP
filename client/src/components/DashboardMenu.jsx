@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  MyPlanIcon,
-  StoreCredit,
-  DownArrowIcon,
-  MyGiftCardsIcon,
-  ConfigIcon,
-  GiftCardIcon,
-  KycIcon,
-  ResendMail,
-} from "../assets/icons/svgs";
+import { DownArrowIcon } from "../assets/icons/svgs";
 import "./styles/DashboardMenu.css";
 import {
   Dot,
@@ -19,18 +10,13 @@ import {
   TabSubItemLable,
 } from "./BasicComponents";
 
-import {
-  AiOutlineUser,
-  AiOutlineSetting,
-  AiOutlineRollback,
-} from "react-icons/ai";
+import { AiOutlineUser, AiOutlineSetting } from "react-icons/ai";
 import {
   HiOutlineIdentification,
   HiOutlineWallet,
   HiOutlineReceiptRefund,
 } from "react-icons/hi2";
-import {PiKeyReturn} from "react-icons/pi"
-// import { PiKeyReturn } from "react-icons/";
+import { PiKeyReturn } from "react-icons/pi";
 import { BsPostcard } from "react-icons/bs";
 
 const DashboardMenu = () => {
@@ -124,7 +110,10 @@ const DashboardMenu = () => {
             <ul>
               <li>
                 <SubTabBox to={"/create-giftcard"}>
-                  <BsPostcard className="menu-icons" style={{width:"20px"}} />
+                  <BsPostcard
+                    className="menu-icons"
+                    style={{ width: "20px" }}
+                  />
                   {/* <GiftCardIcon className="menu-icons" /> */}
                   <TabItemLable>Create Gift Card</TabItemLable>
                 </SubTabBox>
@@ -183,7 +172,7 @@ const DashboardMenu = () => {
 
           <li id="account" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.account}`} to={"/my-account"}>
-              ACCOUNT SECTION
+              MY ACCOUNT
             </TabBox>
 
             <ul>
@@ -194,7 +183,8 @@ const DashboardMenu = () => {
                   onClick={handleDropDown}
                   to={"/my-account"}
                 >
-                  <MyPlanIcon className="menu-icons" />
+                  <AiOutlineUser className="menu-icons" />
+                  {/* <MyPlanIcon className="menu-icons" /> */}
 
                   <TabItemLable>My Plan</TabItemLable>
                   <DownArrowIcon />
@@ -224,7 +214,8 @@ const DashboardMenu = () => {
 
               <li>
                 <SubTabBox to={"/kyc-status"}>
-                  <KycIcon className="menu-icons" />
+                  {/* <KycIcon className="menu-icons" /> */}
+                  <HiOutlineIdentification className="menu-icons" />
                   <TabItemLable>KYC Status</TabItemLable>
                 </SubTabBox>
               </li>
@@ -239,21 +230,27 @@ const DashboardMenu = () => {
             <ul>
               <li>
                 <SubTabBox to={"/create-giftcard"}>
-                  <GiftCardIcon className="menu-icons" />
+                  <BsPostcard
+                    className="menu-icons"
+                    style={{ width: "20px" }}
+                  />
+                  {/* <GiftCardIcon className="menu-icons" /> */}
                   <TabItemLable>Create Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
                 <SubTabBox to={"/my-gift-card"}>
-                  <MyGiftCardsIcon className="menu-icons" />
+                  {/* <MyGiftCardsIcon className="menu-icons" /> */}
+                  <HiOutlineWallet className="menu-icons" />
                   <TabItemLable>My Gift Cards</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
                 <SubTabBox to={"resend-gift-card"}>
-                  <ResendMail className="menu-icons" />
+                  <PiKeyReturn className="menu-icons" />
+                  {/* <PiKeyReturn className="menu-icons" /> */}
                   <TabItemLable>Re-send Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
@@ -267,13 +264,15 @@ const DashboardMenu = () => {
             <ul>
               <li>
                 <SubTabBox to={"/refunds"}>
-                  <StoreCredit className="menu-icons" />
+                  {/* <StoreCredit className="menu-icons" /> */}
+                  <HiOutlineReceiptRefund className="menu-icons" />
                   <TabItemLable>Issue Store Credits</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
                 <SubTabBox to={"/configuration"}>
-                  <ConfigIcon className="menu-icons" />
+                  {/* <ConfigIcon className="menu-icons" /> */}
+                  <AiOutlineSetting className="menu-icons" />
                   <TabItemLable>Preferences</TabItemLable>
                 </SubTabBox>
               </li>

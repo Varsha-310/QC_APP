@@ -96,6 +96,9 @@ li {
 }
 /* for tabview */
 @media only screen and (max-width: 900px) {
+  .component {
+    min-height: 100%;
+  }
   .container_padding {
     padding: 10px 20px;
   }
@@ -104,7 +107,4 @@ li {
     min-height: auto;
     overflow: auto;
   }
-  /* .main-component{
-    min-height: 60%;
-  } */
 }
