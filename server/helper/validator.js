@@ -162,8 +162,7 @@ export const validateAddToWallet = async (req, res, next) => {
     console.log("api validation")
     const validationRule = {
       customer_id : "required|string",
-      store : "required|string",
-      gc_pin: "required|string"
+      store : "required|string"
 
     };
     await validateMethod(req,  validationRule, res , next);

@@ -1,4 +1,5 @@
 import { respondSuccess, respondInternalServerError } from "../helper/response.js";
+import { respondSuccess } from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
@@ -17,10 +18,10 @@ import orders from "../models/orders.js";
  * @param {*} req
  * @param {*} res
  */
-
 export const orderCreated = (req, res) => {
+
   console.log("order created", req.headers);
-  // const shop = req.headers.x-shopify-shop-domain;
+  //const shop = req.headers.x-shopify-shop-domain;
   const shop = "qwikcilver-public-app-teststore.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order }, res);
@@ -54,10 +55,11 @@ export const orderDeleted = (req, res) => {
  * @param {*} res
  */
 const ordercreateEvent = async (input, done, res) => {
+
   try {
+    
     console.log("------------order create event-----------------");
     const { shop, order } = input;
-
     let isGiftcardOrder = false;
     let shopName = "qwikcilver-public-app-teststore.myshopify.com";
     console.log("Shop Name", shop);
@@ -70,6 +72,7 @@ const ordercreateEvent = async (input, done, res) => {
         const checkAmount = await giftCardAmount(shopName, newOrder.id);
         console.log("--------redeemed amount--------------", checkAmount)
         if (checkAmount != false) {
+          
           const redeemed = await redeemWallet(
             shopName,
             checkAmount.id,
