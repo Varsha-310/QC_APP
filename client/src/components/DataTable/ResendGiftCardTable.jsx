@@ -1,7 +1,7 @@
 import React from "react";
 import "./styles/ListingTable.css";
-import { Link } from "react-router-dom";
-import Resend from "../../assets/icons/svgs/resend.svg";
+import { MdOutgoingMail } from "react-icons/md";
+// import Resend from "../../assets/icons/svgs/resend.svg";
 
 const ResendGiftCard = ({ data, resendMail }) => {
   return (
@@ -11,7 +11,6 @@ const ResendGiftCard = ({ data, resendMail }) => {
           <th>Order</th>
           <th>Date</th>
           <th>Customer</th>
-          {/* <th>Total</th> */}
           <th>Action</th>
         </tr>
       </thead>
@@ -24,9 +23,10 @@ const ResendGiftCard = ({ data, resendMail }) => {
             <td>{row?.customer?.first_name}</td>
             {/* <?td>₹ {row?.total}</?td> */}
             <td className="gc-table__actions">
-              <span onClick={() => resendMail(row?.id)}>
-                <img className="gc-table-icons" src={Resend} alt="" />
-              </span>
+              <MdOutgoingMail
+                className="gc-table-icons"
+                onClick={() => resendMail(row?.id)}
+              />
             </td>
           </tr>
         ))}

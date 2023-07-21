@@ -20,6 +20,11 @@
   background-color: var(--frame-color);
   transform: translateY(-50%);
 }
+.menu-icons {
+  height: 22px;
+  width: 22px;
+  color: var(--frame-color);
+}
 @media only screen and (max-width: 900px) {
   .dashboard__pc-menu {
     display: none;

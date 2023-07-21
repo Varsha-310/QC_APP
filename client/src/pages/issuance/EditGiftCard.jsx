@@ -12,10 +12,11 @@ import {
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
 import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import { useParams } from "react-router";
 import fieldValidate from "../../utils/fieldValidate";
 import { createPortal } from "react-dom";
+import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 
 const ActiveDot = styled.div`
@@ -160,16 +161,15 @@ const EditGiftCard = () => {
   //   fetch
   const fetchData = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/select";
+    const url = "/giftcard/products/select";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,
     };
 
-    const res = await axios.post(url, body, { headers });
+    const res = await instance.post(url, body, { headers });
     const resData = res.data;
 
     setCardData(resData.data);
@@ -183,10 +183,9 @@ const EditGiftCard = () => {
   //   update data
   const handleUpdate = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/update";
+    const url = instance + "/giftcard/products/update";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,
