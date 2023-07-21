@@ -135,7 +135,14 @@ export const handleOrderDataList = async (req, res) => {
 
         const orders = await orderModel.find(
             filter,
-            {id:1,updated_at:1,'customer.first_name':1,total_price:1,status:1,payment_gateway_names:1,Refund_Mode:1,Initiate_Refund:1})
+            {
+              id:1,
+              updated_at:1,
+              'customer.first_name':1,
+              total_price:1,status:1,payment_gateway_names:1,
+              Refund_Mode:1,refund_status:1,
+              financial_status: 1, fulfillment_status:1
+            })
             .skip(skip)
             .limit(limit);
         const totalCount = await orderModel.countDocuments(filter); 
