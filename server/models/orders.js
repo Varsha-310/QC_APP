@@ -214,7 +214,7 @@ const orderSchema = new Schema({
     payment_terms: { type: String },
     refunds: { type: Array },
     Refund_Mode: { type: String, default: 'N/A' },
-    Initiate_Refund: { type: String, default: "N/A" },
+    refund_status: { type: String, default: "N/A" },
     shipping_lines: { type: Array }
 });
 
