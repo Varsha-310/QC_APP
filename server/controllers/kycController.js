@@ -172,6 +172,7 @@ export const dispatchTransaction = async (txnId) => {
 
 export const statusKyc = async (req, res) => {
   try {
+console.log("---------kyc---------------" , req.body);
     let stores = req.token.store_url;
     console.log(stores);
     const checkStatus = await store.findOne({ store_url: stores });
@@ -194,7 +195,8 @@ export const statusKyc = async (req, res) => {
 
 
 export const kycDetails = async(req,res) => {
-  console.log(req.body);
+
+  console.log("----------------kyc webhook----------------",req.body.data.documents);
   logger.info(req.body , "kyc webhook for merchant details");
   const selectedFields = ['merchant_data'];
 

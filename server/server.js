@@ -19,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
+import billingRoute from "./routes/billingRoute.js";
 
 export const app = express();
 
@@ -64,6 +65,9 @@ app.use(express.static(path.join(__dirname, "js")));
 //a shopify routes
 app.use("/shopify", shopifyRoute);
 
+// Billing API
+app.use("/billing", billingRoute);
+
 // GDPR routes
 app.use("/gdpr", gdprRoute);
 
@@ -103,7 +107,7 @@ cron.schedule("* * * * *", () => {
 // Database and Port connection
 mongoose
   // .connect(process.env.DB_URL + process.env.DB)
-  .connect("mongodb://0.0.0.0:27017/" + process.env.DB)
+  .connect("mongodb://0.0.0.0:27017/QC-DB1")
   .then(() => {
 
     app.listen(process.env.PORT);

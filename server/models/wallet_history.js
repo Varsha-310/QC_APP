@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 /*Scheme for storing wallet details */
 
 const walletHistorySchema = mongoose.Schema({
+  
   wallet_id: { type: String },
   total_balance: { type: Number , default : 0 },
   customer_id: { typ: String },
@@ -16,5 +17,4 @@ const walletHistorySchema = mongoose.Schema({
   ],
   logs: [],
 });
-
 export default mongoose.model("Wallethistory", walletHistorySchema);
