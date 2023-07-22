@@ -113,7 +113,7 @@ const EditGiftCard = () => {
     console.log(index);
   };
 
-  //   fetch
+  //fetch
   const fetchData = async () => {
     setIsLoading(true);
     const url = "/giftcard/products/select";
@@ -124,11 +124,15 @@ const EditGiftCard = () => {
       product_id: id,
     };
 
-    const res = await instance.post(url, body, { headers });
-    const resData = res.data;
-
-    setCardData(resData.data);
-    setIsLoading(false);
+    try {
+      const res = await instance.post(url, body, { headers });
+      const resData = res.data;
+      setCardData(resData.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -137,7 +141,7 @@ const EditGiftCard = () => {
 
   //   update data
   const handleUpdate = async () => {
-    console.log(cardData.validity)
+    console.log(cardData.validity);
     setIsLoading(true);
     const url = "/giftcard/products/update";
     const headers = {
@@ -174,7 +178,7 @@ const EditGiftCard = () => {
     try {
       const res = await instance.put(url, body, { headers });
       const resData = res.data;
-      alert(resData.message)
+      alert(resData.message);
     } catch (error) {
       console.log();
     } finally {
@@ -304,7 +308,6 @@ const EditGiftCard = () => {
                 setCardData={setCardData}
                 validity={cardData.validity.toString()}
               />
-            
             </div>
           </div>
         </div>

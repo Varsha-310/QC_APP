@@ -74,7 +74,7 @@ const AccountPage = () => {
       </CustomContainer>
 
       <div className="section-box-container">
-        <div className="section-box-title">Store Contact</div>
+        <div className="section-box-title-regular">Store Contact</div>
       </div>
 
       <div className="section-box-container">

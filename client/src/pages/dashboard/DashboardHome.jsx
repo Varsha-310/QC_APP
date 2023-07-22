@@ -19,8 +19,6 @@ import StarNull from "../../assets/icons/pngs/StarNull.png";
 import Giftbox from "../../assets/images/Giftbox.png";
 
 const DashboardHome = () => {
-  const { store } = useParams();
-  const location = useLocation();
   // const searchParams = new URLSearchParams(location.search);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +91,7 @@ const DashboardHome = () => {
       </div>
 
       <div className="section-box-container">
-        <div className="section-box-title">Registration Progess</div>
+        <div className="section-box-title-regular">Registration Progess</div>
         <section className="status-progress-contain">
           <ul className="status-progress-list">
             <li className="status-progress-item">

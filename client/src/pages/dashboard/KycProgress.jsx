@@ -20,8 +20,6 @@ const KycProgress = () => {
           Your account will be activated within 2 hours.
         </p>
       </div>
-
-      <img src={SecureDoc} alt="" className="footer-img" />
     </div>
   );
 };

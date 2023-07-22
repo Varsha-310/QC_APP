@@ -106,6 +106,8 @@ const SubTabBox = styled(Link)`
   // justify-items: center;
   cursor: pointer;
   text-decoration: none;
+  background-color: ${(props) =>
+    props?.active ? "rgba(202, 201, 201, 0.3)" : ""};
 `;
 
 const TabItemLable = styled.div`

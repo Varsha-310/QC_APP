@@ -1,11 +1,12 @@
 import "./styles/ConfirmationPage.css";
-import Success from "../../assets/icons/svgs/success.svg";
+import { BiSolidCheckCircle } from "react-icons/bi";
 import { SectionTitle } from "../../components/BasicComponents";
 
 const ConfirmationPage = () => {
   return (
     <div className="confirmation_page-container">
-      <img className="success-icon" src={Success} alt="" />
+      {/* <img className="success-icon" src={Success} alt="" /> */}
+      <BiSolidCheckCircle className="success-icon" />
 
       <div className="confirmation-heading">
         <SectionTitle weight="600" size="32px" lineheight="48px">

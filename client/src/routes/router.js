@@ -101,10 +101,6 @@ const router = createBrowserRouter([
         element: <ResendGiftCard />,
       },
       {
-        path: "/issue-store-credits",
-        element: "",
-      },
-      {
         path: "/refunds",
         element: <RefundList />,
       },

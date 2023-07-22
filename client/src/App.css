@@ -59,7 +59,15 @@ body {
 }
 .section-box-title {
   font-family: var(--font-family-header);
-  font-style: normal;
+  /* font-style: normal; */
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 16px;
+  color: var(--text-dark-color);
+}
+.section-box-title-regular {
+  font-family: var(--font-family-header);
+  /* font-style: normal; */
   font-weight: 500;
   font-size: 16px;
   line-height: 16px;
