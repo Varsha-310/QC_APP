@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {verifyJwt } from "../helper/jwtHelper"
-import { handleBillingDetails, handleBillingList } from "../controllers/BillingController";
+import {verifyJwt } from "../helper/jwtHelper.js"
+import { handleBillingDetails, handleBillingList } from "../controllers/BillingController.js";
 
 const billingRoute = Router();
 

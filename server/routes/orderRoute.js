@@ -11,6 +11,6 @@ orderRoute.get("/list",verifyJwt, handleOrderDataList);
 orderRoute.get("/sync",verifyJwt, handleSyncOrder);
 
 // Get Order Deetails
-orderRoute.get("/details", verifyJwt, handleOrderDetails)
+orderRoute.post("/details", verifyJwt, handleOrderDetails)
 
 export default orderRoute;
