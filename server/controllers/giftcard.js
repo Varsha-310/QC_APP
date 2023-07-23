@@ -286,7 +286,7 @@ return false      }
       if ((transaction.status == "200", transaction.data.ResponseCode == "0")) {
        
         await wallet.updateOne({ shopify_customer_id :customer_id },{ $inc:{balance : activatedCard.Balance}}, {upsert : true});
-        await wallet_history.updateOne({wallet_id :  walletCreated.WalletNumber, customer_id : customer_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , gc_pin : gc_pin, expires_at:activatedCard.ExpiryDate}}}, {upsert:true})
+        await wallet_history.updateOne({wallet_id :  walletCreated.WalletNumber, customer_id : customer_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , transaction_date:Date.now(), expires_at:activatedCard.ExpiryDate}}}, {upsert:true})
 
         return transaction.data;
       }
@@ -468,7 +468,8 @@ export const walletTransaction = async (req, res) => {
   try {
     const { store, customer_id } = req.body;
     console.log(store, customer_id);
-    const history = await wallet_history.findOne({"customer_id" : customer_id});
+const cust = Number(customer_id);
+    const history = await wallet_history.findOne({"customer_id" : cust});
      console.log(history , "-----wallethistory------------")
      if (history == null) {
       res.json(respondNotFound("wallet does not exists"));

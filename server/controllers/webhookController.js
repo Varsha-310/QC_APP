@@ -21,7 +21,7 @@ export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
   //const shop = req.headers.x-shopify-shop-domain;
-  const shop = "qwikcilver-public-app-teststore.myshopify.com";
+  const shop = "qc-plus-store.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
@@ -60,7 +60,7 @@ const ordercreateEvent = async (input, done, res) => {
     console.log("------------order create event-----------------");
     const { shop, order } = input;
     let isGiftcardOrder = false;
-    let shopName = "qwikcilver-public-app-teststore.myshopify.com";
+    let shopName = shop;
     console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
     if (settings) {

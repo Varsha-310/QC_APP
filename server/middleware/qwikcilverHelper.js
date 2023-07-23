@@ -361,7 +361,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
     ) {
       console.log(walletRedemption.data.Wallets);
-      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
+      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true})
 
       return walletRedemption.data.Wallets[0];
     }
