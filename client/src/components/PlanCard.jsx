@@ -38,11 +38,16 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
         As of (%) value of Issuance - {plan?.usage_charge}%
       </div>
 
-      <div className="plan-card-btn">
-        <CustomBtn active={active} onClick={() => setPlan(plan)}>
-          {btnText}
-        </CustomBtn>
-      </div>
+      {/* btn  */}
+      {btnText !== "" ? (
+        <div className="plan-card-btn">
+          <CustomBtn active={active} onClick={() => setPlan(plan)}>
+            {btnText}
+          </CustomBtn>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

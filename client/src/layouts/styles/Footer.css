@@ -1,0 +1,17 @@
+.app-footer {
+  background-color: var(--frame-color);
+  display: flex;
+  justify-content: center;
+  padding: 20px 0px;
+}
+.app-footer__items {
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 400;
+  color: var(--text-color);
+  padding: 0px 5px;
+}
+.app-footer__items + .app-footer__items {
+  border-left: 2px solid white;
+}

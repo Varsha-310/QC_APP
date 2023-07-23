@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./styles/ListingTable.css";
 import { Link } from "react-router-dom";
+import CustomDropdown from "../CustomDropdown";
 
 const RefundListTable = ({ headings, data }) => {
   return (
@@ -22,7 +23,15 @@ const RefundListTable = ({ headings, data }) => {
             <td>₹ {row.total_price}</td>
             <td>{row.status}</td>
             <td>{row.payment_gateway_names[0]}</td>
-            <td>{row.Refund_Mode}</td>
+            {/* <td>{row.Refund_Mode}</td> */}
+            <td>
+              <CustomDropdown
+                options={[
+                  { title: "Back to store-credit" },
+                  { title: "Back to source" },
+                ]}
+              />
+            </td>
             <td>
               <Link
                 className={

@@ -3,7 +3,7 @@ import {
   getUserDetails,
   deleteStoreData,
   deleteUserData
-} from "../controllers/GDPRcontroller.js";
+} from "../controllers/gdprController.js";
 import { verifyShopifyHook } from "../helper/validator.js";
 
 const gdprRoute = Router();

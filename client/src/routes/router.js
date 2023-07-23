@@ -9,8 +9,8 @@ import {
   ConfirmationPage,
   RefundPage,
   RefundSetting,
-  TransactionDetail,
-  TransactionHistory,
+  MyInvoices,
+  CurrentUsages,
   RefundConfirmation,
   CreateGiftCard,
   RefundList,
@@ -19,6 +19,8 @@ import {
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
+import ProtectedRoute from "../components/ProtectedRoutes/ProtectedRoute";
+import { isUserAuthenticated } from "../utils/userAuthenticate";
 
 const router = createBrowserRouter([
   {
@@ -27,20 +29,36 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "/",
+        element: <DashboardHome />,
+      },
+      {
         path: "/home",
         element: <DashboardHome />,
       },
       {
         path: "/my-account",
-        element: <AccountPage />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <AccountPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my-invoices",
-        element: <TransactionHistory />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <MyInvoices />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/current-usage",
-        element: <TransactionDetail />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <CurrentUsages />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/kyc-status",
@@ -48,27 +66,39 @@ const router = createBrowserRouter([
       },
       {
         path: "/create-giftcard",
-        element: <CreateGiftCard />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <CreateGiftCard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my-gift-card",
-        element: <GiftCardsList />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <GiftCardsList />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my-gift-card/:id",
-        element: <GiftCardDetail />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <GiftCardDetail />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/edit-gift-card/:id",
-        element: <EditGiftCard />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <EditGiftCard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/resend-gift-card",
         element: <ResendGiftCard />,
-      },
-      {
-        path: "/issue-store-credits",
-        element: "",
       },
       {
         path: "/refunds",

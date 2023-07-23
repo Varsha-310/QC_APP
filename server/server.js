@@ -107,7 +107,7 @@ cron.schedule("* * * * *", () => {
 // Database and Port connection
 mongoose
   // .connect(process.env.DB_URL + process.env.DB)
-  .connect(process.env.DB_URL + process.env.DB)
+  .connect("mongodb://0.0.0.0:27017/QC-DB1")
   .then(() => {
 
     app.listen(process.env.PORT);

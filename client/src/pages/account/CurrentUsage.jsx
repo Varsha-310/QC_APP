@@ -1,6 +1,6 @@
 import React from "react";
 import { CustomContainer } from "../../components/BasicComponents";
-import "./styles/TransactionDetail.css";
+import "./styles/CurrentUsage.css";
 import styled from "styled-components";
 
 import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
@@ -17,7 +17,7 @@ const TextElement = styled.div`
   color: ${(props) => (props.$fade ? "#00000099" : "#000000")};
 `;
 
-const TransactionDetail = () => {
+const CurrentUsages = () => {
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
@@ -47,7 +47,9 @@ const TransactionDetail = () => {
 
       {/* plan details & usages */}
       <div className="transaction-detail__plan-charges transaction-detail__box-bg">
-        <TextElement>Your Current Plan - Basic</TextElement>
+        <div className="transaction-detail__detail-heading">
+          Your Current Plan - Basic
+        </div>
         <div className="gift-card__text-box-container">
           <div className="gift-card__text-box">
             <TextElement>
@@ -56,7 +58,7 @@ const TransactionDetail = () => {
             </TextElement>
           </div>
           <div className="gift-card__text-box">
-            <TextElement align="center">₹20000.00</TextElement>
+            <TextElement align="left">₹20000.00</TextElement>
           </div>
         </div>
 
@@ -65,7 +67,7 @@ const TransactionDetail = () => {
             <TextElement>Current Usage</TextElement>
           </div>
           <div className="gift-card__text-box">
-            <TextElement align="center">₹8000.00</TextElement>
+            <TextElement align="left">₹8000.00</TextElement>
           </div>
         </div>
 
@@ -77,20 +79,23 @@ const TransactionDetail = () => {
             </TextElement>
           </div>
           <div className="gift-card__text-box">
-            <TextElement align="center">Nill</TextElement>
+            <TextElement align="left">Nill</TextElement>
           </div>
         </div>
       </div>
 
       {/* expected charges */}
       <div className="transaction-detail__plan-fees transaction-detail__box-bg">
-        <TextElement>Expected Charges - March, 2023</TextElement>
+        <div className="transaction-detail__detail-heading">
+          Expected Charges - March, 2023
+        </div>
+
         <div className="gift-card__text-box-container">
           <div className="gift-card__text-box">
             <TextElement>Subscription Fee</TextElement>
           </div>
           <div className="gift-card__text-box">
-            <TextElement align="center">₹8000.00</TextElement>
+            <TextElement align="left">₹8000.00</TextElement>
           </div>
         </div>
 
@@ -99,25 +104,21 @@ const TransactionDetail = () => {
             <TextElement>Usage Fee (at 2.5% of Value Issuance)</TextElement>
           </div>
           <div className="gift-card__text-box">
-            <TextElement align="center">₹8000.00</TextElement>
+            <TextElement align="left">₹8000.00</TextElement>
           </div>
         </div>
 
         <div className="gift-card__text-box-container">
           <TextElement align="right">Total</TextElement>
           <div className="gift-card__text-box">
-            <TextElement align="center" id="total">₹1600.00</TextElement>
+            <TextElement align="left" id="total">
+              ₹1600.00
+            </TextElement>
           </div>
         </div>
       </div>
-
-      <img
-        src={GiftCouponIcon}
-        alt=""
-        className="transaction-detail__footer-img"
-      />
     </div>
   );
 };
 
-export default TransactionDetail;
+export default CurrentUsages;

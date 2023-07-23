@@ -22,7 +22,7 @@ const validator = async (body, rules, customMessages, callback) => {
  * @param {*} res
  * @param {*} next
  */
-export const verifyGetGiftcard = async (req, res, next) => {
+export const verifyGetGiftcard = async (req, res,next) => {
   try {
     console.log("api validation")
     const validationRule = {
@@ -144,6 +144,7 @@ export const validateUpdateGiftcard = async (req, res, next) => {
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
+console.log(err)
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
     );
@@ -179,12 +180,13 @@ export const validateAddToWallet = async (req, res, next) => {
  * @param {*} validationRule 
  * @param {*} next 
  */
-const validateMethod = async (req, res, next, validationRule) => {
+const validateMethod = async (req, validationRule, res, next) => {
 
   await validator(req.body, validationRule, {}, (err, status) => {
     if (!status) {
       res.json(respondValidationError(err));
     } else {
+	console.log(err);
       next();
     }
   });

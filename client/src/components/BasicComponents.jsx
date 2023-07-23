@@ -95,7 +95,7 @@ const TabBox = styled(Link)`
     props?.active === "true" ? "0px 4px 7px 1px rgba(0, 0, 0, 0.15)" : ""};
 `;
 
-const SubTabBox = styled.div`
+const SubTabBox = styled(Link)`
   display: grid;
   grid-template-columns: ${(props) =>
     props?.dropdown ? "1fr 3fr 1fr" : "1fr 4fr"};
@@ -105,13 +105,15 @@ const SubTabBox = styled.div`
   align-items: center;
   // justify-items: center;
   cursor: pointer;
+  text-decoration: none;
+  background-color: ${(props) =>
+    props?.active ? "rgba(202, 201, 201, 0.3)" : ""};
 `;
 
-const TabItemLable = styled(Link)`
+const TabItemLable = styled.div`
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  text-decoration: none;
   font-size: 16px;
   line-height: 24px;
   display: flex;

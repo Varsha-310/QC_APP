@@ -7,7 +7,7 @@ import { qwikcilverToken } from "../middleware/qwikcilverHelper.js";
 const webhookRoute = Router();
 
 // api for order create webhook
-webhookRoute.post("/ordercreated", verifyShopifyHook, orderCreated);
+webhookRoute.post("/ordercreated", orderCreated);
 
 // api for order update webhook
 webhookRoute.post("/orderupdated", verifyShopifyHook, orderUpdated);
@@ -26,7 +26,5 @@ webhookRoute.post("/productupdated", verifyShopifyHook, productUpdateEvent);
 
 // api for product delete webhook
 webhookRoute.post("/productdeleted", verifyShopifyHook, productDeleteEvent);
-
-webhookRoute.post("/token", qwikcilverToken);
 
  export default webhookRoute;

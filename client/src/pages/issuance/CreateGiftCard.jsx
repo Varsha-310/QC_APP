@@ -10,12 +10,12 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
-import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import Spinner from "../../components/Loaders/Spinner";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router";
 import fieldValidate from "../../utils/fieldValidate";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const ActiveDot = styled.div`
   width: 15px;
@@ -39,18 +39,6 @@ const CreateGiftCard = () => {
   // error
   const [isError, setIsError] = useState(null);
 
-  // const [isValidityCheck, setIsValidityCheck] = useState(false);
-  // fetched images
-  const [images, setImages] = useState([
-    "download (6).png",
-    "download.jpg",
-    "download (1).jpg",
-    "download (2).jpg",
-    "download (3).jpg",
-    "download (4).jpg",
-    "download (5).jpg",
-  ]);
-
   // selected or current image
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
@@ -60,9 +48,6 @@ const CreateGiftCard = () => {
 
   const navigate = useNavigate();
 
-  // console.log(selectedImage);
-  // console.log(previewImage);
-
   const scrollContainer = useRef(null);
 
   // image preview slider scroll values
@@ -71,7 +56,7 @@ const CreateGiftCard = () => {
 
   // image slider next and prev btns
   const imageSlider = (val) => {
-    if (val === "next" && selectedImg < images.length - 1) {
+    if (val === "next" && selectedImg < previewImage.length - 1) {
       setSelectedImg(selectedImg + 1);
       console.log("hit");
     } else if (val === "prev" && selectedImg > 0) {
@@ -166,10 +151,9 @@ const CreateGiftCard = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/add";
+    const url = "/giftcard/products/add";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
 
     // field validation
@@ -198,7 +182,7 @@ const CreateGiftCard = () => {
 
     // post request
     try {
-      const res = await axios.post(
+      const res = await instance.post(
         url,
         {
           title: cardData.title,
@@ -229,59 +213,60 @@ const CreateGiftCard = () => {
   };
 
   return (
-    <div className="gift-card__container section-box-container component">
-      <div className="gift-card__active-status">
-        Active Account <ActiveDot active={true} />
+    <div className="gift-card__container component">
+      <div className="section-box-container">
+        <div className="section-box-title">Create Gift Card</div>
       </div>
-
-      {isLoading &&
-        createPortal(<Spinner />, document.getElementById("portal"))}
-      <div className="gift-card__card-details">
-        <div className="gift-card__card-preview">
-          <div className="gift-card__upload-image">
-            <span>Ratio 600x250</span>
-            <div className="file-input-container">
-              <input
-                type="file"
-                id="file-input"
-                className="file-input"
-                accept="image/png, image/jpg, image/jpeg"
-                // multiple
-                onChange={handleFileInput}
+      {/* <div className="gift-card__active-status"></div> */}
+      <div className="section-box-container component">
+        {isLoading &&
+          createPortal(<Spinner />, document.getElementById("portal"))}
+        <div className="gift-card__card-details">
+          <div className="gift-card__card-preview">
+            <div className="gift-card__upload-image">
+              <span>Ratio 600x250</span>
+              <div className="file-input-container">
+                <input
+                  type="file"
+                  id="file-input"
+                  className="file-input"
+                  accept="image/png, image/jpg, image/jpeg"
+                  // multiple
+                  onChange={handleFileInput}
+                />
+                <img src={UploadIcon} alt="" />
+                <label htmlFor="file-input" className="file-input-label">
+                  Change image
+                </label>
+                <div className="mandatory">*</div>
+              </div>
+            </div>
+            <div className="gift-card__preview-img">
+              <div
+                onClick={() => imageSlider("prev")}
+                className="gift-card__image-slider-btns"
+                id="scroll-left"
+              >
+                <FaChevronCircleLeft />
+              </div>
+              <div
+                onClick={() => imageSlider("next")}
+                className="gift-card__image-slider-btns"
+                id="scroll-right"
+              >
+                <FaChevronCircleRight />
+              </div>
+              <img
+                src={
+                  "data:image/jpeg;base64," +
+                  previewImage[selectedImg]?.attachment
+                }
+                alt=""
               />
-              <img src={UploadIcon} alt="" />
-              <label htmlFor="file-input" className="file-input-label">
-                Change image 
-              </label>
-              <div className="mandatory">*</div>
             </div>
-          </div>
-          <div className="gift-card__preview-img">
-            <div
-              onClick={() => imageSlider("prev")}
-              className="gift-card__image-slider-btns"
-              id="scroll-left"
-            >
-              <FaChevronCircleLeft />
-            </div>
-            <div
-              onClick={() => imageSlider("next")}
-              className="gift-card__image-slider-btns"
-              id="scroll-right"
-            >
-              <FaChevronCircleRight />
-            </div>
-            <img
-              src={
-                "data:image/jpeg;base64," +
-                previewImage[selectedImg]?.attachment
-              }
-              alt=""
-            />
-          </div>
 
-          <div className="gift-card__scroll-container">
-            {/* <div
+            <div className="gift-card__scroll-container">
+              {/* <div
               onClick={() => sliderScroll(SCROLL_LEFT)}
               className="gift-card__slider-btns"
               id="scroll-left"
@@ -289,121 +274,122 @@ const CreateGiftCard = () => {
               <FaChevronCircleLeft />
             </div> */}
 
-            <div className="gift-card__preview-scroll" ref={scrollContainer}>
-              {previewImage.length > 0 &&
-                previewImage.map((item, index) => (
-                  <figure key={index}>
-                    <img
-                      src={"data:image/jpeg;base64," + item?.attachment}
-                      alt=""
-                      onClick={() => setSelectedImg(index)}
-                    />
-                  </figure>
-                ))}
-            </div>
+              <div className="gift-card__preview-scroll" ref={scrollContainer}>
+                {previewImage.length > 0 &&
+                  previewImage.map((item, index) => (
+                    <figure key={index}>
+                      <img
+                        src={"data:image/jpeg;base64," + item?.attachment}
+                        alt=""
+                        onClick={() => setSelectedImg(index)}
+                      />
+                    </figure>
+                  ))}
+              </div>
 
-            {/* <div
+              {/* <div
               onClick={() => sliderScroll(SCROLL_RIGHT)}
               className="gift-card__slider-btns"
               id="scroll-right"
             >
               <FaChevronCircleRight />
             </div> */}
-          </div>
-        </div>
-
-        <div className="gift-card__card-data">
-          <label className="gift-card__label">
-            Title <span className="mandatory">*</span>
-          </label>
-          <input
-            type="text"
-            className="gift-card__input"
-            name="title"
-            value={cardData.title}
-            onChange={handleChange}
-          />
-          <label className="gift-card__label">Description</label>
-          <textarea
-            type="text"
-            className="gift-card__input"
-            name="description"
-            rows={3}
-            value={cardData.description}
-            onChange={handleChange}
-          />
-          <label className="gift-card__label">Terms & Condition</label>
-          <textarea
-            type="text"
-            className="gift-card__input"
-            name="terms"
-            rows={3}
-            value={cardData.terms}
-            onChange={handleChange}
-          />
-          <div className="gift-card__label">
-            Gift Card Validity <span className="mandatory">*</span>
+            </div>
           </div>
 
-          <div className="gift-card__validity">
-            <CustomDropdown
-              options={[
-                { title: "6 months", value: "180" },
-                { title: "12 months", value: "365" },
-              ]}
-              setCardData={setCardData}
-              validity={cardData.validity}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="gift-card__variant-data">
-        <div className="gift-card__variant-grid-row">
-          <label className="gift-card__label">
-            Variant Name <span className="mandatory">*</span>
-          </label>
-          <label className="gift-card__label">
-            Gift Card Price <span className="mandatory">*</span>
-          </label>
-          <label></label>
-        </div>
-
-        {cardData.variants.map((item, index) => (
-          <div className="gift-card__variant-grid-row" key={index}>
+          <div className="gift-card__card-data">
+            <label className="gift-card__label">
+              Title <span className="mandatory">*</span>
+            </label>
             <input
               type="text"
-              className="gift-card__variant-input-title gift-card__input"
-              id={index}
-              name="option1"
-              value={item.option1}
-              onChange={handleVariant}
+              className="gift-card__input"
+              name="title"
+              value={cardData.title}
+              onChange={handleChange}
             />
-            <input
-              type="number"
-              className="gift-card__variant-input-price gift-card__input"
-              id={index}
-              name="price"
-              value={item.price}
-              onChange={handleVariant}
+            <label className="gift-card__label">Description</label>
+            <textarea
+              type="text"
+              className="gift-card__input"
+              name="description"
+              rows={3}
+              value={cardData.description}
+              onChange={handleChange}
             />
-            <img src={DeleteIcon} alt="" id={index} onClick={handleDelete} />
+            <label className="gift-card__label">Terms & Condition</label>
+            <textarea
+              type="text"
+              className="gift-card__input"
+              name="terms"
+              rows={3}
+              value={cardData.terms}
+              onChange={handleChange}
+            />
+            <div className="gift-card__label">
+              Validity <span className="mandatory">*</span>
+            </div>
+
+            <div className="gift-card__validity">
+              <CustomDropdown
+                options={[
+                  { title: "6 months", value: "180" },
+                  { title: "12 months", value: "365" },
+                ]}
+                setCardData={setCardData}
+                validity={cardData.validity}
+              />
+            </div>
           </div>
-        ))}
-      </div>
-      <div className="gift-card__append-variant" onClick={handleAppend}>
-        Append a Variant
-        <span>
-          <FaPlus />
-        </span>
-      </div>
+        </div>
 
-      {/* error */}
-      {isError && <div className="gift-card__error">{isError}</div>}
+        <div className="gift-card__variant-data">
+          <div className="gift-card__variant-grid-row">
+            <label className="gift-card__label">
+              Variant Name <span className="mandatory">*</span>
+            </label>
+            <label className="gift-card__label">
+              Variant Value <span className="mandatory">*</span>
+            </label>
+            <label></label>
+          </div>
 
-      <PrimaryBtn $primary onClick={handleSubmit}>
-        Save
-      </PrimaryBtn>
+          {cardData.variants.map((item, index) => (
+            <div className="gift-card__variant-grid-row" key={index}>
+              <input
+                type="text"
+                className="gift-card__variant-input-title gift-card__input"
+                id={index}
+                name="option1"
+                value={item.option1}
+                onChange={handleVariant}
+              />
+              <input
+                type="number"
+                className="gift-card__variant-input-price gift-card__input"
+                id={index}
+                name="price"
+                value={item.price}
+                onChange={handleVariant}
+              />
+              <img src={DeleteIcon} alt="" id={index} onClick={handleDelete} />
+            </div>
+          ))}
+        </div>
+        <div className="gift-card__append-variant" onClick={handleAppend}>
+          Add a Variant
+          <span>
+            <FaPlus />
+          </span>
+        </div>
+
+        {/* error */}
+        {isError && <div className="gift-card__error">{isError}</div>}
+
+        <PrimaryBtn $primary onClick={handleSubmit}>
+          Create
+        </PrimaryBtn>
+      </div>
     </div>
   );
 };

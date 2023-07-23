@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./styles/RefundSetting.css";
-import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
+import { PrimaryBtn } from "../../components/BasicComponents";
 import axios from "axios";
-import { baseUrl2 } from "../../axios";
+import instance from "../../axios";
+import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import { createPortal } from "react-dom";
 
@@ -13,18 +14,19 @@ const RefundSetting = () => {
   console.log(configuration);
 
   const updateConfig = async () => {
-    const url = baseUrl2 + "/refund/getSetting";
+    const url = "/refund/getSetting";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODg3OTI1ODF9.NWn6qMEiUrvrIrHGkphuf9p7xJVJ0_6-GL0jbZKZa_k",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(
-        url,
-        { store_url: "qwickcilver-dev.myshopify.com" },
-        { headers }
-      );
+      // const res = await axios.post(
+      //   url,
+      //   { store_url: "qwickcilver-dev.myshopify.com" },
+      //   { headers }
+      // );
+      const res = await instance.get(url, {}, { headers });
+      console.log(res);
 
       const resData = res.data;
       console.log(resData);
@@ -49,10 +51,9 @@ const RefundSetting = () => {
   // update configuration
   const handleUpdate = async (event) => {
     setIsLoading(true);
-    const url = baseUrl2 + "/refund/updateSetting";
+    const url = "/refund/updateSetting";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lja2NpbHZlci1kZXYubXlzaG9waWZ5LmNvbSIsImlhdCI6MTY4NzUxNDE5OH0.ZCdIKEQsc_a0UPOkBmi6n02szucrssXDOW628Yi0cLQ",
+      Authorization: getUserToken(),
     };
     const body = {
       location_id: configuration.location_id,
@@ -66,7 +67,7 @@ const RefundSetting = () => {
     let res = null;
 
     try {
-      res = await axios.put(url, body, { headers });
+      res = await instance.put(url, body, { headers });
 
       alert(res?.data?.message);
       console.log(res);
@@ -98,7 +99,7 @@ const RefundSetting = () => {
           createPortal(<Spinner />, document.getElementById("portal"))}
 
         <div className="section-box-container">
-          <div className="section-box-title">Store Credit Configuration</div>
+          <div className="section-box-title">Store Credit Preferences</div>
           <div className="section-box-subtitle">
             This settings allows you to credit the refund to a store credit.
           </div>
@@ -124,7 +125,9 @@ const RefundSetting = () => {
           </div>
 
           <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">Prepaid</div>
+            <div className="refund-setting__type-name">
+              Prepaid (CC / DC / UPI / Net Banking)
+            </div>
             <input
               type="checkbox"
               className="refund-setting__radio"
@@ -143,7 +146,7 @@ const RefundSetting = () => {
             />
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">COD</div>
+            <div className="refund-setting__type-name">Cash On Delivery</div>
 
             <input
               type="checkbox"

@@ -11,8 +11,8 @@ import store from "../models/store.js";
  */
 export const planListing = async (req, res) => {
   try {
-    let planData = await plan.find({});
-    let planSelected = await store.findOne({ store_url: req.token.store_url });
+    let planData = await plan.find();  
+ let planSelected = await store.findOne({ store_url: req.token.store_url });
     res.json({
       ...respondWithData("plan list is fetched successfully"),
       data: { plans: planData, selectedPlan: planSelected.plan.plan_name },

@@ -1,36 +1,63 @@
 import NodeMailer from "nodemailer";
-import email_template from "../views/email_template.js";
+import template from "../views/email_template.js";
+
+//Function to convert the Javascript Date Object to a readable format
+function getReadableDate(dateObj) {
+  var d = new Date(dateObj),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+  hours = "" + d.getHours();
+  minutes = "" + d.getMinutes();
+  seconds = "" + d.getSeconds();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  if (hours.length < 2) hours = "0" + hours;
+  if (minutes.length < 2) minutes = "0" + minutes;
+  if (seconds.length < 2) seconds = "0" + seconds;
+  return `${day}-${month}-${year}  ${hours}:${minutes}`;
+}
 
 export const sendEmailViaSendGrid = async (
-  giftCardDetails,
-  order,
   shopName,
+  order,
+  giftCardDetails,
+  receiver,
   email_id,
-  message,
-  receiver
+  message
 ) => {;
 console.log("in the mail sender");
 
-var mail_id = "helpdesk@qwikcilver.com";
+var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
-
-console.log(email_id);
-// email_template = email_template.replace(
-//   "__CardNumber__",
-//   giftCardDetails["CardNumber"]
-// );
-// email_template = email_template.replace(
-//   "__CardPIN__",
-//   giftCardDetails["CardPIN"]
-// );
-// email_template = email_template.replace(
-//   "__Amount__",
-//   giftCardDetails["Amount"]
-// );
-// email_template = email_template.replace(
-//   "__Expiry__",
-//   getReadableDate(giftCardDetails["CardExpiry"])
-// );
+order.line_items[0].properties.forEach(obj => {
+  if(obj.name === "image_url"){
+    email_template = email_template.replace(
+      "image_url", obj.value
+    );
+  }
+})
+console.log("----------", giftCardDetails);
+let email_template = template;
+email_template = email_template.replace(
+  "__CardPIN__",
+  giftCardDetails["CardPin"]
+);
+email_template = email_template.replace(
+  "__Amount__",
+  giftCardDetails["Balance"]
+);
+email_template = email_template.replace(
+  "__Expiry__",
+  getReadableDate(giftCardDetails["ExpiryDate"])
+);
+email_template = email_template.replace(
+  "__receiver__", receiver
+);
+email_template = email_template.replace(
+  "__message__", message
+);
 // Framing the mail options
 const options = {
   to: email_id,

@@ -12,10 +12,11 @@ import {
 } from "react-icons/fa";
 import CustomDropdown from "../../components/CustomDropdown";
 import axios from "axios";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import { useParams } from "react-router";
 import fieldValidate from "../../utils/fieldValidate";
 import { createPortal } from "react-dom";
+import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 
 const ActiveDot = styled.div`
@@ -38,15 +39,7 @@ const EditGiftCard = () => {
 
   console.log(cardData);
   // fetched images
-  const [images, setImages] = useState([
-    "download (6).png",
-    "download.jpg",
-    "download (1).jpg",
-    "download (2).jpg",
-    "download (3).jpg",
-    "download (4).jpg",
-    "download (5).jpg",
-  ]);
+
   // selected or current image
   const [selectedImg, setSelectedImg] = useState(0);
 
@@ -65,7 +58,7 @@ const EditGiftCard = () => {
 
   // image slider next and prev btns
   const imageSlider = (val) => {
-    if (val === "next" && selectedImg < images.length - 1) {
+    if (val === "next" && selectedImg < cardData.images.length - 1) {
       setSelectedImg(selectedImg + 1);
       console.log("hit");
     } else if (val === "prev" && selectedImg > 0) {
@@ -80,6 +73,7 @@ const EditGiftCard = () => {
       behaviour: "smooth",
     });
   };
+
   // handle on change
   const handleChange = (event) => {
     const name = event.target.name;
@@ -118,62 +112,27 @@ const EditGiftCard = () => {
     });
     console.log(index);
   };
-  // file input
-  //   const handleFileInput = (event) => {
-  //     // const files = Array.from(event.target.files);
-  //     // setImages(files);
-  //     const file = event.target.files[0];
 
-  //     if (file) {
-  //       setSelectedImage((prev) => [...prev, file]);
-  //       const reader = new FileReader();
-
-  //       reader.onloadend = () => {
-  //         const img = new Image();
-  //         img.onload = () => {
-  //           if (img.width === 600 && img.height === 250) {
-  //             // Image dimensions are valid
-  //             // data without base64 prefix
-  //             console.log(reader.result.split(",")[0]);
-  //             const dataURLWithoutPrefix = reader.result.split(",")[1];
-  //             setPreviewImage((prev) => [
-  //               ...prev,
-  //               { attachment: dataURLWithoutPrefix },
-  //             ]);
-  //             // alert("Image dimensions are valid");
-  //           } else {
-  //             // Image dimensions are invalid
-  //             // Perform any error handling or display an error message
-  //             alert("Image dimensions are invalid");
-  //           }
-  //         };
-
-  //         img.src = reader.result;
-  //       };
-  //       reader.readAsDataURL(file);
-  //     } else {
-  //       setSelectedImage(null);
-  //       setPreviewImage(null);
-  //     }
-  //   };
-
-  //   fetch
+  //fetch
   const fetchData = async () => {
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/select";
+    const url = "/giftcard/products/select";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,
     };
 
-    const res = await axios.post(url, body, { headers });
-    const resData = res.data;
-
-    setCardData(resData.data);
-    setIsLoading(false);
+    try {
+      const res = await instance.post(url, body, { headers });
+      const resData = res.data;
+      setCardData(resData.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -182,18 +141,18 @@ const EditGiftCard = () => {
 
   //   update data
   const handleUpdate = async () => {
+    console.log(cardData.validity);
     setIsLoading(true);
-    const url = baseUrl1 + "/giftcard/products/update";
+    const url = "/giftcard/products/update";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
     const body = {
       product_id: id,
       title: cardData.title,
       description: cardData.body_html,
       variants: cardData.variants,
-      //   images:
+      validity: cardData.validity,
     };
 
     // field validation
@@ -201,7 +160,7 @@ const EditGiftCard = () => {
       setIsError("* Title can't be empty (min 4)");
       setIsLoading(false);
       return;
-    } else if (!fieldValidate(cardData?.validity, 0)) {
+    } else if (!fieldValidate(cardData?.validity.toString(), 0)) {
       setIsError("* Validity can't be empty");
       setIsLoading(false);
       return;
@@ -216,10 +175,14 @@ const EditGiftCard = () => {
       setIsError(null);
     }
 
-    const res = await axios.put(url, body, { headers });
-
-    const resData = res.data;
-    console.log(resData);
+    try {
+      const res = await instance.put(url, body, { headers });
+      const resData = res.data;
+      alert(resData.message);
+    } catch (error) {
+      console.log();
+    } finally {
+    }
 
     setIsLoading(false);
   };
@@ -343,10 +306,8 @@ const EditGiftCard = () => {
                   { title: "12 months", value: "365" },
                 ]}
                 setCardData={setCardData}
-                validity={cardData.validity}
+                validity={cardData.validity.toString()}
               />
-              {/* {isValidityCheck && (
-          )} */}
             </div>
           </div>
         </div>

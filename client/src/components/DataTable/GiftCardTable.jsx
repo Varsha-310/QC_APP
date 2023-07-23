@@ -5,6 +5,7 @@ import GiftcardImage from "../../assets/images/dummyGiftcardImage.png";
 import EditIcon from "../../assets/icons/svgs/Edit.svg";
 import DeleteIcon from "../../assets/icons/svgs/deletefill.svg";
 import DetailIcon from "../../assets/icons/svgs/Msg.svg";
+import { AiFillEye, AiFillDelete, AiFillEdit } from "react-icons/ai";
 
 const GiftCardTable = ({ data, deleteItem }) => {
   return (
@@ -13,7 +14,7 @@ const GiftCardTable = ({ data, deleteItem }) => {
         <tr>
           <th>Gift Card</th>
           <th>Image</th>
-          <th>Date</th>
+          <th>Created Date</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -27,16 +28,14 @@ const GiftCardTable = ({ data, deleteItem }) => {
             <td>{row.created_at?.slice(0, 10)}</td>
             <td className="gc-table__actions">
               <Link to={"/my-gift-card/" + row.id}>
-                <img className="gc-table-icons" src={DetailIcon} alt="" />
+                <AiFillEye className="gc-table-icons" />
               </Link>
               <Link to={"/edit-gift-card/" + row.id}>
-                <img className="gc-table-icons" src={EditIcon} alt="" />
+                <AiFillEdit className="gc-table-icons" />
               </Link>
               <Link>
-                <img
+                <AiFillDelete
                   className="gc-table-icons"
-                  src={DeleteIcon}
-                  alt=""
                   onClick={() => deleteItem(row.id)}
                 />
               </Link>

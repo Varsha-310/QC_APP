@@ -1,6 +1,6 @@
 .listing-table {
   width: 100%;
-  padding: 15px 0px;
+  padding: 0px 0px;
   border-spacing: 0;
 }
 .listing-table tr {
@@ -23,7 +23,8 @@
 
 /* for all table fields */
 .listing-table thead tr {
-  background: rgba(151, 151, 151, 0.2);
+  /* background: rgba(151, 151, 151, 0.6); */
+  background: rgba(182, 32, 40, 0.3);
   padding: 0px 5px;
   margin-bottom: 10px;
 }
@@ -43,12 +44,12 @@
 .listing-table tbody tr {
   margin: 10px 0px;
 }
-.listing-table tbody tr:nth-child(even) {
-  background: rgba(202, 201, 201, 0.2);
+.listing-table tbody tr {
+  background: rgba(202, 201, 201, 0.3);
 }
-.listing-table tbody tr:nth-child(odd) {
+/* .listing-table tbody tr:nth-child(odd) {
   background: rgba(182, 32, 40, 0.2);
-}
+} */
 .listing-table tbody tr td {
   text-align: center;
   padding: 10px 0px;
@@ -93,7 +94,7 @@
 }
 
 @media only screen and (max-width: 900px) {
-  .refund-list__containe-table{
+  .refund-list__containe-table {
     width: 100%;
     overflow-y: auto;
   }

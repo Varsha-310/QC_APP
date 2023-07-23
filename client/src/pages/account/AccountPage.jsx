@@ -2,10 +2,11 @@ import "./styles/AccountPage.css";
 import { CustomContainer, PrimaryBtn } from "../../components/BasicComponents";
 import { SectionHeading1 } from "../../components/BasicComponents";
 import PlanCard from "../../components/PlanCard";
-import { baseUrl1 } from "../../axios";
+import instance from "../../axios";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getUserToken } from "../../utils/userAuthenticate";
 
 const AccountPage = () => {
   const [planData, setPlanData] = useState(null);
@@ -13,14 +14,13 @@ const AccountPage = () => {
 
   // get plan and selected plans
   const fetchPlan = async () => {
-    const url = baseUrl1 + "/plan/list";
+    const url = "/plan/list";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
       setPlanData(res.data);
       console.log(res.data);
     } catch (error) {
@@ -28,14 +28,13 @@ const AccountPage = () => {
     }
   };
   const merchantStatus = async () => {
-    const url = baseUrl1 + "/kyc/status";
+    const url = "/kyc/status";
     const headers = {
-      Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
+      Authorization: getUserToken(),
     };
 
     try {
-      const res = await axios.post(url, {}, { headers });
+      const res = await instance.post(url, {}, { headers });
       setStatus(res.data);
       console.log(res.data);
     } catch (error) {
@@ -54,10 +53,6 @@ const AccountPage = () => {
         <div className="section-box-title">My Plan</div>
       </div>
 
-      <div className="section-box-container">
-        <div className="section-box-title">Current Plan</div>
-      </div>
-
       <CustomContainer margin="30px 0px" align="center">
         {planData?.data?.plans && (
           <PlanCard
@@ -67,19 +62,19 @@ const AccountPage = () => {
             )}
             active={false}
             // popular={}
-            btnText={"Upgrade"}
+            btnText={""}
           />
         )}
       </CustomContainer>
 
       <CustomContainer margin="50px 0px">
         <Link to={"/select-plan"} className="account-page__link">
-          <PrimaryBtn $primary>View All Plans</PrimaryBtn>
+          <PrimaryBtn $primary>Upgrade Plan</PrimaryBtn>
         </Link>
       </CustomContainer>
 
       <div className="section-box-container">
-        <div className="section-box-title">Setttings</div>
+        <div className="section-box-title-regular">Store Contact</div>
       </div>
 
       <div className="section-box-container">
