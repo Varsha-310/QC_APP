@@ -2,7 +2,7 @@ let email_template = `
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
     <tbody>
         <tr>
-            <td style="padding:20px 20px 40px" background="http://media.giftbig.com/media/gb_email_images/wrap.png">
+            <td style="padding:20px 20px 40px" background="image_url">
                 <table border="0" style="width:600px;font-size:12px;color:#000000;font-family:Gautami,Helvetica,sans-serif" cellspacing="0" cellpadding="0" align="center">
                     <tbody><tr>
                         <td style="height:5px" colspan="2">
@@ -18,7 +18,7 @@ let email_template = `
                         <p style="text-align:justify"> 
                             You have received a Qwikcilver e-Gift Card, please find the details below.
                             <p style="text-align:justify"> 
-                            <strong>__sender__'s Message</strong>: “__message__”
+                            <strong> Message</strong>: “__message__”
                         <p style="text-align:justify">	
                     
 
@@ -69,11 +69,11 @@ let email_template = `
                                                                 <table cellspacing="0" cellpadding="0" style="font-size:12px;text-align:right;color:#000000" border="0">
                                                                 <tbody><tr>
                                                                     <td style="padding-bottom:5px;border-right:1px solid #e6e6e6;padding-right:5px">
-                                                                        Card Number<br />
+                                                                    
                                                                         Card PIN
                                                                     </td>
                                                                     <td style="font-size:17px;font-weight:normal;width:190px;border-left:1px solid #e6e6e6;padding-right:5px">
-                                                                     __CardNumber__ <br />
+                                                                    
                                                                      __CardPIN__
                                                                     </td>
                                                                 </tr>

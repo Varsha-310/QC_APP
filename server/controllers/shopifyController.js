@@ -25,7 +25,7 @@ export const install = async (req, res) => {
       const state = Date.now();
       const redirectUri = `${APP_URL}/shopify/callback`;
       const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&state=${state}&redirect_uri=${redirectUri}`;
-      res.cookie("state", state);   // cookie: 'state=1686118763459',
+      res.cookie("state", state); // cookie: 'state=1686118763459',
       return res.redirect(installUrl);
     } else {
       res.json(respondNotAcceptable("Something went wrong try after sometime"));
@@ -45,7 +45,6 @@ export const install = async (req, res) => {
  * @returns
  */
 export const installCallback = async (req, res) => {
-  
   try {
     const { shop, hmac, code, state } = req.query;
     const apiSecret = process.env.SHOPIFY_API_SECRET ?? "";
@@ -75,18 +74,22 @@ export const installCallback = async (req, res) => {
 
       if (!hashEquals) {
       }
+      const storeStatus = await store.findOne({ store_url: shop });
+      if (storeStatus.is_installed == true) {
+        return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
+      } else {
+        let accessToken = await getAccessToken(shop, code, res);
 
-      let accessToken = await getAccessToken(shop, code, res);
-
-      if (accessToken) {
-        // console.log(accessToken, "accessToken");
-        let storeData = await getShopifyStoreData(shop, accessToken);
-        if (storeData) {
-          let response = await saveStoreData(storeData, shop, accessToken);
-          // console.log(response ,"response of store data");
-          await checkWebhooks(shop, accessToken);
-          let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
+        if (accessToken) {
+          // console.log(accessToken, "accessToken");
+          let storeData = await getShopifyStoreData(shop, accessToken);
+          if (storeData) {
+            let response = await saveStoreData(storeData, shop, accessToken);
+            // console.log(response ,"response of store data");
+            await checkWebhooks(shop, accessToken);
+            let token = await createJwt(shop);
+            return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
+          }
         }
       }
     } else {
@@ -118,6 +121,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       access_token: accessToken,
       status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
+      is_installed: true,
     };
     console.log(data);
     let storeDetails = await store.updateOne(
@@ -126,7 +130,10 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       { upsert: true }
     );
 
-    console.log(storeDetails,"---------------------saved to db------------------");
+    console.log(
+      storeDetails,
+      "---------------------saved to db------------------"
+    );
     return true;
   } catch (error) {
     console.log(error);
@@ -222,4 +229,3 @@ export const appUninstalled = async (req, res) => {
  * @param {*} res
  * @returns
  */
-

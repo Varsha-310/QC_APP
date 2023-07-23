@@ -196,7 +196,7 @@ console.log("---------kyc---------------" , req.body);
 
 export const kycDetails = async(req,res) => {
 
-  console.log("----------------kyc webhook----------------",req.body.data.documents);
+  console.log("----------------kyc webhook----------------",req.body);
   logger.info(req.body , "kyc webhook for merchant details");
   const selectedFields = ['merchant_data'];
 

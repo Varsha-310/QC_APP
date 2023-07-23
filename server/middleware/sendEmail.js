@@ -1,36 +1,46 @@
 import NodeMailer from "nodemailer";
-import email_template from "../views/email_template.js";
+import template from "../views/email_template.js";
 
 export const sendEmailViaSendGrid = async (
-  giftCardDetails,
-  order,
   shopName,
+  order,
+  giftCardDetails,
+  receiver,
   email_id,
-  message,
-  receiver
+  message
 ) => {;
 console.log("in the mail sender");
+// const email_id = "varshaa@marmeto.com"
 
-var mail_id = "helpdesk@qwikcilver.com";
+var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
-
-console.log(email_id);
-// email_template = email_template.replace(
-//   "__CardNumber__",
-//   giftCardDetails["CardNumber"]
-// );
-// email_template = email_template.replace(
-//   "__CardPIN__",
-//   giftCardDetails["CardPIN"]
-// );
-// email_template = email_template.replace(
-//   "__Amount__",
-//   giftCardDetails["Amount"]
-// );
-// email_template = email_template.replace(
-//   "__Expiry__",
-//   getReadableDate(giftCardDetails["CardExpiry"])
-// );
+order.line_items[0].properties.forEach(obj => {
+  if(obj.name === "image_url"){
+    email_template = email_template.replace(
+      "image_url", obj.value
+    );
+  }
+})
+console.log("----------", giftCardDetails);
+let email_template = template;
+email_template = email_template.replace(
+  "__CardPIN__",
+  giftCardDetails["CardPin"]
+);
+email_template = email_template.replace(
+  "__Amount__",
+  giftCardDetails["Balance"]
+);
+email_template = email_template.replace(
+  "__Expiry__",
+  giftCardDetails["ExpiryDate"]
+);
+email_template = email_template.replace(
+  "__receiver__", receiver
+);
+email_template = email_template.replace(
+  "__message__", message
+);
 // Framing the mail options
 const options = {
   to: email_id,

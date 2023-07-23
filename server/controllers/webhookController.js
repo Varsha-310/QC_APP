@@ -1,4 +1,7 @@
-import { respondSuccess, respondInternalServerError } from "../helper/response.js";
+import {
+  respondSuccess,
+  respondInternalServerError,
+} from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
@@ -18,7 +21,6 @@ import orders from "../models/orders.js";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
-
   console.log("order created", req.headers);
   //const shop = req.headers.x-shopify-shop-domain;
   const shop = "qc-plus-store.myshopify.com";
@@ -35,7 +37,7 @@ export const orderCreated = (req, res) => {
 
 export const orderUpdated = (req, res) => {
   // console.log(req.body);
-  handleOrderCreatewebhook(req, res)
+  handleOrderCreatewebhook(req, res);
   res.send(respondSuccess("webhook received"));
 };
 
@@ -54,9 +56,7 @@ export const orderDeleted = (req, res) => {
  * @param {*} res
  */
 const ordercreateEvent = async (input, done, res) => {
-
   try {
-    
     console.log("------------order create event-----------------");
     const { shop, order } = input;
     let isGiftcardOrder = false;
@@ -69,9 +69,8 @@ const ordercreateEvent = async (input, done, res) => {
       if (newOrder.payment_gateway_names.includes("gift_card")) {
         console.log("giftcard redeemed");
         const checkAmount = await giftCardAmount(shopName, newOrder.id);
-        console.log("--------redeemed amount--------------", checkAmount)
+        console.log("--------redeemed amount--------------", checkAmount);
         if (checkAmount != false) {
-          
           const redeemed = await redeemWallet(
             shopName,
             checkAmount.id,
@@ -99,7 +98,14 @@ const ordercreateEvent = async (input, done, res) => {
             console.log("is giftcard product");
             isGiftcardOrder = true;
             let cpg_name = "12345";
-            const storeOrder = await orders.updateOne({store_url :"qwikcilver-public-app-teststore.myshopify.com",id : newOrder.id  },order , {upsert:true});
+            const storeOrder = await orders.updateOne(
+              {
+                store_url: "qwikcilver-public-app-teststore.myshopify.com",
+                id: newOrder.id,
+              },
+              order,
+              { upsert: true }
+            );
             console.log("-------order created-----------", storeOrder);
             qwikcilver_gift_cards.push(line_item);
             //If yes, push the line item to an array
@@ -111,14 +117,15 @@ const ordercreateEvent = async (input, done, res) => {
             ) {
               for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
                 console.log(
-                  "____________QC giftcard created___________________"
+                  "____________QC giftcard created___________________", qwikcilver_gift_card.properties
                 );
                 let email = null;
                 let message = "";
                 let receiver = "";
-                let url = "";
+                let image_url = "";
                 if (qwikcilver_gift_card.properties) {
-                  let sent_as_gift ;
+                
+                  let sent_as_gift;
                   for (
                     let i = 0;
                     i < qwikcilver_gift_card.properties.length;
@@ -126,13 +133,13 @@ const ordercreateEvent = async (input, done, res) => {
                   ) {
                     if (
                       qwikcilver_gift_card.properties[i].name ===
-                      "_Qc_recipient_email"
+                      "_Gift to Email"
                     ) {
                       sent_as_gift = true;
                       let updateOrder = await orders.updateOne(
                         { id: newOrder.id },
                         { is_giftcard_order: true },
-                        {upsert:true}
+                        { upsert: true }
                       );
                       console.log(
                         "--------send as a gift--------------",
@@ -141,7 +148,7 @@ const ordercreateEvent = async (input, done, res) => {
                     }
                   }
                   if (sent_as_gift == true) {
-                    console.log("-------sent as gift---------------")
+                    console.log("-------sent as gift---------------");
                     for (
                       let i = 0;
                       i < qwikcilver_gift_card.properties.length;
@@ -151,24 +158,24 @@ const ordercreateEvent = async (input, done, res) => {
                         qwikcilver_gift_card.properties[i].name ===
                         "_Qc_img_url"
                       ) {
-                        url = qwikcilver_gift_card.properties[i].value;
+                        image_url = qwikcilver_gift_card.properties[i].value;
                       }
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_email"
+                        "_Gift to Email"
                       ) {
                         email = qwikcilver_gift_card.properties[i].value;
                       }
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_message"
+                        "_QC Message"
                       ) {
                         message = qwikcilver_gift_card.properties[i].value;
                       }
 
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_name"
+                        "_recipient_name"
                       ) {
                         receiver = qwikcilver_gift_card.properties[i].value;
                       }
@@ -182,17 +189,19 @@ const ordercreateEvent = async (input, done, res) => {
                       console.log(giftCardDetails);
                       console.log(email);
                       await sendEmailViaSendGrid(
-                        giftCardDetails.createGiftCardResponse,
-                        newOrder,
                         shopName,
+                        newOrder,
+                        giftCardDetails,                      
+                        receiver,
                         email,
                         message,
-                        receiver
+                        image_url
                       );
                     }
-                  } 
+                  }
+                }
                   else {
-                    console.log("purchased for self")
+                    console.log("purchased for self");
                     let giftCardDetails = await createGiftcard(
                       shopName,
                       parseInt(qwikcilver_gift_card.price),
@@ -210,7 +219,7 @@ const ordercreateEvent = async (input, done, res) => {
                       giftCardDetails.Balance
                     );
                   }
-                }
+                
               }
             }
           }
@@ -222,9 +231,6 @@ const ordercreateEvent = async (input, done, res) => {
   }
 };
 
-  
- 
-  
 /**
  * Queue to handle webhooks
  */
@@ -262,25 +268,24 @@ export const productCreateEvent = async (req, res) => {
   } catch (err) {}
 };
 
-
-/** 
+/**
  * to handle order while creating and updating
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
 export const handleOrderCreatewebhook = async (req, res) => {
   try {
-
     const orderData = req.body;
     console.log(orderData.id);
 
     const store = req.headers["x-shopify-shop-domain"];
     orderData.store_url = store;
 
-    await orders.updateOne({ store_url: store, id: orderData.id }, orderData, { upsert: true });
+    await orders.updateOne({ store_url: store, id: orderData.id }, orderData, {
+      upsert: true,
+    });
     console.log("Webhook Complieted");
-
   } catch (err) {
     logger.info(err);
     console.log(err);
