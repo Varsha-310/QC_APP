@@ -97,7 +97,7 @@ const ordercreateEvent = async (input, done, res) => {
           if (gift_card_product) {
             console.log("is giftcard product");
             isGiftcardOrder = true;
-            let cpg_name = "12345";
+          
             const storeOrder = await orders.updateOne(
               {
                 store_url: "qwikcilver-public-app-teststore.myshopify.com",
@@ -184,7 +184,7 @@ const ordercreateEvent = async (input, done, res) => {
                         shopName,
                         parseInt(qwikcilver_gift_card.price),
                         newOrder.id,
-                        gift_card_product.expiry_date
+                        gift_card_product.validity
                       );
                       console.log(giftCardDetails);
                       console.log(email);
@@ -206,7 +206,7 @@ const ordercreateEvent = async (input, done, res) => {
                       shopName,
                       parseInt(qwikcilver_gift_card.price),
                       newOrder.id,
-                      gift_card_product.expiry_date
+                      gift_card_product.validity
                     );
                     console.log(
                       giftCardDetails,

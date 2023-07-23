@@ -27,6 +27,4 @@ webhookRoute.post("/productupdated", verifyShopifyHook, productUpdateEvent);
 // api for product delete webhook
 webhookRoute.post("/productdeleted", verifyShopifyHook, productDeleteEvent);
 
-webhookRoute.post("/token", qwikcilverToken);
-
  export default webhookRoute;

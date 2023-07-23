@@ -75,6 +75,8 @@ export const installCallback = async (req, res) => {
       if (!hashEquals) {
       }
       const storeStatus = await store.findOne({ store_url: shop });
+      let token = await createJwt(shop);
+
       if (storeStatus.is_installed == true) {
         return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
       } else {
@@ -87,7 +89,6 @@ export const installCallback = async (req, res) => {
             let response = await saveStoreData(storeData, shop, accessToken);
             // console.log(response ,"response of store data");
             await checkWebhooks(shop, accessToken);
-            let token = await createJwt(shop);
             return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
           }
         }

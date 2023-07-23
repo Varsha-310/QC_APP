@@ -1,6 +1,24 @@
 import NodeMailer from "nodemailer";
 import template from "../views/email_template.js";
 
+//Function to convert the Javascript Date Object to a readable format
+function getReadableDate(dateObj) {
+  var d = new Date(dateObj),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+  hours = "" + d.getHours();
+  minutes = "" + d.getMinutes();
+  seconds = "" + d.getSeconds();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  if (hours.length < 2) hours = "0" + hours;
+  if (minutes.length < 2) minutes = "0" + minutes;
+  if (seconds.length < 2) seconds = "0" + seconds;
+  return `${day}-${month}-${year}  ${hours}:${minutes}`;
+}
+
 export const sendEmailViaSendGrid = async (
   shopName,
   order,
@@ -10,7 +28,6 @@ export const sendEmailViaSendGrid = async (
   message
 ) => {;
 console.log("in the mail sender");
-// const email_id = "varshaa@marmeto.com"
 
 var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
@@ -33,7 +50,7 @@ email_template = email_template.replace(
 );
 email_template = email_template.replace(
   "__Expiry__",
-  giftCardDetails["ExpiryDate"]
+  getReadableDate(giftCardDetails["ExpiryDate"])
 );
 email_template = email_template.replace(
   "__receiver__", receiver

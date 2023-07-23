@@ -5,15 +5,25 @@ import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
 
-export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
+export const createGiftcard = async (store, amount, order_id , validity) => {
   try {
     console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------",setting , store);
+    let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
       await setting.save();
+      const getCurrentDate = () => new Date().toISOString().slice(0, 10);
+      const addDaysToDate = (dateString, days) => new Date(dateString).setDate(new Date(dateString).getDate() + days).toISOString().slice(0, 10);
+
+      const currentDateFormatted = getCurrentDate();
+      console.log('Current Date:', currentDateFormatted);
+
+const expirydate = addDaysToDate(currentDateFormatted, validity);
+console.log('New Date after validity:', expirydate);
+
   
     let data = {
       TransactionTypeId: "305",
@@ -22,6 +32,8 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
       BusinessReferenceNumber: "",
       InvoiceNumber: "ORD-" + order_id,
       NumberOfCards: "1",
+      IdempotencyKey: idempotency_key,
+      Expiry : expirydate,
       Cards: [
         {
           CardProgramGroupName: setting.cpgn,
@@ -88,14 +100,8 @@ export const qwikcilverToken = () => {
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let token = axios(config);
+
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
@@ -164,6 +170,7 @@ export const createWallet = async (store ,customer_id) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey()
     await setting.save();
     let data = {
       TransactionTypeId: 3500,
@@ -172,6 +179,7 @@ export const createWallet = async (store ,customer_id) => {
       Quantity: 1,
       ExecutionMode:"0",
       WalletProgramGroupName : setting.wpgn,
+      IdempotencyKey: idempotency_key,
       Wallets: [
         {
           ExternalWalletID: customer_id,
@@ -224,10 +232,12 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey();
     await setting.save();
     
       let data = {
         TransactionTypeId: "3508",
+        IdempotencyKey: idempotency_key,
         Cards: [
           {
             CardNumber: wallet_id,
@@ -279,10 +289,12 @@ export const activateCard = async (store ,gc_pin) => {
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
       await setting.save();
+      const idempotency_key = generateIdempotencyKey();
     console.log(gc_pin);
     let data = {
       TransactionTypeId: 322,
       InputType: "1",
+      IdempotencyKey: idempotency_key,
       Cards: [{ CardPin: gc_pin }],
       Notes: "Activate Only",
     };
@@ -327,6 +339,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
+      const idempotency_key = generateIdempotencyKey();
       await setting.save();
     let data = {
       TransactionTypeId: 3504,
@@ -334,6 +347,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       PreAuthType:1,
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
+      IdempotencyKey: idempotency_key,
       Quantity: 1,
          Cards:[{  
         CardNumber:wallet_id,
@@ -370,3 +384,15 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     return false;
   }
 };
+
+
+function generateIdempotencyKey() {
+  //To create a unique 15 character ID
+  var str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let idempotency_key = "";
+  var len = str.length;
+  for (let i = 0; i < 15; i++) {
+    idempotency_key += str[Math.floor(Math.random() * len)];
+  }
+  return idempotency_key;
+}
