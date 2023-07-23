@@ -44,6 +44,7 @@
   padding: 10px 0px;
   color: var(--text-dark-color);
   background: #ffffff;
+  text-align: center;
 }
 .gc-table__image img {
   width: 120px;

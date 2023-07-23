@@ -4,7 +4,7 @@ import "./styles/CustomDropdown.css";
 
 const CustomDropdown = ({ options, setCardData, validity }) => {
   const [isActive, setIsActive] = useState(false);
-  const [selected, setIsSelected] = useState("Select");
+  // const [selected, setIsSelected] = useState("Select");
 
   return (
     <div className="dropdown">

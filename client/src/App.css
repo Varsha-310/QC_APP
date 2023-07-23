@@ -94,6 +94,16 @@ body {
 li {
   list-style: none;
 }
+
+.no-element {
+  background-color: var(--background-light-color);
+  padding: 10px 30px;
+  margin: 15px 0px;
+  font-weight: 500;
+  color: var(--text-dark-color);
+  text-align: center;
+  
+}
 /* table action icons */
 .gc-table-icons {
   width: 20px;

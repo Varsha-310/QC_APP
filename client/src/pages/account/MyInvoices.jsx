@@ -19,13 +19,13 @@ const MyInvoices = () => {
   ];
   // fetching giftcard orders
   const fetchData = async () => {
-    const url = `/planHistory/checkPlanHistory?page=${currentPage}&limit=${PAGE_LIMIT}`;
+    const url = `/billing/list?page=${currentPage}&limit=${PAGE_LIMIT}`;
     const headers = {
       Authorization: getUserToken(),
     };
 
     try {
-      const res = await instance.get(url, {}, { headers });
+      const res = await instance.get(url, { headers });
       setData(res.data);
       console.log(res.data);
     } catch (error) {
@@ -39,7 +39,11 @@ const MyInvoices = () => {
 
   return (
     <div style={{ width: "100%" }}>
-      {data && <ListingTable headings={Heading} data={data.data.list} />}
+      {data?.total > 0 ? (
+        <ListingTable headings={Heading} data={data.data.list} />
+      ) : (
+        <div className="no-element">There is no orders currently.</div>
+      )}
     </div>
   );
 };

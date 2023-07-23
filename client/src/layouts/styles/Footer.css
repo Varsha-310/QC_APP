@@ -12,6 +12,9 @@
   color: var(--text-color);
   padding: 0px 5px;
 }
+.app-footer__items:not(:last-child):hover {
+  text-decoration: underline;
+}
 .app-footer__items + .app-footer__items {
   border-left: 2px solid white;
 }

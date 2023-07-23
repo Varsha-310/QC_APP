@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import GiftCardTable from "../../components/DataTable/GiftCardTable";
 import Pagination from "../../components/Pagination";
-import axios from "axios";
 import instance from "../../axios";
 import BarLoading from "../../components/Loaders/BarLoading";
 import { getUserToken } from "../../utils/userAuthenticate";
+// import useAuthenticate from "../../hooks/useAuthenticate";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useScrollTop from "../../hooks/useScrollTop";
 
 const GiftCardsList = () => {
+  // const { getUserToken } = useAuthenticate();
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,20 +21,15 @@ const GiftCardsList = () => {
     const url = `/giftcard/products/list?limit=10&page=${currentPage}`;
     const headers = {
       Authorization: getUserToken(),
-      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxd2lrY2lsdmVyLXB1YmxpYy1hcHAtdGVzdHN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODk1Nzk0MzF9.Vn2dWrXhnvViNC5uD_RWFdbqj84rh9CNnfHI23kd8qE",
     };
 
     try {
       const res = await instance.post(url, {}, { headers });
-
       const resData = await res.data;
       setData(resData);
     } catch (error) {
       console.log(error);
     }
-    // console.log(res);
-
-    // console.log(resData.data);
 
     setIsLoading(false);
   };
@@ -53,10 +51,9 @@ const GiftCardsList = () => {
     updateData();
   };
 
+  useScrollTop();
   useEffect(() => {
     updateData();
-
-    window.scrollTo(0, 0);
   }, [currentPage]);
 
   return (
@@ -68,7 +65,7 @@ const GiftCardsList = () => {
           <div className="section-box-container">
             <div className="section-box-title">My Gift Cards</div>
           </div>
-          <GiftCardTable data={data.data} deleteItem={deleteItem} />
+          <GiftCardTable data={data?.data} deleteItem={deleteItem} />
           <Pagination
             total={data.count}
             perPage={10}

@@ -20,7 +20,6 @@ const ResendGiftCard = () => {
     const url = `/giftcard/orders?page=${currentPage}&pageSize=10`;
     const headers = {
       Authorization: getUserToken(),
-      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJtbXR0ZXN0c3RvcmU4Lm15c2hvcGlmeS5jb20iLCJpYXQiOjE2ODc0MjAxMzR9.wR7CCHPBMIbIv9o34E37j2yZSWF1GkKv4qXbROV6vf0",
     };
 
     try {
