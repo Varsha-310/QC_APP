@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   respondInternalServerError,
   respondWithData,
+respondSuccess
 } from "../helper/response.js";
 import CryptoJS from "crypto-js";
 import { logger } from "../helper/utility.js";
@@ -198,6 +199,7 @@ export const kycDetails = async(req,res) => {
   console.log("----------------kyc webhook----------------",req.body);
   logger.info(req.body , "kyc webhook for merchant details");
 
+    res.json(respondSuccess("webhook received"));
 
   const kycData = await kycs.find();
   console.log(kycData);

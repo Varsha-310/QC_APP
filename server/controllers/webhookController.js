@@ -117,13 +117,12 @@ const ordercreateEvent = async (input, done, res) => {
             ) {
               for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
                 console.log(
-                  "____________QC giftcard created___________________", qwikcilver_gift_card.properties
-                );
+                  "____________QC giftcard created___________________", qwikcilver_gift_card );
                 let email = null;
                 let message = "";
                 let receiver = "";
                 let image_url = "";
-                if (qwikcilver_gift_card.properties.length < 0) {
+                if (qwikcilver_gift_card.properties.length > 0) {
                 
                   let sent_as_gift;
                   for (
