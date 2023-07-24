@@ -123,85 +123,85 @@ const ordercreateEvent = async (input, done, res) => {
                 let message = "";
                 let receiver = "";
                 let image_url = "";
-                // if (qwikcilver_gift_card.properties) {
+                if (qwikcilver_gift_card.properties) {
                 
-                //   let sent_as_gift;
-                //   for (
-                //     let i = 0;
-                //     i < qwikcilver_gift_card.properties.length;
-                //     i++
-                //   ) {
-                //     if (
-                //       qwikcilver_gift_card.properties[i].name ===
-                //       "_Gift to Email"
-                //     ) {
-                //       sent_as_gift = true;
-                //       let updateOrder = await orders.updateOne(
-                //         { id: newOrder.id },
-                //         { is_giftcard_order: true },
-                //         { upsert: true }
-                //       );
-                //       console.log(
-                //         "--------send as a gift--------------",
-                //         updateOrder
-                //       );
-                //     }
-                //   }
-                //   if (sent_as_gift == true) {
-                //     console.log("-------sent as gift---------------");
-                //     for (
-                //       let i = 0;
-                //       i < qwikcilver_gift_card.properties.length;
-                //       i++
-                //     ) {
-                //       if (
-                //         qwikcilver_gift_card.properties[i].name ===
-                //         "_Qc_img_url"
-                //       ) {
-                //         image_url = qwikcilver_gift_card.properties[i].value;
-                //       }
-                //       if (
-                //         qwikcilver_gift_card.properties[i].name ===
-                //         "_Gift to Email"
-                //       ) {
-                //         email = qwikcilver_gift_card.properties[i].value;
-                //       }
-                //       if (
-                //         qwikcilver_gift_card.properties[i].name ===
-                //         "_QC Message"
-                //       ) {
-                //         message = qwikcilver_gift_card.properties[i].value;
-                //       }
+                  let sent_as_gift;
+                  for (
+                    let i = 0;
+                    i < qwikcilver_gift_card.properties.length;
+                    i++
+                  ) {
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Gift to Email"
+                    ) {
+                      sent_as_gift = true;
+                      let updateOrder = await orders.updateOne(
+                        { id: newOrder.id },
+                        { is_giftcard_order: true },
+                        { upsert: true }
+                      );
+                      console.log(
+                        "--------send as a gift--------------",
+                        updateOrder
+                      );
+                    }
+                  }
+                  if (sent_as_gift == true) {
+                    console.log("-------sent as gift---------------");
+                    for (
+                      let i = 0;
+                      i < qwikcilver_gift_card.properties.length;
+                      i++
+                    ) {
+                      if (
+                        qwikcilver_gift_card.properties[i].name ===
+                        "_Qc_img_url"
+                      ) {
+                        image_url = qwikcilver_gift_card.properties[i].value;
+                      }
+                      if (
+                        qwikcilver_gift_card.properties[i].name ===
+                        "_Gift to Email"
+                      ) {
+                        email = qwikcilver_gift_card.properties[i].value;
+                      }
+                      if (
+                        qwikcilver_gift_card.properties[i].name ===
+                        "_QC Message"
+                      ) {
+                        message = qwikcilver_gift_card.properties[i].value;
+                      }
 
-                //       if (
-                //         qwikcilver_gift_card.properties[i].name ===
-                //         "_recipient_name"
-                //       ) {
-                //         receiver = qwikcilver_gift_card.properties[i].value;
-                //       }
-                //     }
+                      if (
+                        qwikcilver_gift_card.properties[i].name ===
+                        "_recipient_name"
+                      ) {
+                        receiver = qwikcilver_gift_card.properties[i].value;
+                      }
+                    }
 
-                //       let giftCardDetails = await createGiftcard(
-                //         shopName,
-                //         parseInt(qwikcilver_gift_card.price),
-                //         newOrder.id,
-                //         gift_card_product.validity
-                //       );
-                //       console.log(giftCardDetails);
-                //       console.log(email);
-                //       await sendEmailViaSendGrid(
-                //         shopName,
-                //         newOrder,
-                //         giftCardDetails,                      
-                //         receiver,
-                //         email,
-                //         message,
-                //         image_url
-                //       );
+                      let giftCardDetails = await createGiftcard(
+                        shopName,
+                        parseInt(qwikcilver_gift_card.price),
+                        newOrder.id,
+                        gift_card_product.validity
+                      );
+                      console.log(giftCardDetails);
+                      console.log(email);
+                      await sendEmailViaSendGrid(
+                        shopName,
+                        newOrder,
+                        giftCardDetails,                      
+                        receiver,
+                        email,
+                        message,
+                        image_url
+                      );
                     
-                //   }
-                // }
-                  // else {
+                  }
+                }
+                  else {
                     console.log("purchased for self");
                     let giftCardDetails = await createGiftcard(
                       shopName,
@@ -219,7 +219,7 @@ const ordercreateEvent = async (input, done, res) => {
                       giftCardDetails.CardPin,
                       giftCardDetails.Balance
                     );
-                  // }
+                  }
                 
               }
             }
