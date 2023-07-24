@@ -52,7 +52,7 @@ const expirydate = ((myDate).toISOString().slice(0, 10));
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "07/10/2023",
+        DateAtClient: "07/24/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -92,7 +92,7 @@ export const qwikcilverToken = () => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/authorize`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/19/2023",
+        DateAtClient: "07/24/2023",
       },
       data: data,
     };
@@ -133,8 +133,8 @@ export const fetchBalance = async (store ,walletData) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/22/2023",
-        TransactionId: transactionId,
+        DateAtClient: "07/24/2023",
+        TransactionId: 410,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
@@ -191,7 +191,7 @@ export const createWallet = async (store ,customer_id) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/20/2023",
+        DateAtClient: "07/24/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -254,7 +254,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
         url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
         headers: {
           "Content-Type": "application/json;charset=UTF-8 ",
-          DateAtClient: "06/20/2021",
+          DateAtClient: "07/23/2023",
           TransactionId: transactionId,
           Authorization: `Bearer ${process.env.Authorization}`,
         },
@@ -301,7 +301,7 @@ export const activateCard = async (store ,gc_pin) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "07/04/2023",
+        DateAtClient: "04/23/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -360,7 +360,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/20/2023",
-        TransactionId: transactionId,
+        TransactionId: 899,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
