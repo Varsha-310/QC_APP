@@ -200,7 +200,8 @@ export const kycDetails = async(req,res) => {
 
 
   const kycData = await kycs.find();
-  console.log(kycData)
+  console.log(kycData);
+  
    
 
 

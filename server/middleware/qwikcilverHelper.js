@@ -15,14 +15,11 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
       await setting.save();
-      const getCurrentDate = () => new Date().toISOString().slice(0, 10);
-      const addDaysToDate = (dateString, days) => new Date(dateString).setDate(new Date(dateString).getDate() + days).toISOString().slice(0, 10);
 
-      const currentDateFormatted = getCurrentDate();
-      console.log('Current Date:', currentDateFormatted);
-
-const expirydate = addDaysToDate(currentDateFormatted, validity);
-console.log('New Date after validity:', expirydate);
+let myDate = new Date();
+console.log("mydate", myDate, validity)
+myDate.setDate(myDate.getDate() + parseInt(validity));
+const expirydate = ((myDate).toISOString().slice(0, 10));
 
   
     let data = {

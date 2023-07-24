@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { respondInternalServerError, respondWithData,respondNotFound, respondError, respondSuccess, respondValidationError } from "../helper/response";
 import { logger } from "../helper/utility";
-=======
-import { respondInternalServerError, respondWithData,respondNotFound, respondError, respondSuccess } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
->>>>>>> 026088699bc4fd24bc8bb661be9d52428a5aa4da
 import axios from "axios";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";

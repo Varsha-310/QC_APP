@@ -179,6 +179,7 @@ const ordercreateEvent = async (input, done, res) => {
                       ) {
                         receiver = qwikcilver_gift_card.properties[i].value;
                       }
+                    }
 
                       let giftCardDetails = await createGiftcard(
                         shopName,
@@ -197,7 +198,7 @@ const ordercreateEvent = async (input, done, res) => {
                         message,
                         image_url
                       );
-                    }
+                    
                   }
                 }
                   else {
