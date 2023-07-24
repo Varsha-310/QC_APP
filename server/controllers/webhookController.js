@@ -123,7 +123,7 @@ const ordercreateEvent = async (input, done, res) => {
                 let message = "";
                 let receiver = "";
                 let image_url = "";
-                if (qwikcilver_gift_card.properties) {
+                if (qwikcilver_gift_card.properties.length < 0) {
                 
                   let sent_as_gift;
                   for (
