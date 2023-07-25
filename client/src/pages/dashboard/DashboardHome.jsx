@@ -8,14 +8,14 @@ import {
 
 import instance from "../../axios";
 import { createPortal } from "react-dom";
-// import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
-import useAuntenticate from "../../hooks/useAuthenticate";
+import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
+// import useAuntenticate from "../../hooks/useAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
 
 const DashboardHome = () => {
-  const { getUserToken, setUserToken } = useAuntenticate();
+  // const { getUserToken, setUserToken } = useAuntenticate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [kycData, setKycData] = useState(null);
