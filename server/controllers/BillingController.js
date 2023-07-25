@@ -4,7 +4,7 @@ import BillingHistory from "../models/BillingHistory.js";
 
 const handleMandateNotification = () => {
 
-
+    
 }
 
 const verifyTransaction = () => {
@@ -28,7 +28,6 @@ const captureReccuringpayment = () => {
 
 
 }
-
 /**
  * Handle Payment Callback Webhook
  * 

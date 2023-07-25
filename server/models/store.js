@@ -16,6 +16,7 @@ let storeSchema = mongoose.Schema({
   phone: { type: Number },
   plan: { type:Object, default: null},
   InvoiceUserId: String, // Marchent user id that us used for generate invoice by qc.
+  is_installed : { type: Boolean, default: false },
   is_kyc_done: { type: Boolean, default: false },
   is_plan_done: { type: Boolean, default: false },
   is_payment_done: { type: Boolean, default: false },

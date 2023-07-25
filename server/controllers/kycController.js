@@ -2,14 +2,14 @@ import axios from "axios";
 import {
   respondInternalServerError,
   respondWithData,
+respondSuccess
 } from "../helper/response.js";
 import CryptoJS from "crypto-js";
 import { logger } from "../helper/utility.js";
 import kycs from "../models/kyc.js";
 import store from "../models/store.js";
-import { parse } from "json2csv";
-import fs from "fs"
-import orders from "../models/orders.js";
+import NodeMailer from "nodemailer";
+
 
 /**
  * Method to initiate kyc
@@ -195,18 +195,52 @@ console.log("---------kyc---------------" , req.body);
 
 
 export const kycDetails = async(req,res) => {
+  logger.info("----------------kyc webhook----------------",req.body);
 
-  console.log("----------------kyc webhook----------------",req.body.data.documents);
+  console.log("----------------kyc webhook----------------",req.body);
   logger.info(req.body , "kyc webhook for merchant details");
-  const selectedFields = ['merchant_data'];
 
-  const documentsCursor = await kycs.find();
-  console.log(documentsCursor)
-    // Convert documents to CSV
-    const csvData = parse(documentsCursor , { fields: selectedFields });
-    console.log(csvData)
+    res.json(respondSuccess("webhook received"));
 
-    // Write CSV data to a file
-    fs.writeFileSync('mongodb_data.csv', csvData, 'utf8');  
+  const kycData = await kycs.find();
+  console.log(kycData);
 
+   
+
+
+
+
+  var options = {
+    from: 'GC@qwikcilver.com', 
+    to: 'varshaa@marmeto.com', 
+    subject: 'Hello', 
+    text: 'Hello world', 
+    html: '<b>Hello world</b>', 
+    attachments: [{   
+       filename: 'test.csv',
+       content: csv  // attaching csv in the content
+     }],
+    };
+
+    var smtpTransporter = NodeMailer.createTransport({
+      port: 587,
+      host: "smtp.sendgrid.net",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    
+    // console.log(options);
+    smtpTransporter.sendMail(options, async function (error, info) {
+      if (!error) {
+        console.log("mail sent successfully !");
+        // Resolve if the mail is sent successfully
+        
+      } else {
+        console.log(error);
+      
+      }
+    })
+ 
 }

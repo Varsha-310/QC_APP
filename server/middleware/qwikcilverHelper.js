@@ -5,15 +5,22 @@ import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
 
-export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
+export const createGiftcard = async (store, amount, order_id , validity) => {
   try {
     console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------",setting , store);
+    let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
       await setting.save();
+
+let myDate = new Date();
+console.log("mydate", myDate, validity)
+myDate.setDate(myDate.getDate() + parseInt(validity));
+const expirydate = ((myDate).toISOString().slice(0, 10));
+
   
     let data = {
       TransactionTypeId: "305",
@@ -22,6 +29,8 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
       BusinessReferenceNumber: "",
       InvoiceNumber: "ORD-" + order_id,
       NumberOfCards: "1",
+      IdempotencyKey: idempotency_key,
+      Expiry : expirydate,
       Cards: [
         {
           CardProgramGroupName: setting.cpgn,
@@ -43,7 +52,7 @@ export const createGiftcard = async (store, amount, order_id , ExpiryDate) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "07/10/2023",
+        DateAtClient: "07/24/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -83,19 +92,13 @@ export const qwikcilverToken = () => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/authorize`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/19/2023",
+        DateAtClient: "07/24/2023",
       },
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let token = axios(config);
+
   } catch (err) {
     res.json(
       respondInternalServerError("Something went wrong try after sometime")
@@ -130,7 +133,7 @@ export const fetchBalance = async (store ,walletData) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/22/2023",
+        DateAtClient: "07/24/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -164,6 +167,7 @@ export const createWallet = async (store ,customer_id) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey()
     await setting.save();
     let data = {
       TransactionTypeId: 3500,
@@ -172,6 +176,7 @@ export const createWallet = async (store ,customer_id) => {
       Quantity: 1,
       ExecutionMode:"0",
       WalletProgramGroupName : setting.wpgn,
+      IdempotencyKey: idempotency_key,
       Wallets: [
         {
           ExternalWalletID: customer_id,
@@ -186,7 +191,7 @@ export const createWallet = async (store ,customer_id) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "06/20/2023",
+        DateAtClient: "07/24/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -224,10 +229,12 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey();
     await setting.save();
     
       let data = {
         TransactionTypeId: "3508",
+        IdempotencyKey: idempotency_key,
         Cards: [
           {
             CardNumber: wallet_id,
@@ -247,7 +254,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
         url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
         headers: {
           "Content-Type": "application/json;charset=UTF-8 ",
-          DateAtClient: "06/20/2021",
+          DateAtClient: "07/23/2023",
           TransactionId: transactionId,
           Authorization: `Bearer ${process.env.Authorization}`,
         },
@@ -279,10 +286,12 @@ export const activateCard = async (store ,gc_pin) => {
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
       await setting.save();
+      const idempotency_key = generateIdempotencyKey();
     console.log(gc_pin);
     let data = {
       TransactionTypeId: 322,
       InputType: "1",
+      IdempotencyKey: idempotency_key,
       Cards: [{ CardPin: gc_pin }],
       Notes: "Activate Only",
     };
@@ -292,7 +301,7 @@ export const activateCard = async (store ,gc_pin) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: "07/04/2023",
+        DateAtClient: "04/23/2023",
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -327,6 +336,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
+      const idempotency_key = generateIdempotencyKey();
       await setting.save();
     let data = {
       TransactionTypeId: 3504,
@@ -334,6 +344,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       PreAuthType:1,
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
+      IdempotencyKey: idempotency_key,
       Quantity: 1,
          Cards:[{  
         CardNumber:wallet_id,
@@ -361,7 +372,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0")
     ) {
       console.log(walletRedemption.data.Wallets);
-      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , gc_pin : gc_pin}}}, {upsert:true})
+      await wallet_history.updateOne({wallet_id :  wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true})
 
       return walletRedemption.data.Wallets[0];
     }
@@ -370,3 +381,15 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
     return false;
   }
 };
+
+
+function generateIdempotencyKey() {
+  //To create a unique 15 character ID
+  var str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let idempotency_key = "";
+  var len = str.length;
+  for (let i = 0; i < 15; i++) {
+    idempotency_key += str[Math.floor(Math.random() * len)];
+  }
+  return idempotency_key;
+}
