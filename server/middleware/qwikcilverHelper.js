@@ -134,7 +134,7 @@ export const fetchBalance = async (store ,walletData) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "07/24/2023",
-        TransactionId: 410,
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
@@ -360,7 +360,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: "06/20/2023",
-        TransactionId: 899,
+        TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
       data: data,
