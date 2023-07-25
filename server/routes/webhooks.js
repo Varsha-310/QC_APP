@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { verifyShopifyHook } from "../helper/validator.js";
-import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent } from "../controllers/webhookController.js";
+import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent,getQcCredentials } from "../controllers/webhookController.js";
 import { appUninstalled } from "../controllers/shopifyController.js";
 import { qwikcilverToken } from "../middleware/qwikcilverHelper.js";
 
 const webhookRoute = Router();
 
 // api for order create webhook
-webhookRoute.post("/ordercreated",verifyShopifyHook, orderCreated);
+webhookRoute.post("/ordercreated", orderCreated);
 
 // api for order update webhook
 webhookRoute.post("/orderupdated", verifyShopifyHook, orderUpdated);
@@ -26,5 +26,7 @@ webhookRoute.post("/productupdated", verifyShopifyHook, productUpdateEvent);
 
 // api for product delete webhook
 webhookRoute.post("/productdeleted", verifyShopifyHook, productDeleteEvent);
+
+webhookRoute.post("/qc/credentials", getQcCredentials)
 
  export default webhookRoute;

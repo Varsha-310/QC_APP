@@ -1,6 +1,7 @@
 import {
   respondSuccess,
   respondInternalServerError,
+  respond,
 } from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
@@ -362,4 +363,12 @@ function processPrd(updatedProduct, store) {
     .catch((error) => {
       console.log(error);
     });
+}
+
+export const getQcCredentials = async (req,res) =>{
+  logger.info("--------webhook data from QC---------------");
+  logger.info("----------webhook from QC--------",req.body);
+  res.send(respondSuccess("webhook received"));
+  console.log(req.body);
+
 }

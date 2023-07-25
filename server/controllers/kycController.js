@@ -195,6 +195,7 @@ console.log("---------kyc---------------" , req.body);
 
 
 export const kycDetails = async(req,res) => {
+  logger.info("----------------kyc webhook----------------",req.body);
 
   console.log("----------------kyc webhook----------------",req.body);
   logger.info(req.body , "kyc webhook for merchant details");
@@ -203,7 +204,7 @@ export const kycDetails = async(req,res) => {
 
   const kycData = await kycs.find();
   console.log(kycData);
-  
+
    
 
 
