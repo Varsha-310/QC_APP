@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GiftCardTable from "../../components/DataTable/GiftCardTable";
 import Pagination from "../../components/Pagination";
 import instance from "../../axios";
 import BarLoading from "../../components/Loaders/BarLoading";
 import { getUserToken } from "../../utils/userAuthenticate";
 // import useAuthenticate from "../../hooks/useAuthenticate";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useScrollTop from "../../hooks/useScrollTop";
 
 const GiftCardsList = () => {
   // const { getUserToken } = useAuthenticate();
+
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(data);
+  // console.log(data);
 
   // fetch card data
   const updateData = async () => {
@@ -52,6 +52,7 @@ const GiftCardsList = () => {
   };
 
   useScrollTop();
+
   useEffect(() => {
     updateData();
   }, [currentPage]);

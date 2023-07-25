@@ -95,3 +95,29 @@ bkmahapatra
   //   queryFn: updateData,
   //   cacheTime: 20,
   // });
+
+  // const itemIndex = inputData.findIndex((item) => item.id === itemId);
+    // if (newQty === "" || (newQty > 0 && newQty <= totalQty)) {
+
+    //   if (itemIndex !== -1) {
+    //     if (newQty === "") {
+    //       const updatedInputData = inputData.filter(
+    //         (item) => item.id !== itemId
+    //       );
+    //       setInputData(updatedInputData);
+    //     } else {
+    //       const updatedInputData = [...inputData];
+    //       updatedInputData[itemIndex].qty = newQty;
+    //       setInputData(updatedInputData);
+    //     }
+    //   } else {
+    //     const newItem = { id: itemId, qty: newQty };
+    //     setInputData((prev) => [...prev, newItem]);
+    //   }
+    // }
+
+    // setTimeout(() => {
+    //   calcRefund();
+    // }, 2000);
+
+code:"ERR_NETWORK"

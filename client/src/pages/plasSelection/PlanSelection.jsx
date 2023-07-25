@@ -116,13 +116,10 @@ const PlanSelection = () => {
   return (
     <div className="plan-selection-container container_padding">
       <div className="section-box-container">
-        <div className="section-box-title">
-          Register for the gift card scheme
-        </div>
+        <div className="section-box-title">Qwikcilver App Registration</div>
         <div className="section-box-subtitle">
-          To complete registration, provide the necessary details, choose your
-          gift card plan, and make the payment.In each section, provide the
-          details and click Continue.
+          To complete registration, provide the necessary details and choose
+          your subscription plan.
         </div>
 
         <SectionTitle size="14px" weight="600" lineheight="24px" align="left">

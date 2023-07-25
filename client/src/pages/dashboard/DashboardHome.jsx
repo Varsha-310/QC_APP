@@ -8,14 +8,14 @@ import {
 
 import instance from "../../axios";
 import { createPortal } from "react-dom";
-import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
-// import useAuntenticate from "../../hooks/useAuthenticate";
+// import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
+import useAuntenticate from "../../hooks/useAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
 
 const DashboardHome = () => {
-  // const { getUserToken, setUserToken } = useAuntenticate();
+  const { getUserToken, setUserToken } = useAuntenticate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [kycData, setKycData] = useState(null);
@@ -114,7 +114,7 @@ const DashboardHome = () => {
         </SectionHeading1>
         <p className="section-para" style={{ marginTop: "30px" }}>
           Qwikcilver App has been successfully installed on your Shopify
-          Account. To start issuing pre-paid gift cards from your website,
+          Account. To start issuing pre-paid gift cards and store credits from your website,
           complete the KYC process.
         </p>
 

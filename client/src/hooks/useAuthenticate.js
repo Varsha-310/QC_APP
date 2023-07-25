@@ -1,6 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { setToken, setStatus } from "../redux/auth/authSlice";
+import { useEffect } from "react";
 const useAuthenticate = () => {
+  console.log("useauthenticate");
   const user = useSelector((state) => state.auth);
   console.log(user);
   const dispatch = useDispatch();
@@ -31,6 +33,8 @@ const useAuthenticate = () => {
       return false;
     }
   };
+
+  useEffect(() => {}, []);
 
   return {
     setUserToken,

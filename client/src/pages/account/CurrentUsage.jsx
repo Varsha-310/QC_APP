@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CustomContainer } from "../../components/BasicComponents";
 import "./styles/CurrentUsage.css";
 import styled from "styled-components";
 
 import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
+import { getUserToken } from "../../utils/userAuthenticate";
+import instance from "../../axios";
 
 const TextElement = styled.div`
   font-style: normal;
@@ -18,6 +20,34 @@ const TextElement = styled.div`
 `;
 
 const CurrentUsages = () => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(data);
+
+  // fetch card data
+  const updateData = async () => {
+    setIsLoading(true);
+    const url = "billing/current/uses";
+    const headers = {
+      Authorization: getUserToken(),
+    };
+
+    try {
+      const res = await instance.get(url, { headers });
+      const resData = await res.data;
+      setData(resData);
+      console.log(resData);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    updateData();
+  }, []);
+
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
