@@ -57,7 +57,7 @@ const RefundPage = () => {
     console.log("calculate");
     const lineData = inputData.map((item) => ({ id: item.id, qty: item.qty }));
 
-    const url = "/refund/initaite";
+    const url = "/refund/initiate";
     const headers = {
       Authorization: getUserToken(),
     };
@@ -73,6 +73,7 @@ const RefundPage = () => {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
       console.log(resData);
+      alert(resData.message);
     } catch (error) {
       console.log(error);
     }
