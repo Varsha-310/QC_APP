@@ -33,7 +33,8 @@ const refundSettingSchema = new Schema({
       // default: 'no_restock'
     },
     location_id:{
-      type:Number
+      
+      type: Number
     }
 });
 export default mongoose.model("refundSetting", refundSettingSchema);

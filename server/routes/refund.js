@@ -20,6 +20,6 @@ refundRoute.put("/updateSetting",verifyJwt, validateUpdateConfigApi, updateConfi
 refundRoute.post("/initaite",verifyJwt, validateRefund, handleRefundAction);
 
 // Route to fetch the refund settings
-refundRoute.get("/calculate", verifyJwt, validateRefundCalculate, handleCalculateRefundAmount);
+refundRoute.post("/calculate", verifyJwt, validateRefundCalculate, handleCalculateRefundAmount);
 
 export default refundRoute;

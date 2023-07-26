@@ -77,7 +77,8 @@ export const installCallback = async (req, res) => {
       const storeStatus = await store.findOne({ store_url: shop });
       let token = await createJwt(shop);
 
-      if (storeStatus.is_installed == true) {
+      if (storeStatus && storeStatus.is_installed == true) {
+        
         return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
       } else {
         let accessToken = await getAccessToken(shop, code, res);
