@@ -13,7 +13,7 @@ const GiftCardsList = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  // console.log(data);
+  console.log(data);
 
   // fetch card data
   const updateData = async () => {

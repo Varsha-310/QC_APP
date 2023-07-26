@@ -67,8 +67,7 @@ const DashboardHome = () => {
 
     if (token) {
       setUserToken(token);
-
-      localStorage.setItem("qcUserStatus", true);
+      sessionStorage.setItem("qcUserStatus", true);
     }
 
     getKycStatus();
@@ -114,8 +113,8 @@ const DashboardHome = () => {
         </SectionHeading1>
         <p className="section-para" style={{ marginTop: "30px" }}>
           Qwikcilver App has been successfully installed on your Shopify
-          Account. To start issuing pre-paid gift cards and store credits from your website,
-          complete the KYC process.
+          Account. To start issuing pre-paid gift cards and store credits from
+          your website, complete the KYC process.
         </p>
 
         <div style={{ margin: "30px 0px" }}>

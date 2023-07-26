@@ -27,9 +27,11 @@ const RefundPage = () => {
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
 
-  const [refundOption, setRefundOption] = useState();
+  const [refundData, setRefundData] = useState([]);
 
-  console.log(inputData);
+  console.log(refundData);
+
+  const [refundOption, setRefundOption] = useState();
 
   const { id } = useParams();
 
@@ -47,8 +49,56 @@ const RefundPage = () => {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
 
-      setData(resData.data);
-      console.log(res.data);
+      console.log(resData);
+      // setData(resData.data);
+
+      // to calculate refund quantity
+      const dum = [];
+      const refundLines = resData.data?.refunds;
+      if (refundLines?.length !== 0) {
+        if (refundLines?.length !== 0) {
+          refundLines.forEach((refundHistory) => {
+            refundHistory?.refund_line_items.forEach((product) => {
+              // setRefundData((prev) => [
+              //   ...prev,
+              //   { id: product.line_item_id, qty: product.quantity },
+              // ]);
+              const prodIndex = dum.findIndex(
+                (item) => item.id === product.line_item_id
+              );
+
+              if (prodIndex === -1) {
+                dum.push({ id: product.line_item_id, qty: product.quantity });
+              } else {
+                // console.log(dum[prodIndex].qty);
+                console.log("index", prodIndex);
+                dum[prodIndex].qty += product.quantity;
+              }
+
+              // if (prodIndex) {
+              //   console.log(prodIndex);
+              //   // dum[prodIndex].qty += product.quantity;
+              // } else {
+              //   dum.push({ id: product.line_item_id, qty: product.quantity });
+              // }
+            });
+          });
+        }
+      }
+
+      console.log("dum", dum);
+
+      const calculatedData = resData.data.line_items.map((prod) => {
+        const proditem = dum.find((item) => item.id === prod.id);
+        // console.log("proditem", proditem);
+        // console.log(prod);
+        return proditem
+          ? { ...prod, quantity: prod.quantity - proditem.qty }
+          : prod;
+      });
+
+      // console.log("obj", calculatedData);
+      setData(calculatedData);
     } catch (error) {
       console.log(error);
     }
@@ -167,7 +217,7 @@ const RefundPage = () => {
         <div className="refund-page__refund-item-data">
           {/* refund items */}
           <div className="refund-page__details">
-            {data?.line_items?.map((product, index) => {
+            {data?.map((product, index) => {
               return (
                 <div className="refund-page__product-detail" key={index}>
                   <div className="refund-page__product-data">
