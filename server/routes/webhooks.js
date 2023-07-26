@@ -10,22 +10,22 @@ const webhookRoute = Router();
 webhookRoute.post("/ordercreated", orderCreated);
 
 // api for order update webhook
-webhookRoute.post("/orderupdated", verifyShopifyHook, orderUpdated);
+webhookRoute.post("/orderupdated", orderUpdated);
 
 // api for order delete webhook
-webhookRoute.post("/orderdeleted", verifyShopifyHook, orderDeleted);
+webhookRoute.post("/orderdeleted", orderDeleted);
 
 // api for app uninstall webhook
-webhookRoute.post("/appuninstalled", verifyShopifyHook, appUninstalled);
+webhookRoute.post("/appuninstalled", appUninstalled);
 
 //  api for product create webhook
-webhookRoute.post("/productcreated", verifyShopifyHook ,productCreateEvent);
+webhookRoute.post("/productcreated" ,productCreateEvent);
 
 // api for product update webhook
-webhookRoute.post("/productupdated", verifyShopifyHook, productUpdateEvent);
+webhookRoute.post("/productupdated", productUpdateEvent);
 
 // api for product delete webhook
-webhookRoute.post("/productdeleted", verifyShopifyHook, productDeleteEvent);
+webhookRoute.post("/productdeleted", productDeleteEvent);
 
 webhookRoute.post("/qc/credentials", getQcCredentials)
 

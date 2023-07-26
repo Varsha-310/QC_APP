@@ -23,8 +23,8 @@ import orders from "../models/orders.js";
  */
 export const orderCreated = (req, res) => {
   console.log("order created", req.headers);
-  //const shop = req.headers.x-shopify-shop-domain;
-  const shop = "qc-plus-store.myshopify.com";
+  const shop = req.headers["x-shopify-shop-domain"];
+  // const shop = "qc-plus-store.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
@@ -306,7 +306,7 @@ export const productUpdateEvent = async (req, res) => {
 
       let shopName = req.get("x-shopify-shop-domain");
       let settings = await store.findOne({ store_url: shopName });
-      if (settings && settings.shopify_private_app) {
+      if (settings) {
         let updatedProduct = req.body;
         updatedProduct.store = shopName;
         new processPrd(updatedProduct, shopName); //Update the data in DB
