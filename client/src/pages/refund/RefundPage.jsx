@@ -33,6 +33,7 @@ const RefundPage = () => {
 
   const { id } = useParams();
 
+  // fetch item data
   const fetchData = async (id) => {
     const url = "/order/details";
     const headers = {
@@ -53,6 +54,7 @@ const RefundPage = () => {
     }
   };
 
+  // to initiate refund
   const handleInitiate = async () => {
     console.log("calculate");
     const lineData = inputData.map((item) => ({ id: item.id, qty: item.qty }));
@@ -79,6 +81,7 @@ const RefundPage = () => {
     }
   };
 
+  // to fetch  max refundable amount
   const calcRefund = async (oid, data) => {
     setIsCalcLoading(true);
     console.log("calculate");
@@ -104,6 +107,7 @@ const RefundPage = () => {
     }
   };
 
+  // to handle quantity change
   const handleQuantityChange = (itemId, newQty, totalQty, price, taxlines) => {
     const qtyValue = Number(newQty);
 
@@ -136,7 +140,7 @@ const RefundPage = () => {
     }
   };
 
-  // for calc refund
+  // for call calucate refund in every change
   useEffect(() => {
     if (inputData.length !== 0) {
       setTimeout(() => {
@@ -146,6 +150,7 @@ const RefundPage = () => {
   }, [inputData]);
 
   useScrollTop();
+
   useEffect(() => {
     fetchData(id);
   }, [id]);
@@ -294,7 +299,7 @@ const RefundPage = () => {
                     />
                   </div>
                   <PrimaryBtn $primary width="100%" onClick={handleInitiate}>
-                    Refund
+                    Refund to Store-Credit
                   </PrimaryBtn>
                 </div>
               </div>
