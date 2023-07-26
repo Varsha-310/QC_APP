@@ -25,6 +25,7 @@ const ResendGiftCard = ({ data, resendMail }) => {
             <td className="gc-table__actions">
               <MdOutgoingMail
                 className="gc-table-icons"
+                style={{ height: "23px", width: "23px" }}
                 onClick={() => resendMail(row?.id)}
               />
             </td>

@@ -68,3 +68,56 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+bkmahapatra
+// fetch card data
+  // const updateData = async () => {
+  //   console.log("HIttttttttttttttttttttttttt");
+  //   const url = `/giftcard/products/list?limit=10&page=${currentPage}`;
+  //   const headers = {
+  //     Authorization: getUserToken(),
+  //   };
+
+  //   try {
+  //     const res = await instance.post(url, {}, { headers });
+  //     const resData = await res.data;
+  //     return resData;
+  //   } catch (error) {
+  //     // console.log(error);
+  //     throw new Error(error);
+  //   }
+  // };
+
+  // const queryClient = useQueryClient;
+
+  // const { isLoading, data, error } = useQuery({
+  //   queryKey: ["giftcards"],
+  //   queryFn: updateData,
+  //   cacheTime: 20,
+  // });
+
+  // const itemIndex = inputData.findIndex((item) => item.id === itemId);
+    // if (newQty === "" || (newQty > 0 && newQty <= totalQty)) {
+
+    //   if (itemIndex !== -1) {
+    //     if (newQty === "") {
+    //       const updatedInputData = inputData.filter(
+    //         (item) => item.id !== itemId
+    //       );
+    //       setInputData(updatedInputData);
+    //     } else {
+    //       const updatedInputData = [...inputData];
+    //       updatedInputData[itemIndex].qty = newQty;
+    //       setInputData(updatedInputData);
+    //     }
+    //   } else {
+    //     const newItem = { id: itemId, qty: newQty };
+    //     setInputData((prev) => [...prev, newItem]);
+    //   }
+    // }
+
+    // setTimeout(() => {
+    //   calcRefund();
+    // }, 2000);
+
+code:"ERR_NETWORK"

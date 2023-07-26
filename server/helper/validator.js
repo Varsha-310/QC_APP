@@ -223,7 +223,7 @@ export const validateUpdateConfigApi = async (req, res, next) => {
       restock_type: "required|string",
       // location_id:"required|numeric",
     };
-    await validateMethod(req, res, next, validationRule);
+    await validateMethod(req,  validationRule, res , next);
   } catch (err) {
     console.log(err);
     res.json(
@@ -252,7 +252,7 @@ export const validateRefundCalculate = async (req, res, next) => {
       'line_items.*.id': "required|integer",
       'line_items.*.qty': "required|integer"
     };
-    await validateMethod(req, res, next, validationRule);
+    await validateMethod(req,  validationRule, res , next);
   } catch (err) {
 
     console.log(err);
@@ -279,7 +279,7 @@ export const validateRefund = async (req, res, next) => {
       'line_items.*.qty': "required|integer",
       "amount": "required|integer"
     };
-    await validateMethod(req, res, next, validationRule);
+    await validateMethod(req,  validationRule, res , next);
   } catch (err) {
 
     return res.json(respondInternalServerError());

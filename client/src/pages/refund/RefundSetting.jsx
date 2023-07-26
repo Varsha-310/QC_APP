@@ -14,25 +14,21 @@ const RefundSetting = () => {
   console.log(configuration);
 
   const updateConfig = async () => {
+    setIsLoading(true);
     const url = "/refund/getSetting";
     const headers = {
       Authorization: getUserToken(),
     };
-
     try {
-      // const res = await axios.post(
-      //   url,
-      //   { store_url: "qwickcilver-dev.myshopify.com" },
-      //   { headers }
-      // );
-      const res = await instance.get(url, {}, { headers });
-      console.log(res);
-
+      const res = await instance.get(url, { headers });
       const resData = res.data;
-      console.log(resData);
+
       setConfiguration(resData.data);
+      console.log(res);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,7 +56,7 @@ const RefundSetting = () => {
       prepaid: configuration.prepaid,
       cod: configuration.cod,
       giftCard: configuration.giftCard,
-      giftcard_cash: configuration.giftcard_cash,
+      giftcard_cash: "Store-credit",
       restock_type: configuration.restock_type,
     };
 
@@ -134,7 +130,7 @@ const RefundSetting = () => {
               name="prepaid"
               value={"Store-Credit"}
               onChange={handleChange}
-              checked={configuration.prepaid.toLowerCase() === "store-credit"}
+              checked={configuration?.prepaid?.toLowerCase() === "store-credit"}
             />
             <input
               type="checkbox"
@@ -142,7 +138,9 @@ const RefundSetting = () => {
               name="prepaid"
               value={"Back-to-Source"}
               onChange={handleChange}
-              checked={configuration.prepaid.toLowerCase() === "back-to-source"}
+              checked={
+                configuration?.prepaid?.toLowerCase() === "back-to-source"
+              }
             />
           </div>
           <div className="refund-setting__options refund-setting__table-grid">
@@ -176,7 +174,7 @@ const RefundSetting = () => {
               name="giftCard"
               onChange={handleChange}
               // id="default"
-              checked={configuration.giftCard.toLowerCase() === "store-credit"}
+              checked={configuration.giftCard?.toLowerCase() === "store-credit"}
             />
             <div></div>
           </div>
@@ -192,7 +190,7 @@ const RefundSetting = () => {
               value={"Store-Credit"}
               onChange={handleChange}
               checked={
-                configuration.giftcard_cash.toLowerCase() === "store-credit"
+                configuration.giftcard_cash?.toLowerCase() === "store-credit"
               }
             />
             <input
@@ -202,7 +200,7 @@ const RefundSetting = () => {
               value={"Back-to-Source"}
               onChange={handleChange}
               checked={
-                configuration.giftcard_cash.toLowerCase() === "back-to-source"
+                configuration.giftcard_cash?.toLowerCase() === "back-to-source"
               }
             />
           </div>

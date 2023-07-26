@@ -7,9 +7,9 @@ function getReadableDate(dateObj) {
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
     year = d.getFullYear();
-  hours = "" + d.getHours();
-  minutes = "" + d.getMinutes();
-  seconds = "" + d.getSeconds();
+    let hours = "" + d.getHours();
+    let minutes = "" + d.getMinutes();
+    let seconds = "" + d.getSeconds();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
@@ -25,19 +25,20 @@ export const sendEmailViaSendGrid = async (
   giftCardDetails,
   receiver,
   email_id,
-  message
+  message,
+  image_url
 ) => {;
 console.log("in the mail sender");
 
 var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
-order.line_items[0].properties.forEach(obj => {
-  if(obj.name === "image_url"){
-    email_template = email_template.replace(
-      "image_url", obj.value
-    );
-  }
-})
+// order.line_items[0].properties.forEach(obj => {
+//   if(obj.name === "image_url"){
+//     email_template = email_template.replace(
+//       "image_url", obj.value
+//     );
+//   }
+// })
 console.log("----------", giftCardDetails);
 let email_template = template;
 email_template = email_template.replace(
@@ -57,6 +58,9 @@ email_template = email_template.replace(
 );
 email_template = email_template.replace(
   "__message__", message
+);
+email_template = email_template.replace(
+  "template_image", image_url
 );
 // Framing the mail options
 const options = {

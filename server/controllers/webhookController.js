@@ -1,6 +1,7 @@
 import {
   respondSuccess,
   respondInternalServerError,
+  respond,
 } from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
@@ -22,8 +23,8 @@ import orders from "../models/orders.js";
  */
 export const orderCreated = (req, res) => {
   console.log("order created", req.headers);
-  //const shop = req.headers.x-shopify-shop-domain;
-  const shop = "qc-plus-store.myshopify.com";
+  const shop = req.headers["x-shopify-shop-domain"];
+  // const shop = "qc-plus-store.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
@@ -117,13 +118,12 @@ const ordercreateEvent = async (input, done, res) => {
             ) {
               for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
                 console.log(
-                  "____________QC giftcard created___________________", qwikcilver_gift_card.properties
-                );
+                  "____________QC giftcard created___________________", qwikcilver_gift_card );
                 let email = null;
                 let message = "";
                 let receiver = "";
                 let image_url = "";
-                if (qwikcilver_gift_card.properties) {
+                if (qwikcilver_gift_card.properties.length > 0) {
                 
                   let sent_as_gift;
                   for (
@@ -179,6 +179,7 @@ const ordercreateEvent = async (input, done, res) => {
                       ) {
                         receiver = qwikcilver_gift_card.properties[i].value;
                       }
+                    }
 
                       let giftCardDetails = await createGiftcard(
                         shopName,
@@ -197,7 +198,7 @@ const ordercreateEvent = async (input, done, res) => {
                         message,
                         image_url
                       );
-                    }
+                    
                   }
                 }
                   else {
@@ -305,7 +306,7 @@ export const productUpdateEvent = async (req, res) => {
 
       let shopName = req.get("x-shopify-shop-domain");
       let settings = await store.findOne({ store_url: shopName });
-      if (settings && settings.shopify_private_app) {
+      if (settings) {
         let updatedProduct = req.body;
         updatedProduct.store = shopName;
         new processPrd(updatedProduct, shopName); //Update the data in DB
@@ -362,4 +363,12 @@ function processPrd(updatedProduct, store) {
     .catch((error) => {
       console.log(error);
     });
+}
+
+export const getQcCredentials = async (req,res) =>{
+  logger.info("--------webhook data from QC---------------");
+  logger.info("----------webhook from QC--------",req.body);
+  res.send(respondSuccess("webhook received"));
+  console.log(req.body);
+
 }

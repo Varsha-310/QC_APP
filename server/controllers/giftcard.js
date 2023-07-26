@@ -270,11 +270,11 @@ export const addGiftcardtoWallet = async (
           amount
         );
         console.log(updateShopifyGc);
-        await wallet.updateOne(
-          { shopify_customer_id: customer_id },
-          { balance: newAmount },
-          { upsert: true }
-        );
+       // await wallet.updateOne(
+         // { shopify_customer_id: customer_id },
+          //{ balance: newAmount },
+          //{ upsert: true }
+        //);
         await wallet_history.updateOne(
           { wallet_id: wallet_id, customer_id: customer_id },
           {

@@ -256,13 +256,17 @@ const CreateGiftCard = () => {
               >
                 <FaChevronCircleRight />
               </div>
-              <img
+
+              {
+                previewImage.length !==0 ?  <img
                 src={
                   "data:image/jpeg;base64," +
                   previewImage[selectedImg]?.attachment
                 }
                 alt=""
-              />
+              />: <img src={require("../../assets/images/sampleGC.png")} alt=""/>
+              }
+             
             </div>
 
             <div className="gift-card__scroll-container">

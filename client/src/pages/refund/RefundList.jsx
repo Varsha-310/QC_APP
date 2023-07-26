@@ -4,9 +4,13 @@ import Pagination from "../../components/Pagination";
 import { getUserToken } from "../../utils/userAuthenticate";
 import BarLoading from "../../components/Loaders/BarLoading";
 import instance from "../../axios";
+import { BiSync } from "react-icons/bi";
+// import useAuthenticate from "../../hooks/useAuthenticate";
 
 const RefundList = () => {
   const PER_PAGE_ITEM = 10;
+
+  // const { getUserToken } = useAuthenticate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [refundData, setRefundData] = useState(null);
@@ -17,23 +21,50 @@ const RefundList = () => {
     "Created Date",
     "Customer",
     "Total",
-    "Return Status",
+    "Status",
     "Original Payment",
     "Refund Mode",
     "Initiate Refund",
   ];
 
+  // fetching data
   const fetchData = async () => {
     setIsLoading(true);
     const url = "/order/list";
+    const params = {
+      page: currentPage,
+      limit: PER_PAGE_ITEM,
+    };
+    const headers = {
+      Authorization: getUserToken(),
+    };
+
+    try {
+      const res = await instance.get(url, { params, headers });
+      const resData = res.data;
+      setRefundData(resData.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  // sync data
+  const handleSync = async () => {
+    setIsLoading(true);
+    const url = "/order/sync";
     const headers = {
       Authorization: getUserToken(),
     };
 
     try {
       const res = await instance.get(url, { headers });
-      const resData = res.data;
-      setRefundData(resData.data);
+      alert(res?.data?.message);
+      // const resData = res.data;
+      // setRefundData(resData.data);
+
+      fetchData();
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -58,7 +89,15 @@ const RefundList = () => {
           <div className="section-box-container">
             <div className="section-box-title">Issue Store Credits</div>
           </div>
-          <div className="refund-list__containe-table">
+          <div className="app-table__list-actions">
+            <abbr title="Sync Data">
+              <BiSync
+                className="app-table__action-icons"
+                onClick={handleSync}
+              />
+            </abbr>
+          </div>
+          <div className="refund-list__container-table">
             <RefundListTable headings={Heading} data={refundData?.orders} />
           </div>
           <Pagination

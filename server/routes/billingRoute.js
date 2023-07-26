@@ -8,7 +8,7 @@ const billingRoute = Router();
 // Route to fetch the store data
 billingRoute.get("/list",verifyJwt, handleBillingList);
 
-billingRoute.get("/seed", seedBillingHistory);
+//billingRoute.get("/seed", seedBillingHistory);
 
 //order Sync url
 //billing/currnt/uses
