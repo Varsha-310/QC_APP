@@ -133,7 +133,7 @@ const ordercreateEvent = async (input, done, res) => {
                   ) {
                     if (
                       qwikcilver_gift_card.properties[i].name ===
-                      "_Gift to Email"
+                      "_Qc_recipient_email"
                     ) {
                       sent_as_gift = true;
                       let updateOrder = await orders.updateOne(
@@ -162,20 +162,20 @@ const ordercreateEvent = async (input, done, res) => {
                       }
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_Gift to Email"
+                        "_Qc_recipient_email"
                       ) {
                         email = qwikcilver_gift_card.properties[i].value;
                       }
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_QC Message"
+                        "_Qc_recipient_message"
                       ) {
                         message = qwikcilver_gift_card.properties[i].value;
                       }
 
                       if (
                         qwikcilver_gift_card.properties[i].name ===
-                        "_recipient_name"
+                        "_Qc_recipient_name"
                       ) {
                         receiver = qwikcilver_gift_card.properties[i].value;
                       }
