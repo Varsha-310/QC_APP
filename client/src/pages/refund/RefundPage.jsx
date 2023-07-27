@@ -31,7 +31,7 @@ const RefundPage = () => {
 
   console.log(refundData);
 
-  const [refundOption, setRefundOption] = useState();
+  const [refundOption, setRefundOption] = useState(null);
 
   const { id } = useParams();
 
@@ -59,10 +59,6 @@ const RefundPage = () => {
         if (refundLines?.length !== 0) {
           refundLines.forEach((refundHistory) => {
             refundHistory?.refund_line_items.forEach((product) => {
-              // setRefundData((prev) => [
-              //   ...prev,
-              //   { id: product.line_item_id, qty: product.quantity },
-              // ]);
               const prodIndex = dum.findIndex(
                 (item) => item.id === product.line_item_id
               );
@@ -74,13 +70,6 @@ const RefundPage = () => {
                 console.log("index", prodIndex);
                 dum[prodIndex].qty += product.quantity;
               }
-
-              // if (prodIndex) {
-              //   console.log(prodIndex);
-              //   // dum[prodIndex].qty += product.quantity;
-              // } else {
-              //   dum.push({ id: product.line_item_id, qty: product.quantity });
-              // }
             });
           });
         }
@@ -90,8 +79,7 @@ const RefundPage = () => {
 
       const calculatedData = resData.data.line_items.map((prod) => {
         const proditem = dum.find((item) => item.id === prod.id);
-        // console.log("proditem", proditem);
-        // console.log(prod);
+
         return proditem
           ? { ...prod, quantity: prod.quantity - proditem.qty }
           : prod;
@@ -118,6 +106,7 @@ const RefundPage = () => {
       orderId: id,
       line_items: lineData,
       amount: refundAmount,
+      // return_type: refundOption,
     };
     console.log("body", body);
 
@@ -342,10 +331,15 @@ const RefundPage = () => {
                   <div style={{ margin: "10px 0px" }}>
                     <CustomDropdown
                       options={[
-                        { title: "Back to store-credit" },
-                        { title: "Back to source" },
+                        {
+                          title: "Back to store-credit",
+                          value: "back-to-store-credit",
+                        },
+                        { title: "Back to source", value: "back-to-source" },
                       ]}
-                      setCardData={setRefundOption}
+                      keyField="refund_type"
+                      value={refundOption?.refund_type || "NA"}
+                      setvalue={setRefundOption}
                     />
                   </div>
                   <PrimaryBtn $primary width="100%" onClick={handleInitiate}>

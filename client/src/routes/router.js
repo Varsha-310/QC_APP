@@ -65,6 +65,10 @@ const router = createBrowserRouter([
         element: <KycProgress />,
       },
       {
+        path: "/faq",
+        element: <></>,
+      },
+      {
         path: "/create-giftcard",
         element: (
           <ProtectedRoute isAuthenticated={isUserAuthenticated}>

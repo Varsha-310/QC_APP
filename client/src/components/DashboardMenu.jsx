@@ -15,6 +15,7 @@ import {
   HiOutlineIdentification,
   HiOutlineWallet,
   HiOutlineReceiptRefund,
+  HiOutlineDocumentMagnifyingGlass,
 } from "react-icons/hi2";
 import { PiKeyReturn } from "react-icons/pi";
 import { BsPostcard } from "react-icons/bs";
@@ -108,6 +109,12 @@ const DashboardMenu = () => {
                   <TabItemLable>KYC Status</TabItemLable>
                 </SubTabBox>
               </li>
+              <li>
+                <SubTabBox to={"/faq"} active={"/faq" === location.pathname}>
+                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <TabItemLable>FAQ</TabItemLable>
+                </SubTabBox>
+              </li>
             </ul>
           </li>
 
@@ -126,7 +133,7 @@ const DashboardMenu = () => {
                     className="menu-icons"
                     style={{ width: "20px" }}
                   />
-                  {/* <GiftCardIcon className="menu-icons" /> */}
+
                   <TabItemLable>Create Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
@@ -136,7 +143,6 @@ const DashboardMenu = () => {
                   to={"/my-gift-card"}
                   active={"/my-gift-card" === location.pathname}
                 >
-                  {/* <MyGiftCardsIcon className="menu-icons" /> */}
                   <HiOutlineWallet className="menu-icons" />
                   <TabItemLable>My Gift Cards</TabItemLable>
                 </SubTabBox>

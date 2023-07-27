@@ -45,3 +45,20 @@
   font-size: 14px;
   color: #7e7e7e;
 }
+.refund-setting__restock-input {
+  margin: 0px 10px;
+}
+.refund-setting__location-input {
+  font-family: var(--font-family-main);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
+  resize: none;
+  outline: none;
+  width: 100%;
+  padding: 5px 10px;
+  /* margin: 0px 10px; */
+  color: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}

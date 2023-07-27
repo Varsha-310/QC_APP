@@ -257,16 +257,17 @@ const CreateGiftCard = () => {
                 <FaChevronCircleRight />
               </div>
 
-              {
-                previewImage.length !==0 ?  <img
-                src={
-                  "data:image/jpeg;base64," +
-                  previewImage[selectedImg]?.attachment
-                }
-                alt=""
-              />: <img src={require("../../assets/images/sampleGC.png")} alt=""/>
-              }
-             
+              {previewImage.length !== 0 ? (
+                <img
+                  src={
+                    "data:image/jpeg;base64," +
+                    previewImage[selectedImg]?.attachment
+                  }
+                  alt=""
+                />
+              ) : (
+                <img src={require("../../assets/images/sampleGC.png")} alt="" />
+              )}
             </div>
 
             <div className="gift-card__scroll-container">
@@ -340,8 +341,9 @@ const CreateGiftCard = () => {
                   { title: "6 months", value: "180" },
                   { title: "12 months", value: "365" },
                 ]}
-                setCardData={setCardData}
-                validity={cardData.validity}
+                keyField={"validity"}
+                value={cardData?.validity}
+                setvalue={setCardData}
               />
             </div>
           </div>
