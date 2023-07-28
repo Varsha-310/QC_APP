@@ -12,6 +12,9 @@ import CreateGiftCard from "./issuance/CreateGiftCard";
 import RefundList from "./refund/RefundList";
 import GiftCardsList from "./issuance/GiftCardsList";
 import ResendGiftCard from "./issuance/ResendGiftCard";
+import PrivacyPolicy from "./agreements/PrivacyPolicy";
+import TermsConditions from "./agreements/TermsConditions";
+import FaqPage from "./others/FaqPage";
 import ErrorPage from "./ErrorPage";
 
 export {
@@ -30,4 +33,7 @@ export {
   RefundList,
   GiftCardsList,
   ResendGiftCard,
+  PrivacyPolicy,
+  TermsConditions,
+  FaqPage,
 };

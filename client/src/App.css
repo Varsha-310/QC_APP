@@ -138,7 +138,7 @@ li {
   }
   .dashboard-container {
     gap: 0;
-    min-height: auto;
     overflow: auto;
+    min-height: 90vh;
   }
 }

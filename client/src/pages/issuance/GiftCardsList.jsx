@@ -55,6 +55,7 @@ const GiftCardsList = () => {
 
   useEffect(() => {
     updateData();
+    console.log("useeffect")
   }, [currentPage]);
 
   return (

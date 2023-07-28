@@ -33,7 +33,7 @@
     position: absolute;
     top: var(--header-height);
     left: -101%;
-    height: 100%;
+    height: 90%;
     width: 300px;
     padding: 20px 30px;
     z-index: 100;
