@@ -146,6 +146,7 @@ input[type="checkbox"] {
   background-color: #ffffff;
   border-radius: 10px;
   overflow-y: auto;
+  z-index: 20;
 }
 .terms-pop__container li {
   list-style: inherit;
@@ -157,10 +158,11 @@ input[type="checkbox"] {
   text-align: center;
   margin: 10px;
 }
-.terms-pop__container table{
-  border-collapse:collapse;
+.terms-pop__container table {
+  border-collapse: collapse;
 }
-.terms-pop__container table th, .terms-pop__container table td {
+.terms-pop__container table th,
+.terms-pop__container table td {
   border: 1px solid black;
   text-align: left;
   padding: 5px;
@@ -169,5 +171,6 @@ input[type="checkbox"] {
   .plans {
     flex-wrap: wrap;
     row-gap: 20px;
+    column-gap: 20px;
   }
 }

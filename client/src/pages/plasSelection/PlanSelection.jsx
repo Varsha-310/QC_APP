@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./styles/PlanSelection.css";
 import Tick from "../../assets/icons/svgs/tick.svg";
 import {
-  CustomBtn,
   PrimaryBtn,
   RectBtn,
   SectionHeading1,
-  SectionPara,
   SectionTitle,
 } from "../../components/BasicComponents";
 import { Link } from "react-router-dom";
@@ -88,8 +86,10 @@ const PlanSelection = () => {
       enterprise: true,
     },
   ];
+
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [plans, setPlans] = useState(null);
+  const [isAgree, setIsAgree] = useState(false);
   const [terms, setTerms] = useState(false);
 
   // get plans
@@ -106,8 +106,36 @@ const PlanSelection = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+  // plan select
+  const handleSelectPlan = async () => {
+    const url = "plan/select";
+    const headers = {
+      Authorization: getUserToken(),
+    };
+    const body = {
+      plan_name: "BASIC",
+      plan_price: 399,
+    };
 
-    // console.log(res);
+    try {
+      const res = await instance.post(url, body, { headers });
+      setPlans(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(isAgree);
+
+  // handle confirm payment
+  const handleCnfPayment = () => {
+    if (!isAgree) {
+      alert("Please accept Terms and Conditions.");
+      return;
+    }
+
+    console.log("after");
   };
 
   useEffect(() => {
@@ -179,21 +207,28 @@ const PlanSelection = () => {
 
       <div className="section-box-container">
         <div className="terms-check">
-          <input type="checkbox" /> I accept Gift Card Processing
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              e.stopPropagation();
+              console.log(">>", e.target.checked);
+              !!e.target.checked ? setIsAgree(true) : setIsAgree(false);
+            }}
+          />
+          I accept Gift Card Processing
           <Link onClick={() => setTerms(true)}>Terms & Conditions</Link>
         </div>
       </div>
 
       <div style={{ margin: "40px 0px" }}>
-        <PrimaryBtn $primary>Confirm Payment</PrimaryBtn>
+        <PrimaryBtn $primary onClick={handleCnfPayment}>
+          Confirm Payment
+        </PrimaryBtn>
       </div>
 
       {/* enterprise plan box */}
 
       <div className="enterprise_plan-box">
-        {/* <SectionHeading1 weight="600" size="24px" lineheight="30px">
-          Enterprise Plan
-        </SectionHeading1> */}
         <div className="plan-box-title">Enterprise Plan</div>
         <p className="box-text">
           We provide more flexible plans for enterprise. Please contact us to
@@ -226,9 +261,9 @@ const PlanSelection = () => {
           </tr>
         </thead>
         <tbody>
-          {tableContent.map((rowData) => {
+          {tableContent.map((rowData, index) => {
             return (
-              <tr>
+              <tr key={index}>
                 <td>{rowData.title}</td>
                 <td>
                   {rowData.basic ? (
