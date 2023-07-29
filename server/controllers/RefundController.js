@@ -249,7 +249,7 @@ export const handleRefundAction = async (req, res) => {
                 "kind":"refund",
                 "gateway": _trans.gateway,
                 "parent_id": _trans.parent_id,
-                "amount": _trans.amount
+                "amount": amount
             });
         }else if(amount && refund_type == "Store-credit"){
 
