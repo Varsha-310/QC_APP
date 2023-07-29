@@ -30,7 +30,7 @@ const RefundListTable = ({ headings, data }) => {
                   Proceed
                 </Link>
               ) : row?.financial_status === "refunded" ? (
-                "Completed"
+                <span className="refund-list__completed">Completed</span>
               ) : (
                 row?.financial_status
               )}

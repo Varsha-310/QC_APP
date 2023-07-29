@@ -135,10 +135,42 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
 }
+/* terms popup  */
 
+.terms-pop__container {
+  position: fixed;
+  inset: 0;
+  padding: 50px;
+  margin: 20px;
+  box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3);
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow-y: auto;
+  z-index: 20;
+}
+.terms-pop__container li {
+  list-style: inherit;
+  text-align: justify;
+  margin-left: 20px;
+}
+.terms-pop__container h2,
+.terms-pop__container h3 {
+  text-align: center;
+  margin: 10px;
+}
+.terms-pop__container table {
+  border-collapse: collapse;
+}
+.terms-pop__container table th,
+.terms-pop__container table td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 5px;
+}
 @media only screen and (max-width: 900px) {
   .plans {
     flex-wrap: wrap;
     row-gap: 20px;
+    column-gap: 20px;
   }
 }

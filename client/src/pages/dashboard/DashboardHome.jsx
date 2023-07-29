@@ -9,16 +9,17 @@ import {
 import instance from "../../axios";
 import { createPortal } from "react-dom";
 import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
-// import useAuntenticate from "../../hooks/useAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
+import Toast from "../../components/Toast";
 
 const DashboardHome = () => {
-  // const { getUserToken, setUserToken } = useAuntenticate();
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const [kycData, setKycData] = useState(null);
+
+  console.log(isError);
 
   const getKycStatus = async () => {
     const url = "/kyc/status";
@@ -29,14 +30,40 @@ const DashboardHome = () => {
     try {
       const res = await instance.post(url, {}, { headers });
 
-      const resData = res.data;
+      if (res?.status === 200) {
+        const resData = res.data;
+        console.log(resData);
+        // for invalid or unauthorized token
+        if (resData?.code === 401) {
+          throw new Error(
+            "Authentication Failed: Unable to authenticate. Please log in again."
+          );
+        }
+        if (resData?.code === 403) {
+          throw new Error(
+            "Session Expired: Your Session has expired. Please log in again."
+          );
+        }
 
-      if (resData.code === 200) {
+        // for any other error
+        if (resData?.code !== 200) {
+          throw new Error("Network response was not OK.");
+        }
+
+        console.log(resData);
         setKycData(resData.data);
       }
-      console.log(resData);
+
+      // else {
+      //   throw new Error("Network response was not OK.");
+      // }
     } catch (error) {
-      console.log(error);
+      if (!navigator.onLine) {
+        console.log("No internet connection!");
+      } else {
+        // console.log(error);
+        setIsError(error.message);
+      }
     }
   };
 
@@ -49,8 +76,8 @@ const DashboardHome = () => {
 
     try {
       const res = await instance.post(url, {}, { headers });
-      const resData = res.data;
 
+      const resData = res.data;
       console.log(res);
 
       window.open(resData.data, "_blank");
@@ -73,11 +100,14 @@ const DashboardHome = () => {
     getKycStatus();
   }, []);
 
+  if (isError) {
+    return <Toast>{isError}</Toast>;
+  }
+
   return (
     <div className="dashboard-home-container">
       {isLoading &&
         createPortal(<Spinner />, document.getElementById("portal"))}
-
       <div className="section-box-container">
         <div className="section-box-title">Welcome to Your Dashboard</div>
       </div>

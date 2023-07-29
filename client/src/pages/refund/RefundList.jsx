@@ -5,12 +5,10 @@ import { getUserToken } from "../../utils/userAuthenticate";
 import BarLoading from "../../components/Loaders/BarLoading";
 import instance from "../../axios";
 import { BiSync } from "react-icons/bi";
-// import useAuthenticate from "../../hooks/useAuthenticate";
+import "./styles/RefundList.css";
 
 const RefundList = () => {
   const PER_PAGE_ITEM = 10;
-
-  // const { getUserToken } = useAuthenticate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [refundData, setRefundData] = useState(null);
@@ -78,10 +76,7 @@ const RefundList = () => {
   }, [currentPage]);
 
   return (
-    <div
-      className="refund-list__container"
-      style={{ width: "100%", overflowY: "auto" }}
-    >
+    <div className="refund-list__container">
       {isLoading ? (
         <BarLoading />
       ) : (

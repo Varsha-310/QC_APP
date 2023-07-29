@@ -1,0 +1,27 @@
+.agreement-component {
+  padding: 10px 30px;
+  margin: 15px;
+  /* box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3); */
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+.agreement-component p {
+  margin: 10px 0px;
+}
+.agreement-component li {
+  list-style: inherit;
+  text-align: justify;
+  margin-left: 20px;
+}
+.agreement-component :is(h2, h3) {
+  text-align: center;
+  margin: 10px;
+}
+.agreement-component table {
+  border-collapse: collapse;
+}
+.agreement-component table :is(th, td) {
+  border: 1px solid black;
+  text-align: left;
+  padding: 5px;
+}

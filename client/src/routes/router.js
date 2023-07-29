@@ -16,6 +16,9 @@ import {
   RefundList,
   GiftCardsList,
   ResendGiftCard,
+  TermsConditions,
+  PrivacyPolicy,
+  FaqPage,
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
@@ -65,6 +68,10 @@ const router = createBrowserRouter([
         element: <KycProgress />,
       },
       {
+        path: "/faq",
+        element: <></>,
+      },
+      {
         path: "/create-giftcard",
         element: (
           <ProtectedRoute isAuthenticated={isUserAuthenticated}>
@@ -111,6 +118,18 @@ const router = createBrowserRouter([
       {
         path: "/configuration",
         element: <RefundSetting />,
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsConditions />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/faqs",
+        element: <FaqPage />,
       },
     ],
   },

@@ -6,6 +6,7 @@ import instance from "../../axios";
 import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
 import { createPortal } from "react-dom";
+import CustomDropdown from "../../components/CustomDropdown";
 
 const RefundSetting = () => {
   const [configuration, setConfiguration] = useState();
@@ -46,46 +47,53 @@ const RefundSetting = () => {
 
   // update configuration
   const handleUpdate = async (event) => {
-    setIsLoading(true);
-    const url = "/refund/updateSetting";
-    const headers = {
-      Authorization: getUserToken(),
-    };
-    const body = {
-      location_id: configuration.location_id,
-      prepaid: configuration.prepaid,
-      cod: configuration.cod,
-      giftCard: configuration.giftCard,
-      giftcard_cash: "Store-credit",
-      restock_type: configuration.restock_type,
-    };
+    if (
+      configuration.restock_type === "return" &&
+      configuration.location_id.length <= 0
+    ) {
+      alert("Please Enter Location Id!");
+    } else {
+      setIsLoading(true);
+      const url = "/refund/updateSetting";
+      const headers = {
+        Authorization: getUserToken(),
+      };
+      const body = {
+        prepaid: configuration.prepaid,
+        cod: configuration.cod,
+        giftCard: configuration.giftCard,
+        giftcard_cash: configuration.giftcard_cash,
+        location_id: configuration.location_id,
+        restock_type: configuration.restock_type,
+      };
 
-    let res = null;
+      let res = null;
 
-    try {
-      res = await instance.put(url, body, { headers });
+      try {
+        res = await instance.put(url, body, { headers });
 
-      alert(res?.data?.message);
-      console.log(res);
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else {
-        console.log(error);
+        alert(res?.data?.message);
+        console.log(res);
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else {
+          console.log(error);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
+
+      // if (res.data.message === 200) {
+      //   alert("Updated Successfully!");
+      // } else {
+      //   alert("Something went");
+      // }
+
+      console.log(res.data);
     }
-
-    // if (res.data.message === 200) {
-    //   alert("Updated Successfully!");
-    // } else {
-    //   alert("Something went");
-    // }
-
-    console.log(res.data);
   };
 
   return (
@@ -205,11 +213,50 @@ const RefundSetting = () => {
             />
           </div>
 
-          {/* <CustomContainer margin="50px 0px"> */}
+          {/* restock type */}
+          <br />
+
+          <div className="refund-setting__options refund-setting__table-grid">
+            <div className="refund-setting__type-name">Restock Type</div>
+            <div className="refund-setting__restock-input">
+              <CustomDropdown
+                options={[
+                  { title: "Return", value: "return" },
+                  { title: "No Return", value: "null" },
+                ]}
+                keyField={"restock_type"}
+                value={configuration?.restock_type || "Select"}
+                setvalue={setConfiguration}
+              />
+            </div>
+
+            <div></div>
+          </div>
+          {configuration?.restock_type === "return" ? (
+            <div className="refund-setting__options refund-setting__table-grid">
+              <div className="refund-setting__type-name">Location ID</div>
+              <div className="refund-setting__restock-input">
+                <input
+                  className="refund-setting__location-input"
+                  type="text"
+                  value={configuration?.location_id || ""}
+                  onChange={(e) =>
+                    setConfiguration((prev) => ({
+                      ...prev,
+                      location_id: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div></div>
+            </div>
+          ) : (
+            ""
+          )}
+
           <PrimaryBtn $primary onClick={handleUpdate}>
             Save
           </PrimaryBtn>
-          {/* </CustomContainer> */}
         </div>
       </div>
     )
