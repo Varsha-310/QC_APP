@@ -8,6 +8,7 @@ import cookie from "cookie";
 import crypto from "crypto";
 import { checkWebhooks } from "../config/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
+import refundSetting from "../models/refundSetting.js";
 
 /**
  * Method for installation method
@@ -114,6 +115,8 @@ export const installCallback = async (req, res) => {
  */
 export const saveStoreData = async (shopData, shop, accessToken) => {
   try {
+  
+  
     const data = {
       shopify_id: shopData.shop.id,
       name: shopData.shop.name,
@@ -131,11 +134,8 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       { $set: data },
       { upsert: true }
     );
-
-    console.log(
-      storeDetails,
-      "---------------------saved to db------------------"
-    );
+    await refundSetting.updateOne({store_url: shop.toString()},{store_url: shop.toString()}, {upsert:true});
+    console.log( storeDetails, "---------------------saved to db------------------");
     return true;
   } catch (error) {
     console.log(error);

@@ -64,9 +64,12 @@ const ordercreateEvent = async (input, done, res) => {
     let shopName = shop;
     console.log("Shop Name", shop);
     let settings = await store.findOne({ store_url: shopName });
+
     if (settings) {
+      
       let newOrder = order;
       let qwikcilver_gift_cards = [];
+      
       if (newOrder.payment_gateway_names.includes("gift_card")) {
         console.log("giftcard redeemed");
         const checkAmount = await giftCardAmount(shopName, newOrder.id);
@@ -77,7 +80,6 @@ const ordercreateEvent = async (input, done, res) => {
             checkAmount.id,
             checkAmount.amount
           );
-
           console.log(redeemed);
         }
       } else {
@@ -213,9 +215,10 @@ const ordercreateEvent = async (input, done, res) => {
                       giftCardDetails,
                       "--------successs-----------------"
                     );
+                    const custom_id = newOrder.customer.id == 7286901178670 ? "9709857928" :  newOrder.customer.id;
                     await addGiftcardtoWallet(
                       shopName,
-                      newOrder.customer.id,
+                      custom_id,
                       giftCardDetails.CardPin,
                       giftCardDetails.Balance
                     );
