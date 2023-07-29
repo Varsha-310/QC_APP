@@ -146,7 +146,7 @@ export const validateUpdateGiftcard = async (req, res, next) => {
   } catch (err) {
 console.log(err)
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -167,9 +167,7 @@ export const validateAddToWallet = async (req, res, next) => {
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json(respondInternalServerError());
   }
 };
 

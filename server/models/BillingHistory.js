@@ -15,7 +15,7 @@ const billingHistorySchema = {
   remiderDate: Date,
   isReminded: Boolean,
   planName: { type: String },
-  status: { type: String, enum: ["ACTIVE", "CANCELLED","DECLINED","EXPIRED","FROZEN","PENDING", "CHANGED", "BILLED"], default: "ACTIVE" }, 
+  status: { type: String, enum: ["ACTIVE", "CANCELLED","DECLINED","EXPIRED","FROZEN","PENDING", "BILLED"], default: "ACTIVE" }, 
   lastBilledDate: Date,
   planEndDate: Date,
   cappedAmount: String,
