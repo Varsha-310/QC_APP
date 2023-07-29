@@ -7,6 +7,7 @@ import instance from "../../axios";
 import { getUserToken } from "../../utils/userAuthenticate";
 import { LuImage } from "react-icons/lu";
 import useScrollTop from "../../hooks/useScrollTop";
+import Toast from "../../components/Toast";
 
 // calculate total from a array of object
 const countTotal = (obj, key) => {
@@ -26,14 +27,33 @@ const RefundPage = () => {
   const [refundAmount, setRefundAmount] = useState();
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
-
   const [refundData, setRefundData] = useState([]);
+  const [refundOption, setRefundOption] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [setting, setSetting] = useState(false);
 
   console.log(refundData);
 
-  const [refundOption, setRefundOption] = useState(null);
-
   const { id } = useParams();
+
+  // getsetting
+  const getConfig = async () => {
+    setIsLoading(true);
+    const url = "/refund/getSetting";
+    const headers = {
+      Authorization: getUserToken(),
+    };
+    try {
+      const res = await instance.get(url, { headers });
+      const resData = res?.data;
+      console.log(resData.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // fetch item data
   const fetchData = async (id) => {
@@ -192,6 +212,8 @@ const RefundPage = () => {
 
   useEffect(() => {
     fetchData(id);
+
+    getConfig();
   }, [id]);
 
   return (
@@ -201,6 +223,14 @@ const RefundPage = () => {
           Refunding Order No: {id} Orders Via Gift Card
         </div>
       </div>
+
+      {setting === null ? (
+        <Toast>
+          Please set your store preferences before initiating the Refund!
+        </Toast>
+      ) : (
+        ""
+      )}
 
       <div className="section-box-container main-component">
         <div className="refund-page__refund-item-data">

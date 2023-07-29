@@ -16,6 +16,7 @@ import PrivacyPolicy from "./agreements/PrivacyPolicy";
 import TermsConditions from "./agreements/TermsConditions";
 import FaqPage from "./others/FaqPage";
 import ErrorPage from "./ErrorPage";
+import Issues from "./others/Issues";
 
 export {
   DashboardHome,
@@ -36,4 +37,5 @@ export {
   PrivacyPolicy,
   TermsConditions,
   FaqPage,
+  Issues,
 };

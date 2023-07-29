@@ -7,13 +7,28 @@
 }
 .faq-component p {
   margin: 10px 0px;
+  line-height: 160%;
 }
+.faq-component p b {
+  font-weight: 600;
+}
+
 .faq-component li {
   list-style: inherit;
   text-align: justify;
   margin-left: 20px;
 }
+.faq-component li p:first-child {
+  color: var(--frame-color);
+  margin: 20px 0px;
+}
+
 .faq-component :is(h2, h3) {
   text-align: left;
-  margin: 20px 0px;
+  margin: 30px 0px;
+  color: var(--frame-color);
+  font-weight: 600;
+}
+.faq-component h2 {
+  text-align: center;
 }

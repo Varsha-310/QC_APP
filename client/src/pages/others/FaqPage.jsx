@@ -2,7 +2,7 @@ import "./styles/FaqPage.css";
 const FaqPage = () => {
   return (
     <div className="faq-component">
-      <h2>ABOUT QWIKCILVER APP</h2>
+      <h2>Gift Card FAQ’s</h2>
       <ol>
         <li>
           <p>
@@ -173,9 +173,27 @@ const FaqPage = () => {
               How can I create gift cards SKU’s for listing on my online store?
             </strong>
           </p>
+
           <p>
-            Please login to the Qwikcilver App through your Shopify Account.
-            Thereafter select Create Gift Card from the left navigation menu.
+            By virtue of the Qwikcilver app’s integration with the Shopify
+            Platform, the gift card SKU’s created on the Qwikcilver dashboard,
+            will appear as a product SKU in the merchant’s Shopify dashboard.
+          </p>
+
+          <p>
+            <b>Step 1:</b> Please ensure the Gift Card SKU status is set as
+            “Active”, in your Shopify dashboard; to ensure visibility on the
+            online store.
+          </p>
+
+          <p>
+            <b>Step 2: </b>Under Publishing, and in Manage Sales Channels,
+            Select Online Store.
+          </p>
+
+          <p>
+            <b>Step 3: </b>Under Online Store – Theme Template, Change to Gift
+            Card template.
           </p>
         </li>
         <li>

@@ -7,16 +7,28 @@
 }
 .agreement-component p {
   margin: 10px 0px;
+  line-height: 170%;
 }
 .agreement-component li {
   list-style: inherit;
   text-align: justify;
-  margin-left: 20px;
+  margin-left: 40px;
+  list-style-type: square;
 }
-.agreement-component :is(h2, h3) {
+.agreement-component :is(h1, h2, h3) {
+  text-align: left;
+  margin: 15px 0px;
+  color: var(--frame-color);
+  font-weight: 600;
+}
+.agreement-component h1 {
   text-align: center;
-  margin: 10px;
+  font-size: 24px;
 }
+.agreement-component h2 {
+  font-size: 21px;
+}
+
 .agreement-component table {
   border-collapse: collapse;
 }

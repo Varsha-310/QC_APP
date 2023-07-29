@@ -19,6 +19,7 @@ import {
   TermsConditions,
   PrivacyPolicy,
   FaqPage,
+  Issues,
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
       {
         path: "/faqs",
         element: <FaqPage />,
+      },
+      {
+        path: "/issues",
+        element: <Issues />,
       },
     ],
   },

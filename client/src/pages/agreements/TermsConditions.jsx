@@ -1,8 +1,11 @@
 import "./styles/Agreement.css";
+import useScrollTop from "../../hooks/useScrollTop";
 
 const TermsConditions = () => {
+  useScrollTop();
   return (
     <div className="agreement-component">
+      <h1>TERMS AND CONDITIONS</h1>
       <h2>A. General</h2>
       <p>
         <a href="https://www.qwikcilver.com">www.qwikcilver.com</a> is an

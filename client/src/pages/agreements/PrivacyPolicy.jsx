@@ -1,7 +1,11 @@
 import "./styles/Agreement.css";
+import useScrollTop from "../../hooks/useScrollTop";
 const PrivacyPolicy = () => {
+  useScrollTop();
+
   return (
     <div className="agreement-component">
+      <h1>WEBSITE PRIVACY POLICY</h1>
       <h2>SCOPE</h2>
       <p>
         <a href="https://www.qwikcilver.com">www.qwikcilver.com</a> is an

@@ -22,10 +22,9 @@ const RefundSetting = () => {
     };
     try {
       const res = await instance.get(url, { headers });
+      console.log("hit", res);
       const resData = res.data;
-
       setConfiguration(resData.data);
-      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,17 +62,20 @@ const RefundSetting = () => {
         cod: configuration.cod,
         giftCard: configuration.giftCard,
         giftcard_cash: configuration.giftcard_cash,
-        location_id: configuration.location_id,
-        restock_type: configuration.restock_type,
+        location_id: configuration?.location_id
+          ? configuration?.location_id
+          : "",
+        restock_type: configuration?.restock_type
+          ? configuration?.restock_type
+          : "null",
       };
 
       let res = null;
 
       try {
         res = await instance.put(url, body, { headers });
-
-        alert(res?.data?.message);
         console.log(res);
+        alert("Updated successfully");
       } catch (error) {
         if (error.response) {
           console.log(error.response.data);
@@ -97,170 +99,164 @@ const RefundSetting = () => {
   };
 
   return (
-    configuration && (
-      <div className="refund-setting__component component">
-        {isLoading &&
-          createPortal(<Spinner />, document.getElementById("portal"))}
+    // configuration && (
+    <div className="refund-setting__component component">
+      {isLoading &&
+        createPortal(<Spinner />, document.getElementById("portal"))}
 
-        <div className="section-box-container">
-          <div className="section-box-title">Store Credit Preferences</div>
-          <div className="section-box-subtitle">
-            This settings allows you to credit the refund to a store credit.
-          </div>
-        </div>
-
-        <div className="section-box-container">
-          <div className="refund-setting__title">
-            What is the desired action? Select as Applicable
-          </div>
-        </div>
-
-        <div className="section-box-container">
-          <div className="refund-setting__header refund-setting__table-grid">
-            <div className="refund-setting__headings">
-              Payment Mode of Returned Order
-            </div>
-            <div className="refund-setting__headings">
-              Refund to Store-Credit
-            </div>
-            <div className="refund-setting__headings">
-              Refund Back-to-Source
-            </div>
-          </div>
-
-          <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">
-              Prepaid (CC / DC / UPI / Net Banking)
-            </div>
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="prepaid"
-              value={"Store-Credit"}
-              onChange={handleChange}
-              checked={configuration?.prepaid?.toLowerCase() === "store-credit"}
-            />
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="prepaid"
-              value={"Back-to-Source"}
-              onChange={handleChange}
-              checked={
-                configuration?.prepaid?.toLowerCase() === "back-to-source"
-              }
-            />
-          </div>
-          <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">Cash On Delivery</div>
-
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="cod"
-              value={"Store-Credit"}
-              onChange={handleChange}
-              checked={configuration.cod.toLowerCase() === "store-credit"}
-            />
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="cod"
-              value={"Back-to-Source"}
-              onChange={handleChange}
-              checked={configuration.cod.toLowerCase() === "back-to-source"}
-            />
-          </div>
-          <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">Gift Card</div>
-
-            {/* <input type="checkbox" className="refund-setting__radio" /> */}
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              value={"Store-Credit"}
-              name="giftCard"
-              onChange={handleChange}
-              // id="default"
-              checked={configuration.giftCard?.toLowerCase() === "store-credit"}
-            />
-            <div></div>
-          </div>
-          <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">
-              Combination of Prepaid & Gift Card
-            </div>
-
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="giftcard_cash"
-              value={"Store-Credit"}
-              onChange={handleChange}
-              checked={
-                configuration.giftcard_cash?.toLowerCase() === "store-credit"
-              }
-            />
-            <input
-              type="checkbox"
-              className="refund-setting__radio"
-              name="giftcard_cash"
-              value={"Back-to-Source"}
-              onChange={handleChange}
-              checked={
-                configuration.giftcard_cash?.toLowerCase() === "back-to-source"
-              }
-            />
-          </div>
-
-          {/* restock type */}
-          <br />
-
-          <div className="refund-setting__options refund-setting__table-grid">
-            <div className="refund-setting__type-name">Restock Type</div>
-            <div className="refund-setting__restock-input">
-              <CustomDropdown
-                options={[
-                  { title: "Return", value: "return" },
-                  { title: "No Return", value: "null" },
-                ]}
-                keyField={"restock_type"}
-                value={configuration?.restock_type || "Select"}
-                setvalue={setConfiguration}
-              />
-            </div>
-
-            <div></div>
-          </div>
-          {configuration?.restock_type === "return" ? (
-            <div className="refund-setting__options refund-setting__table-grid">
-              <div className="refund-setting__type-name">Location ID</div>
-              <div className="refund-setting__restock-input">
-                <input
-                  className="refund-setting__location-input"
-                  type="text"
-                  value={configuration?.location_id || ""}
-                  onChange={(e) =>
-                    setConfiguration((prev) => ({
-                      ...prev,
-                      location_id: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div></div>
-            </div>
-          ) : (
-            ""
-          )}
-
-          <PrimaryBtn $primary onClick={handleUpdate}>
-            Save
-          </PrimaryBtn>
+      <div className="section-box-container">
+        <div className="section-box-title">Store Credit Preferences</div>
+        <div className="section-box-subtitle">
+          This settings allows you to credit the refund to a store credit.
         </div>
       </div>
-    )
+
+      <div className="section-box-container">
+        <div className="refund-setting__title">
+          What is the desired action? Select as Applicable
+        </div>
+      </div>
+
+      <div className="section-box-container">
+        <div className="refund-setting__header refund-setting__table-grid">
+          <div className="refund-setting__headings">
+            Payment Mode of Returned Order
+          </div>
+          <div className="refund-setting__headings">Refund to Store-Credit</div>
+          <div className="refund-setting__headings">Refund Back-to-Source</div>
+        </div>
+
+        <div className="refund-setting__options refund-setting__table-grid">
+          <div className="refund-setting__type-name">
+            Prepaid (CC / DC / UPI / Net Banking)
+          </div>
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="prepaid"
+            value={"Store-Credit"}
+            onChange={handleChange}
+            checked={configuration?.prepaid?.toLowerCase() === "store-credit"}
+          />
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="prepaid"
+            value={"Back-to-Source"}
+            onChange={handleChange}
+            checked={configuration?.prepaid?.toLowerCase() === "back-to-source"}
+          />
+        </div>
+        <div className="refund-setting__options refund-setting__table-grid">
+          <div className="refund-setting__type-name">Cash On Delivery</div>
+
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="cod"
+            value={"Store-Credit"}
+            onChange={handleChange}
+            checked={configuration?.cod?.toLowerCase() === "store-credit"}
+          />
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="cod"
+            value={"Back-to-Source"}
+            onChange={handleChange}
+            checked={configuration?.cod?.toLowerCase() === "back-to-source"}
+          />
+        </div>
+        <div className="refund-setting__options refund-setting__table-grid">
+          <div className="refund-setting__type-name">Gift Card</div>
+
+          {/* <input type="checkbox" className="refund-setting__radio" /> */}
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            value={"Store-Credit"}
+            name="giftCard"
+            onChange={handleChange}
+            // id="default"
+            checked={configuration?.giftCard?.toLowerCase() === "store-credit"}
+          />
+          <div></div>
+        </div>
+        <div className="refund-setting__options refund-setting__table-grid">
+          <div className="refund-setting__type-name">
+            Combination of Prepaid & Gift Card
+          </div>
+
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="giftcard_cash"
+            value={"Store-Credit"}
+            onChange={handleChange}
+            checked={
+              configuration?.giftcard_cash?.toLowerCase() === "store-credit"
+            }
+          />
+          <input
+            type="checkbox"
+            className="refund-setting__radio"
+            name="giftcard_cash"
+            value={"Back-to-Source"}
+            onChange={handleChange}
+            checked={
+              configuration?.giftcard_cash?.toLowerCase() === "back-to-source"
+            }
+          />
+        </div>
+
+        {/* restock type */}
+        <br />
+
+        <div className="refund-setting__options refund-setting__table-grid">
+          <div className="refund-setting__type-name">Restock Type</div>
+          <div className="refund-setting__restock-input">
+            <CustomDropdown
+              options={[
+                { title: "Return", value: "return" },
+                { title: "No Return", value: "null" },
+              ]}
+              keyField={"restock_type"}
+              value={configuration?.restock_type || "Select"}
+              setvalue={setConfiguration}
+            />
+          </div>
+
+          <div></div>
+        </div>
+        {configuration?.restock_type === "return" ? (
+          <div className="refund-setting__options refund-setting__table-grid">
+            <div className="refund-setting__type-name">Location ID</div>
+            <div className="refund-setting__restock-input">
+              <input
+                className="refund-setting__location-input"
+                type="text"
+                value={configuration?.location_id || ""}
+                onChange={(e) =>
+                  setConfiguration((prev) => ({
+                    ...prev,
+                    location_id: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div></div>
+          </div>
+        ) : (
+          ""
+        )}
+
+        <PrimaryBtn $primary onClick={handleUpdate}>
+          Save
+        </PrimaryBtn>
+      </div>
+    </div>
   );
+  // );
 };
 
 export default RefundSetting;

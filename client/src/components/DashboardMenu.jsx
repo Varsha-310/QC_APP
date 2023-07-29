@@ -109,12 +109,6 @@ const DashboardMenu = () => {
                   <TabItemLable>KYC Status</TabItemLable>
                 </SubTabBox>
               </li>
-              <li>
-                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
-                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
-                  <TabItemLable>FAQ</TabItemLable>
-                </SubTabBox>
-              </li>
             </ul>
           </li>
 
@@ -182,6 +176,29 @@ const DashboardMenu = () => {
                 >
                   <AiOutlineSetting className="menu-icons" />
                   <TabItemLable>Preferences</TabItemLable>
+                </SubTabBox>
+              </li>
+            </ul>
+          </li>
+
+          <li id="storecredit" className="parent" onClick={handleTab}>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              SUPPORT
+            </TabBox>
+            <ul>
+              <li>
+                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
+                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <TabItemLable>FAQ</TabItemLable>
+                </SubTabBox>
+              </li>
+              <li>
+                <SubTabBox
+                  to={"/issues"}
+                  active={"/issues" === location.pathname}
+                >
+                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -253,12 +270,6 @@ const DashboardMenu = () => {
                   <TabItemLable>KYC Status</TabItemLable>
                 </SubTabBox>
               </li>
-              <li>
-                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
-                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
-                  <TabItemLable>FAQ</TabItemLable>
-                </SubTabBox>
-              </li>
             </ul>
           </li>
 
@@ -326,6 +337,29 @@ const DashboardMenu = () => {
                 >
                   <AiOutlineSetting className="menu-icons" />
                   <TabItemLable>Preferences</TabItemLable>
+                </SubTabBox>
+              </li>
+            </ul>
+          </li>
+
+          <li id="storecredit" className="parent" onClick={handleTab}>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              SUPPORT
+            </TabBox>
+            <ul>
+              <li>
+                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
+                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <TabItemLable>FAQ</TabItemLable>
+                </SubTabBox>
+              </li>
+              <li>
+                <SubTabBox
+                  to={"/issues"}
+                  active={"/issues" === location.pathname}
+                >
+                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
