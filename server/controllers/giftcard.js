@@ -290,7 +290,7 @@ export const addGiftcardtoWallet = async (
           },
           { upsert: true }
         );
-
+        walletExists.balance = parseFloat(walletExists.balance) + parseFloat(amount);
         return transaction.data;
       } else {
         return false;
@@ -299,7 +299,7 @@ export const addGiftcardtoWallet = async (
       console.log("wallet doesnt exists");
       let walletCreated = await createWallet(store, customer_id);
       let activatedCard = await activateCard(store, gc_pin);
-      console.log("activated card balance", activatedCard.Balance);
+      console.log("activated card balance", activatedCard);
       let gift_card = await createShopifyGiftcard(
         store,
         setting.access_token,
