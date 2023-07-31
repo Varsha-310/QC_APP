@@ -484,7 +484,7 @@ export const walletTransaction = async (req, res) => {
     const { store, customer_id } = req.body;
     console.log(store, customer_id);
     const cust = Number(customer_id);
-    const history = await wallet_history.findOne({ customer_id: cust });
+    const history = await wallet_history.findOne({ customer_id: customer_id });
     console.log(history, "-----wallethistory------------");
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
@@ -493,7 +493,7 @@ export const walletTransaction = async (req, res) => {
         ...respondWithData("fetched wallet transaction"),
         data: {
           balance: 980,
-          transactions: history.transactions,
+          transactions: history.transactions.reverse(),
         },
       });
     }

@@ -286,10 +286,10 @@ export const handleOrderCreatewebhook = async (req, res) => {
     const store = req.headers["x-shopify-shop-domain"];
     orderData.store_url = store;
 
-    await orders.updateOne({ store_url: store, id: orderData.id }, orderData, {
+   const data = await orders.updateOne({ store_url: store, id: orderData.id }, orderData, {
       upsert: true,
     });
-    console.log("Webhook Complieted");
+    console.log(data ,"Webhook Complieted");
   } catch (err) {
     logger.info(err);
     console.log(err);
