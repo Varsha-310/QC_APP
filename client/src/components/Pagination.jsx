@@ -18,7 +18,9 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
   // pages to show 5
 
   const pagesIndexSize = 5;
-  const [currentPagesIndex, setCurrentPagesIndex] = useState(1);
+  const [currentPagesIndex, setCurrentPagesIndex] = useState(
+    Math.ceil(currentPage / pagesIndexSize)
+  );
 
   const startPagesIndex = useMemo(() => {
     return (currentPagesIndex - 1) * pagesIndexSize;
