@@ -8,6 +8,8 @@ import { getUserToken } from "../../utils/userAuthenticate";
 import { LuImage } from "react-icons/lu";
 import useScrollTop from "../../hooks/useScrollTop";
 import Toast from "../../components/Toast";
+import { createPortal } from "react-dom";
+import Spinner from "../../components/Loaders/Spinner";
 
 // calculate total from a array of object
 const countTotal = (obj, key) => {
@@ -34,6 +36,8 @@ const RefundPage = () => {
   const [setting, setSetting] = useState(false);
 
   console.log(refundData);
+
+  console.log(data);
 
   const { id } = useParams();
 
@@ -114,7 +118,8 @@ const RefundPage = () => {
 
   // to initiate refund
   const handleInitiate = async () => {
-    console.log("calculate");
+    setIsLoading(true);
+
     const lineData = inputData.map((item) => ({ id: item.id, qty: item.qty }));
 
     const url = "/refund/initiate";
@@ -126,17 +131,19 @@ const RefundPage = () => {
       orderId: id,
       line_items: lineData,
       amount: refundAmount,
-      // return_type: refundOption,
+      refund_type: refundOption?.refund_type, //Back-to-Source , Store-credit
     };
     console.log("body", body);
 
     try {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
-      console.log(resData);
+      console.log("initiate", resData);
       alert(resData.message);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,13 +207,6 @@ const RefundPage = () => {
   };
 
   // for call calucate refund in every change
-  useEffect(() => {
-    if (inputData.length !== 0) {
-      setTimeout(() => {
-        calcRefund(id, inputData);
-      }, 2000);
-    }
-  }, [inputData]);
 
   useScrollTop();
 
@@ -214,10 +214,21 @@ const RefundPage = () => {
     fetchData(id);
 
     getConfig();
+
+    // calcRefund();
   }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      calcRefund(id, [{ id: data[0]?.id, qty: data[0]?.quantity }]);
+    }
+  }, [data]);
 
   return (
     <div className="refund-page__component component">
+      {isLoading &&
+        createPortal(<Spinner />, document.getElementById("portal"))}
+
       <div className="section-box-container">
         <div className="section-box-title bold">
           Refunding Order No: {id} Orders Via Gift Card
@@ -362,10 +373,10 @@ const RefundPage = () => {
                     <CustomDropdown
                       options={[
                         {
-                          title: "Back to store-credit",
-                          value: "back-to-store-credit",
+                          title: "Initiate to  Store Credit",
+                          value: "Store-credit",
                         },
-                        { title: "Back to source", value: "back-to-source" },
+                        { title: "Back to Source", value: "Back-to-Source" },
                       ]}
                       keyField="refund_type"
                       value={refundOption?.refund_type || "NA"}

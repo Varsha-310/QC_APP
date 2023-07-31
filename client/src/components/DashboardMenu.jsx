@@ -10,13 +10,18 @@ import {
   TabSubItemLable,
 } from "./BasicComponents";
 
-import { AiOutlineUser, AiOutlineSetting } from "react-icons/ai";
+import {
+  AiOutlineUser,
+  AiOutlineSetting,
+  AiOutlineQuestionCircle,
+} from "react-icons/ai";
 import {
   HiOutlineIdentification,
   HiOutlineWallet,
   HiOutlineReceiptRefund,
   HiOutlineDocumentMagnifyingGlass,
 } from "react-icons/hi2";
+import { MdOutlineContactSupport } from "react-icons/md";
 import { PiKeyReturn } from "react-icons/pi";
 import { BsPostcard } from "react-icons/bs";
 import { useLocation } from "react-router";
@@ -197,7 +202,7 @@ const DashboardMenu = () => {
                   to={"/issues"}
                   active={"/issues" === location.pathname}
                 >
-                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <AiOutlineQuestionCircle className="menu-icons" />
                   <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>
@@ -358,7 +363,7 @@ const DashboardMenu = () => {
                   to={"/issues"}
                   active={"/issues" === location.pathname}
                 >
-                  <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+                  <MdOutlineContactSupport className="menu-icons" />
                   <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>

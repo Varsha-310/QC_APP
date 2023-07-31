@@ -55,11 +55,11 @@ const GiftCardsList = () => {
 
   useEffect(() => {
     updateData();
-    console.log("useeffect")
+    console.log("useeffect");
   }, [currentPage]);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div className="component">
       {isLoading ? (
         <BarLoading />
       ) : (
@@ -68,6 +68,7 @@ const GiftCardsList = () => {
             <div className="section-box-title">My Gift Cards</div>
           </div>
           <GiftCardTable data={data?.data} deleteItem={deleteItem} />
+          
           <Pagination
             total={data.count}
             perPage={10}

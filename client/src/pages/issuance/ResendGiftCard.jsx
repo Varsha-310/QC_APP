@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import Spinner from "../../components/Loaders/Spinner";
 import Pagination from "../../components/Pagination";
 import { getUserToken } from "../../utils/userAuthenticate";
+import BarLoading from "../../components/Loaders/BarLoading";
 
 const ResendGiftCard = () => {
   const [orders, setOrders] = useState(null);
@@ -31,7 +32,13 @@ const ResendGiftCard = () => {
       }
       console.log(resData);
     } catch (error) {
-      console.log(error);
+      if (error.resonpose) {
+        console.error("server error", error.resonpose.data);
+      } else if (error.request) {
+        console.error("no response receieved", error.request);
+      } else {
+        console.error("Error", error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -65,34 +72,37 @@ const ResendGiftCard = () => {
     fetchOrders();
   }, [currentPage]);
 
-  return orders ? (
-    <div style={{ width: "100%" }}>
-      {isLoading &&
-        createPortal(<Spinner />, document.getElementById("portal"))}
+  if (isLoading) {
+    return (
+      <div className="component">
+        <BarLoading />
+      </div>
+    );
+  }
 
-      {orders.total === 0 ? (
-        <div className="section-box-container">
-          <div className="section-box-title"> There is 0 Gift cards</div>
-        </div>
-      ) : (
+  return (
+    <div className="component">
+      <div className="section-box-container">
+        <div className="section-box-title">Resend Gift Card</div>
+      </div>
+
+      {!!orders && orders?.total !== 0 ? (
         <>
-          <div className="section-box-container">
-            <div className="section-box-title">Resend Gift Card</div>
-          </div>
-
-          <ResendGiftCardTable data={orders.data} resendMail={resendMail} />
+          <ResendGiftCardTable data={orders?.data} resendMail={resendMail} />
 
           <Pagination
-            total={orders.total}
+            total={orders?.total}
             perPage={10}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
           />
         </>
+      ) : (
+        <div className="section-box-container">
+          <div className="section-box-title"> There is 0 Gift cards</div>
+        </div>
       )}
     </div>
-  ) : (
-    createPortal(<Spinner />, document.getElementById("portal"))
   );
 };
 
