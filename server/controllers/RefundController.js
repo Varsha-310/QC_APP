@@ -291,6 +291,11 @@ export const handleRefundAction = async (req, res) => {
         const refSetting = await getRefundType(refund_type, ordersData.payment_gateway_names, store_url);
         refund_type = refSetting.refund_type;
 
+        //check refundable type
+        if(!refund_type){
+
+            return res.json(respondValidationError("Please select or update the refund type."));
+        }
         //check cod payment Method 
         if(refSetting.cod_con == "cod_without_gc" && refund_type == "Back-to-Source"){
 
