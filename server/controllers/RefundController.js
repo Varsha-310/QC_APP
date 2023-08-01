@@ -6,6 +6,7 @@ import refundSetting from "../models/refundSetting.js";
 import store from "../models/store.js";
 import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilverHelper.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
+import RefundSession from "../models/RefundSession.js";
 
 /**
  * calculate shopify refund amount from shopify
@@ -110,7 +111,8 @@ const getRefundType = async(refund_type, payment_gateway_names, store_url) => {
     const resp = {
         refund_type: refund_type,
         restock_type: setting.restock_type,
-        location_id: setting.location_id
+        location_id: setting.location_id,
+        cod_con: ""
     }
     if(refund_type) return resp;
     if(payment_gateway_names.length == 1){
@@ -123,6 +125,7 @@ const getRefundType = async(refund_type, payment_gateway_names, store_url) => {
 
             case "manual":
                 resp.refund_type = setting.cod;
+                resp.cod_con = "cod_wothout_gc";
                 break;
 
             default: 
@@ -137,8 +140,11 @@ const getRefundType = async(refund_type, payment_gateway_names, store_url) => {
         if((gc>-1) && manual == -1){
 
             resp.refund_type = setting.giftcard_cash;
-        }else
+        }else{
+
             resp.refund_type = "Back-to-Source";
+            resp.cod_con = "cod_woth_gc";
+        }
     }
     return resp;
 }
@@ -174,16 +180,86 @@ const getGCRefundAmount = (refundableAmount, transactions) => {
 }
 
 /**
+ * Update Logs
+ * 
+ * @param {*} query 
+ * @param {*} logs 
+ * @returns 
+ */
+const updateRefundLogs = async(query, logs) => {
+
+    if(query["logs.id"] == undefined){
+        
+        delete query["logs.id"];
+        logs["id"] = Date.now() + Math.random().toString(10).slice(2, 7);
+        console.log("Update: ", query, logs);
+        await RefundSession.updateOne(query, {
+            $push: {
+                "logs": logs
+            }
+        }).then(res => console.log(res));
+    }
+    else{
+        
+        const data = {};
+        for (const key in logs) {
+            if (Object.hasOwnProperty.call(logs, key)) {
+                data[`logs.$.${key}`] = logs[key];   
+            }
+        }
+        console.log("Push: ", query, logs, data);
+        await RefundSession.updateOne(query, data).then(res => console.log(res));
+    }
+    return logs;
+}
+
+/**
+ * Fetch active refund session
+ * 
+ * @param {*} orderId 
+ * @param {*} store_url 
+ * @param {*} refund_type 
+ * @returns 
+ */
+const checkRefundSession = async(orderId, store_url, refund_type, refundableAmount) => {
+
+    const refundSession = await RefundSession.findOne({
+        order_id: orderId, store_url: store_url
+    });
+    console.log('isRefundSessionExists', refundSession);
+    if(!refundSession){
+
+        await RefundSession.create({
+            order_id: orderId, 
+            store_url: store_url, 
+            refundable_amount: refundableAmount
+        });
+        return {
+            logs: {},
+            refundedAmount: 0
+        };
+    }
+    const logs = refundSession.logs.find(log => log.status == "pending" && log.refund_type == refund_type);
+    const amount =  refundSession.logs.reduce((prev, item) => prev + parseFloat(item.amount), 0);
+    return {
+        logs: logs ? logs : {},
+        refundedAmount: amount
+    };
+}
+
+/**
  * Function to calculate and create refund amount
+ * 
  * @param {*} req
  * @param {*} res
  */
 export const handleRefundAction = async (req, res) => {
 
     try {
-    
+        
         // return res.json(respondSuccess("Refund has been initiated"));
         let { orderId, line_items, amount, refund_type } = req.body;
+
         const {store_url} = req.token;
 
         //check order
@@ -193,10 +269,11 @@ export const handleRefundAction = async (req, res) => {
             return res.json(respondError("Order Not Found", 422));
         }
         //check taxes
-        // const orderQty = ordersData.line_items.reduce((qty,item) => qty+ parseInt(item.quantity),0);
-        // const tax = (parseFloat(ordersData.current_total_tax)/ orderQty).toFixed(2); 
-        // const refundableQty = line_items.reduce((qty, item) => qty + item.quantity, 0);
-        // let totalTaxRefunded= refundableQty * tax;
+        const orderQty = ordersData.line_items.reduce((qty,item) => qty+ parseInt(item.quantity),0);
+        const tax = (parseFloat(ordersData.current_total_tax)/ orderQty).toFixed(2); 
+        const refundableQty = line_items.reduce((qty, item) => qty + item.qty, 0);
+        console.log(orderQty, tax, refundableQty);
+        let totalTaxRefunded= refundableQty * tax;
 
         const shipping = ordersData?.total_shipping_price_set?.shop_money || {currency: "INR"};
         const storeData = await store.findOne({ store_url });
@@ -204,35 +281,55 @@ export const handleRefundAction = async (req, res) => {
         const accessToken = storeData.access_token;
         let refundAmount = await callShopifyApiToCalculateRefund(orderId, shipping,line_items, store_url, accessToken);
         refundAmount = refundAmount.data;
-        console.log("Refund Calculation", refundAmount);
+        console.log("Refund Calculation", JSON.stringify(refundAmount));
+        
         // check refundable amount
         const transactions = refundAmount.refund.transactions;
         let refundableAmount = transactions.reduce((prev, item) => prev+ parseFloat(item.maximum_refundable),0);
-        //refundableAmount = refundableAmount + totalTaxRefunded;
+        refundableAmount = refundableAmount + totalTaxRefunded;
         
+        const refSetting = await getRefundType(refund_type, ordersData.payment_gateway_names, store_url);
+        refund_type = refSetting.refund_type;
+
+        //check cod payment Method 
+        if(refSetting.cod_con == "cod_without_gc" && refund_type == "Back-to-Source"){
+
+            return res.json(respondValidationError("The cod order is not able to process with the back to source option"));
+        }
+        console.log("Refund Type: ", refund_type);
+        console.log("Refundable Amout: ",totalTaxRefunded, refundableAmount);
+        let refundSession = await checkRefundSession(orderId, store_url, refund_type, refundableAmount);
+        console.log(refundSession);
+        const refundedAmount = refundSession.refundedAmount;
+        refundSession = refundSession.logs;
+
         console.log("Refundable Amout: ", refundableAmount);
-        if(amount > refundableAmount){
+        if((amount+refundedAmount) > refundableAmount){
 
             return res.json(respondValidationError("The given amount is greater then the maximum refundable amount."));
         }
 
-        const refSetting = await getRefundType(refund_type, ordersData.payment_gateway_names, store_url);
-        refund_type = refSetting.refund_type;
-
+        const sessionQuery = {
+            order_id: orderId, store_url, 
+            "logs.id": refundSession?.id
+        };
+        const logs = {
+            refund_type: refund_type,
+            amount: amount
+        }
         const gcRfDetails = await getGCRefundAmount(amount, transactions);
         const trans = [];
-
-        console.log("GC Refund Details:",refund_type, gcRfDetails);
+        console.log("GC Refund Details:", refund_type, gcRfDetails);
         
-        // process gc reverse transaction
-        if(gcRfDetails.gc_rf_amount){
+        //process gc reverse transaction
+        if(gcRfDetails.gc_rf_amount && (!refundSession?.gc_refunded_at)){
 
             const getOrderGCAmount = await getOrderTransactionDetails(orderId, store_url, accessToken);
             console.log("Order Transacion", getOrderGCAmount);
             const gc_transaciton = getOrderGCAmount.data.transactions.find(item => item.gateway == "gift_card");
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
-            //await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount);
+            await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount);
             trans.push({
                 "kind":"refund",
                 "gateway": gcRfDetails.gc_trans.gateway,
@@ -240,10 +337,17 @@ export const handleRefundAction = async (req, res) => {
                 "amount": gcRfDetails.gc_trans.amount
             });
             amount = gcRfDetails.refundableAmount;
+            refundSession = await updateRefundLogs(sessionQuery, {
+                "gc_refunded_at": new Date(),
+                "gc_rf_amount": gcRfDetails.gc_rf_amount,
+                ...logs
+            })
+            sessionQuery["logs.id"] = refundSession.id;
         }
        
-        if(amount && refund_type == "Back-to-Source"){
+        if(amount && refund_type == "Back-to-Source" && (!refundSession?.other_rf_at) && refSetting.cod_con != "cod_woth_gc"){
 
+            console.log("Back To source method called");
             const _trans = transactions.find(item => item.gateway != "gift_card");
             trans.push({
                 "kind":"refund",
@@ -251,30 +355,66 @@ export const handleRefundAction = async (req, res) => {
                 "parent_id": _trans.parent_id,
                 "amount": amount
             });
+            refundSession = await updateRefundLogs(sessionQuery, {
+                other_rf_at: new Date(),
+                other_rf_amount: amount,
+                ...logs
+            });
+            sessionQuery["logs.id"] = refundSession.id;
+
         }else if(amount && refund_type == "Store-credit"){
 
-            const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180 );
-            console.log( "New Added Giftcard", giftCardDetails );
-            const custom_id = ordersData.customer.id == 7286901178670 ? "9709857928" :  ordersData.customer.id;
-            await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance );
-            const _trans = transactions.find(item => item.gateway != "gift_card");
-            trans.push({
-                "kind":"refund",
-                "gateway": _trans.gateway,
-                "parent_id": _trans.parent_id,
-                "amount":0
-            });
+            if(!refundSession?.qc_gc_created){
+
+                const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180 );
+                console.log( "New Added Giftcard", giftCardDetails );
+                const custom_id = ordersData.customer.id == 7286901178670 ? "9709857928" :  ordersData.customer.id;
+                await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance );
+                const _trans = transactions.find(item => item.gateway != "gift_card");
+                trans.push({
+                    "kind":"refund",
+                    "gateway": _trans.gateway,
+                    "parent_id": _trans.parent_id,
+                    "amount":0
+                });
+                refundSession = await updateRefundLogs(sessionQuery, {
+                    qc_gc_created: new Date(),
+                    qc_gc_amount: amount,
+                    ...logs
+                });
+                sessionQuery["logs.id"] = refundSession.id;
+            }
         }
 
         // Findal process of the refunds
-        const refund_line_items = line_items.map(item => {
-            return { line_item_id: item.id, quantity: item.qty, location: refSetting.location_id, restock_type:refSetting.restock_type };
-        })
-        const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
-        console.log(refundedResp.data);
+        if(!refundSession?.refund_created_at){
+
+            console.log("Create Refund Method called");
+            const refund_line_items = line_items.map(item => {
+                return { line_item_id: item.id, quantity: item.qty, location: refSetting.location_id, restock_type:refSetting.restock_type };
+            })
+            
+            const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
+            console.log(refundedResp.data);
+            refundSession = await updateRefundLogs(sessionQuery, {
+                refund_created_at: new Date(),
+                status: "completed"
+            });
+            ordersData.refund_status = (amount+refundedAmount) > refundableAmount ? "Refunded" : "Partially refunded";
+        }
+       
+        // if(refundSession?.order_updated_at){
+        //     const refund_line_items = line_items.map(item => {
+        //         return { line_item_id: item.id, quantity: item.qty, location: refSetting.location_id, restock_type:refSetting.restock_type };
+        //     })
+        //     const refundedResp = await updateOrderNotes(orderId,store_url,accessToken,refundSession.id, refundAmount.refund.currency, );
+        //     console.log(refundedResp.data);
+        //     ordersData.Refund_Status = "";
+        // }
         ordersData.Refund_Mode = refund_type;
         ordersData.save();
-        return res.json(respondSuccess("Refund has been initiated"));
+        const msg = refSetting.cod_con == "cod_woth_gc"  ? "Refund has been initiated only for the gift card amount." : "Refund has been initiated";
+        return res.json(respondSuccess(msg));
     } catch (err) {
         
         console.error(err);
@@ -323,6 +463,41 @@ export const createRefundBackToSource = async (_trans, orderId, line_items, stor
 }  
 
 /**
+ * Update Order Notes
+ * 
+ * @param {*} orderId 
+ * @param {*} store_url 
+ * @param {*} accessToken 
+ * @param {*} session_id 
+ * @param {*} currency 
+ * @param {*} amount 
+ * @returns 
+ */
+export const updateOrderNotes = async ( orderId, store_url, accessToken, session_id, currency, amount) => {
+
+    const options = {
+
+        method: "POST",
+        url: `https://${store_url}/admin/api/2023-04/orders/${orderId}.json`,
+        headers: {
+            "X-Shopify-Access-Token": accessToken,
+            "Content-Type": "application/json",
+        },
+
+        data: JSON.stringify({
+            "order": {
+                id: orderId,
+                "note_attributes": [{
+                    "name": `QC-Refund-Sesson: ${session_id}`,
+                    "value": `${currency} ${amount}`
+                }]
+            }
+        })
+    }
+    return axios(options);
+}  
+
+/**
  * To handle refund settings
  * @param {*} req
  * @param {*} res
@@ -350,7 +525,6 @@ export const getConfigapi = async (req, res) => {
    * @param {*} req
    * @param {*} res
    */
-  
   export const updateConfigapi = async (req, res) => {
   
     try {   
