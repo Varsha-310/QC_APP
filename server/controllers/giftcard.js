@@ -146,14 +146,14 @@ export const getGiftcardProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Current page number (default: 1)
     const limit = parseInt(req.query.limit) || 10; // Number of items per page (default: 10)
 
-    const count = await Product.countDocuments({ store_url: req.token.store });
+    const count = await Product.countDocuments({ store_url: req.token.store_url });
     const totalPages = Math.ceil(count / limit);
 
     // Adjust the page value if it exceeds the total number of pages
     const currentPage = page > totalPages ? totalPages : page;
 
     console.log(req.token.store_url);
-    let products = await Product.find({ store_url: req.token.store })
+    let products = await Product.find({store_url: req.token.store_url})
       .skip((currentPage - 1) * limit)
       .limit(limit);
     console.log(products);
