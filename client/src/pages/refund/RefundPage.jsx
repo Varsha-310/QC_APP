@@ -20,7 +20,8 @@ const countTotal = (obj, key) => {
     }, 0)
     .toFixed(2);
 
-  return parseFloat(res);
+  // console.log("resss", res);
+  return res;
 };
 const RefundPage = () => {
   const [data, setData] = useState(null);
@@ -328,8 +329,10 @@ const RefundPage = () => {
                     <td>Refund Total</td>
                     <td>
                       ₹{" "}
-                      {countTotal(inputData, "totalPrice") +
-                        countTotal(inputData, "totalTax")}
+                      {(
+                        parseFloat(countTotal(inputData, "totalPrice")) +
+                        parseFloat(countTotal(inputData, "totalTax"))
+                      ).toFixed(2)}
                     </td>
                   </tr>
                 </table>
