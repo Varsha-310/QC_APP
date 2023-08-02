@@ -1,6 +1,6 @@
 .agreement-component {
   padding: 10px 30px;
-  margin: 15px;
+  /* margin: 15px; */
   /* box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3); */
   background-color: #ffffff;
   border-radius: 5px;
@@ -17,16 +17,16 @@
 }
 .agreement-component :is(h1, h2, h3) {
   text-align: left;
-  margin: 15px 0px;
+  margin: 10px 0px;
   color: var(--frame-color);
-  font-weight: 600;
+  font-weight: 500;
 }
 .agreement-component h1 {
   text-align: center;
   font-size: 24px;
 }
 .agreement-component h2 {
-  font-size: 21px;
+  font-size: 18px;
 }
 
 .agreement-component table {

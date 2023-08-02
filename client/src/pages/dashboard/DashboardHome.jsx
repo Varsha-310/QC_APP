@@ -13,6 +13,7 @@ import Spinner from "../../components/Loaders/Spinner";
 import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
 import Toast from "../../components/Toast";
+import useScrollTop from "../../hooks/useScrollTop";
 
 const DashboardHome = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -99,6 +100,7 @@ const DashboardHome = () => {
 
     getKycStatus();
   }, []);
+
 
   if (isError) {
     return <Toast>{isError}</Toast>;
