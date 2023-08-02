@@ -131,18 +131,16 @@ export const handleOrderDataList = async (req, res) => {
         }
         if (req.query.payment_gateway_names) {
             filter.payment_gateway_names = req.query.payment_gateway_names;
-        }
-
+        };
         const orders = await orderModel.find(
             filter,
-            {
-              id:1,
-              updated_at:1,
-              'customer.first_name':1,
+            { id:1, updated_at:1, 'customer.first_name':1,
               total_price:1,status:1,payment_gateway_names:1,
               Refund_Mode:1,refund_status:1,
-              financial_status: 1, fulfillment_status:1
+              financial_status: 1, fulfillment_status:1,
+              refund_status: 1, order_number: 1
             })
+            .sort({ created_at:-1 })
             .skip(skip)
             .limit(limit);
         const totalCount = await orderModel.countDocuments(filter); 
