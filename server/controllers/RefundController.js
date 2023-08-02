@@ -241,7 +241,7 @@ const checkRefundSession = async(orderId, store_url, refund_type, refundableAmou
         };
     }
     const logs = refundSession.logs.find(log => log.status == "pending" && log.refund_type == refund_type);
-    const amount =  refundSession.logs.reduce((prev, item) => prev + parseFloat(item.amount), 0);
+    const amount =  refundSession.logs.reduce((prev, item) => item.status == "pending" ? prev : prev + parseFloat(item.amount), 0);
     return {
         logs: logs ? logs : {},
         refundedAmount: amount
