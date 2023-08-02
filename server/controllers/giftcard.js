@@ -49,13 +49,12 @@ export const createGiftcardProducts = async (req, res) => {
       tags: tags,
       variants: variants,
       status: "draft",
-      validity: validity,
       store_url: store,
     });
-    const expiryDate = { validity: validity };
+    const otherData = { validity: validity,terms:terms};
     const createP = {
       ...newProduct,
-      ...expiryDate,
+      ...otherData,
     };
     await Product.create(createP);
     console.log("createGiftcardProducts response shopify");
@@ -98,6 +97,9 @@ export const updateGiftcardProduct = async (req, res) => {
     let updatedProduct = await shopify.product.update(product_id, updateObj);
     if(validity){
       updateObj["validity"] = validity;
+    }
+    if(terms){
+      updateObj["terms"] = terms;
     }
     await Product.updateOne({id : product_id}, {updateObj}, {upsert: true});
 
@@ -154,6 +156,7 @@ export const getGiftcardProducts = async (req, res) => {
 
     console.log(req.token.store_url);
     let products = await Product.find({store_url: req.token.store_url})
+      .sort({ created_at:-1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
     console.log(products);
@@ -439,9 +442,7 @@ export const giftCardOrders = async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Current page number
     const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
-    const gcOrders = await orders.find({
-      store_url: req.token.store_url,
-    });
+    const gcOrders = await orders.find({store_url: req.token.store_url}).sort({ created_at:-1 });
 
     console.log(gcOrders.length);
 
