@@ -26,7 +26,12 @@ const FaqPage = () => {
       <div className="faq-component">
         <div className="faq-sections">
           <div className="faq-section__title" onClick={handleActive} id="about">
-            ABOUT QWIKCILVER <BiChevronDown className="faq-section__icon" />
+            ABOUT QWIKCILVER{" "}
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.about ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.about && (
             <ul>
@@ -154,7 +159,12 @@ const FaqPage = () => {
             id="onboarding"
             className="faq-section__title"
           >
-            MERCHANT ONBOARDING <BiChevronDown className="faq-section__icon" />
+            MERCHANT ONBOARDING{" "}
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.onboarding ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.onboarding && (
             <ol>
@@ -200,7 +210,11 @@ const FaqPage = () => {
         <div className="faq-sections">
           <div onClick={handleActive} id="sku" className="faq-section__title">
             CREATING GIFT CARD SKU (FOR ONLINE MERCHANTS USING SHOPIFY PLATFORM){" "}
-            <BiChevronDown className="faq-section__icon" />
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.sku ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.sku && (
             <ol>
@@ -296,7 +310,11 @@ const FaqPage = () => {
             className="faq-section__title"
           >
             PURCHASE AND REDEMPTION OF GIFT CARDS{" "}
-            <BiChevronDown className="faq-section__icon" />
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.purchase ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.purchase && (
             <ol>
@@ -423,7 +441,11 @@ const FaqPage = () => {
             className="faq-section__title"
           >
             CREATING STORE CREDITS (FOR ONLINE MERCHANTS USING SHOPIFY PLATFORM){" "}
-            <BiChevronDown className="faq-section__icon" />
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.storecredits ? "icon_up" : ""
+              }`}
+            />
           </div>
 
           {activeSection.storecredits && (
@@ -497,7 +519,12 @@ const FaqPage = () => {
             id="report"
             className="faq-section__title"
           >
-            MERCHANT REPORTS <BiChevronDown className="faq-section__icon" />
+            MERCHANT REPORTS{" "}
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.report ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.report && (
             <ol>
@@ -531,7 +558,12 @@ const FaqPage = () => {
             id="billing"
             className="faq-section__title"
           >
-            BILLING <BiChevronDown className="faq-section__icon" />
+            BILLING{" "}
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.billing ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.billing && (
             <ol>
@@ -633,7 +665,12 @@ const FaqPage = () => {
             id="support"
             className="faq-section__title"
           >
-            CUSTOMER SUPPORT <BiChevronDown className="faq-section__icon" />
+            CUSTOMER SUPPORT
+            <BiChevronDown
+              className={`faq-section__icon ${
+                activeSection?.support ? "icon_up" : ""
+              }`}
+            />
           </div>
           {activeSection?.support && (
             <ol>
