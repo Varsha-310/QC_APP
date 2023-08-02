@@ -392,7 +392,7 @@ export const getWalletBalance = async (req, res) => {
       console.log("-----------------", walletExists);
       if (walletExists) {
         let balanceFetched = await fetchBalance(store, walletExists.wallet_id);
-        let shopifybalance = await getShopifyGiftcard(store,store.access_token,walletExists.shopify_giftcard_id);
+        let shopifybalance = await getShopifyGiftcard(store,storeExists.access_token,walletExists.shopify_giftcard_id);
         console.log(shopifybalance, "shopify giftcard balance")
         console.log(balanceFetched);
         res.json({
@@ -560,18 +560,17 @@ const createShopifyGiftcard = async (store, token, amount) => {
 };
 
 
-const getShopifyGiftcard = async (store, token) => {
+const getShopifyGiftcard = async (store, token, id) => {
 
   let config = {
     method: "get",
     maxBodyLength: Infinity,
-    url: `https://${store}/admin/api/2023-07/gift_cards${id}.json`,
+    url: `https://${store}/admin/api/2023-07/gift_cards/${id}.json`,
     headers: {
       "X-Shopify-Access-Token": token,
       "Content-Type": "application/json",
-    },
-    data: data,
-  };
+    }
+ };
 
   const shopifyGc = await axios(config);
   console.log(shopifyGc.data.gift_card);
@@ -591,9 +590,7 @@ const updateShopifyGiftcard = async (store, token, id, amount) => {
     headers: {
       "X-Shopify-Access-Token": token,
       "Content-Type": "application/json",
-    },
-    data: data,
-  };
+    }  };
   const shopifyGc = await axios(config);
   console.log(shopifyGc.data.adjustment);
   return shopifyGc.data.adjustment;
