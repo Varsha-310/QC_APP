@@ -22,9 +22,10 @@ import orders from "../models/orders.js";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
+
   console.log("order created", req.headers);
   const shop = req.headers["x-shopify-shop-domain"];
-  // const shop = "qc-plus-store.myshopify.com";
+  //const shop = "qc-plus-store.myshopify.com";
   const order = req.body;
   ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
@@ -63,8 +64,18 @@ const ordercreateEvent = async (input, done, res) => {
     let isGiftcardOrder = false;
     let shopName = shop;
     console.log("Shop Name", shop);
-    let settings = await store.findOne({ store_url: shopName });
 
+    // Store Order
+    await orders.updateOne(
+      {
+        store_url: shop,
+        id: order.id,
+      },
+      order,
+      { upsert: true }
+    );
+
+    let settings = await store.findOne({ store_url: shopName });
     if (settings) {
       
       let newOrder = order;
@@ -103,7 +114,7 @@ const ordercreateEvent = async (input, done, res) => {
           
             const storeOrder = await orders.updateOne(
               {
-                store_url: "qwikcilver-public-app-teststore.myshopify.com",
+                store_url: req.headers["x-shopify-shop-domain"] ,
                 id: newOrder.id,
               },
               order,
@@ -115,8 +126,7 @@ const ordercreateEvent = async (input, done, res) => {
           }
           if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
             if (
-              newOrder.financial_status == "paid" ||
-              shopName === "qwikcilver-demo.myshopify.com"
+              newOrder.financial_status == "paid" 
             ) {
               for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
                 console.log(
@@ -128,15 +138,9 @@ const ordercreateEvent = async (input, done, res) => {
                 if (qwikcilver_gift_card.properties.length > 0) {
                 
                   let sent_as_gift;
-                  for (
-                    let i = 0;
-                    i < qwikcilver_gift_card.properties.length;
-                    i++
-                  ) {
-                    if (
-                      qwikcilver_gift_card.properties[i].name ===
-                      "_Qc_recipient_email"
-                    ) {
+                  for ( let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
+                    if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_email") {
+                      
                       sent_as_gift = true;
                       let updateOrder = await orders.updateOne(
                         { id: newOrder.id },
@@ -150,12 +154,11 @@ const ordercreateEvent = async (input, done, res) => {
                     }
                   }
                   if (sent_as_gift == true) {
+                    
                     console.log("-------sent as gift---------------");
-                    for (
-                      let i = 0;
-                      i < qwikcilver_gift_card.properties.length;
-                      i++
-                    ) {
+                    for (let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
+                      
+                      // change it to swith statement
                       if (
                         qwikcilver_gift_card.properties[i].name ===
                         "_Qc_img_url"
@@ -183,6 +186,8 @@ const ordercreateEvent = async (input, done, res) => {
                       }
                     }
 
+
+
                       let giftCardDetails = await createGiftcard(
                         shopName,
                         parseInt(qwikcilver_gift_card.price),
@@ -190,7 +195,7 @@ const ordercreateEvent = async (input, done, res) => {
                         gift_card_product.validity
                       );
                       console.log(giftCardDetails);
-                      console.log(email);
+                      console.log(email, image_url, "=============image url=====================");
                       await sendEmailViaSendGrid(
                         shopName,
                         newOrder,
@@ -230,6 +235,7 @@ const ordercreateEvent = async (input, done, res) => {
         }
       }
     }
+
   } catch (err) {
     console.log(err);
   }

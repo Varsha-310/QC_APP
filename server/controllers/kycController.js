@@ -62,7 +62,7 @@ export const initiatieKyc = async (req, res) => {
       const formUrl = docFillUrls[dynamicKey];
       console.log(formUrl);
 
-      let formresult = await fillForm(formUrl, storeData);
+      let formresult = await fillForm(formUrl, storeData,req.token.store_url);
       if (formresult.status == 200 && formresult.data.status == "SUCCESS") {
         let dispatchResponse = await dispatchTransaction(txnId);
         console.log(dispatchResponse);
@@ -94,7 +94,7 @@ export const initiatieKyc = async (req, res) => {
  * @param {*} data
  * @param {*} res
  */
-export const fillForm = async (formUrl, shop) => {
+export const fillForm = async (formUrl, shop, token) => {
   try {
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
@@ -118,7 +118,7 @@ export const fillForm = async (formUrl, shop) => {
         firstName: shop.name,
         lastName: "qwertyu",
         mobile: shop.phone,
-        queryParam: "asdfghjkl",
+        queryParam: token ,
       }),
     };
     let result = await axios(formData);
