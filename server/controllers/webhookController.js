@@ -103,7 +103,7 @@ const ordercreateEvent = async (input, done, res) => {
           
             const storeOrder = await orders.updateOne(
               {
-                store_url: "qwikcilver-public-app-teststore.myshopify.com",
+                store_url: req.headers["x-shopify-shop-domain"] ,
                 id: newOrder.id,
               },
               order,
@@ -115,8 +115,7 @@ const ordercreateEvent = async (input, done, res) => {
           }
           if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
             if (
-              newOrder.financial_status == "paid" ||
-              shopName === "qwikcilver-demo.myshopify.com"
+              newOrder.financial_status == "paid" 
             ) {
               for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
                 console.log(
@@ -190,7 +189,7 @@ const ordercreateEvent = async (input, done, res) => {
                         gift_card_product.validity
                       );
                       console.log(giftCardDetails);
-                      console.log(email);
+                      console.log(email, image_url, "=============image url=====================");
                       await sendEmailViaSendGrid(
                         shopName,
                         newOrder,
