@@ -308,7 +308,7 @@ export const handleRefundAction = async (req, res) => {
         const refundedAmount = refundSession.refundedAmount;
         refundSession = refundSession.logs;
 
-        console.log("Refundable Amout: ", refundableAmount);
+        console.log("Refundable Amout: ",(amount+refundedAmount), refundedAmount, refundableAmount);
         if((amount+refundedAmount) > refundableAmount){
 
             return res.json(respondValidationError("The given amount is greater then the maximum refundable amount."));
