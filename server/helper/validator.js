@@ -221,7 +221,7 @@ export const validateUpdateConfigApi = async (req, res, next) => {
       giftCard: "required|string",
       giftcard_cash: "required|string",
       restock_type: "required|string",
-      // location_id:"required|numeric",
+      //location_id:"required|numeric",
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
