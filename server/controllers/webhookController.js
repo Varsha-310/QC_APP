@@ -114,7 +114,7 @@ const ordercreateEvent = async (input, done, res) => {
           
             const storeOrder = await orders.updateOne(
               {
-                store_url: req.headers["x-shopify-shop-domain"] ,
+                store_url: shopName ,
                 id: newOrder.id,
               },
               order,
