@@ -4,7 +4,6 @@
   /* border-radius: 5px; */
 }
 .faq-sections {
-  /* padding: 10px 20px; */
   margin: 10px 0px;
   background-color: #ffffff;
 }
@@ -20,6 +19,9 @@
   list-style: inherit;
   text-align: justify;
   margin-left: 20px;
+}
+.faq-component li p:first-child {
+  font-weight: 600;
 }
 .faq-section__title {
   color: var(--frame-color);
