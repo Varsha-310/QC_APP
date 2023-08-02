@@ -138,7 +138,7 @@ export const handleOrderDataList = async (req, res) => {
               total_price:1,status:1,payment_gateway_names:1,
               Refund_Mode:1,refund_status:1,
               financial_status: 1, fulfillment_status:1,
-              refund_status: 1, number: 1
+              refund_status: 1, order_number: 1
             })
             .sort({ created_at:-1 })
             .skip(skip)
