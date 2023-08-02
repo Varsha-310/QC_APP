@@ -107,6 +107,7 @@ const getRefundType = async(refund_type, payment_gateway_names, store_url) => {
 
     console.log("Get Refund Type", refund_type, payment_gateway_names, store_url);
     const setting = await refundSetting.findOne({ store_url });
+    console.log("Refund Settings:", setting);
     if (!setting)  return null;
     const resp = {
         refund_type: refund_type,
@@ -291,6 +292,7 @@ export const handleRefundAction = async (req, res) => {
         const refSetting = await getRefundType(refund_type, ordersData.payment_gateway_names, store_url);
         refund_type = refSetting.refund_type;
 
+        console.log(refSetting);
         //check refundable type
         if(!refund_type){
 
@@ -329,7 +331,7 @@ export const handleRefundAction = async (req, res) => {
         if(gcRfDetails.gc_rf_amount && (!refundSession?.gc_refunded_at)){
 
             const getOrderGCAmount = await getOrderTransactionDetails(orderId, store_url, accessToken);
-            console.log("Order Transacion", getOrderGCAmount);
+            // console.log("Order Transacion", getOrderGCAmount);
             const gc_transaciton = getOrderGCAmount.data.transactions.find(item => item.gateway == "gift_card");
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
@@ -395,7 +397,7 @@ export const handleRefundAction = async (req, res) => {
 
             console.log("Create Refund Method called");
             const refund_line_items = line_items.map(item => {
-                return { line_item_id: item.id, quantity: item.qty, location: refSetting.location_id, restock_type:refSetting.restock_type };
+                return { line_item_id: item.id, quantity: item.qty, location_id: refSetting.location_id, restock_type:refSetting.restock_type };
             })
             
             const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
@@ -422,7 +424,6 @@ export const handleRefundAction = async (req, res) => {
     } catch (err) {
         
         console.error(err);
-        logger.info(err)
         res.json(respondInternalServerError());
     }
 }
