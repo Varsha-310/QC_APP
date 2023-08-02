@@ -31,9 +31,7 @@ const RefundPage = () => {
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
   const [refundData, setRefundData] = useState([]);
-  const [refundOption, setRefundOption] = useState({
-    refund_type: "Store-credit",
-  });
+  const [refundOption, setRefundOption] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
@@ -134,7 +132,7 @@ const RefundPage = () => {
       orderId: id,
       line_items: lineData,
       amount: refundAmount,
-      refund_type: refundOption?.refund_type,
+      refund_type: refundOption?.refund_type || null,
     };
     console.log("body", body);
 
@@ -182,10 +180,10 @@ const RefundPage = () => {
 
     const taxPerItem = taxlines.reduce((acc, curr) => {
       const cvalue = parseFloat(curr.price);
-      return acc + cvalue;
+      return (acc + cvalue) / totalQty;
     }, 0);
 
-    if (!isNaN(qtyValue) && qtyValue > 0 && qtyValue <= totalQty) {
+    if (!isNaN(qtyValue) && qtyValue >= 0 && qtyValue <= totalQty) {
       const itemIndex = inputData.findIndex((item) => item.id === itemId);
 
       if (itemIndex !== -1) {
