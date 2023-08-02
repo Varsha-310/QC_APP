@@ -20,6 +20,8 @@ let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
+import axios  from "axios";
+import qs from "qs";
 
 export const app = express();
 
@@ -92,6 +94,34 @@ app.use("/plan" , planRoute)
 // giftcard routes
 app.use("/giftcard" , giftcardRoute)
 
+app.get('/check', function (req, res) {
+  
+    var data = qs.stringify({
+      'key': 'Ayuils',
+      'command': 'si_transaction',
+      'var1': {"authpayuid":"403993715524922630","amount":"500","txnid":"txnid93779541984"},
+      'var2': '500',
+      'hash': 'd13824593d4040975d6be0a5a02ca19b7b797f42c7439d4688884c8c9205fc0c429148047383b299f676d55bf93dafd2562e716bdf0450e89bd9a39ae534b812' 
+    });
+    var config = {
+      method: 'post',
+      url: 'https://test.payu.in/merchant/postservice?form=2',
+      headers: { 
+        'accept': 'application/json', 
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    return res.json("Process Completed");
+});
 
 app.get('/', function (req, res) {
   
