@@ -31,7 +31,9 @@ const RefundPage = () => {
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
   const [refundData, setRefundData] = useState([]);
-  const [refundOption, setRefundOption] = useState(null);
+  const [refundOption, setRefundOption] = useState({
+    refund_type: "Store-credit",
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
@@ -132,7 +134,7 @@ const RefundPage = () => {
       orderId: id,
       line_items: lineData,
       amount: refundAmount,
-      refund_type: refundOption?.refund_type, //Back-to-Source , Store-credit
+      refund_type: refundOption?.refund_type,
     };
     console.log("body", body);
 
@@ -387,7 +389,9 @@ const RefundPage = () => {
                     />
                   </div>
                   <PrimaryBtn $primary width="100%" onClick={handleInitiate}>
-                    Refund to Store-Credit
+                    {refundOption?.refund_type === "Store-credit"
+                      ? "Refund to Store-Credit"
+                      : "Refund Back to Source"}
                   </PrimaryBtn>
                 </div>
               </div>
