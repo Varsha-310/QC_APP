@@ -15,7 +15,7 @@ const verifyTransaction = () => {
 const sendMandateNotification = () => {
 
 
-
+    
 }
 
 const handleReccuringPayment = () => {
