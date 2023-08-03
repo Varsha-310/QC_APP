@@ -227,10 +227,11 @@ const RefundPage = () => {
         };
         setInputData((prev) => [...prev, newItem]);
       }
-    } else {
-      const updatedInputData = inputData.filter((item) => item.id !== itemId);
-      setInputData(updatedInputData);
-    }
+    } 
+    // else {
+    //   const updatedInputData = inputData.filter((item) => item.id !== itemId);
+    //   setInputData(updatedInputData);
+    // }
   };
 
   useScrollTop();

@@ -153,6 +153,7 @@ const EditGiftCard = () => {
       description: cardData.body_html,
       variants: cardData.variants,
       validity: cardData.validity,
+      terms: cardData?.terms.trim(),
     };
 
     // field validation
