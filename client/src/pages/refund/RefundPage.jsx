@@ -40,6 +40,8 @@ const RefundPage = () => {
 
   console.log(data);
 
+  console.log("inputdata", inputData);
+
   const { id } = useParams();
 
   // getsetting
@@ -74,12 +76,13 @@ const RefundPage = () => {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
 
-      console.log(resData);
+      console.log("resdata", resData);
       // setData(resData.data);
 
       // to calculate refund quantity
       const dum = [];
       const refundLines = resData.data?.refunds;
+
       if (refundLines?.length !== 0) {
         if (refundLines?.length !== 0) {
           refundLines.forEach((refundHistory) => {
@@ -110,8 +113,31 @@ const RefundPage = () => {
           : prod;
       });
 
-      // console.log("obj", calculatedData);
       setData(calculatedData);
+
+      // for empty array
+      const emptyInputArray = resData.data.line_items.map((prod) => ({
+        id: prod.id,
+        qty: 0,
+        totalPrice: 0,
+        totalTax: 0,
+      }));
+      setInputData(emptyInputArray);
+      console.log("emptyinput", emptyInputArray);
+
+      // transactions
+      // const transactions = resData?.data?.refunds;
+      // let totalRefunded = 0;
+      // transactions?.forEach((trans) => {
+      //   if (trans?.length > 1) {
+      //     trans.forEach((transItem) => {
+      //       totalRefunded += transItem.price;
+      //     });
+      //   }
+      // });
+
+      // console.log("transaction", transactions);
+      // console.log("totalrefund", totalRefunded);
     } catch (error) {
       console.log(error);
     }
@@ -207,16 +233,12 @@ const RefundPage = () => {
     }
   };
 
-  // for call calucate refund in every change
-
   useScrollTop();
 
   useEffect(() => {
     fetchData(id);
 
     getConfig();
-
-    // calcRefund();
   }, [id]);
 
   useEffect(() => {
@@ -269,8 +291,7 @@ const RefundPage = () => {
                       id={product.id}
                       // value={inputData[index]?.qty ? inputData[index]?.qty : ""}
                       value={
-                        inputData.find((item) => item.id === product.id)?.qty ||
-                        ""
+                        inputData.find((item) => item.id === product.id)?.qty
                       }
                       onChange={(e) =>
                         handleQuantityChange(
@@ -349,6 +370,7 @@ const RefundPage = () => {
                     type="number"
                     placeholder="Enter Amount"
                     value={refundAmount}
+                    onWheel={(e) => e.target.blur()}
                     onChange={
                       (e) => setRefundAmount(e.target.value)
                       // calcData?.refund
