@@ -49,13 +49,12 @@ export const createGiftcardProducts = async (req, res) => {
       tags: tags,
       variants: variants,
       status: "draft",
-      validity: validity,
       store_url: store,
     });
-    const expiryDate = { validity: validity };
+    const otherData = { validity: validity,terms:terms};
     const createP = {
       ...newProduct,
-      ...expiryDate,
+      ...otherData,
     };
     await Product.create(createP);
     console.log("createGiftcardProducts response shopify");
@@ -98,6 +97,9 @@ export const updateGiftcardProduct = async (req, res) => {
     let updatedProduct = await shopify.product.update(product_id, updateObj);
     if(validity){
       updateObj["validity"] = validity;
+    }
+    if(terms){
+      updateObj["terms"] = terms;
     }
     await Product.updateOne({id : product_id}, {updateObj}, {upsert: true});
 
@@ -154,6 +156,7 @@ export const getGiftcardProducts = async (req, res) => {
 
     console.log(req.token.store_url);
     let products = await Product.find({store_url: req.token.store_url})
+      .sort({ created_at:-1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
     console.log(products);
@@ -389,6 +392,8 @@ export const getWalletBalance = async (req, res) => {
       console.log("-----------------", walletExists);
       if (walletExists) {
         let balanceFetched = await fetchBalance(store, walletExists.wallet_id);
+        let shopifybalance = await getShopifyGiftcard(store,storeExists.access_token,walletExists.shopify_giftcard_id);
+        console.log(shopifybalance, "shopify giftcard balance")
         console.log(balanceFetched);
         res.json({
           ...respondWithData("balance fetched"),
@@ -439,9 +444,7 @@ export const giftCardOrders = async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Current page number
     const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
-    const gcOrders = await orders.find({
-      store_url: req.token.store_url,
-    });
+    const gcOrders = await orders.find({store_url: req.token.store_url}).sort({ created_at:-1 });
 
     console.log(gcOrders.length);
 
@@ -556,6 +559,24 @@ const createShopifyGiftcard = async (store, token, amount) => {
   return shopifyGc.data.gift_card;
 };
 
+
+const getShopifyGiftcard = async (store, token, id) => {
+
+  let config = {
+    method: "get",
+    maxBodyLength: Infinity,
+    url: `https://${store}/admin/api/2023-07/gift_cards/${id}.json`,
+    headers: {
+      "X-Shopify-Access-Token": token,
+      "Content-Type": "application/json",
+    }
+ };
+
+  const shopifyGc = await axios(config);
+  console.log(shopifyGc.data.gift_card);
+  return shopifyGc.data.gift_card;
+};
+
 const updateShopifyGiftcard = async (store, token, id, amount) => {
   let data = JSON.stringify({
     adjustment: {
@@ -569,9 +590,7 @@ const updateShopifyGiftcard = async (store, token, id, amount) => {
     headers: {
       "X-Shopify-Access-Token": token,
       "Content-Type": "application/json",
-    },
-    data: data,
-  };
+    }  };
   const shopifyGc = await axios(config);
   console.log(shopifyGc.data.adjustment);
   return shopifyGc.data.adjustment;
