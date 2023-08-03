@@ -20,7 +20,6 @@ let storeSchema = mongoose.Schema({
   is_kyc_done: { type: Boolean, default: false },
   is_plan_done: { type: Boolean, default: false },
   is_payment_done: { type: Boolean, default: false },
-  
   //To store the mandate Details
   mendate: Object
 });

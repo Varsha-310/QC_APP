@@ -241,7 +241,14 @@ const checkRefundSession = async(orderId, store_url, refund_type, refundableAmou
         };
     }
     const logs = refundSession.logs.find(log => log.status == "pending" && log.refund_type == refund_type);
-    const amount =  refundSession.logs.reduce((prev, item) => prev + parseFloat(item.amount), 0);
+    const amount =  refundSession.logs.reduce((prev, item) => {
+
+        if(item.refund_type == "Store-credit" && item.status != "pending"){
+
+            return prev + parseFloat(item.amount);
+        }
+        return prev; 
+    }, 0);
     return {
         logs: logs ? logs : {},
         refundedAmount: amount
@@ -270,11 +277,11 @@ export const handleRefundAction = async (req, res) => {
             return res.json(respondError("Order Not Found", 422));
         }
         //check taxes
-        const orderQty = ordersData.line_items.reduce((qty,item) => qty+ parseInt(item.quantity),0);
-        const tax = (parseFloat(ordersData.current_total_tax)/ orderQty).toFixed(2); 
-        const refundableQty = line_items.reduce((qty, item) => qty + item.qty, 0);
-        console.log(orderQty, tax, refundableQty);
-        let totalTaxRefunded= refundableQty * tax;
+        // const orderQty = ordersData.line_items.reduce((qty,item) => qty+ parseInt(item.quantity),0);
+        // const tax = (parseFloat(ordersData.current_total_tax)/ orderQty).toFixed(2); 
+        // const refundableQty = line_items.reduce((qty, item) => qty + item.qty, 0);
+        // console.log(orderQty, tax, refundableQty);
+        let totalTaxRefunded = parseFloat(ordersData.current_total_tax);
 
         const shipping = ordersData?.total_shipping_price_set?.shop_money || {currency: "INR"};
         const storeData = await store.findOne({ store_url });
@@ -287,7 +294,7 @@ export const handleRefundAction = async (req, res) => {
         // check refundable amount
         const transactions = refundAmount.refund.transactions;
         let refundableAmount = transactions.reduce((prev, item) => prev+ parseFloat(item.maximum_refundable),0);
-        refundableAmount = refundableAmount + totalTaxRefunded;
+        //refundableAmount = refundableAmount + totalTaxRefunded;
         
         const refSetting = await getRefundType(refund_type, ordersData.payment_gateway_names, store_url);
         refund_type = refSetting.refund_type;
@@ -310,7 +317,7 @@ export const handleRefundAction = async (req, res) => {
         const refundedAmount = refundSession.refundedAmount;
         refundSession = refundSession.logs;
 
-        console.log("Refundable Amout: ", refundableAmount);
+        console.log("Refundable Amout: ", refundableAmount, "Amount: ", amount, "Refunded Amount:", refundedAmount);
         if((parseFloat(amount)+ parseFloat(refundedAmount)) > refundableAmount){
 
             return res.json(respondValidationError("The given amount is greater then the maximum refundable amount."));
@@ -406,7 +413,7 @@ export const handleRefundAction = async (req, res) => {
                 refund_created_at: new Date(),
                 status: "completed"
             });
-            ordersData.refund_status = (amount+refundedAmount) > refundableAmount ? "Refunded" : "Partially refunded";
+            ordersData.refund_status = (parseFloat(amount)+ parseFloat(refundedAmount)) > refundableAmount ? "Refunded" : "Partially refunded";
         }
        
         // if(refundSession?.order_updated_at){
