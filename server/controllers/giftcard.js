@@ -76,7 +76,7 @@ export const createGiftcardProducts = async (req, res) => {
 export const updateGiftcardProduct = async (req, res) => {
   try {
     let store = req.token.store_url;
-    let { images, title, description, variants, product_id, validity } =
+    let { images, title, description, variants, product_id, validity, terms } =
       req.body;
     let shopify = await getShopifyObject(store); // Get Shopify Object
     let updateObj = {};
