@@ -20,6 +20,7 @@ let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
+import paymentRoute from "./routes/payment.js";
 
 
 export const app = express();
@@ -88,10 +89,13 @@ app.use("/order", orderRoute)
 app.use("/kyc", kycRoute);
 
 // plan routes
-app.use("/plan" , planRoute)
+app.use("/plan" , planRoute);
 
 // giftcard routes
-app.use("/giftcard" , giftcardRoute)
+app.use("/giftcard" , giftcardRoute);
+
+// payment routes
+app.use("/payment", paymentRoute);
 
 app.get('/', function (req, res) {
   
