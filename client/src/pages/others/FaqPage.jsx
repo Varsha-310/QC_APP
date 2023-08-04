@@ -209,7 +209,7 @@ const FaqPage = () => {
 
         <div className="faq-sections">
           <div onClick={handleActive} id="sku" className="faq-section__title">
-            CREATING GIFT CARD SKU (FOR ONLINE MERCHANTS USING SHOPIFY PLATFORM){" "}
+            CREATING GIFT CARD SKU
             <BiChevronDown
               className={`faq-section__icon ${
                 activeSection?.sku ? "icon_up" : ""
@@ -440,7 +440,7 @@ const FaqPage = () => {
             id="storecredits"
             className="faq-section__title"
           >
-            CREATING STORE CREDITS (FOR ONLINE MERCHANTS USING SHOPIFY PLATFORM){" "}
+            CREATING STORE CREDITS
             <BiChevronDown
               className={`faq-section__icon ${
                 activeSection?.storecredits ? "icon_up" : ""

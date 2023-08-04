@@ -19,20 +19,16 @@ const countTotal = (obj, key) => {
       return acc + currValue;
     }, 0)
     .toFixed(2);
-
-  // console.log("resss", res);
   return res;
 };
 const RefundPage = () => {
   const [data, setData] = useState(null);
   const [inputData, setInputData] = useState([]);
-
   const [refundAmount, setRefundAmount] = useState();
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
   const [refundData, setRefundData] = useState([]);
   const [refundOption, setRefundOption] = useState(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
 
@@ -227,7 +223,7 @@ const RefundPage = () => {
         };
         setInputData((prev) => [...prev, newItem]);
       }
-    } 
+    }
     // else {
     //   const updatedInputData = inputData.filter((item) => item.id !== itemId);
     //   setInputData(updatedInputData);
@@ -410,9 +406,11 @@ const RefundPage = () => {
                     />
                   </div>
                   <PrimaryBtn $primary width="100%" onClick={handleInitiate}>
-                    {refundOption?.refund_type === "Store-credit"
-                      ? "Refund to Store-Credit"
-                      : "Refund Back to Source"}
+                    {refundOption?.refund_type
+                      ? refundOption?.refund_type === "Store-credit"
+                        ? "Refund to Store-Credit"
+                        : "Refund Back to Source"
+                      : "Refund"}
                   </PrimaryBtn>
                 </div>
               </div>
