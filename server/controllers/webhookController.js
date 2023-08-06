@@ -15,6 +15,10 @@ import {
 } from "../middleware/qwikcilverHelper.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
+import { checkActivePlanUses } from "./BillingController.js";
+
+// const orderUpdateQueue = new Queue(ordercreateEvent, { maxRetries: 2, retryDelay: 1000 });
+
 
 /**
  * To handle order creation webhook
@@ -24,10 +28,8 @@ import orders from "../models/orders.js";
 export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
-  const shop = req.headers["x-shopify-shop-domain"];
-  //const shop = "qc-plus-store.myshopify.com";
-  const order = req.body;
-  ordercreateEvent({ shop, order }, res);
+  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  //ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
 };
 
@@ -58,7 +60,9 @@ export const orderDeleted = (req, res) => {
  * @param {*} res
  */
 const ordercreateEvent = async (input, done, res) => {
+
   try {
+
     console.log("------------order create event-----------------");
     const { shop, order } = input;
     let isGiftcardOrder = false;
@@ -66,8 +70,7 @@ const ordercreateEvent = async (input, done, res) => {
     console.log("Shop Name", shop);
 
     // Store Order
-    await orders.updateOne(
-      {
+    await orders.updateOne({
         store_url: shop,
         id: order.id,
       },
@@ -81,6 +84,7 @@ const ordercreateEvent = async (input, done, res) => {
       let newOrder = order;
       let qwikcilver_gift_cards = [];
       
+      // check is any gift cards are applied in the orders
       if (newOrder.payment_gateway_names.includes("gift_card")) {
         console.log("giftcard redeemed");
         const checkAmount = await giftCardAmount(shopName, newOrder.id);
@@ -94,12 +98,16 @@ const ordercreateEvent = async (input, done, res) => {
           console.log(redeemed);
         }
       } else {
+
+
         let shopify = await getShopifyObject(shopName); //Get the shopify object
         console.log(
           shopify,
           "----------------shopify object----------------------"
         );
+
         for (let line_item of newOrder.line_items) {
+
           //Check for the order lineitems whether it contains a QC Giftcard Product
           // gift_card_product = "";
           console.log(line_item);
@@ -108,147 +116,145 @@ const ordercreateEvent = async (input, done, res) => {
               id: line_item.product_id,
             })
             .lean(); //Get the product from DB
+
           if (gift_card_product) {
+
             console.log("is giftcard product");
-            isGiftcardOrder = true;
-          
-            const storeOrder = await orders.updateOne(
-              {
-                store_url: "qwikcilver-public-app-teststore.myshopify.com",
-                id: newOrder.id,
-              },
-              order,
-              { upsert: true }
-            );
-            console.log("-------order created-----------", storeOrder);
             qwikcilver_gift_cards.push(line_item);
             //If yes, push the line item to an array
           }
-          if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
-            if (
-              newOrder.financial_status == "paid" ||
-              shopName === "qwikcilver-demo.myshopify.com"
-            ) {
-              for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
-                console.log(
-                  "____________QC giftcard created___________________", qwikcilver_gift_card );
-                let email = null;
-                let message = "";
-                let receiver = "";
-                let image_url = "";
-                if (qwikcilver_gift_card.properties.length > 0) {
-                
-                  let sent_as_gift;
-                  for ( let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
-                    if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_email") {
-                      
-                      sent_as_gift = true;
-                      let updateOrder = await orders.updateOne(
-                        { id: newOrder.id },
-                        { is_giftcard_order: true },
-                        { upsert: true }
-                      );
-                      console.log(
-                        "--------send as a gift--------------",
-                        updateOrder
-                      );
-                    }
-                  }
-                  if (sent_as_gift == true) {
+        }
+
+        // Process gift card
+        if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
+
+            // Mark order as gift card
+            await orders.updateOne(
+              { id: newOrder.id },
+              { is_giftcard_order: isGiftcardOrder }
+            );
+
+          if( newOrder.financial_status == "paid" && flag == 0) {
+
+            for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
+
+              const flag = await checkActivePlanUses(qwikcilver_gift_card.price, shopName);
+              if(flag > 0){
+
+                console.log("Plan Limit has been exceeded.")
+                await order.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
+                done();
+                return 1;
+              }
+
+              console.log("____________QC giftcard created______________", qwikcilver_gift_card );
+              let email = null;
+              let message = "";
+              let receiver = "";
+              let image_url = "";
+              if (qwikcilver_gift_card.properties.length > 0) {
+              
+                let sent_as_gift;
+                for ( let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
+                  if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_email") {
                     
-                    console.log("-------sent as gift---------------");
-                    for (let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
-                      
-                      // change it to swith statement
-                      if (
-                        qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_img_url"
-                      ) {
-                        image_url = qwikcilver_gift_card.properties[i].value;
-                      }
-                      if (
-                        qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_email"
-                      ) {
-                        email = qwikcilver_gift_card.properties[i].value;
-                      }
-                      if (
-                        qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_message"
-                      ) {
-                        message = qwikcilver_gift_card.properties[i].value;
-                      }
-
-                      if (
-                        qwikcilver_gift_card.properties[i].name ===
-                        "_Qc_recipient_name"
-                      ) {
-                        receiver = qwikcilver_gift_card.properties[i].value;
-                      }
-                    }
-
-
-
-                      let giftCardDetails = await createGiftcard(
-                        shopName,
-                        parseInt(qwikcilver_gift_card.price),
-                        newOrder.id,
-                        gift_card_product.validity
-                      );
-                      console.log(giftCardDetails);
-                      console.log(email);
-                      await sendEmailViaSendGrid(
-                        shopName,
-                        newOrder,
-                        giftCardDetails,                      
-                        receiver,
-                        email,
-                        message,
-                        image_url
-                      );
-                    
+                    sent_as_gift = true;
                   }
                 }
-                  else {
-                    console.log("purchased for self");
+                if (sent_as_gift == true) {
+                  
+                  console.log("-------sent as gift---------------");
+                  for (let i = 0; i < qwikcilver_gift_card.properties.length; i++ ) {
+                    
+                    // change it to swith statement
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Qc_img_url"
+                    ) {
+                      image_url = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Qc_recipient_email"
+                    ) {
+                      email = qwikcilver_gift_card.properties[i].value;
+                    }
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Qc_recipient_message"
+                    ) {
+                      message = qwikcilver_gift_card.properties[i].value;
+                    }
+
+                    if (
+                      qwikcilver_gift_card.properties[i].name ===
+                      "_Qc_recipient_name"
+                    ) {
+                      receiver = qwikcilver_gift_card.properties[i].value;
+                    }
+                  }
+
                     let giftCardDetails = await createGiftcard(
                       shopName,
                       parseInt(qwikcilver_gift_card.price),
                       newOrder.id,
                       gift_card_product.validity
                     );
-                    console.log(
-                      giftCardDetails,
-                      "--------successs-----------------"
-                    );
-                    const custom_id = newOrder.customer.id == 7286901178670 ? "9709857928" :  newOrder.customer.id;
-                    await addGiftcardtoWallet(
+                    console.log(giftCardDetails);
+                    console.log(email);
+                    await sendEmailViaSendGrid(
                       shopName,
-                      custom_id,
-                      giftCardDetails.CardPin,
-                      giftCardDetails.Balance
+                      newOrder,
+                      giftCardDetails,                      
+                      receiver,
+                      email,
+                      message,
+                      image_url
                     );
-                  }
-                
+                  
+                }
+              }
+              else {
+
+                  console.log("purchased for self");
+                  let giftCardDetails = await createGiftcard(
+                    shopName,
+                    parseInt(qwikcilver_gift_card.price),
+                    newOrder.id,
+                    gift_card_product.validity
+                  );
+                  console.log(
+                    giftCardDetails,
+                    "--------successs-----------------"
+                  );
+                  const custom_id = newOrder.customer.id == 7286901178670 ? "9709857928" :  newOrder.customer.id;
+                  await addGiftcardtoWallet(
+                    shopName,
+                    custom_id,
+                    giftCardDetails.CardPin,
+                    giftCardDetails.Balance
+                  );
               }
             }
+            await order.updateOne({id: newOrder.id}, {qc_gc_created: "YES"});
           }
         }
       }
     }
-
+    //complete order
+    done();
   } catch (err) {
+
     console.log(err);
   }
-};
+};//
+
 
 /**
  * Queue to handle webhooks
  */
-const orderCreateQueue = new Queue(ordercreateEvent, {
-  maxRetries: 2,
-  retryDelay: 1000,
-});
+const orderCreateQueue = new Queue(ordercreateEvent, { maxRetries: 2, retryDelay: 1000 });
+
 
 //Webhooks for Product Create Activity
 export const productCreateEvent = async (req, res) => {
