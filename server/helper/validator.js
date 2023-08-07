@@ -221,7 +221,7 @@ export const validateUpdateConfigApi = async (req, res, next) => {
       giftCard: "required|string",
       giftcard_cash: "required|string",
       restock_type: "required|string",
-      // location_id:"required|numeric",
+      //location_id:"required|numeric",
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
@@ -277,7 +277,7 @@ export const validateRefund = async (req, res, next) => {
       'line_items': "required|array",
       'line_items.*.id': "required|integer",
       'line_items.*.qty': "required|integer",
-      "amount": "required|integer"
+      "amount": "required"
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {

@@ -4,12 +4,16 @@ import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
+import wallet from "../models/wallet.js";
+import { updateBilling } from "../controllers/BillingController.js";
 
 
 
 export const createGiftcard = async (store, amount, order_id , validity) => {
 
   try {
+
+    
 
     console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
@@ -36,13 +40,11 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry : expirydate,
-      Cards: [
-        {
-          CardProgramGroupName: setting.cpgn,
-          Amount: amount,
-          CurrencyCode: "INR"
-        },
-      ],
+      Cards: [{
+        CardProgramGroupName: setting.cpgn,
+        Amount: amount,
+        CurrencyCode: "INR"
+      }],
       Purchaser: {
         FirstName: "varsha",
         LastName: "One",
@@ -64,20 +66,23 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
       data: data,
     };
 
-   const gcCreation = await axios(config);
-   console.log(gcCreation, "******************")
-   if ( gcCreation.status == "200" &&  gcCreation.data.ResponseCode == "0") {
-    
-    console.log(gcCreation.data.Cards[0], "----------")
-    await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
-    return gcCreation.data.Cards[0]
+    const gcCreation = await axios(config);
+    console.log(gcCreation, "******************")
+    if(gcCreation.status == "200" && gcCreation.data.ResponseCode == "0") {
+      
+      //update billing history
+      await updateBilling(amount, store);
+
+      // update database
+      console.log(gcCreation.data.Cards[0], "----------")
+      await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
+      return gcCreation.data.Cards[0]
+    }
   }
+  catch(err){
 
-}
-
-  catch (err) {
-    console.log(err)
-    return false
+    console.log(err);
+    return false;
   }
 };
 
@@ -414,10 +419,12 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
   try {
 
     const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id});
-    if(giftcardExists) return null;
     
+    console.log("Wallter Details: ", giftcardExists);
+    if(!giftcardExists) return null;
+  
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = ++parseInt(setting.unique_transaction_id); 
+    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
     setting.markModified("unique_transaction_id");
 
     const myDate = new Date();
@@ -443,9 +450,8 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
       },
       data: data,
     };
-
     const walletRedemption = await axios(config);
-    console.log(walletRedemption.data)
+    console.log("Reverse logs:", walletRedemption.data)
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
 
       await wallet_history.updateOne({wallet_id: giftcardExists.wallet_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});

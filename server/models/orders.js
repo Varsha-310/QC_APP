@@ -213,9 +213,15 @@ const orderSchema = new Schema({
     ],
     payment_terms: { type: String },
     refunds: { type: Array },
+    refund_status: { type: String, default: 'N/A' },
     Refund_Mode: { type: String, default: 'N/A' },
     refund_status: { type: String, default: "N/A" },
-    shipping_lines: { type: Array }
+    shipping_lines: { type: Array },
+    qc_gc_created: {
+        type: String,
+        enum: ["N/A", "NO", "YES"],
+        default: "N/A"
+    },
 });
 
 export default mongoose.model('orders', orderSchema);
