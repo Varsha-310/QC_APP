@@ -24,6 +24,11 @@ const SessionSchema = mongoose.Schema({
     enum: paymentStatus,
     default: "pending",
   },
+  type: {
+    type: String,
+    enum: ["MANDATE", "PAYMENT", "PRE-DEBIT-NOTIFICATION", "RECURRING"],
+    default: "MANDATE"
+  },
   callback_at: { type: Boolean, default: false },
   retry_at: { type: Date, default: null },
   expired_at: { type: Date, default: null },

@@ -17,6 +17,7 @@ const billingHistorySchema = {
   notifiedMerchant: {
     type: String,
     enum : [0,1,2,3],
+    default:0
   },
   remiderDate: Date,
   isReminded: Boolean,
@@ -30,7 +31,8 @@ const billingHistorySchema = {
   invoiceAmount: String,
   invalideDate: String,
   invoiceUrl: String,
-  transaction_id: String
+  transaction_id: String,
+  remark: String
 };
 
 export default mongoose.model("BillingHistory", billingHistorySchema);

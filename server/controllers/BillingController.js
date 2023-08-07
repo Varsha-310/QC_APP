@@ -1,18 +1,43 @@
+import axios from "axios";
 import { respondInternalServerError, respondSuccess, respondWithData } from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import BillingHistory from "../models/BillingHistory.js";
+import store from "../models/store.js";
 
-const handleMandateNotification = () => {
+const handleMandateNotification = async() => {
 
 
+    const notificableMarchant = await BillingHistory.find({
+        status: "ACTIVE",
+        reminderData: new Date(Date.now())
+    });
+    const upgradedMarchant = await BillingHistory.find({
+        status: "UPGRADED",
+        reminderData: new Date(Date.now())
+    });
+
+    for (const bill of notificableMarchant) {
+
+        await sendMandateNotification(bill.invoiceAmount, bill.invoiceNumber, bill.store_url);
+    }
+}
+
+const sendMandateNotification = async(invoiceAmount, InvoiceNumber, store_url) => {
+
+    const session = {};
+    const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
+    if(!mandateDetails){ return "mandate Not Found"; };
+
+    const config = {
+        apiKey : process.env.MAILGUN_APIKEY || '',
+    }
+    return axios(config).then(res => {
+        console.log(res);
+        return 1;
+    }).catch();
 }
 
 
-const sendMandateNotification = () => {
-
-
-    
-}
 
 const handleReccuringPayment = () => {
 
@@ -82,7 +107,7 @@ export const checkActivePlanUses = async(amount, store_url) => {
             let flag = 0;
             const incoming_amount = (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2);
             const total_allowd = (parseInt(billingData.given_credit) + parseInt(billingData.cappedAmount));
-            if(parseInt(incoming_amount) >= total_allowd){
+            if(parseInt(incoming_amount) > total_allowd){
 
                 flag = 3;
             }else if(incoming_amount >= (parseFloat(billingData.given_credit) + parseFloat(billingData.cappedAmount)/2)){

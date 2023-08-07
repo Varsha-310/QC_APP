@@ -131,10 +131,10 @@ const ordercreateEvent = async (input, done, res) => {
             // Mark order as gift card
             await orders.updateOne(
               { id: newOrder.id },
-              { is_giftcard_order: isGiftcardOrder }
+              { is_giftcard_order: true }
             );
 
-          if( newOrder.financial_status == "paid" && flag == 0) {
+          if( newOrder.financial_status == "paid") {
 
             for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
 
@@ -359,6 +359,7 @@ export const productDeleteEvent = async (req, res, next) => {
 };
 
 function processPrd(updatedProduct, store) {
+  
   let product_id = updatedProduct.id;
   updatedProduct.store_url = store;
   updatedProduct.id = parseInt(product_id);
@@ -382,9 +383,9 @@ function processPrd(updatedProduct, store) {
 }
 
 export const getQcCredentials = async (req,res) =>{
+
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------",req.body);
   res.send(respondSuccess("webhook received"));
   console.log(req.body);
-
 }
