@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 export const paymentStatus = ["successful", "refunded", "rejected", "pending", "payment_processing", "disputed"];
 const TransactionSchema = mongoose.Schema({
-
   store_id: {type : string},
   invoice_number: {type:string},
   status: {

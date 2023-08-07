@@ -13,6 +13,7 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
+import paymentRoute from "./routes/payment.js";
 import path from "path";
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +45,9 @@ app.use(
 );
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.enable("trust proxy", true);
 
@@ -87,10 +91,13 @@ app.use("/order", orderRoute)
 app.use("/kyc", kycRoute);
 
 // plan routes
-app.use("/plan" , planRoute)
+app.use("/plan" , planRoute);
 
 // giftcard routes
-app.use("/giftcard" , giftcardRoute)
+app.use("/giftcard" , giftcardRoute);
+
+// payment routes
+app.use("/payment", paymentRoute);
 
 
 app.get('/', function (req, res) {

@@ -12,7 +12,7 @@ import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 import {
   createGiftcard,
   redeemWallet,
-} from "../middleware/qwikcilverHelper.js";
+} from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 
