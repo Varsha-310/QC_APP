@@ -3,10 +3,8 @@ import axios from "axios";
 import crypto from "crypto";
 
 const generateHash = (payload) => {
-  console.log(
-    "-----------------payload---------------------------",payload.si_details);
+  console.log("-----------------payload---------------------------",payload.si_details);
   let paymentString = `${payload.key}|${payload.txnid}|${payload.amount}|${payload.productinfo}|${payload.firstname}|${payload.email}|||||||||||{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}|${process.env.payusalt}`;
-
   console.log(paymentString, "payment string");
   const hash = crypto.createHash("sha512");
   hash.update(paymentString, "utf-8");
@@ -46,8 +44,7 @@ const createPayload = (storeData, billingData, amount) => {
     surl: `https://1412-106-51-87-194.ngrok-free.app/payment/payu/success`,
     furl: `https://1412-106-51-87-194.ngrok-free.app/payment/payu/fail`,
     si: 1,
-    si_details:
-      '{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}',
+    si_details:'{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}',
   };
   return payload;
 };

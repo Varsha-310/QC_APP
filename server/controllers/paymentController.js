@@ -16,22 +16,18 @@ export const create = async (req, res) => {
       billing_start_date: "2023-08-01",
       billing_currency: "INR",
       billing_cycle: "YEARLY"
-
     }
-   
     let paymentData = createPayment(store,billingData,300);
     console.log(paymentData[0],"-----------------------------",paymentData[1]);
     res.send(paymentData[0]);
 }
-
-
 
 export const payuPayment = async(req,res) => {
     console.log(req,"------------requewt body-------------------")
     let reqData = req.body;
     console.log(reqData, "-----------------request data--------------------")
     if(reqData.status == 'success') {
-        await updatePaymentBilling(reqData);        
+        await updateBilling(reqData);        
     }
     return res.redirect(`${CLIENT_URL}/}`);
 }
