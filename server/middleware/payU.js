@@ -44,8 +44,8 @@ export const createPayment = (storeData, billingData, amount) => {
   console.log(payload);
   let hash = generateHash(payload);
   payload.hash = hash;
-  let generatedHtml = generateHtml(payload);
-  return [generatedHtml, payload];
+
+  return [payload, process.env.payupaymenturl];
 };
 
 

@@ -16,7 +16,7 @@ export const create = async (req, res) => {
   const currentDate = new Date();
   const currentDay = currentDate.getDate(); // Get the current day of the month
   const remainingDays = 30 - currentDay;
-  const dailyRate = getPlan.plan_price / totalDays;
+  const dailyRate = getPlan.plan_price / 30;
   const calculatedPayment = remainingDays * dailyRate;
 
   const calculatedGst = calculateGST(calculatedPayment);

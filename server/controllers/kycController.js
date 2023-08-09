@@ -116,7 +116,7 @@ export const fillForm = async (formUrl, shop, token) => {
       data: JSON.stringify({
         shopifyID: shop.shopify_id,
         firstName: shop.name,
-        lastName: "qwertyu",
+        email : shop.email,
         mobile: shop.phone,
         queryParam: token ,
       }),
