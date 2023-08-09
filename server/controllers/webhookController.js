@@ -110,16 +110,17 @@ const ordercreateEvent = async (input, done, res) => {
 
           //Check for the order lineitems whether it contains a QC Giftcard Product
           // gift_card_product = "";
-          console.log(line_item);
           let gift_card_product = await product
             .findOne({
               id: line_item.product_id,
             })
             .lean(); //Get the product from DB
 
+          console.log("Giftcard Products: ", gift_card_product);
           if (gift_card_product) {
 
             console.log("is giftcard product");
+            line_item["validity"] = gift_card_product.validity;
             qwikcilver_gift_cards.push(line_item);
             //If yes, push the line item to an array
           }
@@ -128,12 +129,14 @@ const ordercreateEvent = async (input, done, res) => {
         // Process gift card
         if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
 
-            // Mark order as gift card
-            await orders.updateOne(
-              { id: newOrder.id },
-              { is_giftcard_order: true }
-            );
+          console.log("QC -Gift Catd: ", qwikcilver_gift_cards);
+          // Mark order as gift card
+          await orders.updateOne(
+            { id: newOrder.id },
+            { is_giftcard_order: true }
+          );
 
+          //  check financial status
           if( newOrder.financial_status == "paid") {
 
             for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
@@ -142,7 +145,7 @@ const ordercreateEvent = async (input, done, res) => {
               if(flag > 0){
 
                 console.log("Plan Limit has been exceeded.")
-                await order.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
+                await orders.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
                 done();
                 return 1;
               }
@@ -198,7 +201,7 @@ const ordercreateEvent = async (input, done, res) => {
                       shopName,
                       parseInt(qwikcilver_gift_card.price),
                       newOrder.id,
-                      gift_card_product.validity
+                      qwikcilver_gift_card.validity
                     );
                     console.log(giftCardDetails);
                     console.log(email);
@@ -221,7 +224,7 @@ const ordercreateEvent = async (input, done, res) => {
                     shopName,
                     parseInt(qwikcilver_gift_card.price),
                     newOrder.id,
-                    gift_card_product.validity
+                    qwikcilver_gift_card.validity
                   );
                   console.log(
                     giftCardDetails,
@@ -236,7 +239,7 @@ const ordercreateEvent = async (input, done, res) => {
                   );
               }
             }
-            await order.updateOne({id: newOrder.id}, {qc_gc_created: "YES"});
+            await orders.updateOne({id: newOrder.id}, {qc_gc_created: "YES"});
           }
         }
       }

@@ -3,16 +3,17 @@ import { respondInternalServerError, respondSuccess, respondWithData } from "../
 import { logger } from "../helper/utility.js";
 import BillingHistory from "../models/BillingHistory.js";
 import store from "../models/store.js";
+import Session from "../models/session.js";
 
-const handleMandateNotification = async() => {
+/**
+ * Handle the corn iteration for the send Predebit Notification
+ * 
+ */
+const handleMandateNotification = async(type) => {
 
-
-    const notificableMarchant = await BillingHistory.find({
-        status: "ACTIVE",
-        reminderData: new Date(Date.now())
-    });
+    // Check Upgraded 
     const upgradedMarchant = await BillingHistory.find({
-        status: "UPGRADED",
+        status: {$in: ["UPGRADED","ACTIVE"]},
         reminderData: new Date(Date.now())
     });
     for (const bill of notificableMarchant) {
@@ -23,10 +24,17 @@ const handleMandateNotification = async() => {
 
 const sendMandateNotification = async(invoiceAmount, InvoiceNumber, store_url) => {
 
-    const session = {};
+    const session = {
+        "type" : "PRE-DEBIT-NOTIFICATION"
+    };
     const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
-    if(!mandateDetails){ return "mandate Not Found"; };
+    if(!mandateDetails){ 
 
+        //TO-DO: Send Notification to the QC regading it 
+        return "mandate Not Found"; 
+    };
+
+    session.seesion_id = "";
     const config = {
         apiKey : process.env.MAILGUN_APIKEY || '',
     }
