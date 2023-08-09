@@ -578,19 +578,22 @@ const getShopifyGiftcard = async (store, token, id) => {
 };
 
 const updateShopifyGiftcard = async (store, token, id, amount) => {
+console.log("----------------amount--------------------", amount);
   let data = JSON.stringify({
     adjustment: {
       amount: amount,
     },
   });
   let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
-    headers: {
-      "X-Shopify-Access-Token": token,
-      "Content-Type": "application/json",
-    }  };
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
+      headers: { 
+        'X-Shopify-Access-Token': token, 
+        'Content-Type': 'application/json', 
+      },
+      data : data
+    };
   const shopifyGc = await axios(config);
   console.log(shopifyGc.data, "--------------------shopify giftcard data-----------");
   return shopifyGc.data.adjustment;
