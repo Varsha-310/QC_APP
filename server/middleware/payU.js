@@ -67,8 +67,8 @@ const createPayload = (storeData, billingData, amount) => {
     email: "varshaa@marmeto.com",
     phone: 8095379504,
     lastname: "Antargangi",
-    surl: `https://1412-106-51-87-194.ngrok-free.app/payment/payu/success`,
-    furl: `https://1412-106-51-87-194.ngrok-free.app/payment/payu/fail`,
+    surl: `https://19bb-106-51-87-194.ngrok-free.app/payment/payu/success`,
+    furl: `https://19bb-106-51-87-194.ngrok-free.app/payment/payu/fail`,
     si: 1,
     si_details:'{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}',
   };
