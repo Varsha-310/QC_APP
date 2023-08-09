@@ -2,7 +2,7 @@ import { Router } from "express";
 import { verifyShopifyHook } from "../helper/validator.js";
 import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent,getQcCredentials } from "../controllers/webhookController.js";
 import { appUninstalled } from "../controllers/shopifyController.js";
-import { qwikcilverToken } from "../middleware/qwikcilverHelper.js";
+import { qwikcilverToken } from "../middleware/qwikcilver.js";
 
 const webhookRoute = Router();
 
