@@ -1,3 +1,0 @@
-{"_id":{"$oid":"64b6cdbe8c61941657cd0ca1"},"plan_name":"Basic","usage_limit":125000,"usage_charge":"2.5","plan_limit":20000,"price":399,"symbol":"₹","currency":"rupees","__v":0}
-{"_id":{"$oid":"64b6d1903c2e9a89ac5990c7"},"plan_name":"Pro","usage_limit":250000,"usage_charge":"2.3","plan_limit":40000,"price":799,"symbol":"₹","currency":"rupees","__v":0}
-{"_id":{"$oid":"64b6d1a0b7689ff66dde5ba6"},"plan_name":"Premium","usage_limit":450000,"usage_charge":"2","plan_limit":80000,"price":1599,"symbol":"₹","currency":"rupees","__v":0}
