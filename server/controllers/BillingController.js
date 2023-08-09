@@ -15,7 +15,6 @@ const handleMandateNotification = async() => {
         status: "UPGRADED",
         reminderData: new Date(Date.now())
     });
-
     for (const bill of notificableMarchant) {
 
         await sendMandateNotification(bill.invoiceAmount, bill.invoiceNumber, bill.store_url);
@@ -39,15 +38,34 @@ const sendMandateNotification = async(invoiceAmount, InvoiceNumber, store_url) =
 
 
 
-const handleReccuringPayment = () => {
+const handleReccuringPayment = async() => {
 
+    const notificableMarchant = await BillingHistory.find({
+        status: "ACTIVE",
+        reminderData: new Date(Date.now())
+    });
+    const upgradedMarchant = await BillingHistory.find({
+        status: "UPGRADED",
+        reminderData: new Date(Date.now())
+    });
+    for (const bill of notificableMarchant) {
 
-
+        await captureReccuringpayment(bill.invoiceAmount, bill.invoiceNumber, billInvoiceNumber.store_url);
+    }
 }
 
-const captureReccuringpayment = () => {
+const captureReccuringpayment = async() => {
 
-
+    const session = {};
+    const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
+    if(!mandateDetails){ return "mandate Not Found"; };
+    const config = {
+        apiKey : process.env.MAILGUN_APIKEY || '',
+    }
+    return axios(config).then(res => {
+        console.log(res);
+        return 1;
+    }).catch();
 }
 
 
@@ -226,6 +244,7 @@ export const handleBillingList = async(req, res) => {
         let limit = Number(req.query.limit) || 20;
         let skip = (page - 1) * limit;
         const storeUrl = req.token.store_url;
+        console.log(storeUrl);
         const billing = await BillingHistory.find({ store_url: storeUrl, status: "BILLED"})
             .skip(skip)
             .limit(limit);
@@ -250,11 +269,11 @@ export const handleBillingDetails = async(req, res) => {
 
     try {
 
-        const { invoiceNumber } = req.body;
         const {store_url } = req.token;
-        const billing = await BillingHistory.findOne({
+        console.log(store_url);
+        const billing = await BillingHistory.find({
           store_url,
-          status:{ $in: ["ACTIVE", "CHNAGED"] }
+          status:{ $in: ["ACTIVE", "CHANGED"]}
         });
         return res.json(respondWithData("Success", billing));
     } catch (err) {

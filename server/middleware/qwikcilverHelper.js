@@ -13,8 +13,6 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
 
   try {
 
-    
-
     console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------",setting , store);
