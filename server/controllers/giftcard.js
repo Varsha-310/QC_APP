@@ -592,6 +592,6 @@ const updateShopifyGiftcard = async (store, token, id, amount) => {
       "Content-Type": "application/json",
     }  };
   const shopifyGc = await axios(config);
-  console.log(shopifyGc.data.adjustment);
+  console.log(shopifyGc.data, "--------------------shopify giftcard data-----------");
   return shopifyGc.data.adjustment;
 };
