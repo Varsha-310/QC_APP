@@ -52,7 +52,8 @@ export const create = async (req, res) => {
     console.log(paymentData, "-----------------------------");
     res.json({
       ...respondWithData("payment URL"),
-      data: paymentData,
+      data:{payload : paymentData,
+        url : process.env.payupaymenturl}
     });
   } catch (err) {
     logger.info(err);

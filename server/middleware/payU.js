@@ -45,7 +45,7 @@ export const createPayment = (storeData, billingData, amount) => {
   let hash = generateHash(payload);
   payload.hash = hash;
 
-  return [payload, process.env.payupaymenturl];
+  return payload;
 };
 
 
@@ -67,8 +67,8 @@ const createPayload = (storeData, billingData, amount) => {
     email: "varshaa@marmeto.com",
     phone: 8095379504,
     lastname: "Antargangi",
-    surl: `${APP_URL}/payment/payu/success`,
-    furl: `${APP_URL}/payment/payu/fail`,
+    surl: `${process.env.APP_URL}/payment/payu/success`,
+    furl: `${process.env.APP_URL}/payment/payu/fail`,
     si: 1,
     si_details:'{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}',
   };
