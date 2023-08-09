@@ -21,7 +21,7 @@ let storeSchema = mongoose.Schema({
   is_plan_done: { type: Boolean, default: false },
   is_payment_done: { type: Boolean, default: false },
   //To store the mandate Details
-  mendate: Object
+  mandate: Object
 });
 
 export default mongoose.model("Store", storeSchema);

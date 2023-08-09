@@ -13,7 +13,6 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
-import paymentRoute from "./routes/payment.js";
 import path from "path";
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -21,8 +20,8 @@ let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
-import axios  from "axios";
-import qs from "qs";
+import paymentRoute from "./routes/payment.js";
+
 
 export const app = express();
 
@@ -114,8 +113,8 @@ cron.schedule("* * * * *", () => {
 
 // Database and Port connection
 mongoose
-  // .connect(process.env.DB_URL + process.env.DB)
-  .connect("mongodb://0.0.0.0:27017/QC-DB1")
+   .connect(process.env.DB_URL)
+  //.connect("mongodb://0.0.0.0:27017/QC-DB1")
   .then(() => {
 
     app.listen(process.env.PORT);

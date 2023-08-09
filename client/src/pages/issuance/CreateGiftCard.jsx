@@ -75,7 +75,10 @@ const CreateGiftCard = () => {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setCardData((prev) => ({ ...prev, [name]: value }));
+
+    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+      setCardData((prev) => ({ ...prev, [name]: value }));
+    }
   };
   const handleVariant = (event) => {
     const index = event.target.id;
@@ -185,8 +188,8 @@ const CreateGiftCard = () => {
       const res = await instance.post(
         url,
         {
-          title: cardData.title,
-          description: cardData.description,
+          title: cardData.title.trim(),
+          description: cardData.description.trim(),
           published: "true",
           variants: cardData.variants,
           images: previewImage,
@@ -363,12 +366,13 @@ const CreateGiftCard = () => {
           {cardData.variants.map((item, index) => (
             <div className="gift-card__variant-grid-row" key={index}>
               <input
-                type="text"
+                type="number"
                 className="gift-card__variant-input-title gift-card__input"
                 id={index}
                 name="option1"
                 value={item.option1}
                 onChange={handleVariant}
+                onWheel={(e) => e.target.blur()}
               />
               <input
                 type="number"
@@ -377,6 +381,7 @@ const CreateGiftCard = () => {
                 name="price"
                 value={item.price}
                 onChange={handleVariant}
+                onWheel={(e) => e.target.blur()}
               />
               <img src={DeleteIcon} alt="" id={index} onClick={handleDelete} />
             </div>

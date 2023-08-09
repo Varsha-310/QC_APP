@@ -27,7 +27,7 @@ const billingHistorySchema = {
   status: { type: String, enum: ["ACTIVE","CANCELLED","UPGRADED","EXPIRED","FROZEN","PENDING","BILLED"], default: "PENDING" }, 
   billingDate: Date,
   planEndDate: Date,
-  cappedAmount: String, // 120k
+  usage_limit: String, // 120k
   invoiceNumber: String,
   invoiceAmount: String,
   invoiceDate: String,

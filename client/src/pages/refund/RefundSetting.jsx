@@ -67,7 +67,7 @@ const RefundSetting = () => {
           : "",
         restock_type: configuration?.restock_type
           ? configuration?.restock_type
-          : "null",
+          : "no_restock",
       };
 
       let res = null;
@@ -218,7 +218,7 @@ const RefundSetting = () => {
             <CustomDropdown
               options={[
                 { title: "Return", value: "return" },
-                { title: "No Return", value: "null" },
+                { title: "No Restock", value: "no_restock" },
               ]}
               keyField={"restock_type"}
               value={configuration?.restock_type || "Select"}

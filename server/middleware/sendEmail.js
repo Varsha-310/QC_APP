@@ -46,6 +46,10 @@ email_template = email_template.replace(
   giftCardDetails["CardPin"]
 );
 email_template = email_template.replace(
+  "__CardNumber__",
+  giftCardDetails["CardNumber"]
+);
+email_template = email_template.replace(
   "__Amount__",
   giftCardDetails["Balance"]
 );

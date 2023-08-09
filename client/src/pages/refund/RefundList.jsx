@@ -20,6 +20,7 @@ const RefundList = () => {
     "Customer",
     "Total",
     "Status",
+    "Fulfillment Status",
     "Original Payment",
     "Refund Mode",
     "Initiate Refund",

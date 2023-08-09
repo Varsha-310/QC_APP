@@ -1,5 +1,7 @@
+import useScrollTop from "../../hooks/useScrollTop";
 import "./styles/Issues.css";
 const Issues = () => {
+  useScrollTop();
   return (
     <div className="issues-container component">
       <div className="section-box-container">

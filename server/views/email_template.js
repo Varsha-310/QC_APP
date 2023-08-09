@@ -69,11 +69,11 @@ let email_template = `
                                                                 <table cellspacing="0" cellpadding="0" style="font-size:12px;text-align:right;color:#000000" border="0">
                                                                 <tbody><tr>
                                                                     <td style="padding-bottom:5px;border-right:1px solid #e6e6e6;padding-right:5px">
-                                                                    
+                                                                       Card Number<br />
                                                                         Card PIN
                                                                     </td>
                                                                     <td style="font-size:17px;font-weight:normal;width:190px;border-left:1px solid #e6e6e6;padding-right:5px">
-                                                                    
+                                                                     __CardNumber__ <br />
                                                                      __CardPIN__
                                                                     </td>
                                                                 </tr>
