@@ -1,7 +1,11 @@
 import axios from "axios";
 import {createPayment,verifyPayuTranscation} from "../middleware/payU.js";
 
-
+/**
+ * create payment
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const create = async (req, res) => {
     console.log("-----------------creating payment------------------------")
     let store = {
@@ -22,6 +26,12 @@ export const create = async (req, res) => {
     res.send(paymentData[0]);
 }
 
+/**
+ * checking the success response of transaction
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export const payuPayment = async(req,res) => {
     console.log(req,"------------requewt body-------------------")
     let reqData = req.body;

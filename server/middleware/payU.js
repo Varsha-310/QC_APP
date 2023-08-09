@@ -2,6 +2,11 @@ import axios from "axios";
 // import storeBilling from "../models/storeBilling";
 import crypto from "crypto";
 
+/**
+ * function to create hash
+ * @param {*} payload 
+ * @returns 
+ */
 const generateHash = (payload) => {
   console.log("-----------------payload---------------------------",payload.si_details);
   let paymentString = `${payload.key}|${payload.txnid}|${payload.amount}|${payload.productinfo}|${payload.firstname}|${payload.email}|||||||||||{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}|${process.env.payusalt}`;
@@ -11,6 +16,11 @@ const generateHash = (payload) => {
   return hash.digest("hex");
 };
 
+/**
+ * function submit payment form to payU
+ * @param {*} payload 
+ * @returns 
+ */
 const generateHtml = (payload) => {
   console.log(process.env.payupaymenturl);
   let data = `<form action=${process.env.payupaymenturl} method="POST">`;
@@ -21,6 +31,14 @@ const generateHtml = (payload) => {
 
 };
 
+
+/**
+ * creating payment
+ * @param {*} storeData 
+ * @param {*} billingData 
+ * @param {*} amount 
+ * @returns 
+ */
 export const createPayment = (storeData, billingData, amount) => {
   let payload = createPayload(storeData, billingData, amount);
   console.log(payload);
@@ -30,6 +48,14 @@ export const createPayment = (storeData, billingData, amount) => {
   return [generatedHtml, payload];
 };
 
+
+/**
+ * creating payload for submitting the form
+ * @param {*} storeData 
+ * @param {*} billingData 
+ * @param {*} amount 
+ * @returns 
+ */
 const createPayload = (storeData, billingData, amount) => {
   let payload = {
     key: process.env.payukey,
@@ -49,6 +75,10 @@ const createPayload = (storeData, billingData, amount) => {
   return payload;
 };
 
+/**
+ * method to verify payU transaction
+ * @param {*} transId 
+ */
 export const verifyPayuTranscation = async (transId) => {
   
   const paymentString = `${process.env.payukey}|verify_payment|0.12w.sdq.hnj890okjhg|${process.env.payusalt}`;
