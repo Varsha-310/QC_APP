@@ -4,7 +4,7 @@ import axios from "axios";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
 import store from "../models/store.js";
-import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilverHelper.js";
+import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
 import { checkActivePlanUses } from "./BillingController.js";

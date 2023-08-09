@@ -16,7 +16,7 @@ import {
   addToWallet,
   createWallet,
   activateCard,
-} from "../middleware/qwikcilverHelper.js";
+} from "../middleware/qwikcilver.js";
 import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import orders from "../models/orders.js";
