@@ -7,7 +7,7 @@ import {verifyPayuTranscation} from "../middleware/payU.js"
 const paymentRoute = Router();
 
 // Route of creating payment
-paymentRoute.get("/create", create);
+paymentRoute.post("/create", create);
 
 // route of success url for mandate transaction
 paymentRoute.post("/payu/success", payuPayment);
