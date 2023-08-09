@@ -4,9 +4,10 @@ import axios from "axios";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
 import store from "../models/store.js";
-import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilverHelper.js";
+import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
+import { checkActivePlanUses } from "./BillingController.js";
 
 /**
  * calculate shopify refund amount from shopify
@@ -269,6 +270,13 @@ export const handleRefundAction = async (req, res) => {
         let { orderId, line_items, amount, refund_type } = req.body;
 
         const {store_url} = req.token;
+
+        const flag = await checkActivePlanUses(amount, store_url);
+        if(flag > 0){
+
+            const msg = flag == 3 ? respondError("Plan limit has been exceeded. Please upgrade your plan.", 422) : respondInternalServerError();
+            return res.json(msg);
+        }
 
         //check order
         const ordersData = await orders.findOne({ id: orderId, store_url: store_url });

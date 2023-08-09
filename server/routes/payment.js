@@ -1,12 +1,21 @@
 import { Router } from "express";
-import { transactionData , mandateData} from "../controllers/paymentController";
+import {
+    create,payuPayment
+} from "../controllers/paymentController.js";
+import {verifyPayuTranscation} from "../middleware/payU.js"
 
 const paymentRoute = Router();
 
-// webhook for mandate data
-paymentRoute.post("/webhook/mandate",  mandateData);
+// Route of creating payment
+paymentRoute.post("/create", create);
 
-// webhook for transaction data
-paymentRoute.post("/webhook/transaction", transactionData);
+// route of success url for mandate transaction
+paymentRoute.post("/payu/success", payuPayment);
+
+// route of fail url for mandate transaction
+paymentRoute.post("/payu/fail", payuPayment);
+
+// route to verify payment
+paymentRoute.post("/payu/verify", verifyPayuTranscation);
 
 export default paymentRoute;

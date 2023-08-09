@@ -2,16 +2,15 @@ import mongoose from "mongoose";
 
 export const paymentStatus = ["successful", "refunded", "rejected", "pending", "payment_processing", "disputed"];
 const TransactionSchema = mongoose.Schema({
-
-  store_id: {type : string},
-  invoice_number: {type:string},
+  store_id: {type : String},
+  invoice_number: {type:String},
   status: {
     type: String,
     enum: paymentStatus,
     default: "pending"
   },
   amount: { type: Number, default: 0 },
-  currency: { type: String, default: INR },
+  currency: { type: String, default: "INR" },
   request_id: { type: String, default: null },
   receipt_id: { type: String, default: null },
   transaction_id: { type: String, default: null },

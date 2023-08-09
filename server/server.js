@@ -46,6 +46,9 @@ app.use(
 );
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.enable("trust proxy", true);
 
@@ -110,8 +113,8 @@ cron.schedule("* * * * *", () => {
 
 // Database and Port connection
 mongoose
-  // .connect(process.env.DB_URL + process.env.DB)
-  .connect("mongodb://0.0.0.0:27017/QC-DB1")
+   .connect(process.env.DB_URL)
+  //.connect("mongodb://0.0.0.0:27017/QC-DB1")
   .then(() => {
 
     app.listen(process.env.PORT);

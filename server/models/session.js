@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { paymentStatus } from "./Transactions";
+import { paymentStatus } from "./Transactions.js";
 
 const sessionStatus = [ "initiated", "completed", "rejected", "processing", "retry", "failed"];
 const SessionSchema = mongoose.Schema({
 
-  request_id: { type: String },
+  seesion_id: { type: String },
   status: {
     type: String,
     enum: sessionStatus,
-    default: "processed",
+    default: "initiated",
   },
   remark: { type: String, default: null },
   amount: { type: Number, default: 0 },
@@ -16,10 +16,18 @@ const SessionSchema = mongoose.Schema({
   plan: { type: Object, default: null },
   store_url: { type: String, default: null },
   test: { type: Boolean, default: false },
+  first_name: String,
+  last_name: String,
+  phone: String,
   callback_status: {
     type: String,
     enum: paymentStatus,
-    default: null,
+    default: "pending",
+  },
+  type: {
+    type: String,
+    enum: ["MANDATE", "PAYMENT", "PRE-DEBIT-NOTIFICATION", "RECURRING"],
+    default: "MANDATE"
   },
   callback_at: { type: Boolean, default: false },
   retry_at: { type: Date, default: null },

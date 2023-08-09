@@ -4,7 +4,6 @@ import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
-import wallet from "../models/wallet.js";
 
 
 
@@ -415,12 +414,10 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
   try {
 
     const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id});
+    if(giftcardExists) return null;
     
-    console.log("Wallter Details: ", giftcardExists);
-    if(!giftcardExists) return null;
-  
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
+    setting.unique_transaction_id = ++parseInt(setting.unique_transaction_id); 
     setting.markModified("unique_transaction_id");
 
     const myDate = new Date();
@@ -446,8 +443,9 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
       },
       data: data,
     };
+
     const walletRedemption = await axios(config);
-    console.log("Reverse logs:", walletRedemption.data)
+    console.log(walletRedemption.data)
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
 
       await wallet_history.updateOne({wallet_id: giftcardExists.wallet_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});

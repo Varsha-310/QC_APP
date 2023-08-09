@@ -10,7 +10,6 @@ billingRoute.get("/list",verifyJwt, handleBillingList);
 
 //billingRoute.get("/seed", seedBillingHistory);
 
-//order Sync url
 //billing/currnt/uses
 billingRoute.get("/current/uses",verifyJwt, handleBillingDetails);
 
