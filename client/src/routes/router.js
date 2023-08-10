@@ -136,11 +136,11 @@ const router = createBrowserRouter([
         path: "/issues",
         element: <Issues />,
       },
+      { path: "/refund_success", element: <RefundConfirmation /> },
     ],
   },
   { path: "/select-plan", element: <PlanSelection /> },
   { path: "/submission_success", element: <ConfirmationPage /> },
-  { path: "/refund_success", element: <RefundConfirmation /> },
 ]);
 
 export default router;

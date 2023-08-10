@@ -138,6 +138,7 @@ const PlanSelection = () => {
       console.log(error);
     }
   };
+
   console.log(isAgree);
 
   // handle confirm payment
@@ -146,7 +147,14 @@ const PlanSelection = () => {
       alert("Please accept Terms and Conditions.");
       return;
     }
+    // plan select
+    handleSelectPlan(
+      selectedPlan.plan_name.slice(0, 1).toUpperCase() +
+        selectedPlan.plan_name.slice(1),
+      selectedPlan.price
+    );
 
+    // payment process
     const url = "/payment/create";
     const headers = {
       Authorization: getUserToken(),
@@ -157,31 +165,6 @@ const PlanSelection = () => {
       const resData = res.data;
       console.log(resData);
       setReponsePaymentData(resData.data);
-
-      // if (resData?.code === 200) {
-      //   const reqData = resData.data;
-
-      //   const encodedParams = new URLSearchParams();
-
-      //   for (const key in reqData.payload) {
-      //     encodedParams.set(key, reqData.payload[key]);
-      //   }
-
-      //   encodedParams.set("key", "Ayuils");
-
-      //   const options = {
-      //     method: "POST",
-      //     url: "https://test.payu.in/_payment",
-      //     headers: {
-      //       "Content-Type": "application/x-www-form-urlencoded",
-      //     },
-      //     data: encodedParams.toString(),
-      //   };
-
-      //   const payUResponse = await axios.request(options);
-
-      //   console.log("payUResonpe", payUResponse);
-      // }
     } catch (error) {
       console.log(error);
     }
@@ -209,7 +192,7 @@ const PlanSelection = () => {
 
   return (
     <div className="plan-selection-container container_padding">
-      \{/* show terms and condition */}
+      {/* show terms and condition */}
       {terms &&
         createPortal(
           <TermsPopUp setTerms={setTerms} />,
@@ -918,13 +901,14 @@ const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
         <div className="payment-confirm-btns">
           <form action={reponsePaymentData?.url} method="POST">
             {reponsePaymentData?.payload &&
-              Object.keys(reponsePaymentData?.payload).map((item) => {
+              Object.keys(reponsePaymentData?.payload).map((item, index) => {
                 // console.log(item);
                 // return item === "key" ? (
                 //   <input name={"key"} value={"Ayuils"} type="hidden" />
                 // ) : (
                 return (
                   <input
+                    key={index}
                     name={item}
                     value={reponsePaymentData?.payload[item]}
                     type="hidden"
