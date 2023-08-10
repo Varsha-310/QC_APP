@@ -93,7 +93,7 @@ export const payuPayment = async (req, res) => {
 };
 
 export const failurePayment = async (req,res) => {
-    return res.redirect(`${process.env.CLIENT_URL}select-plan`);
+    return res.redirect(`${process.env.CLIENT_URL}select-plan?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 }
 
 const updateBillingHistory = (data) => {
