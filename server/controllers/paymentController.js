@@ -17,45 +17,55 @@ export const create = async (req, res) => {
   try {
     console.log("-----------------creating payment------------------------");
     // const store_url = req.token.store_url
-    const store_url = "mmtteststore8.myshopify.com";
-    const getPlan = stores.find({ store_url: store_url});
+    const store_url = "qc-plus-store.myshopify.com";
+    const storeData = await stores.findOne({ store_url: store_url});
+    console.log(storeData)
+    const getPlanData = await plan.findOne({plan_name : storeData.plan.plan_name});
+    console.log(getPlanData)
     const currentDate = new Date();
     const currentDay = currentDate.getDate(); // Get the current day of the month
     const remainingDays = 30 - currentDay;
-    const dailyRate = getPlan.plan_price / 30;
+    const dailyRate = getPlanData.price / 30;
     const calculatedPayment = remainingDays * dailyRate;
-
+    console.log(remainingDays,dailyRate,calculatedPayment)
+    let myDate = new Date();
+    const date = ((myDate).toISOString().slice(0, 10));
     const calculatedGst = calculateGST(calculatedPayment);
-    const totalAmount = calculatedPayment + calculatedGst;
-    const createBillingHistory = BillingHistory.create({
+    console.log(calculatedGst)
+    // const totalAmount = (calculatedPayment + calculatedGst);
+    const totalAmount = 399
+    console.log(totalAmount)
+    const createBillingHistory = await BillingHistory.create({
       store_url: store_url,
-      given_credit: "20000",
+      given_credit: getPlanData.plan_limit,
       monthly_charge: totalAmount,
-      usage_charge: "2.00",
-      planName: "Basic",
-      cappedAmount: "120000",
+      usage_charge: getPlanData.usage_charge,
+      planName: getPlanData.plan_name,
+      cappedAmount: getPlanData.usage_limit,
     });
+    console.log(createBillingHistory , totalAmount)
 
     let store = {
-      store_url: "test.myshopify.com",
-      firstname: "Test",
+      store_url: store_url,
+      firstname: storeData.name,
       lastname: "Test",
-      email: "test@gmail.com",
-      phone: 999999999,
+      email: storeData.email,
+      phone: storeData.phone,
     };
     let billingData = {
-      billing_amount: 300,
-      billing_start_date: "2023-08-01",
+      billing_amount: totalAmount,
+      billing_start_date: date,
       billing_currency: "INR",
       billing_cycle: "YEARLY",
     };
-    let paymentData = createPayment(store, billingData, 300);
+    let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
     res.json({
       ...respondWithData("payment URL"),
       data:{payload : paymentData,
         url : process.env.payupaymenturl}
     });
+    // res.send(paymentData[0]);
   } catch (err) {
     logger.info(err);
     console.log(err);

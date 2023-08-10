@@ -25,7 +25,7 @@ let storeSchema = mongoose.Schema({
     usage_charge: { type: String },
     plan_limit: { type: Number },
     price: { type: Number },
-    default: null,
+  
   },
   InvoiceUserId: String, // Marchent user id that us used for generate invoice by qc.
   is_installed: { type: Boolean, default: false },
