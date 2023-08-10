@@ -6,6 +6,7 @@ import plan from "../models/plan.js";
 import { logger } from "../helper/utility.js";
 import { respondWithData, respondInternalServerError } from "../helper/response.js";
 import stores from "../models/store.js";
+import store from "../models/store.js";
 
 
 /**
@@ -32,18 +33,9 @@ export const create = async (req, res) => {
     const date = ((myDate).toISOString().slice(0, 10));
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst)
-    // const totalAmount = (calculatedPayment + calculatedGst);
-    const totalAmount = 399
+     const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
+  //  const totalAmount = 399
     console.log(totalAmount)
-    const createBillingHistory = await BillingHistory.create({
-      store_url: store_url,
-      given_credit: getPlanData.plan_limit,
-      monthly_charge: totalAmount,
-      usage_charge: getPlanData.usage_charge,
-      planName: getPlanData.plan_name,
-      cappedAmount: getPlanData.usage_limit,
-    });
-    console.log(createBillingHistory , totalAmount)
 
     let store = {
       store_url: store_url,
@@ -60,6 +52,16 @@ export const create = async (req, res) => {
     };
     let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
+    const createBillingHistory = await BillingHistory.create({
+        store_url: store_url,
+        given_credit: getPlanData.plan_limit,
+        monthly_charge: totalAmount,
+        usage_charge: getPlanData.usage_charge,
+        planName: getPlanData.plan_name,
+        cappedAmount: getPlanData.usage_limit,
+        transaction_id: paymentData.txnid
+      });
+
     res.json({
       ...respondWithData("payment URL"),
       data:{payload : paymentData,
@@ -87,13 +89,18 @@ export const payuPayment = async (req, res) => {
     await updateBillingHistory(reqData);
     // await stores.findOneAndUpdate
   }
-  return res.redirect(`${APP_URL}/`);
+  return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 };
+
+export const failurePayment = async (req,res) => {
+    return res.redirect(`${process.env.CLIENT_URL}select-plan`);
+}
 
 const updateBillingHistory = (data) => {
   const updateBilling = BillingHistory.findOneAndUpdate(
-    { store_url: "mmtteststore.myshopify.com" },
-    { transaction_id: data.txnid, status: "ACTIVE" }
+    { transaction_id :data.txnid },
+    { status: "ACTIVE" }
   );
   console.log(updateBilling);
+  const updateStoreData = store.findOneAndUpdate({email : data.email, mandate : data})
 };

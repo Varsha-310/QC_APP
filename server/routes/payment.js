@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-    create,payuPayment
+    create,payuPayment , failurePayment
 } from "../controllers/paymentController.js";
 import {verifyPayuTranscation} from "../middleware/payU.js"
 
@@ -13,7 +13,7 @@ paymentRoute.post("/create", create);
 paymentRoute.post("/payu/success", payuPayment);
 
 // route of fail url for mandate transaction
-paymentRoute.post("/payu/fail", payuPayment);
+paymentRoute.post("/payu/fail", failurePayment);
 
 // route to verify payment
 paymentRoute.post("/payu/verify", verifyPayuTranscation);

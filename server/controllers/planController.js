@@ -39,10 +39,10 @@ else{
  */
 export const planSelect = async (req, res) => {
   try {
-    let { planName }= req.body;
+    let { plan_name }= req.body;
     let updatePlan = await store.updateOne(
       { store_url: req.token.store_url },
-      { $set: { "plan.plan_name": planName  } }
+      { $set: { "plan.plan_name": plan_name  } }
     );
     console.log("-------------updatedplan-----------", updatePlan);
     res.json(respondSuccess("plan updated"));
