@@ -48,28 +48,33 @@ const CurrentUsages = () => {
     updateData();
   }, []);
 
-
   return (
     <div className="transaction-detail__container">
       <div className="section-box-container">
         <div className="section-box-title">Current Usage</div>
       </div>
 
-      {data?.map((uses) => {
+      {data?.reverse().map((uses, index) => {
         return (
           <div key={uses?.id}>
+            <div className="section-box-container">
+              {/* <div className="transaction-detail__detail-heading"> */}
+              {index === 0 ? "Current Plan" : "Previous Plan"}
+              {/* </div> */}
+            </div>
+
             {/* plan */}
             <div className="transaction-detail__plan-data">
               <div className="transaction-detail__plan-detail transaction-detail__box-bg">
                 <TextElement>
-                  Invoice Number: {uses?.invoiceNumber || "NA"}
+                  Invoice Number : {uses?.invoiceNumber || "NA"}
                 </TextElement>
                 <TextElement>
-                  Issued Date:{" "}
+                  Issued Date :{" "}
                   {new Date(uses?.issue_Date).toDateString().slice(4)}
                 </TextElement>
                 <TextElement>
-                  Due Date:{" "}
+                  Plan End Date :{" "}
                   {new Date(uses?.planEndDate).toDateString().slice(4)}
                 </TextElement>
               </div>
@@ -85,7 +90,7 @@ const CurrentUsages = () => {
 
                 <div className="transaction-detail__plan-due-date">
                   Due On{" "}
-                  {new Date(uses?.planEndDate).toDateString().slice(4, 10)}
+                  {new Date(uses?.billingDate).toDateString().slice(4, 10)}
                 </div>
               </div>
             </div>
@@ -189,7 +194,7 @@ const CurrentUsages = () => {
             </div>
           </div>
         );
-      })}
+      }) || <div className="no-element">Currently Not Available</div>}
     </div>
   );
 };
