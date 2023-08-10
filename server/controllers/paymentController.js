@@ -89,7 +89,7 @@ export const payuPayment = async (req, res) => {
     await updateBillingHistory(reqData);
     // await stores.findOneAndUpdate
   }
-  return res.redirect(`${APP_URL}/`);
+  return res.redirect(`${process.env.CLIENT_URL}kyc-status`);
 };
 
 const updateBillingHistory = (data) => {

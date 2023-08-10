@@ -58,14 +58,14 @@ export const createPayment = (storeData, billingData, amount) => {
  */
 const createPayload = (storeData, billingData, amount) => {
   let payload = {
-    key: "",
+    key: process.env.payukey,
     api_version: 7,
     txnid: Math.random().toString(36),
     amount: amount,
     productinfo: "shopifybilling",
-    firstname: storeData.name,
+    firstname: "varsha",
     email: storeData.email,
-    phone: storeData.phone,
+    phone: "8095379504",
     lastname: "Antargangi",
     surl: `${process.env.APP_URL}/payment/payu/success`,
     furl: `${process.env.APP_URL}/payment/payu/fail`,
