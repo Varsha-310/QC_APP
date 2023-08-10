@@ -10,6 +10,7 @@ import plan from "../models/plan.js";
  * @param {*} res
  */
 export const create = async (req, res) => {
+  
   console.log("-----------------creating payment------------------------");
   const store_url = "mmtteststore8.myshopify.com"
   const getPlan = plan.find({store_url : store_url , created_at : -1});
@@ -21,7 +22,7 @@ export const create = async (req, res) => {
 
   const calculatedGst = calculateGST(calculatedPayment);
   const totalAmount = calculatedPayment + calculatedGst;
- const createBillingHistory = BillingHistory.create({store_url: store_url, given_credit: "20000", monthly_charge: totalAmount , usage_charge : "2.00" , planName : "Basic", cappedAmount:"120000"})
+  const createBillingHistory = BillingHistory.create({store_url: store_url, given_credit: "20000", monthly_charge: totalAmount , usage_charge : "2.00" , planName : "Basic", usage_limit:"120000"})
 
    
   let store = {
@@ -59,6 +60,6 @@ export const payuPayment = async (req, res) => {
 };
 
 const updateBillingHistory = (data) => {
-    const updateBilling = BillingHistory.findOneAndUpdate({store_url: "mmtteststore.myshopify.com"},{transaction_id:data.txnid , status: "ACTIVE"})
-console.log(updateBilling)
+  const updateBilling = BillingHistory.findOneAndUpdate({store_url: "mmtteststore.myshopify.com"},{transaction_id:data.txnid , status: "ACTIVE"})
+  console.log(updateBilling)
 };

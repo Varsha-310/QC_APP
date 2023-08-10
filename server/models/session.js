@@ -11,6 +11,7 @@ const SessionSchema = mongoose.Schema({
     default: "initiated",
   },
   remark: { type: String, default: null },
+  ref: { type: String, default: null},
   amount: { type: Number, default: 0 },
   currency: { type: String, default: null },
   plan: { type: Object, default: null },
@@ -19,10 +20,12 @@ const SessionSchema = mongoose.Schema({
   first_name: String,
   last_name: String,
   phone: String,
+  plan: String,
+  date: Date,
   callback_status: {
     type: String,
     enum: paymentStatus,
-    default: "pending",
+    default: "pending"
   },
   type: {
     type: String,
@@ -33,8 +36,7 @@ const SessionSchema = mongoose.Schema({
   retry_at: { type: Date, default: null },
   expired_at: { type: Date, default: null },
   no_of_retried: { type: Number, default: 0 },
-  transaction_id: { type: String },
+  logs: { type: Object },
 },{ timestamps: true, __v: false  });
 
 export default mongoose.model("Session", SessionSchema);
-

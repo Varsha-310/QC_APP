@@ -89,7 +89,7 @@ export const verifyPayuTranscation = async (transId) => {
 
   const url = "https://test.payu.in/merchant/postservice?form=2";
   const headers = {
-    accept: "application/json",
+    "accept": "application/json",
     "Content-Type": "application/x-www-form-urlencoded",
   };
 
