@@ -34,6 +34,7 @@ let storeSchema = mongoose.Schema({
   is_payment_done: { type: Boolean, default: false },
   //To store the mandate Details
   mandate: Object,
+  auth_token: {type:String}
 });
 
 export default mongoose.model("Store", storeSchema);
