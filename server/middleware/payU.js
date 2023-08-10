@@ -40,6 +40,7 @@ const generateHtml = (payload) => {
  * @returns 
  */
 export const createPayment = (storeData, billingData, amount) => {
+  
   let payload = createPayload(storeData, billingData, amount);
   console.log(payload);
   let hash = generateHash(payload);
