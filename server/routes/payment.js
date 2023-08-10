@@ -10,10 +10,10 @@ const paymentRoute = Router();
 paymentRoute.post("/create", create);
 
 // route of success url for mandate transaction
-paymentRoute.get("/payu/success", payuPayment);
+paymentRoute.post("/payu/success", payuPayment);
 
 // route of fail url for mandate transaction
-paymentRoute.get("/payu/fail", failurePayment);
+paymentRoute.post("/payu/fail", failurePayment);
 
 // route to verify payment
 paymentRoute.post("/payu/verify", verifyPayuTranscation);
