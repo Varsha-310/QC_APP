@@ -16,6 +16,7 @@ import store from "../models/store.js";
  */
 export const create = async (req, res) => {
   try {
+    
     console.log("-----------------creating payment------------------------");
     // const store_url = req.token.store_url
     const store_url = "qc-plus-store.myshopify.com";
