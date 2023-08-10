@@ -92,6 +92,10 @@ export const payuPayment = async (req, res) => {
   return res.redirect(`${process.env.CLIENT_URL}kyc-status`);
 };
 
+export const failurePayment = async (req,res) => {
+    return res.redirect(`${process.env.CLIENT_URL}select-plan`);
+}
+
 const updateBillingHistory = (data) => {
   const updateBilling = BillingHistory.findOneAndUpdate(
     { transaction_id :data.txnid },
