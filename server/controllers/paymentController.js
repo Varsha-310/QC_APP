@@ -5,7 +5,7 @@ import BillingHistory from "../models/BillingHistory.js";
 import plan from "../models/plan.js";
 import { logger } from "../helper/utility.js";
 import { respondWithData, respondInternalServerError } from "../helper/response.js";
-
+import stores from "../models/store.js";
 
 
 /**
@@ -16,8 +16,9 @@ import { respondWithData, respondInternalServerError } from "../helper/response.
 export const create = async (req, res) => {
   try {
     console.log("-----------------creating payment------------------------");
+    // const store_url = req.token.store_url
     const store_url = "mmtteststore8.myshopify.com";
-    const getPlan = plan.find({ store_url: store_url, created_at: -1 });
+    const getPlan = stores.find({ store_url: store_url});
     const currentDate = new Date();
     const currentDay = currentDate.getDate(); // Get the current day of the month
     const remainingDays = 30 - currentDay;
@@ -74,6 +75,7 @@ export const payuPayment = async (req, res) => {
   console.log(reqData, "-----------------request data--------------------");
   if (reqData.status == "success") {
     await updateBillingHistory(reqData);
+    // await stores.findOneAndUpdate
   }
   return res.redirect(`${APP_URL}/`);
 };
