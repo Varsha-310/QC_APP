@@ -55,10 +55,11 @@ export const create = async (req, res) => {
     const createBillingHistory = await BillingHistory.create({
         store_url: store_url,
         given_credit: getPlanData.plan_limit,
-        monthly_charge: totalAmount,
+        montly_charge: totalAmount,
+       monthly_gst:calculatedGst,
         usage_charge: getPlanData.usage_charge,
         planName: getPlanData.plan_name,
-        cappedAmount: getPlanData.usage_limit,
+        usage_limit: getPlanData.usage_limit,
         transaction_id: paymentData.txnid
       });
 
