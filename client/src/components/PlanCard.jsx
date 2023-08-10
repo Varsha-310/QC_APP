@@ -9,7 +9,7 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
       {/* popular plan */}
       {plan?.plan_name.toLowerCase() === "pro" && (
         <div className="popular-banner">
-          <img src={require("../assets/icons/pngs/cardcap.png")} />
+          <img src={require("../assets/icons/pngs/cardcap.png")} alt="" />
           <div className="text">Most Popular</div>
         </div>
       )}

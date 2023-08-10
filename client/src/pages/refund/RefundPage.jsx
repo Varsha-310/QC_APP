@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./styles/RefundPage.css";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { Dot, PrimaryBtn } from "../../components/BasicComponents";
 import CustomDropdown from "../../components/CustomDropdown";
 import instance from "../../axios";
@@ -31,6 +31,8 @@ const RefundPage = () => {
   const [refundOption, setRefundOption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
+
+  const navigate = useNavigate();
 
   console.log(refundData);
 
@@ -162,6 +164,11 @@ const RefundPage = () => {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
       console.log("initiate", resData);
+
+      if (resData?.success === true) {
+        navigate("/refund_success", { replace: true });
+      }
+
       alert(resData.message);
     } catch (error) {
       console.log(error);

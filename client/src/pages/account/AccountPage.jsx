@@ -58,7 +58,8 @@ const AccountPage = () => {
           <PlanCard
             plan={planData?.data?.plans.find(
               (item) =>
-                item.plan_name.toUpperCase() === planData.data.selectedPlan
+                item.plan_name.toLowerCase() ===
+                planData.data.selectedPlan.toLowerCase()
             )}
             active={false}
             // popular={}
