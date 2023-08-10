@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { paymentStatus } from "./Transactions";
+import { paymentStatus } from "./Transactions.js";
 
 const sessionStatus = [ "initiated", "completed", "rejected", "processing", "retry", "failed"];
 const SessionSchema = mongoose.Schema({

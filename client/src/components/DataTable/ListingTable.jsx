@@ -1,9 +1,9 @@
 import React from "react";
 import "./styles/ListingTable.css";
 import DownloadIcon from "../../assets/icons/svgs/downloadIcon.svg";
-import { Link } from "react-router-dom";
 
 const ListingTable = ({ headings, data }) => {
+  console.log(data);
   return (
     <table className="listing-table trasaction-table">
       <thead>
@@ -15,15 +15,15 @@ const ListingTable = ({ headings, data }) => {
       </thead>
 
       <tbody>
-        {data.map((row, index) => (
-          <tr key={index}>
-            <td>{row?.monthly_plan}</td>
-            <td>{row?.invoice_bill_date.slice(0, 10)}</td>
-            <td>#{row?.invoice_number}</td>
-            <td>INR {row?.total_amount}</td>
-            <td>{row?.next_payment_date.slice(0,10)}</td>
+        {data?.map((row) => (
+          <tr key={row?.id}>
+            <td>{row?.planName}</td>
+            <td>{new Date(row?.issue_Date).toDateString().slice(4)}</td>
+            <td>#{row?.invoiceNumber}</td>
+            <td>₹ {row?.total_amount}</td>
+            <td>{new Date(row?.planEndDate).toDateString().slice(4)}</td>
             <td id="action">
-              <a href={row?.invoice_pdf_url} target="_blank" rel="noreferrer">
+              <a href={row?.invoiceUrl} target="_blank" rel="noreferrer">
                 <img src={DownloadIcon} alt="" />
               </a>
             </td>

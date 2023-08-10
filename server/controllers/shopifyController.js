@@ -79,6 +79,7 @@ export const installCallback = async (req, res) => {
       let token = await createJwt(shop);
 
       if (storeStatus && storeStatus.is_installed == true) {
+        await store.updateOne({store_url : shop} , {auth_token : token})
         
         return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
       } else {
@@ -127,6 +128,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
       is_installed: true,
+      auth_token : shopData.auth_token
     };
     console.log(data);
     let storeDetails = await store.updateOne(

@@ -334,6 +334,7 @@ const EditGiftCard = () => {
                 name="option1"
                 value={item.option1}
                 onChange={handleVariant}
+                onWheel={(e) => e.target.blur()}
               />
               <input
                 type="number"
@@ -342,6 +343,7 @@ const EditGiftCard = () => {
                 name="price"
                 value={item.price}
                 onChange={handleVariant}
+                onWheel={(e) => e.target.blur()}
               />
               <img src={DeleteIcon} alt="" id={index} onClick={handleDelete} />
             </div>

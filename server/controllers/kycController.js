@@ -62,7 +62,7 @@ export const initiatieKyc = async (req, res) => {
       const formUrl = docFillUrls[dynamicKey];
       console.log(formUrl);
 
-      let formresult = await fillForm(formUrl, storeData,req.token.store_url);
+      let formresult = await fillForm(formUrl, storeData,req.headers.authorization);
       if (formresult.status == 200 && formresult.data.status == "SUCCESS") {
         let dispatchResponse = await dispatchTransaction(txnId);
         console.log(dispatchResponse);
@@ -116,7 +116,7 @@ export const fillForm = async (formUrl, shop, token) => {
       data: JSON.stringify({
         shopifyID: shop.shopify_id,
         firstName: shop.name,
-        lastName: "qwertyu",
+        email : shop.email,
         mobile: shop.phone,
         queryParam: token ,
       }),

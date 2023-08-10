@@ -35,8 +35,8 @@ const CurrentUsages = () => {
     try {
       const res = await instance.get(url, { headers });
       const resData = await res.data;
-      setData(resData);
-      console.log(resData);
+      setData(resData.data);
+      console.log("resdata", resData);
     } catch (error) {
       console.log(error);
     }
@@ -54,101 +54,173 @@ const CurrentUsages = () => {
         <div className="section-box-title">Current Usage</div>
       </div>
 
-      {/* plan */}
-      <div className="transaction-detail__plan-data">
-        <div className="transaction-detail__plan-detail transaction-detail__box-bg">
-          <TextElement>Invoice Number: QC01214784</TextElement>
-          <TextElement>Issued Date: 11 Feb 2023</TextElement>
-          <TextElement>Due Date: 23 Aug 2023</TextElement>
-        </div>
-        <div className="transaction-detail__plan-due-amount transaction-detail__box-bg">
-          <TextElement>Amount Due(INR)</TextElement>
+      {data?.reverse().map((uses, index) => {
+        return (
+          <div key={uses?.id}>
+            <div className="section-box-container">
+              {/* <div className="transaction-detail__detail-heading"> */}
+              {index === 0 ? "Current Plan" : "Previous Plan"}
+              {/* </div> */}
+            </div>
 
-          <CustomContainer align="space-between">
-            <div className="transaction-detail__due-amount">₹ 399.00</div>
-            <TextElement $fade>(GST no Incl)</TextElement>
-          </CustomContainer>
+            {/* plan */}
+            <div className="transaction-detail__plan-data">
+              <div className="transaction-detail__plan-detail transaction-detail__box-bg">
+                <TextElement>
+                  Invoice Number : {uses?.invoiceNumber || "NA"}
+                </TextElement>
+                <TextElement>
+                  Issued Date :{" "}
+                  {new Date(uses?.issue_Date).toDateString().slice(4)}
+                </TextElement>
+                <TextElement>
+                  Plan End Date :{" "}
+                  {new Date(uses?.planEndDate).toDateString().slice(4)}
+                </TextElement>
+              </div>
+              <div className="transaction-detail__plan-due-amount transaction-detail__box-bg">
+                <TextElement>Amount Due(INR)</TextElement>
 
-          <div className="transaction-detail__plan-due-date">
-            Due On Mar 19, 2024
-          </div>
-        </div>
-      </div>
+                <CustomContainer align="space-between">
+                  <div className="transaction-detail__due-amount">
+                    ₹ {parseFloat(uses.montly_charge).toFixed(2)}
+                  </div>
+                  <TextElement $fade>(GST no Incl)</TextElement>
+                </CustomContainer>
 
-      {/* plan details & usages */}
-      <div className="transaction-detail__plan-charges transaction-detail__box-bg">
-        <div className="transaction-detail__detail-heading">
-          Your Current Plan - Basic
-        </div>
-        <div className="gift-card__text-box-container">
-          <div className="gift-card__text-box">
-            <TextElement>
-              Monthly Digital Issuance as part of plan (Both Gift Cards & Store
-              Credits)
-            </TextElement>
-          </div>
-          <div className="gift-card__text-box">
-            <TextElement align="left">₹20000.00</TextElement>
-          </div>
-        </div>
+                <div className="transaction-detail__plan-due-date">
+                  Due On{" "}
+                  {new Date(uses?.billingDate).toDateString().slice(4, 10)}
+                </div>
+              </div>
+            </div>
 
-        <div className="gift-card__text-box-container">
-          <div className="gift-card__text-box">
-            <TextElement>Current Usage</TextElement>
-          </div>
-          <div className="gift-card__text-box">
-            <TextElement align="left">₹8000.00</TextElement>
-          </div>
-        </div>
+            {/* plan details & usages */}
+            <div className="transaction-detail__plan-charges transaction-detail__box-bg">
+              <div className="transaction-detail__detail-heading">
+                Your Current Plan - {uses?.planName}
+              </div>
+              <div className="gift-card__text-box-container">
+                <div className="gift-card__text-box">
+                  <TextElement>
+                    Monthly Digital Issuance as part of plan (Both Gift Cards &
+                    Store Credits)
+                  </TextElement>
+                </div>
+                <div className="gift-card__text-box">
+                  <TextElement align="left">
+                    {parseFloat(uses?.given_credit)?.toFixed(2) || "NIL"}
+                  </TextElement>
+                </div>
+              </div>
 
-        <div className="gift-card__text-box-container">
-          <div className="gift-card__text-box">
-            <TextElement>
-              Issuance beyond Plan Limits (To be charged at 2.5% of Value of
-              Issuance)
-            </TextElement>
-          </div>
-          <div className="gift-card__text-box">
-            <TextElement align="left">Nill</TextElement>
-          </div>
-        </div>
-      </div>
+              <div className="gift-card__text-box-container">
+                <div className="gift-card__text-box">
+                  <TextElement>Current Usage</TextElement>
+                </div>
+                <div className="gift-card__text-box">
+                  <TextElement align="left">
+                    {parseFloat(uses?.used_credit)?.toFixed(2) || "NIL"}
+                  </TextElement>
+                </div>
+              </div>
 
-      {/* expected charges */}
-      <div className="transaction-detail__plan-fees transaction-detail__box-bg">
-        <div className="transaction-detail__detail-heading">
-          Expected Charges - March, 2023
-        </div>
+              <div className="gift-card__text-box-container">
+                <div className="gift-card__text-box">
+                  <TextElement>
+                    Issuance beyond Plan Limits (To be charged at{" "}
+                    {uses?.usage_charge}% of Value of Issuance)
+                  </TextElement>
+                </div>
+                <div className="gift-card__text-box">
+                  <TextElement align="left">
+                    {parseFloat(uses?.cappedAmount)?.toFixed(2) || "NIL"}
+                  </TextElement>
+                </div>
+              </div>
+            </div>
 
-        <div className="gift-card__text-box-container">
-          <div className="gift-card__text-box">
-            <TextElement>Subscription Fee</TextElement>
-          </div>
-          <div className="gift-card__text-box">
-            <TextElement align="left">₹8000.00</TextElement>
-          </div>
-        </div>
+            {/* expected charges */}
+            <div className="transaction-detail__plan-fees transaction-detail__box-bg">
+              <div className="transaction-detail__detail-heading">
+                Expected Charges - {formatDate(uses?.planEndDate)}
+              </div>
 
-        <div className="gift-card__text-box-container">
-          <div className="gift-card__text-box">
-            <TextElement>Usage Fee (at 2.5% of Value Issuance)</TextElement>
-          </div>
-          <div className="gift-card__text-box">
-            <TextElement align="left">₹8000.00</TextElement>
-          </div>
-        </div>
+              <div className="gift-card__text-box-container">
+                <div className="gift-card__text-box">
+                  <TextElement>Subscription Fee</TextElement>
+                </div>
+                <div className="gift-card__text-box">
+                  <TextElement align="left">
+                    ₹{parseFloat(uses?.montly_charge)?.toFixed(2) || "Nill"}
+                  </TextElement>
+                </div>
+              </div>
 
-        <div className="gift-card__text-box-container">
-          <TextElement align="right">Total</TextElement>
-          <div className="gift-card__text-box">
-            <TextElement align="left" id="total">
-              ₹1600.00
-            </TextElement>
+              <div className="gift-card__text-box-container">
+                <div className="gift-card__text-box">
+                  <TextElement>
+                    Usage Fee (at {uses?.usage_charge}% of Value Issuance)
+                  </TextElement>
+                </div>
+                <div className="gift-card__text-box">
+                  <TextElement align="left">
+                    ₹
+                    {parseFloat(uses?.used_credit) >
+                    parseFloat(uses?.given_credit)
+                      ? (
+                          ((parseFloat(uses?.used_credit) -
+                            parseFloat(uses?.given_credit)) *
+                            parseFloat(uses?.usage_charge)) /
+                          100
+                        ).toFixed(2)
+                      : "00.00"}
+                  </TextElement>
+                </div>
+              </div>
+
+              <div className="gift-card__text-box-container">
+                <TextElement align="right">Total</TextElement>
+                <div className="gift-card__text-box">
+                  <TextElement align="left" id="total">
+                    ₹
+                    {(
+                      parseFloat(uses?.montly_charge) +
+                      parseFloat(uses?.extra_usage_amount)
+                    ).toFixed(2)}
+                  </TextElement>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      }) || <div className="no-element">Currently Not Available</div>}
     </div>
   );
 };
 
 export default CurrentUsages;
+
+const formatDate = (dtObj, dt) => {
+  const date = new Date(dtObj);
+  const monthAr = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  if (dt === "fullDate") {
+    return `${
+      monthAr[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()}`;
+  }
+  return `${monthAr[date.getMonth()]}, ${date.getFullYear()}`;
+};
