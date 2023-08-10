@@ -92,6 +92,11 @@ const PlanSelection = () => {
   const [isAgree, setIsAgree] = useState(false);
   const [terms, setTerms] = useState(false);
 
+  const [reponsePaymentData, setReponsePaymentData] = useState();
+
+  console.log("form", reponsePaymentData);
+
+  console.log("selectedplan", selectedPlan);
   // get plans
   const fetchPlan = async () => {
     const url = "/plan/list";
@@ -102,20 +107,27 @@ const PlanSelection = () => {
     try {
       const res = await instance.post(url, {}, { headers });
       setPlans(res.data);
-      console.log(res.data);
+
+      // const scPlan=
+      const scPlan = res.data.data.selectedPlan;
+      const crPlan = res.data.data.plans.find(
+        (item) => item.plan_name.toLowerCase() === scPlan.toLowerCase()
+      );
+      setSelectedPlan(crPlan);
     } catch (error) {
       console.log(error);
     }
   };
+
   // plan select
-  const handleSelectPlan = async () => {
+  const handleSelectPlan = async (plan, price) => {
     const url = "plan/select";
     const headers = {
       Authorization: getUserToken(),
     };
     const body = {
-      plan_name: "BASIC",
-      plan_price: 399,
+      plan_name: plan, //"BASIC",
+      plan_price: price, //399,
     };
 
     try {
@@ -129,14 +141,67 @@ const PlanSelection = () => {
   console.log(isAgree);
 
   // handle confirm payment
-  const handleCnfPayment = () => {
+  const handleCnfPayment = async () => {
     if (!isAgree) {
       alert("Please accept Terms and Conditions.");
       return;
     }
 
+    const url = "/payment/create";
+    const headers = {
+      Authorization: getUserToken(),
+    };
+
+    try {
+      const res = await instance.post(url, {}, { headers });
+      const resData = res.data;
+      console.log(resData);
+      setReponsePaymentData(resData.data);
+
+      // if (resData?.code === 200) {
+      //   const reqData = resData.data;
+
+      //   const encodedParams = new URLSearchParams();
+
+      //   for (const key in reqData.payload) {
+      //     encodedParams.set(key, reqData.payload[key]);
+      //   }
+
+      //   encodedParams.set("key", "Ayuils");
+
+      //   const options = {
+      //     method: "POST",
+      //     url: "https://test.payu.in/_payment",
+      //     headers: {
+      //       "Content-Type": "application/x-www-form-urlencoded",
+      //     },
+      //     data: encodedParams.toString(),
+      //   };
+
+      //   const payUResponse = await axios.request(options);
+
+      //   console.log("payUResonpe", payUResponse);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log("after");
   };
+
+  // useEffect(()=>{
+  // cosnt var = async () => {
+  //   if (selectedPlan) {
+  //     // console.log("selected plan", selectedPlan);
+  //     handleSelectPlan(
+  //       selectedPlan.plan_name.toUpperCase(),
+  //       selectedPlan.price
+  //     );
+  //   }
+
+  //   fetchPlan();
+  // var();
+  // }, [selectedPlan]);
 
   useEffect(() => {
     fetchPlan();
@@ -144,12 +209,21 @@ const PlanSelection = () => {
 
   return (
     <div className="plan-selection-container container_padding">
+      \{/* show terms and condition */}
       {terms &&
         createPortal(
           <TermsPopUp setTerms={setTerms} />,
           document.getElementById("portal")
         )}
-
+      {/* payment confirm message */}
+      {reponsePaymentData &&
+        createPortal(
+          <PaymentConfirmPopup
+            reponsePaymentData={reponsePaymentData}
+            setReponsePaymentData={setReponsePaymentData}
+          />,
+          document.getElementById("portal")
+        )}
       <div className="section-box-container">
         <div className="section-box-title">Qwikcilver App Registration</div>
         <div className="section-box-subtitle">
@@ -161,12 +235,6 @@ const PlanSelection = () => {
           <span style={{ color: "red" }}>*</span>Marked as Mandatory
         </SectionTitle>
       </div>
-
-      {/* <div className="plan-selection__plan-type">
-        <div className="plan-selection__plan-annually">Annually</div>
-        <div className="plan-selection__plan-monthly">Monthly</div>
-      </div> */}
-
       {/* plans */}
       <div className="package-detail">
         <RectBtn
@@ -197,14 +265,16 @@ const PlanSelection = () => {
               popular={plan?.plan_name === "Pro" ? true : false}
               btnText={"Select"}
               active={
-                selectedPlan?.plan_name === plan?.plan_name ? true : false
+                selectedPlan?.plan_name?.toLowerCase() ===
+                plan?.plan_name?.toLowerCase()
+                  ? true
+                  : false
               }
               setPlan={setSelectedPlan}
             />
           );
         })}
       </div>
-
       <div className="section-box-container">
         <div className="terms-check">
           <input
@@ -219,15 +289,12 @@ const PlanSelection = () => {
           <Link onClick={() => setTerms(true)}>Terms & Conditions</Link>
         </div>
       </div>
-
       <div style={{ margin: "40px 0px" }}>
         <PrimaryBtn $primary onClick={handleCnfPayment}>
           Confirm Payment
         </PrimaryBtn>
       </div>
-
       {/* enterprise plan box */}
-
       <div className="enterprise_plan-box">
         <div className="plan-box-title">Enterprise Plan</div>
         <p className="box-text">
@@ -238,7 +305,6 @@ const PlanSelection = () => {
           E-mail:<span>sales@qwikcilver.com</span>
         </a>
       </div>
-
       <SectionHeading1
         size="20px"
         weight="500"
@@ -248,7 +314,6 @@ const PlanSelection = () => {
       >
         Compare Gift Card Benefits
       </SectionHeading1>
-
       {/* plan table */}
       <table className="plan-table">
         <thead>
@@ -304,6 +369,7 @@ const PlanSelection = () => {
 
 export default PlanSelection;
 
+// terms and condition popup
 const TermsPopUp = ({ setTerms }) => {
   return (
     <div className="terms-pop__container">
@@ -836,6 +902,45 @@ const TermsPopUp = ({ setTerms }) => {
       </ol>
       <br />
       <PrimaryBtn onClick={() => setTerms(false)}>Close</PrimaryBtn>
+    </div>
+  );
+};
+
+// payment confirm popup
+const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
+  return (
+    <div className="payment-confirm-popup">
+      <div className="payment-form">
+        <div className="payment-confirm-msg">
+          Are you sure you want to confirm payment?
+        </div>
+
+        <div className="payment-confirm-btns">
+          <form action={reponsePaymentData?.url} method="POST">
+            {reponsePaymentData?.payload &&
+              Object.keys(reponsePaymentData?.payload).map((item) => {
+                // console.log(item);
+                // return item === "key" ? (
+                //   <input name={"key"} value={"Ayuils"} type="hidden" />
+                // ) : (
+                <input
+                  name={item}
+                  value={reponsePaymentData?.payload[item]}
+                  type="hidden"
+                />;
+                // );
+              })}
+
+            <input type="submit" className="payment-btn" value={"Confirm"} />
+          </form>
+          <div
+            className="payment-btn"
+            onClick={() => setReponsePaymentData(false)}
+          >
+            Decline
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

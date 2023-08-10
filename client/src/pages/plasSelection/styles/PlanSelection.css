@@ -135,8 +135,8 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
 }
-/* terms popup  */
 
+/* terms popup  */
 .terms-pop__container {
   position: fixed;
   inset: 0;
@@ -167,6 +167,48 @@ input[type="checkbox"] {
   text-align: left;
   padding: 5px;
 }
+/* payment popup */
+.payment-confirm-popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  /* background-color: #ffffff;
+  width: 20%;
+  height: 10%; */
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.payment-form {
+  display: flex;
+  background-color: #ffffff;
+  width: 50%;
+  height: 40%;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 30px;
+}
+.payment-confirm-btns {
+  display: flex;
+  column-gap: 50px;
+}
+.payment-btn {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  height: 30px;
+  background-color: var(--frame-color);
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 900px) {
   .plans {
     flex-wrap: wrap;
