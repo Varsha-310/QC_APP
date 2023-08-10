@@ -68,6 +68,7 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
    console.log(gcCreation, "******************")
    if ( gcCreation.status == "200" &&  gcCreation.data.ResponseCode == "0") {
     
+    await updateBilling(amount, store);
     console.log(gcCreation.data.Cards[0], "----------")
     await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
     return gcCreation.data.Cards[0]

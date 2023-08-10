@@ -70,6 +70,7 @@ export const create = async (req, res) => {
         transaction_id: paymentData.txnid,
         upfront_amount: calculatedPayment,
         invoiceAmount: totalAmount,
+        
         planEndDate: billingExp
     }, {upsert: true});
 
