@@ -9,7 +9,7 @@ import crypto from "crypto";
  */
 const generateHash = (payload) => {
   console.log("-----------------payload---------------------------",payload.si_details);
-  let paymentString = `${payload.key}|${payload.txnid}|${payload.amount}|${payload.productinfo}|${payload.firstname}|${payload.email}|||||||||||{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}|${process.env.payusalt}`;
+  let paymentString = `${process.env.payukey}|${payload.txnid}|${payload.amount}|${payload.productinfo}|${payload.firstname}|${payload.email}|||||||||||${payload.si_details}|${process.env.payusalt}`;
   console.log(paymentString, "payment string");
   const hash = crypto.createHash("sha512");
   hash.update(paymentString, "utf-8");
@@ -25,7 +25,7 @@ const generateHtml = (payload) => {
   console.log(process.env.payupaymenturl);
   let data = `<form action=${process.env.payupaymenturl} method="POST">`;
   for (let obj in payload)
-    data += `<input type="hidden" name=${obj} value=${payload[obj]} />`;
+    data += `<input  name=${obj} value=${payload[obj]} />`;
   data += '<input type="submit" />';
   return data;
 
@@ -61,16 +61,16 @@ const createPayload = (storeData, billingData, amount) => {
     key: "",
     api_version: 7,
     txnid: Math.random().toString(36),
-    amount: 399,
+    amount: amount,
     productinfo: "shopifybilling",
-    firstname: "varsha",
-    email: "varshaa@marmeto.com",
-    phone: 8095379504,
+    firstname: storeData.name,
+    email: storeData.email,
+    phone: storeData.phone,
     lastname: "Antargangi",
     surl: `${process.env.APP_URL}/payment/payu/success`,
     furl: `${process.env.APP_URL}/payment/payu/fail`,
     si: 1,
-    si_details:'{"billingAmount":"399.00","billingCurrency":"INR","billingCycle":"MONTHLY","billingInterval":"1","paymentStartDate":"2023-09-01","paymentEndDate":"2025-09-01"}',
+    si_details:`{"billingAmount":${billingData.billing_amount},"billingCurrency":"INR","billingCycle":${billingData.billing_cycle},"billingInterval":"1","paymentStartDate":${billingData.billing_start_date},"paymentEndDate":"2122-09-01"}`,
   };
   return payload;
 };
