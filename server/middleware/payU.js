@@ -61,7 +61,7 @@ const createPayload = (storeData, billingData, amount) => {
   let payload = {
     key: process.env.payukey,
     api_version: 7,
-    txnid: Math.random().toString(36),
+    txnid: `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,
     amount: amount,
     productinfo: "shopifybilling",
     firstname: "varsha",
