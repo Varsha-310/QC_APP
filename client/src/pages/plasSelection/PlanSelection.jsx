@@ -923,11 +923,13 @@ const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
                 // return item === "key" ? (
                 //   <input name={"key"} value={"Ayuils"} type="hidden" />
                 // ) : (
-                <input
-                  name={item}
-                  value={reponsePaymentData?.payload[item]}
-                  type="hidden"
-                />;
+                return (
+                  <input
+                    name={item}
+                    value={reponsePaymentData?.payload[item]}
+                    type="hidden"
+                  />
+                );
                 // );
               })}
 
