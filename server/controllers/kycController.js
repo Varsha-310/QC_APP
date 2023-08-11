@@ -2,14 +2,14 @@ import axios from "axios";
 import {
   respondInternalServerError,
   respondWithData,
-respondSuccess
+  respondSuccess,
 } from "../helper/response.js";
 import CryptoJS from "crypto-js";
 import { logger } from "../helper/utility.js";
 import kycs from "../models/kyc.js";
 import store from "../models/store.js";
 import NodeMailer from "nodemailer";
-
+import kyc from "../models/kyc.js";
 
 /**
  * Method to initiate kyc
@@ -48,7 +48,7 @@ export const initiatieKyc = async (req, res) => {
         secondPartyDetails: {
           name: storeData.name,
           email: storeData.email,
-          phone: storeData.phone || "null" 
+          phone: storeData.phone || "null",
         },
       }),
     };
@@ -62,7 +62,11 @@ export const initiatieKyc = async (req, res) => {
       const formUrl = docFillUrls[dynamicKey];
       console.log(formUrl);
 
-      let formresult = await fillForm(formUrl, storeData,req.headers.authorization);
+      let formresult = await fillForm(
+        formUrl,
+        storeData,
+        req.headers.authorization
+      );
       if (formresult.status == 200 && formresult.data.status == "SUCCESS") {
         let dispatchResponse = await dispatchTransaction(txnId);
         console.log(dispatchResponse);
@@ -116,9 +120,9 @@ export const fillForm = async (formUrl, shop, token) => {
       data: JSON.stringify({
         shopifyID: shop.shopify_id,
         firstName: shop.name,
-        email : shop.email,
+        email: shop.email,
         mobile: shop.phone,
-        queryParam: token ,
+        queryParam: token,
       }),
     };
     let result = await axios(formData);
@@ -172,7 +176,7 @@ export const dispatchTransaction = async (txnId) => {
 
 export const statusKyc = async (req, res) => {
   try {
-console.log("---------kyc---------------" , req.body);
+    console.log("---------kyc---------------", req.body);
     let stores = req.token.store_url;
     console.log(stores);
     const checkStatus = await store.findOne({ store_url: stores });
@@ -183,9 +187,9 @@ console.log("---------kyc---------------" , req.body);
         kyc: checkStatus.is_kyc_done,
         plan: checkStatus.is_plan_done,
         payment: checkStatus.is_payment_done,
-        email:checkStatus.email,
-        name: checkStatus.name
-      }
+        email: checkStatus.email,
+        name: checkStatus.name,
+      },
     });
   } catch (err) {
     console.log(err);
@@ -193,69 +197,150 @@ console.log("---------kyc---------------" , req.body);
   }
 };
 
+export const kycDetails = async (req, res) => {
+  logger.info("----------------kyc webhook----------------", req.body);
 
-export const kycDetails = async(req,res) => {
-  logger.info("----------------kyc webhook----------------",req.body);
+  console.log("----------------kyc webhook----------------", req.body);
+  const data = req.body.data;
+  logger.info(req.body, "kyc webhook for merchant details");
 
-  console.log("----------------kyc webhook----------------",req.body);
-  logger.info(req.body , "kyc webhook for merchant details");
+  const kycData = await kycs.updateOne(
+    {},
+    {
+      $set: {
+        "merchant_data.transaction_id": data.formFillData,
+        "merchant_data.panName": data.formFillData.panName,
+        "merchant_data.merchant_created_at": "",
+        "merchant_data.merchant_name": data.formFillData.first_name,
+        "merchant_data.gstin": data.formFillData.gstin,
+        "merchant_data.address_line1":data.formFillData.address_line1,
+        "merchant_data.address_line2":data.formFillData.address_line2,
+        "merchant_data.area" :data.formFillData.area,
+        "merchant_data.city":data.formFillData.city,
+        "merchant_data.state":data.formFillData.state,
+        "merchant_data.pincode":data.formFillData.pincode,
+        "merchant_data.contact_first_name": data.formFillData.contact_first_name,
+        "merchant_data.contact_last_name":data.formFillData.contact_last_name,
+        "merchant_data.email":data.formFillData.email,
+        "merchant_data.phone":data.formFillData.phone,
+        "merchant_data.PAN":data.formFillData.PAN,
+      },
+    }
+  );
 
-    res.json(respondSuccess("webhook received"));
+  res.json(respondSuccess("webhook received"));
 
-  const kycData = await kycs.find();
   console.log(kycData);
-}
-
-   
+};
 
 /**
  * to genearte csv of merchant Data
  */
-export const generateCSV = async() => {
-
-  const kycData = await kycs.find();
-  console.log(kycData)
+export const generateCSV = async (email) => {
+  const kycData = await kycs.findOne({email:email});
+  console.log(kycData);
   console.log(kycData[0].merchant_data[0]);
 
-  const {transaction_id,merchant_created_at,merchant_name,outlet,gstin,address_line1,address_line2,area,city,state,pincode,contact_first_name,contact_last_name,email,phone,PAN,package_details,card_quantity,reload_enabled,subscription_payment} = kycData[0].merchant_data[0];
+  const {
+    transaction_id,
+    merchant_created_at,
+    merchant_name,
+    outlet,
+    gstin,
+    address_line1,
+    address_line2,
+    area,
+    city,
+    state,
+    pincode,
+    contact_first_name,
+    contact_last_name,
+    email,
+    phone,
+    PAN,
+    package_details,
+    card_quantity,
+    reload_enabled,
+    subscription_payment,
+  } = kycData[0].merchant_data[0];
 
-  // Create an array with headers and values
-  const headers = ["transaction_id","merchant_created_at","merchant_name","outlet","gstin","address_line1","address_line2","area","city","state","pincode","contact_first_name","contact_last_name","email","phone","PAN","package_details","card_quantity","reload_enabled","subscription_payment"];
-  const values = [transaction_id,merchant_created_at,merchant_name,outlet,gstin,address_line1,address_line2,area,city,state,pincode,contact_first_name,contact_last_name,email,phone,PAN,package_details,card_quantity,reload_enabled,subscription_payment];
-  // Combine headers and values into a comma-separated format
+  const headers = [
+    "transaction_id",
+    "merchant_created_at",
+    "merchant_name",
+    "outlet",
+    "gstin",
+    "address_line1",
+    "address_line2",
+    "area",
+    "city",
+    "state",
+    "pincode",
+    "contact_first_name",
+    "contact_last_name",
+    "email",
+    "phone",
+    "PAN",
+    "package_details",
+    "card_quantity",
+    "reload_enabled",
+    "subscription_payment",
+  ];
+  const values = [
+    transaction_id,
+    merchant_created_at,
+    merchant_name,
+    outlet,
+    gstin,
+    address_line1,
+    address_line2,
+    area,
+    city,
+    state,
+    pincode,
+    contact_first_name,
+    contact_last_name,
+    email,
+    phone,
+    PAN,
+    package_details,
+    card_quantity,
+    reload_enabled,
+    subscription_payment,
+  ];
+
   const csv = headers.join(", ") + "\n" + values.join(",");
 
   const options = {
-    from: 'ShopifyKYC@qwikcilver.com', 
-    to: 'varshaa@marmeto.com', 
-    subject: 'Hello', 
-    text: 'Hello world', 
-    html: '<b>Hello world</b>', 
-    attachments: [{   
-       filename: 'test.csv',
-       content: csv  // attaching csv in the content
-     }],
-    };
-
-    var smtpTransporter = NodeMailer.createTransport({
-      port: 587,
-      host: "smtp.sendgrid.net",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+    from: "ShopifyKYC@qwikcilver.com",
+    to: "varshaa@marmeto.com",
+    subject: "Hello",
+    text: "Hello world",
+    html: "<b>Hello world</b>",
+    attachments: [
+      {
+        filename: "test.csv",
+        content: csv, // attaching csv in the content
       },
-    });
-    
-    // console.log(options);
-    smtpTransporter.sendMail(options, async function (error, info) {
-      if (!error) {
-        console.log("mail sent successfully !");
-        // Resolve if the mail is sent successfully
-        
-      } else {
-        console.log(error);
-      
-      }
-    })
- 
-}
+    ],
+  };
+
+  var smtpTransporter = NodeMailer.createTransport({
+    port: 587,
+    host: "smtp.sendgrid.net",
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  // console.log(options);
+  smtpTransporter.sendMail(options, async function (error, info) {
+    if (!error) {
+      console.log("mail sent successfully !");
+      // Resolve if the mail is sent successfully
+    } else {
+      console.log(error);
+    }
+  });
+};
