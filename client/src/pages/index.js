@@ -17,6 +17,7 @@ import TermsConditions from "./agreements/TermsConditions";
 import FaqPage from "./others/FaqPage";
 import ErrorPage from "./ErrorPage";
 import Issues from "./others/Issues";
+import PaymentFailed from "./others/PaymentFailed";
 
 export {
   DashboardHome,
@@ -38,4 +39,5 @@ export {
   TermsConditions,
   FaqPage,
   Issues,
+  PaymentFailed,
 };

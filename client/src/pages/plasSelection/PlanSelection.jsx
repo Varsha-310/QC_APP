@@ -147,21 +147,20 @@ const PlanSelection = () => {
       alert("Please accept Terms and Conditions.");
       return;
     }
-    // plan select
-    handleSelectPlan(
-      selectedPlan.plan_name.slice(0, 1).toUpperCase() +
-        selectedPlan.plan_name.slice(1),
-      selectedPlan.price
-    );
 
     // payment process
     const url = "/payment/create";
     const headers = {
       Authorization: getUserToken(),
     };
+    const body = {
+      plan_name:
+        selectedPlan.plan_name.slice(0, 1).toUpperCase() +
+        selectedPlan.plan_name.slice(1),
+    };
 
     try {
-      const res = await instance.post(url, {}, { headers });
+      const res = await instance.post(url, body, { headers });
       const resData = res.data;
       console.log(resData);
       setReponsePaymentData(resData.data);
