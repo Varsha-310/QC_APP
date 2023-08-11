@@ -144,12 +144,12 @@ const updateBillingHistory = async (data) => {
     email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
 
     const options = {
-        to: "varshaa@marmeto.com",
-        from: "varshaa@marmeto.com",
+        to: "anubhav.g@marmeto.com",
+        from: "anubhav.g@marmeto.com",
         subject: "PAYMENT COMPLETED ",
         html: email_template,
       };
       await sendEmail(options);
-    await generateCSV(data.email);
+    // await generateCSV(data.email);
     return 1;
 };
