@@ -8,6 +8,8 @@ import { respondWithData, respondInternalServerError } from "../helper/response.
 import stores from "../models/store.js";
 import store from "../models/store.js";
 import { generateCSV } from "./kycController.js";
+import payment_template from "../views/payment_completed.js";
+import { sendEmail } from "../middleware/sendEmail.js";
 
 
 /**
@@ -130,6 +132,24 @@ const updateBillingHistory = async (data) => {
         { $set: { "plan.plan_name": data.lastname } }
       );
     await store.findOneAndUpdate({email : data.email, mandate : data});
+    const storeDetails = await store.findOne({store_url: data.productinfo});
+    const getBilling = await BillingHistory.findOne(
+        { transaction_id : data.txnid });
+    let email_template = payment_template;
+    email_template=email_template.replace("__merchant__",storeDetails.name);
+    email_template=email_template.replace("__plan_name__", data.lastname);
+    email_template=email_template.replace("__plan_amount__", getBilling.montly_charge);
+    email_template=email_template.replace("__given_credit__", getBilling.given_credit);
+    email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
+    email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
+
+    const options = {
+        to: "varshaa@marmeto.com",
+        from: "varshaa@marmeto.com",
+        subject: "PAYMENT COMPLETED ",
+        html: email_template,
+      };
+      await sendEmail(options);
     // await generateCSV();
     return 1;
 };
