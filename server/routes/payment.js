@@ -3,11 +3,12 @@ import {
     create,payuPayment , failurePayment
 } from "../controllers/paymentController.js";
 import {verifyPayuTranscation} from "../middleware/payU.js"
+import { verifyJwt } from "../helper/jwtHelper.js";
 
 const paymentRoute = Router();
 
 // Route of creating payment
-paymentRoute.post("/create", create);
+paymentRoute.post("/create", verifyJwt , create);
 
 // route of success url for mandate transaction
 paymentRoute.post("/payu/success", payuPayment);

@@ -204,14 +204,29 @@ export const kycDetails = async(req,res) => {
 
   const kycData = await kycs.find();
   console.log(kycData);
+}
 
    
 
+/**
+ * to genearte csv of merchant Data
+ */
+export const generateCSV = async() => {
 
+  const kycData = await kycs.find();
+  console.log(kycData)
+  console.log(kycData[0].merchant_data[0]);
 
+  const {transaction_id,merchant_created_at,merchant_name,outlet,gstin,address_line1,address_line2,area,city,state,pincode,contact_first_name,contact_last_name,email,phone,PAN,package_details,card_quantity,reload_enabled,subscription_payment} = kycData[0].merchant_data[0];
 
-  var options = {
-    from: 'GC@qwikcilver.com', 
+  // Create an array with headers and values
+  const headers = ["transaction_id","merchant_created_at","merchant_name","outlet","gstin","address_line1","address_line2","area","city","state","pincode","contact_first_name","contact_last_name","email","phone","PAN","package_details","card_quantity","reload_enabled","subscription_payment"];
+  const values = [transaction_id,merchant_created_at,merchant_name,outlet,gstin,address_line1,address_line2,area,city,state,pincode,contact_first_name,contact_last_name,email,phone,PAN,package_details,card_quantity,reload_enabled,subscription_payment];
+  // Combine headers and values into a comma-separated format
+  const csv = headers.join(", ") + "\n" + values.join(",");
+
+  const options = {
+    from: 'ShopifyKYC@qwikcilver.com', 
     to: 'varshaa@marmeto.com', 
     subject: 'Hello', 
     text: 'Hello world', 
