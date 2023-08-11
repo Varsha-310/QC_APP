@@ -4,6 +4,8 @@ import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
+import { updateBilling } from "../controllers/BillingController.js";
+import wallet from "../models/wallet.js";
 
 
 
@@ -68,6 +70,7 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
    console.log(gcCreation, "******************")
    if ( gcCreation.status == "200" &&  gcCreation.data.ResponseCode == "0") {
     
+    await updateBilling(amount, store);
     console.log(gcCreation.data.Cards[0], "----------")
     await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
     return gcCreation.data.Cards[0]

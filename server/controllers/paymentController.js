@@ -16,6 +16,7 @@ import store from "../models/store.js";
  */
 export const create = async (req, res) => {
   try {
+    
     console.log("-----------------creating payment------------------------");
     // const store_url = req.token.store_url
     const store_url = "qc-plus-store.myshopify.com";
@@ -33,7 +34,7 @@ export const create = async (req, res) => {
     const date = ((myDate).toISOString().slice(0, 10));
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst)
-     const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
+    const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
   //  const totalAmount = 399
     console.log(totalAmount)
 
@@ -52,19 +53,30 @@ export const create = async (req, res) => {
     };
     let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
-    const createBillingHistory = await BillingHistory.create({
+
+    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const billingExp = new Date(y+10, m, d);
+    await BillingHistory.updateOne({
+            store_url: store_url,
+            status: "PENDING"
+    },{
         store_url: store_url,
         given_credit: getPlanData.plan_limit,
-        monthly_charge: totalAmount,
+        montly_charge: getPlanData.price,
+        monthly_gst: calculatedGst,
         usage_charge: getPlanData.usage_charge,
         planName: getPlanData.plan_name,
-        cappedAmount: getPlanData.usage_limit,
-        transaction_id: paymentData.txnid
-      });
+        usage_limit: getPlanData.usage_limit,
+        transaction_id: paymentData.txnid,
+        upfront_amount: calculatedPayment,
+        invoiceAmount: totalAmount,
+
+        planEndDate: billingExp
+    }, {upsert: true});
 
     res.json({
-      ...respondWithData("payment URL"),
-      data:{payload : paymentData,
+        ...respondWithData("payment URL"),
+        data:{payload : paymentData,
         url : process.env.payupaymenturl}
     });
     // res.send(paymentData[0]);
@@ -82,25 +94,36 @@ export const create = async (req, res) => {
  * @returns
  */
 export const payuPayment = async (req, res) => {
-  console.log(req, "------------requewt body-------------------");
-  let reqData = req.body;
-  console.log(reqData, "-----------------request data--------------------");
-  if (reqData.status == "success") {
-    await updateBillingHistory(reqData);
-    // await stores.findOneAndUpdate
-  }
-  return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    console.log(req, "------------requewt body-------------------");
+    let reqData = req.body;
+    console.log(reqData, "-----------------request data--------------------");
+    if (reqData.status == "success") {
+        await updateBillingHistory(reqData);
+    }
+    return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 };
 
 export const failurePayment = async (req,res) => {
-    return res.redirect(`${process.env.CLIENT_URL}select-plan`);
+    return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 }
 
-const updateBillingHistory = (data) => {
-  const updateBilling = BillingHistory.findOneAndUpdate(
-    { transaction_id :data.txnid },
-    { status: "ACTIVE" }
-  );
-  console.log(updateBilling);
-  const updateStoreData = store.findOneAndUpdate({email : data.email, mandate : data})
+const updateBillingHistory = async (data) => {
+
+    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const issue_date = new Date(y, m, d);
+    const billingDate = new Date(y, m+1, 10);
+    const reminderDate = new Date(y, m+1, 6);
+    await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
+    const updateBilling = await BillingHistory.updateOne(
+        { transaction_id : data.txnid },
+        { 
+            status: "ACTIVE",
+            issue_date: issue_date,
+            billingDate: billingDate,
+            remiderDate: reminderDate 
+        }
+    );
+    console.log(updateBilling);
+    await store.findOneAndUpdate({email : data.email, mandate : data});
+    return 1;
 };

@@ -3,6 +3,7 @@ import { respondInternalServerError, respondSuccess, respondWithData } from "../
 import { logger } from "../helper/utility.js";
 import BillingHistory from "../models/BillingHistory.js";
 import store from "../models/store.js";
+import crypto from "crypto";
 import Session from "../models/session.js";
 
 /**
@@ -12,70 +13,207 @@ import Session from "../models/session.js";
 const handleMandateNotification = async(type) => {
 
     // Check Upgraded 
-    const upgradedMarchant = await BillingHistory.find({
-        status: {$in: ["UPGRADED","ACTIVE"]},
-        reminderData: new Date(Date.now())
+    const notificableMarchant = await BillingHistory.find({
+        status: "FROZEN",
+        reminderData: { $lte : new Date(Date.now())},
+        isReminded: false,
+        plan_type: "public"
     });
     for (const bill of notificableMarchant) {
 
-        await sendMandateNotification(bill.invoiceAmount, bill.invoiceNumber, bill.store_url);
+        const resp = await sendMandateNotification(bill);
+        bill.remark = resp.message;
+        bill.isReminded = resp.status == 1 ? true : false;
+        await bill.save();
     }
 }
 
-const sendMandateNotification = async(invoiceAmount, InvoiceNumber, store_url) => {
+/**
+ * Generate Hash for the pre debit notification
+ * 
+ * @param {*} payload 
+ * @returns 
+ */
+const generateHashForNotification = (payload) => {
 
-    const session = {
-        "type" : "PRE-DEBIT-NOTIFICATION"
-    };
+    console.log("Given Payload", payload);
+    let paymentString = `${payload.key}|${payload.command}|${payload.var1}|${process.env.payusalt}`;
+    console.log(paymentString, "payment string");
+    const hash = crypto.createHash("sha512");
+    hash.update(paymentString, "utf-8");
+    return hash.digest("hex");    
+}
+
+/**
+ * Manage Pre Debit Notification
+ * 
+ * @param {*} invoiceAmount 
+ * @param {*} InvoiceNumber 
+ * @param {*} store_url 
+ * @returns 
+ */
+const sendMandateNotification = async(bill) => {
+
     const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
     if(!mandateDetails){ 
 
         //TO-DO: Send Notification to the QC regading it 
         return "mandate Not Found"; 
     };
+    const session = {
 
-    session.seesion_id = "";
-    const config = {
-        apiKey : process.env.MAILGUN_APIKEY || '',
+        type: "PRE-DEBIT-NOTIFICATION",
+        store_url: bill.store_url,
+        date: Date.now(),
+        ref: bill.id,
+        amount: bill.invoiceAmount,
+        plan: bill.plan,
+        seesion_id: Date.now() + Math.random().toString(10).slice(2, 7),
+    };
+    const apiResp = await callPayUNotificationAPI(bill, mandateDetails);
+    if(apiResp.status == 1){
+
+        session.status = "completed";
+    }else{
+
+        session.status = "retry";
+        session.retry_at = Date.now();
     }
-    return axios(config).then(res => {
-        console.log(res);
-        return 1;
-    }).catch();
+    session.logs = apiResp;
+    session.remark = apiResp.message;
+    await Session.insert(session);
+    return apiResp;
 }
 
+/**
+ * Handle PayU Pre Debit Notiication API
+ * 
+ * @param {*} bill
+ * @param {*} mandateDetails 
+ * @returns 
+ */
+const callPayUNotificationAPI = async(bill, mandateDetails) =>{
 
+    const data = {
+        key : process.env.payukey,
+        command: "pre_debit_SI",
+        var1: { "authPayuId": mandateDetails?.authpayuid, "requestId": Date.now() + Math.random().toString(10).slice(2, 8),"debitDate": bill.billingDate, "invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount, "action":"retreive" }
+    };
+    data["hasg"] = generateHashForNotification(data);
+    const config ={
 
+        url: process.env.DEBUG ? "https://test.payu.in/merchant/" : "https://info.payu.in/merchant/",
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "POST",
+        data: JSON.stringify(data)
+    };
+    console.log(data, config);
+    return axios(config).then(res => {
+        return res;
+    }).catch(err => {
+
+        console.log("Error",err);
+        return {
+            "status": "2",
+            "action": "MANDATE_PRE_DEBIT",
+            "message": "Exernal Error Occured"
+        };
+    });
+}
+
+/**
+ * Handle the corn iteration for the send Predebit Notification 
+ */
 const handleReccuringPayment = async() => {
 
-    const notificableMarchant = await BillingHistory.find({
-        status: "ACTIVE",
-        reminderData: new Date(Date.now())
+    const reccuringmarchant = await BillingHistory.find({
+        status:"FROZEN",
+        billingDate: { $lte : new Date(Date.now())},
+        isReminded: true,
+        plan_type: "public"
     });
-    const upgradedMarchant = await BillingHistory.find({
-        status: "UPGRADED",
-        reminderData: new Date(Date.now())
-    });
-    for (const bill of notificableMarchant) {
+    for (const bill of reccuringmarchant) {
 
-        await captureReccuringpayment(bill.invoiceAmount, bill.invoiceNumber, billInvoiceNumber.store_url);
+        const resp = await captureReccuringpayment(bill);
+        bill.remark = resp.message;
+        bill.status = resp.status == 1 ? "BILLED" : bill.status;
+        await bill.save();
     }
 }
 
 const captureReccuringpayment = async() => {
 
-    const session = {};
     const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
-    if(!mandateDetails){ return "mandate Not Found"; };
-    const config = {
-        apiKey : process.env.MAILGUN_APIKEY || '',
+    if(!mandateDetails){ 
+
+        //TO-DO: Send Notification to the QC regading it 
+        return "mandate Not Found"; 
+    };
+    const session = {
+
+        type: "RECURRING",
+        store_url: bill.store_url,
+        date: Date.now(),
+        amount: bill.invoiceAmount,
+        ref: bill.id,
+        plan: bill.plan,
+        seesion_id: Date.now() + Math.random().toString(10).slice(2, 7),
+    };
+    const apiResp = await callPayUReccuringAPI(bill, mandateDetails);
+    if(apiResp.status == 1){
+
+        session.status = "completed";
+    }else{
+
+        session.status = "retry";
+        session.retry_at = Date.now();
     }
-    return axios(config).then(res => {
-        console.log(res);
-        return 1;
-    }).catch();
+    session.logs = apiResp;
+    await Session.insert(session);
+    return apiResp;
 }
 
+
+/**
+ * Handle PayU Pre Debit Notiication API
+ * 
+ * @param {*} bill
+ * @param {*} mandateDetails 
+ * @returns 
+ */
+const callPayUReccuringAPI = async(bill, mandateDetails) =>{
+
+    const data = {
+        key : process.env.payukey,
+        command: "si_transaction",
+        var1: { "authPayuId": mandateDetails?.authpayuid,"txnid":  `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,"invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount}
+    };
+    data["hasg"] = generateHashForNotification(data);
+    const config ={
+
+        url: process.env.DEBUG ? "https://test.payu.in/merchant/" : "https://info.payu.in/merchant/",
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "POST",
+        data: JSON.stringify(data)
+    };
+    console.log(data, config);
+    return axios(config).then(res => {
+        return res;
+    }).catch(err => {
+
+        console.log("Error",err);
+        return {
+            "status": "0",
+            "message": "Exernal Error Occured"
+        };
+    });
+}
 
 /**
  * Send first notification to the marchant
@@ -132,11 +270,11 @@ export const checkActivePlanUses = async(amount, store_url) => {
             
             let flag = 0;
             const incoming_amount = (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2);
-            const total_allowd = (parseInt(billingData.given_credit) + parseInt(billingData.cappedAmount));
+            const total_allowd = (parseInt(billingData.given_credit) + parseInt(billingData.usage_limit));
             if(parseInt(incoming_amount) > total_allowd){
 
                 flag = 3;
-            }else if(incoming_amount >= (parseFloat(billingData.given_credit) + parseFloat(billingData.cappedAmount)/2)){
+            }else if(incoming_amount >= (parseFloat(billingData.given_credit) + parseFloat(billingData.usage_limit)/2)){
 
                 flag = 2;
             }else if(incoming_amount >= billingData.given_credit){
@@ -198,7 +336,6 @@ export const updateBilling = async(amount, store_url) => {
         billing.extra_usage_amount = ((parseFloat(billing.extra_uasge) * parseFloat(billingData.usage_charge)) / 100).toFixed(2);
         billing.extra_usage_gst = calculateGST(billing.extra_usage_amount);
         billing.total_amount = (parseFloat(billingData.montly_charge) + parseFloat(billing.extra_usage_amount) + parseFloat(billingData.monthly_gst) + parseFloat(billing.extra_usage_gst)).toFixed(2);
-        billing.invoiceAmount = billing.total_amount;
         console.log(billing);
         await BillingHistory.updateOne({id: billingData.id}, billing);
         return true;
@@ -281,7 +418,7 @@ export const handleBillingDetails = async(req, res) => {
         console.log(store_url);
         const billing = await BillingHistory.find({
           store_url,
-          status:{ $in: ["ACTIVE", "CHANGED"]}
+          status:{ $in: ["ACTIVE", "UPGRADED", "FROZEN"]}
         });
         return res.json(respondWithData("Success", billing));
     } catch (err) {
@@ -289,4 +426,69 @@ export const handleBillingDetails = async(req, res) => {
         console.log(err);
         return res.json(respondInternalServerError())
     }
+}
+
+/**
+ * Change Plan On  Month Change
+ * 
+ */
+export const changePlanMonthly = async() => {
+
+    const date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    const lastDay = new Date(y, m, 0);
+    const query = {
+        status: {$in : ["ACTIVE", "UPGRADED"]},
+        issue_date: {$lt:lastDay}
+    }
+    const tam = await BillingHistory.countDocuments(query);
+    const count = Math.ceil(tam/100);
+    for (let i = 0; i < count; i++) {
+          
+        await processMonthlyPlan(query);
+    }
+}
+
+/**
+ * Process Monthy Plan
+ * 
+ * @param {*} query 
+ * @returns 
+ */
+const processMonthlyPlan = async(query) => {
+
+    const activeMarchant = await BillingHistory.find(query).limit(100);
+    for (const bill of activeMarchant) {
+
+        if(bill.status == "ACTIVE"){
+
+            const remiderDate = "";
+            const billingDate = "";
+            const newInstance = {
+                id: `BL${Date.now() + Math.random().toString(10).slice(2, 8)}`,
+                store_id: bill.store_id,    
+                store_url: bill.store_url,
+                given_credit: bill.given_credit, 
+                used_credit: 0, 
+                extra_usage: 0,  
+                montly_charge: bill.montly_charge,
+                monthly_gst: bill.monthly_gst, 
+                total_amount: bill.monthly_gst+bill.montly_charge,
+                issue_date: Date.now(),
+                plan_type: bill.plan_type,
+                recordType: "Reccuring",
+                remiderDate: remiderDate,
+                oracleUserId: bill.oracleUserId, 
+                planName: bill.planName,
+                status: "ACTIVE", 
+                billingDate: billingDate,
+                planEndDate: bill.planEndDate,
+                usage_limit: bill.usage_limit,
+
+            }
+            await BillingHistory.insert(newInstance);
+        }
+        bill.status = "FROZEN";
+        await bill.save();       
+    }
+    return 1;
 }

@@ -40,6 +40,7 @@ const generateHtml = (payload) => {
  * @returns 
  */
 export const createPayment = (storeData, billingData, amount) => {
+  
   let payload = createPayload(storeData, billingData, amount);
   console.log(payload);
   let hash = generateHash(payload);
@@ -60,9 +61,9 @@ const createPayload = (storeData, billingData, amount) => {
   let payload = {
     key: process.env.payukey,
     api_version: 7,
-    txnid: Math.random().toString(36),
+    txnid: `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,
     amount: amount,
-    productinfo: "shopifybilling",
+    productinfo: storeData.store_url,
     firstname: "varsha",
     email: storeData.email,
     phone: "8095379504",
@@ -89,7 +90,7 @@ export const verifyPayuTranscation = async (transId) => {
 
   const url = "https://test.payu.in/merchant/postservice?form=2";
   const headers = {
-    accept: "application/json",
+    "accept": "application/json",
     "Content-Type": "application/x-www-form-urlencoded",
   };
 
