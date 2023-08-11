@@ -35,12 +35,12 @@ export const create = async (req, res) => {
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst)
     const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
-  //  const totalAmount = 399
     console.log(totalAmount)
 
     let store = {
       store_url: store_url,
       firstname: storeData.name,
+      plan_name : req.body.plan_name,
       lastname: "Test",
       email: storeData.email,
       phone: storeData.phone,
@@ -124,6 +124,10 @@ const updateBillingHistory = async (data) => {
         }
     );
     console.log(updateBilling);
+   await store.updateOne(
+        { store_url: data.productinfo },
+        { $set: { "plan.plan_name": data.lastname } }
+      );
     await store.findOneAndUpdate({email : data.email, mandate : data});
     return 1;
 };
