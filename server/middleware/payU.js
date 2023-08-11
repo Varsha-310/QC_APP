@@ -67,7 +67,7 @@ const createPayload = (storeData, billingData, amount) => {
     firstname: "varsha",
     email: storeData.email,
     phone: "8095379504",
-    lastname: "Antargangi",
+    lastname: storeData.store_url,
     surl: `${process.env.APP_URL}/payment/payu/success`,
     furl: `${process.env.APP_URL}/payment/payu/fail`,
     si: 1,

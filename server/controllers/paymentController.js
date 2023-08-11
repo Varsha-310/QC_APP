@@ -70,7 +70,7 @@ export const create = async (req, res) => {
         transaction_id: paymentData.txnid,
         upfront_amount: calculatedPayment,
         invoiceAmount: totalAmount,
-        
+
         planEndDate: billingExp
     }, {upsert: true});
 
@@ -94,18 +94,17 @@ export const create = async (req, res) => {
  * @returns
  */
 export const payuPayment = async (req, res) => {
-  console.log(req, "------------requewt body-------------------");
-  let reqData = req.body;
-  console.log(reqData, "-----------------request data--------------------");
-  if (reqData.status == "success") {
-    await updateBillingHistory(reqData);
-    // await stores.findOneAndUpdate
-  }
-  return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    console.log(req, "------------requewt body-------------------");
+    let reqData = req.body;
+    console.log(reqData, "-----------------request data--------------------");
+    if (reqData.status == "success") {
+        await updateBillingHistory(reqData);
+    }
+    return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 };
 
 export const failurePayment = async (req,res) => {
-    return res.redirect(`${process.env.CLIENT_URL}select-plan?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 }
 
 const updateBillingHistory = async (data) => {
@@ -114,6 +113,7 @@ const updateBillingHistory = async (data) => {
     const issue_date = new Date(y, m, d);
     const billingDate = new Date(y, m+1, 10);
     const reminderDate = new Date(y, m+1, 6);
+    await BillingHistory.updateMany({store_url: data.lastname , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
         { transaction_id : data.txnid },
         { 
