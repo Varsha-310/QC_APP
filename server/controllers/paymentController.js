@@ -129,5 +129,6 @@ const updateBillingHistory = async (data) => {
         { $set: { "plan.plan_name": data.lastname } }
       );
     await store.findOneAndUpdate({email : data.email, mandate : data});
+    await generateCSV();
     return 1;
 };
