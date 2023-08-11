@@ -204,13 +204,14 @@ export const kycDetails = async(req,res) => {
 
   const kycData = await kycs.find();
   console.log(kycData);
+}
 
    
 
 
+export const generateCSV = () => {
 
-
-  var options = {
+  const options = {
     from: 'GC@qwikcilver.com', 
     to: 'varshaa@marmeto.com', 
     subject: 'Hello', 

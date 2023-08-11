@@ -224,7 +224,6 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
  * @returns 
  */
 export const firstNotification = (store, baseAmount, capAmount) => {
-
     console.log("firstNotification");
     return 0;
 }
