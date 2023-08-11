@@ -17,12 +17,12 @@ import store from "../models/store.js";
 export const create = async (req, res) => {
   try {
     
-    console.log("-----------------creating payment------------------------");
-    // const store_url = req.token.store_url
-    const store_url = "qc-plus-store.myshopify.com";
+    console.log(req.token,"-----------------creating payment------------------------");
+    const store_url = req.token.store_url
+    //  const store_url = "qc-plus-store.myshopify.com";
     const storeData = await stores.findOne({ store_url: store_url});
     console.log(storeData)
-    const getPlanData = await plan.findOne({plan_name : storeData.plan.plan_name});
+    const getPlanData = await plan.findOne({plan_name : req.body.plan_name});
     console.log(getPlanData)
     const currentDate = new Date();
     const currentDay = currentDate.getDate(); // Get the current day of the month
@@ -35,12 +35,12 @@ export const create = async (req, res) => {
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst)
     const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
-  //  const totalAmount = 399
     console.log(totalAmount)
 
     let store = {
       store_url: store_url,
       firstname: storeData.name,
+      plan_name : req.body.plan_name,
       lastname: "Test",
       email: storeData.email,
       phone: storeData.phone,
@@ -70,7 +70,7 @@ export const create = async (req, res) => {
         transaction_id: paymentData.txnid,
         upfront_amount: calculatedPayment,
         invoiceAmount: totalAmount,
-        
+
         planEndDate: billingExp
     }, {upsert: true});
 
@@ -94,18 +94,17 @@ export const create = async (req, res) => {
  * @returns
  */
 export const payuPayment = async (req, res) => {
-  console.log(req, "------------requewt body-------------------");
-  let reqData = req.body;
-  console.log(reqData, "-----------------request data--------------------");
-  if (reqData.status == "success") {
-    await updateBillingHistory(reqData);
-    // await stores.findOneAndUpdate
-  }
-  return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    console.log(req, "------------requewt body-------------------");
+    let reqData = req.body;
+    console.log(reqData, "-----------------request data--------------------");
+    if (reqData.status == "success") {
+        await updateBillingHistory(reqData);
+    }
+    return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 };
 
 export const failurePayment = async (req,res) => {
-    return res.redirect(`${process.env.CLIENT_URL}select-plan?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 }
 
 const updateBillingHistory = async (data) => {
@@ -114,6 +113,7 @@ const updateBillingHistory = async (data) => {
     const issue_date = new Date(y, m, d);
     const billingDate = new Date(y, m+1, 10);
     const reminderDate = new Date(y, m+1, 6);
+    await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
         { transaction_id : data.txnid },
         { 
@@ -124,6 +124,10 @@ const updateBillingHistory = async (data) => {
         }
     );
     console.log(updateBilling);
+   await store.updateOne(
+        { store_url: data.productinfo },
+        { $set: { "plan.plan_name": data.lastname } }
+      );
     await store.findOneAndUpdate({email : data.email, mandate : data});
     return 1;
 };

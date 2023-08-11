@@ -20,6 +20,7 @@ import {
   PrivacyPolicy,
   FaqPage,
   Issues,
+  PaymentFailed,
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
@@ -67,10 +68,6 @@ const router = createBrowserRouter([
       {
         path: "/kyc-status",
         element: <KycProgress />,
-      },
-      {
-        path: "/faq",
-        element: <></>,
       },
       {
         path: "/create-giftcard",
@@ -137,6 +134,7 @@ const router = createBrowserRouter([
         element: <Issues />,
       },
       { path: "/refund_success", element: <RefundConfirmation /> },
+      { path: "/payment-unsuccessful", element: <PaymentFailed /> },
     ],
   },
   { path: "/select-plan", element: <PlanSelection /> },
