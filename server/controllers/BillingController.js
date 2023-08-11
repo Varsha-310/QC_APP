@@ -5,6 +5,9 @@ import BillingHistory from "../models/BillingHistory.js";
 import store from "../models/store.js";
 import crypto from "crypto";
 import Session from "../models/session.js";
+import template from "../views/plan_limit_exceed.js";
+import { sendEmail } from "../middleware/sendEmail.js";
+
 
 /**
  * Handle the corn iteration for the send Predebit Notification
@@ -223,8 +226,17 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
  * @param {*} capAmount 
  * @returns 
  */
-export const firstNotification = (store, baseAmount, capAmount) => {
+export const firstNotification = async(store, baseAmount, capAmount) => {
+
     console.log("firstNotification");
+    let email_template = template;
+    const options = {
+        to: "varshaa@marmeto.com",
+        from: "varshaa@marmeto.com",
+        subject: "PLAN LIMIT EXCEEDED",
+        html: email_template,
+      };
+      await sendEmail(options);
     return 0;
 }
 
