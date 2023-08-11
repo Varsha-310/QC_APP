@@ -18,11 +18,11 @@ export const create = async (req, res) => {
   try {
     
     console.log("-----------------creating payment------------------------");
-    // const store_url = req.token.store_url
-    const store_url = "qc-plus-store.myshopify.com";
+    const store_url = req.token.store_url
+    // const store_url = "qc-plus-store.myshopify.com";
     const storeData = await stores.findOne({ store_url: store_url});
     console.log(storeData)
-    const getPlanData = await plan.findOne({plan_name : storeData.plan.plan_name});
+    const getPlanData = await plan.findOne({plan_name : req.body.plan_name});
     console.log(getPlanData)
     const currentDate = new Date();
     const currentDay = currentDate.getDate(); // Get the current day of the month
