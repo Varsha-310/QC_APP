@@ -113,7 +113,7 @@ const updateBillingHistory = async (data) => {
     const issue_date = new Date(y, m, d);
     const billingDate = new Date(y, m+1, 10);
     const reminderDate = new Date(y, m+1, 6);
-    await BillingHistory.updateMany({store_url: data.lastname , status :"ACTIVE"} , {status : "UPGRADED"});
+    await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
         { transaction_id : data.txnid },
         { 
