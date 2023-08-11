@@ -1,12 +1,12 @@
-// //import { faker } from '@faker-js/faker';
-// import BillingHistory from '../models/BillingHistory';
+// // //import { faker } from '@faker-js/faker';
+// // import BillingHistory from '../models/BillingHistory';
 // import { calculateGST, checkActivePlanUses, updateBilling } from '../controllers/BillingController';
 
 // export const seedBillingHistory = async(req, res) => {
 
-//     // const flag = await checkActivePlanUses(200, "qwikcilver-plus.myshopify.com");
-//     // console.log(flag);
-//     // return res.sendStatus(200);
+//     const flag = await updateBilling(200, "qc-plus-store.myshopify.com");
+//     console.log(flag);
+//     return res.sendStatus(200);
 //     const used_credit = faker.number.int({min:15000, max:100000});
 //     const billingData = {
         

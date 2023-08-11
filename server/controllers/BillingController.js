@@ -326,16 +326,16 @@ export const checkActivePlanUses = async(amount, store_url) => {
 export const updateBilling = async(amount, store_url) => {
 
     const billingData = await BillingHistory.findOne({ store_url, status:"ACTIVE" });
-    console.log(":", amount, billingData.used_credit);
+    console.log(":", amount, billingData);
     if(billingData){
         
         const billing = {
             used_credit: (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2)
         };
-        billing.extra_uasge = billing.used_credit - billingData.given_credit;
-        billing.extra_usage_amount = ((parseFloat(billing.extra_uasge) * parseFloat(billingData.usage_charge)) / 100).toFixed(2);
+        billing.extra_usage =  billing.used_credit > billingData.given_credit ? (parseFloat(billing.used_credit) - billingData.given_credit) : 0;
+        billing.extra_usage_amount = ((parseFloat(billing.extra_usage) * parseFloat(billingData.usage_charge)) / 100).toFixed(2);
         billing.extra_usage_gst = calculateGST(billing.extra_usage_amount);
-        billing.total_amount = (parseFloat(billingData.montly_charge) + parseFloat(billing.extra_usage_amount) + parseFloat(billingData.monthly_gst) + parseFloat(billing.extra_usage_gst)).toFixed(2);
+        billing.total_amount = (parseFloat(billingData.montly_charge) + parseFloat(billing.extra_usage_amount)).toFixed(2);
         console.log(billing);
         await BillingHistory.updateOne({id: billingData.id}, billing);
         return true;

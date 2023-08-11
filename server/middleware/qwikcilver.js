@@ -28,7 +28,6 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
     myDate.setDate(myDate.getDate() + parseInt(validity));
     const expirydate = ((myDate).toISOString().slice(0, 10));
 
-  
     let data = {
       TransactionTypeId: "305",
       InputType: "3",
@@ -85,7 +84,9 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
 };
 
 export const qwikcilverToken = () => {
+
   try {
+    
     let myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     let data = {
