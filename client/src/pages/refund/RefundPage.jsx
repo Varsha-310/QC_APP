@@ -402,10 +402,10 @@ const RefundPage = () => {
                     <CustomDropdown
                       options={[
                         {
-                          title: "Initiate to  Store Credit",
+                          title: "Refund to  Store Credit",
                           value: "Store-credit",
                         },
-                        { title: "Back to Source", value: "Back-to-Source" },
+                        { title: "Refund Back-to-Source", value: "Back-to-Source" },
                       ]}
                       keyField="refund_type"
                       value={refundOption?.refund_type || "NA"}

@@ -15,15 +15,15 @@ const RefundList = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const Heading = [
-    "Order",
-    "Created Date",
-    "Customer",
-    "Total",
-    "Status",
-    "Fulfillment Status",
+    "Order No.",
+    "Order Date",
+    "Customer Name",
+    "Order Value",
+    "Payment Status",
     "Original Payment",
-    "Refund Mode",
+    "Fulfillment Status",
     "Initiate Refund",
+    "Refund Mode",
   ];
 
   // fetching data

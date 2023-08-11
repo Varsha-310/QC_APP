@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import PlanCard from "../../components/PlanCard";
 import instance from "../../axios";
-import { getUserToken } from "../../utils/userAuthenticate";
+import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
 import { createPortal } from "react-dom";
 
 const PlanSelection = () => {
@@ -171,24 +171,21 @@ const PlanSelection = () => {
     console.log("after");
   };
 
-  // useEffect(()=>{
-  // cosnt var = async () => {
-  //   if (selectedPlan) {
-  //     // console.log("selected plan", selectedPlan);
-  //     handleSelectPlan(
-  //       selectedPlan.plan_name.toUpperCase(),
-  //       selectedPlan.price
-  //     );
-  //   }
-
-  //   fetchPlan();
-  // var();
-  // }, [selectedPlan]);
-
   useEffect(() => {
     fetchPlan();
   }, []);
 
+  // if token then set
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (token) {
+      setUserToken(token);
+      sessionStorage.setItem("qcUserStatus", true);
+    }
+    // getKycStatus();
+  }, []);
   return (
     <div className="plan-selection-container container_padding">
       {/* show terms and condition */}

@@ -21,11 +21,10 @@ const RefundListTable = ({ headings, data }) => {
             <td>{row?.customer?.first_name}</td>
             <td>₹ {row?.total_price}</td>
             <td>{row?.financial_status.split("_").join(" ")}</td>
+            <td>{row?.payment_gateway_names[0]}</td>
             <td>
               {row?.fulfillment_status === null ? "Unfulfilled" : "Fulfilled"}
             </td>
-            <td>{row?.payment_gateway_names[0]}</td>
-            <td>{row?.Refund_Mode}</td>
             <td>
               {row?.refund_status?.toLowerCase() !== "refunded" ? (
                 <Link className={"refund-success"} to={`/refunds/${row.id}`}>
@@ -46,6 +45,7 @@ const RefundListTable = ({ headings, data }) => {
                 row?.financial_status
               )} */}
             </td>
+            <td>{row?.Refund_Mode}</td>
           </tr>
         ))}
       </tbody>
