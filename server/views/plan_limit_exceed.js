@@ -1,4 +1,4 @@
-exports.template = `
+let template = `
     <body style="font-family: 'Poppins', sans-serif;">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,3 +51,4 @@ exports.template = `
             </div>
         </div>
     </body>`
+export default template;

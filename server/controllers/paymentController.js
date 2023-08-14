@@ -7,6 +7,9 @@ import { logger } from "../helper/utility.js";
 import { respondWithData, respondInternalServerError } from "../helper/response.js";
 import stores from "../models/store.js";
 import store from "../models/store.js";
+import { generateCSV } from "./kycController.js";
+import payment_template from "../views/payment_completed.js";
+import { sendEmail } from "../middleware/sendEmail.js";
 
 
 /**
@@ -54,7 +57,7 @@ export const create = async (req, res) => {
     let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
 
-    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
     const billingExp = new Date(y+10, m, d);
     await BillingHistory.updateOne({
             store_url: store_url,
@@ -73,6 +76,7 @@ export const create = async (req, res) => {
 
         planEndDate: billingExp
     }, {upsert: true});
+    
 
     res.json({
         ...respondWithData("payment URL"),
@@ -129,6 +133,25 @@ const updateBillingHistory = async (data) => {
         { $set: { "plan.plan_name": data.lastname } }
       );
     await store.findOneAndUpdate({email : data.email, mandate : data});
-    await generateCSV();
+    const storeDetails = await store.findOne({store_url: data.productinfo});
+    const getBilling = await BillingHistory.findOne(
+        { transaction_id : data.txnid });
+    let email_template = payment_template;
+    email_template=email_template.replace("__merchant__",storeDetails.name);
+    email_template=email_template.replace("__plan_name__", data.lastname);
+    email_template=email_template.replace("__plan_amount__", getBilling.montly_charge);
+    email_template=email_template.replace("__given_credit__", getBilling.given_credit);
+    email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
+    email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
+
+    const options = {
+        to: "anubhav.g@marmeto.com",
+        from: "anubhav.g@marmeto.com",
+        subject: "PAYMENT COMPLETED ",
+        html: email_template,
+      };
+      await sendEmail(options);
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true});
+    await generateCSV(data.productinfo);
     return 1;
 };
