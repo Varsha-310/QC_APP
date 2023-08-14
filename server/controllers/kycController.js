@@ -206,7 +206,7 @@ export const kycDetails = async (req, res) => {
   logger.info(req.body, "kyc webhook for merchant details");
   console.log("------------------------------------------------", data.formFillData.pan)
 
-  const kycData = await kycs.updateOne({shopify :data.formFillData.shopifyID}, {$set:{
+  const kycData = await kycs.updateOne({shopify_id :data.formFillData.shopifyID}, {$set:{
         "PAN":data.formFillData.pan,
         "panName": data.formFillData.panName,
         "type_of_organization" : data.formFillData.typeofOrganization,
