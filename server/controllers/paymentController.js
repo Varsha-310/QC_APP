@@ -57,7 +57,7 @@ export const create = async (req, res) => {
     let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
 
-    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
     const billingExp = new Date(y+10, m, d);
     await BillingHistory.updateOne({
             store_url: store_url,

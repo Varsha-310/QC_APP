@@ -79,6 +79,7 @@ export const initiatieKyc = async (req, res) => {
             { status: "kYC initiated" },
             { upsert: true }
           );
+          const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId}, {upsert:true})
           res.json({
             ...respondWithData("KYC URL"),
             data: dispatchResponse.data.signURL,
@@ -131,7 +132,7 @@ export const fillForm = async (formUrl, shop, token) => {
     console.log(err);
     logger.info(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -203,29 +204,31 @@ export const kycDetails = async (req, res) => {
   console.log("----------------kyc webhook----------------", req.body);
   const data = req.body.data;
   logger.info(req.body, "kyc webhook for merchant details");
+  console.log("------------------------------------------------", data.formFillData.pan)
 
-  const kycData = await kycs.updateOne(
-    {},
-    {
-      $set: {
-        "merchant_data.transaction_id": data.formFillData,
-        "merchant_data.panName": data.formFillData.panName,
-        "merchant_data.merchant_created_at": "",
-        "merchant_data.merchant_name": data.formFillData.first_name,
-        "merchant_data.gstin": data.formFillData.gstin,
-        "merchant_data.address_line1":data.formFillData.address_line1,
-        "merchant_data.address_line2":data.formFillData.address_line2,
-        "merchant_data.area" :data.formFillData.area,
-        "merchant_data.city":data.formFillData.city,
-        "merchant_data.state":data.formFillData.state,
-        "merchant_data.pincode":data.formFillData.pincode,
-        "merchant_data.contact_first_name": data.formFillData.contact_first_name,
-        "merchant_data.contact_last_name":data.formFillData.contact_last_name,
-        "merchant_data.email":data.formFillData.email,
-        "merchant_data.phone":data.formFillData.phone,
-        "merchant_data.PAN":data.formFillData.PAN,
+  const kycData = await kycs.updateOne({shopify :data.formFillData.shopifyID}, {$set:{
+        "PAN":data.formFillData.pan,
+        "panName": data.formFillData.panName,
+        "type_of_organization" : data.formFillData.typeofOrganization,
+        "category":data.formFillData.category,
+        "merchant_created_at": "",
+        "merchant_name": data.formFillData.first_name,
+        "cin_number": data.formFillData.cinNo,
+        "cin_name":data.formFillData.cinllpName,
+        "gstin": data.formFillData.gstin,
+        "gstin_name": data.formFillData.gstinName,
+        "address_line1":data.formFillData.address_line1,
+        "address_line2":data.formFillData.address_line2,
+        "area" :data.formFillData.area,
+        "city":data.formFillData.city,
+        "state":data.formFillData.state,
+        "pincode":data.formFillData.pincode,
+        "contact_first_name": data.formFillData.first_name,
+        "contact_last_name":data.formFillData.last_name,
+        "email":data.formFillData.email,
+        "phone":data.formFillData.phone,
       },
-    }
+  }, {upsert: true}
   );
 
   res.json(respondSuccess("webhook received"));
@@ -239,10 +242,8 @@ export const kycDetails = async (req, res) => {
 export const generateCSV = async (emailid) => {
   const kycData = await kycs.findOne({email:emailid});
   console.log(kycData);
-  console.log(kycData[0].merchant_data[0]);
-
   const {
-    transaction_id,
+    
     merchant_created_at,
     merchant_name,
     outlet,
@@ -262,7 +263,7 @@ export const generateCSV = async (emailid) => {
     card_quantity,
     reload_enabled,
     subscription_payment,
-  } = kycData[0].merchant_data[0];
+  } = kycData;
 
   const headers = [
     "transaction_id",
@@ -313,13 +314,11 @@ export const generateCSV = async (emailid) => {
 
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "varshaa@marmeto.com",
-    subject: "Hello",
-    text: "Hello world",
-    html: "<b>Hello world</b>",
+    to: "anubhav.gupta_conslt@qwikcilver.com",
+    subject: "KYC details of Merchant",
     attachments: [
       {
-        filename: "test.csv",
+        filename: "kyc_data.csv",
         content: csv, // attaching csv in the content
       },
     ],
