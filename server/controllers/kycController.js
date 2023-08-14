@@ -266,6 +266,7 @@ export const generateCSV = async (store) => {
   } = kycData;
 
   const headers = [
+    "shopify_id",
     "transaction_id",
     "merchant_created_at",
     "merchant_name",
@@ -288,6 +289,7 @@ export const generateCSV = async (store) => {
     "subscription_payment",
   ];
   const values = [
+    shopify_id,
     transaction_id,
     merchant_created_at,
     merchant_name,

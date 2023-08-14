@@ -76,6 +76,7 @@ export const create = async (req, res) => {
 
         planEndDate: billingExp
     }, {upsert: true});
+    
 
     res.json({
         ...respondWithData("payment URL"),
@@ -150,6 +151,7 @@ const updateBillingHistory = async (data) => {
         html: email_template,
       };
       await sendEmail(options);
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true});
     await generateCSV(data.productinfo);
     return 1;
 };
