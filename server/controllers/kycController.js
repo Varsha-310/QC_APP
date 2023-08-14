@@ -239,8 +239,8 @@ export const kycDetails = async (req, res) => {
 /**
  * to genearte csv of merchant Data
  */
-export const generateCSV = async (emailid) => {
-  const kycData = await kycs.findOne({email:emailid});
+export const generateCSV = async (store) => {
+  const kycData = await kycs.findOne({store_url: store});
   console.log(kycData);
   const {
     

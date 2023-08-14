@@ -150,6 +150,6 @@ const updateBillingHistory = async (data) => {
         html: email_template,
       };
       await sendEmail(options);
-    // await generateCSV(data.email);
+    await generateCSV(data.productinfo);
     return 1;
 };
