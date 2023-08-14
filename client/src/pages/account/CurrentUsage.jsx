@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { CustomContainer } from "../../components/BasicComponents";
 import "./styles/CurrentUsage.css";
 import styled from "styled-components";
-
-import GiftCouponIcon from "../../assets/images/GiftCouponIcon.png";
 import { getUserToken } from "../../utils/userAuthenticate";
 import instance from "../../axios";
 
@@ -104,7 +102,7 @@ const CurrentUsages = () => {
               {/* plan details & usages */}
               <div className="transaction-detail__plan-charges transaction-detail__box-bg">
                 <div className="transaction-detail__detail-heading">
-                  Your Current Plan - {uses?.planName}
+                  Your Current Plan - {uses?.planName || "NA"}
                 </div>
                 <div className="gift-card__text-box-container">
                   <div className="gift-card__text-box">
@@ -200,11 +198,11 @@ const CurrentUsages = () => {
                         parseFloat(uses?.montly_charge) +
                           (parseFloat(uses?.used_credit) >
                           parseFloat(uses?.given_credit)
-                            ? (
+                            ? parseFloat(
                                 ((parseFloat(uses?.used_credit) -
                                   parseFloat(uses?.given_credit)) *
                                   parseFloat(uses?.usage_charge)) /
-                                100
+                                  100
                               ).toFixed(2)
                             : parseFloat("00.00"))
                       ).toFixed(2)}

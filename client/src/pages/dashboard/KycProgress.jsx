@@ -1,8 +1,21 @@
-import { SectionHeading1 } from "../../components/BasicComponents";
 import SecureDoc from "../../assets/icons/pngs/secure document.png";
+import { useEffect } from "react";
 import "./styles/KycProgress.css";
+import { SectionHeading1 } from "../../components/BasicComponents";
+import { setUserToken } from "../../utils/userAuthenticate";
 
 const KycProgress = () => {
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (token) {
+      setUserToken(token);
+      sessionStorage.setItem("qcUserStatus", true);
+    }
+    // getKycStatus();
+  }, []);
+
   return (
     <div className="kyc-progress-container">
       <div className="progress-status">
