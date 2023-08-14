@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const billingHistorySchema = {
+const billingHistorySchema = mongoose.Schema({
   
   id: String,
   store_id: { type: String },    
@@ -24,10 +24,14 @@ const billingHistorySchema = {
   },
   recordType: {
     type: String, 
-    enum: ["New","Reccuring"], 
+    enum: ["New","Reccuring","Upgraded"], 
     default: "New"
   },
   remiderDate: Date,
+  prevData: {
+    type:Array,
+    default: null
+  },
   isReminded: { type: Boolean, default: false},
   oracleUserId: String, 
   planName: { type: String },
@@ -41,6 +45,6 @@ const billingHistorySchema = {
   invoiceUrl: String,
   transaction_id: String,
   remark: String
-};
+});
 
 export default mongoose.model("BillingHistory", billingHistorySchema);

@@ -8,7 +8,6 @@ import { respondWithData, respondInternalServerError } from "../helper/response.
 import stores from "../models/store.js";
 import store from "../models/store.js";
 
-
 /**
  * create payment
  * @param {*} req
@@ -57,9 +56,10 @@ export const create = async (req, res) => {
     const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
     const billingExp = new Date(y+10, m, d);
     await BillingHistory.updateOne({
-            store_url: store_url,
-            status: "PENDING"
-    },{
+        store_url: store_url,
+        status: "PENDING"
+      },{
+        id: `BL${Date.now() + Math.random().toString(10).slice(2, 8)}`,
         store_url: store_url,
         given_credit: getPlanData.plan_limit,
         montly_charge: getPlanData.price,
@@ -70,9 +70,9 @@ export const create = async (req, res) => {
         transaction_id: paymentData.txnid,
         upfront_amount: calculatedPayment,
         invoiceAmount: totalAmount,
-
         planEndDate: billingExp
-    }, {upsert: true});
+      }, {upsert: true}
+    );
 
     res.json({
         ...respondWithData("payment URL"),

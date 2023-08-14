@@ -421,9 +421,8 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
     if(giftcardExists) return null;
     
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = ++parseInt(setting.unique_transaction_id); 
+    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
     setting.markModified("unique_transaction_id");
-
     const myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     const data = {
