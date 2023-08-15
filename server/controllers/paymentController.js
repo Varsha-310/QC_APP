@@ -151,7 +151,7 @@ const updateBillingHistory = async (data) => {
         html: email_template,
       };
       await sendEmail(options);
-      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true});
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid});
     await generateCSV(data.productinfo);
     return 1;
 };

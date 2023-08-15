@@ -207,16 +207,10 @@ export const kycDetails = async (req, res) => {
   console.log("------------------------------------------------", data.formFillData.pan)
 
   const kycData = await kycs.updateOne({shopify_id :data.formFillData.shopifyID}, {$set:{
-        "PAN":data.formFillData.pan,
-        "panName": data.formFillData.panName,
-        "type_of_organization" : data.formFillData.typeofOrganization,
-        "category":data.formFillData.category,
+        "merchant_name": data.formFillData.gstinName,
         "merchant_created_at": "",
-        "merchant_name": data.formFillData.first_name,
-        "cin_number": data.formFillData.cinNo,
-        "cin_name":data.formFillData.cinllpName,
+        "outlet": data.formFillData.outlet ,
         "gstin": data.formFillData.gstin,
-        "gstin_name": data.formFillData.gstinName,
         "address_line1":data.formFillData.address_line1,
         "address_line2":data.formFillData.address_line2,
         "area" :data.formFillData.area,
@@ -227,6 +221,14 @@ export const kycDetails = async (req, res) => {
         "contact_last_name":data.formFillData.last_name,
         "email":data.formFillData.email,
         "phone":data.formFillData.phone,
+        "PAN":data.formFillData.pan,
+        "panName": data.formFillData.panName,
+        "type_of_organization" : data.formFillData.typeofOrganization,
+        "category":data.formFillData.category,
+        "cin_number": data.formFillData.cinNo,
+        "cin_name":data.formFillData.cinllpName,
+        "gstin_name": data.formFillData.gstinName,
+        
       },
   }, {upsert: true}
   );
@@ -243,10 +245,10 @@ export const generateCSV = async (store) => {
   const kycData = await kycs.findOne({store_url: store});
   console.log(kycData);
   const {
-    
-    merchant_created_at,
+    shopify_id,
+    transaction_id,
+    merhchant_created_at,
     merchant_name,
-    outlet,
     gstin,
     address_line1,
     address_line2,
@@ -260,17 +262,18 @@ export const generateCSV = async (store) => {
     phone,
     PAN,
     package_details,
-    card_quantity,
-    reload_enabled,
     subscription_payment,
+    cin_number,
+    payu_txn_id,
+    payu_mihpayid
+   
   } = kycData;
-
+console.log(kycData.gstin)
   const headers = [
     "shopify_id",
     "transaction_id",
-    "merchant_created_at",
+    "merhchant_created_at",
     "merchant_name",
-    "outlet",
     "gstin",
     "address_line1",
     "address_line2",
@@ -284,16 +287,17 @@ export const generateCSV = async (store) => {
     "phone",
     "PAN",
     "package_details",
-    "card_quantity",
-    "reload_enabled",
     "subscription_payment",
+    "cin_number",
+    "payu_txn_id",
+    "payu_mihpayid"
+   
   ];
   const values = [
     shopify_id,
     transaction_id,
-    merchant_created_at,
+    merhchant_created_at,
     merchant_name,
-    outlet,
     gstin,
     address_line1,
     address_line2,
@@ -307,13 +311,14 @@ export const generateCSV = async (store) => {
     phone,
     PAN,
     package_details,
-    card_quantity,
-    reload_enabled,
     subscription_payment,
+    cin_number,
+    payu_txn_id,
+    payu_mihpayid
   ];
 
   const csv = headers.join(", ") + "\n" + values.join(",");
-
+ console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
     to: "anubhav.gupta_conslt@qwikcilver.com",
