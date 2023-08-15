@@ -12,6 +12,7 @@ import PlanCard from "../../components/PlanCard";
 import instance from "../../axios";
 import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
 import { createPortal } from "react-dom";
+import Toast from "../../components/Toast";
 
 const PlanSelection = () => {
   const tableContent = [
@@ -87,6 +88,7 @@ const PlanSelection = () => {
     },
   ];
 
+  const [isError, setIsError] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [plans, setPlans] = useState(null);
   const [isAgree, setIsAgree] = useState(false);
@@ -106,9 +108,26 @@ const PlanSelection = () => {
 
     try {
       const res = await instance.post(url, {}, { headers });
+      const resData = res.data;
+      if (resData?.code === 401) {
+        throw new Error(
+          "Authentication Failed: Unable to authenticate. Please log in again."
+        );
+      }
+      if (resData?.code === 403) {
+        throw new Error(
+          "Session Expired: Your Session has expired. Please log in again."
+        );
+      }
+
+      // for any other error
+      if (resData?.code !== 200) {
+        throw new Error("Network response was not OK.");
+      }
+
       setPlans(res.data);
 
-      // const scPlan=
+      // const scPlan
       const scPlan = res.data.data.selectedPlan;
       const crPlan = res.data.data.plans.find(
         (item) => item.plan_name.toLowerCase() === scPlan.toLowerCase()
@@ -116,26 +135,7 @@ const PlanSelection = () => {
       setSelectedPlan(crPlan);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  // plan select
-  const handleSelectPlan = async (plan, price) => {
-    const url = "plan/select";
-    const headers = {
-      Authorization: getUserToken(),
-    };
-    const body = {
-      plan_name: plan, //"BASIC",
-      plan_price: price, //399,
-    };
-
-    try {
-      const res = await instance.post(url, body, { headers });
-      setPlans(res.data);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
+      setIsError(error.message);
     }
   };
 
@@ -186,6 +186,10 @@ const PlanSelection = () => {
     }
     // getKycStatus();
   }, []);
+
+  if (isError) {
+    return <Toast>{isError}</Toast>;
+  }
   return (
     <div className="plan-selection-container container_padding">
       {/* show terms and condition */}

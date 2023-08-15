@@ -215,4 +215,8 @@ input[type="checkbox"] {
     row-gap: 20px;
     column-gap: 20px;
   }
+  .payment-form {
+    height: 20%;
+    width: 60%;
+  }
 }
