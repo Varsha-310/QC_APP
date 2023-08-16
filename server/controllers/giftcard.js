@@ -21,6 +21,7 @@ import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import orders from "../models/orders.js";
 import qc_gc from "../models/qc_gc.js";
+import store from "../models/store.js";
 
 /**
  * To create gifcard product
@@ -57,6 +58,8 @@ export const createGiftcardProducts = async (req, res) => {
       ...otherData,
     };
     await Product.create(createP);
+    await addMetafield(store ,newProduct.id);
+
     console.log("createGiftcardProducts response shopify");
     console.log(newProduct);
     res.json(respondSuccess("Product created in shopify successfully"));
@@ -67,6 +70,39 @@ export const createGiftcardProducts = async (req, res) => {
     );
   }
 };
+
+/**
+ * add template to gc prodict using metafield
+ * @param {*} storeName 
+ * @param {*} id 
+ * @returns 
+ */
+const addMetafield= async (storeName,id)=> {
+  const storeData = await store.findOne({store_url: storeName});
+  console.log(storeData)
+  const data = {
+    "metafield": {
+      "namespace": "template",
+      "key":"custom-template",
+      "value": "gift-card",
+      "type": "string"
+    }
+    }
+  let config = {
+    method: 'post',
+    url: `https://${storeName}/admin/api/2023-07/products/${id}/metafields.json`,
+    headers: { 
+      'X-Shopify-Access-Token': storeData.access_token , 
+      'Content-Type': 'application/json', 
+    },
+    data : data
+  };
+  console.log(config)
+const shopifyGc = await axios(config);
+console.log(shopifyGc.data);
+return 0 ;
+
+}
 
 /**
  * Update giftcard product
