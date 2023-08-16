@@ -86,11 +86,13 @@ const CreateGiftCard = () => {
     const value = event.target.value;
 
     // console.log(index+name+value)
-    setCardData((prev) => {
-      const updatedVariants = [...prev.variants];
-      updatedVariants[index][name] = value;
-      return { ...prev, variants: updatedVariants };
-    });
+    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+      setCardData((prev) => {
+        const updatedVariants = [...prev.variants];
+        updatedVariants[index][name] = value;
+        return { ...prev, variants: updatedVariants };
+      });
+    }
   };
 
   // variant append and delete
@@ -366,7 +368,7 @@ const CreateGiftCard = () => {
           {cardData.variants.map((item, index) => (
             <div className="gift-card__variant-grid-row" key={index}>
               <input
-                type="number"
+                type="text"
                 className="gift-card__variant-input-title gift-card__input"
                 id={index}
                 name="option1"
