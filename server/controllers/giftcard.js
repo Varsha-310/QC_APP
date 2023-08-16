@@ -48,7 +48,7 @@ export const createGiftcardProducts = async (req, res) => {
       images: images,
       tags: tags,
       variants: variants,
-      status: "draft",
+      status: "active",
       store_url: store,
     });
     const otherData = { validity: validity,terms:terms};
