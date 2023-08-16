@@ -6,6 +6,13 @@ var kycSchema = mongoose.Schema({
   store_url: { type: String },
   shopify_id: { type: String },
   status:{type:String, default : "INITIATED"},
+  transaction_id: { type: String },
+  merchant_created_at: { type: Date, default: null },
+  merchant_name: { type: String, default: null },
+  outlet: { type: String, default: null },
+  gstin_number: { type: String, default: null },
+
+
   PAN: { type: String, default: null },
   Pan_name: { type: String, default: null },
   name_of_firm: {type: String},
@@ -15,7 +22,8 @@ var kycSchema = mongoose.Schema({
   cin_name: {type:String},
   gstin: { type: String, default: null },
   gstin_name: { type: String, default: null },
-  merchant_created_at: { type: Date, default: null, default: null },
+  gstin_state: { type: String, default: null },
+  merchant_created_at: { type: Date, default: null },
   merchant_name: { type: String, default: null },
   outlet: { type: String, default: null },
   address_line1: { type: String, default: null },
@@ -29,16 +37,10 @@ var kycSchema = mongoose.Schema({
   email: { type: String, default: null },
   phone: { type: Number, default: null },
   package_details: { type: String, default: null },
-  card_quantity: { type: String, default: null },
-  reload_enabled: { type: Boolean, default: false },
   subscription_payment: { type: Boolean, default: false },
-  transaction_id: { type: String },
-  template_id: { type: String },
-  doctype_id: { type: String },
-  status: { type: String },
- 
-
-
+  cin_number: { type: String, default: null },
+  payu_txn_id:  { type: String, default: null },
+  payu_mihpayid: { type: String, default: null }
 });
 
 export default mongoose.model("kyc", kycSchema);
