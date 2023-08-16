@@ -10,6 +10,7 @@ import store from "../models/store.js";
 import { generateCSV } from "./kycController.js";
 import payment_template from "../views/payment_completed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
+import kyc from "../models/kyc.js";
 
 
 /**
@@ -143,6 +144,8 @@ const updateBillingHistory = async (data) => {
     email_template=email_template.replace("__given_credit__", getBilling.given_credit);
     email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
     email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
+    email_template=email_template.replace("__base_amount__", getBilling.upfront_amount);
+
 
     const options = {
         to: "anubhav.g@marmeto.com",

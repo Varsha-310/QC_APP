@@ -21,7 +21,7 @@ let payment_template = `
                 <div class="content_container_content" style="padding: 0.2rem 2rem;">
                     <p class="content_para1">Dear <span class="merchant_name">__merchant__</span>,</p>
                     <p class="content_para2" style="margin-bottom: 1rem;">Thanks for submitting the KYC data. Your payment
-                        of Rs. <span class="payment_amount">314</span>, towards the Order No: <span
+                        of Rs. <span class="payment_amount">__base_amount__</span>, towards the Order No: <span
                             class="order_number">(SH-123456)</span>, has been received.</p>
                     <p class="content_para3" style="margin-bottom: 0.1rem;">Please find below the details of the
                         subscription plan that you have opted for.
@@ -43,7 +43,7 @@ let payment_template = `
                                     class="full_year">2023</span>:
                             </th>
                             <td style="outline: 1px solid #000;width: 70%;padding:0 0.9rem 0 0.75rem;text-align: start;">Rs.
-                                <span class="base_amount">314</span> (Including GST at <span
+                                <span class="base_amount">__base_amount__</span> (Including GST at <span
                                     class="gst_percentage">18%</span>)*</td>
                         </tr>
                         <tr style="outline: 1px solid #000;">
