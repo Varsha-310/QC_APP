@@ -234,15 +234,18 @@ const RefundSetting = () => {
             <div className="refund-setting__restock-input">
               <input
                 className="refund-setting__location-input"
-                type="number"
+                type="text"
                 value={configuration?.location_id || ""}
                 onWheel={(e) => e.target.blur()}
-                onChange={(e) =>
-                  setConfiguration((prev) => ({
-                    ...prev,
-                    location_id: e.target.value,
-                  }))
-                }
+                onChange={(e) => {
+                  const val = e.target.value;
+
+                  if (/^\d*\d*$/.test(val))
+                    setConfiguration((prev) => ({
+                      ...prev,
+                      location_id: e.target.value,
+                    }));
+                }}
               />
             </div>
             <div></div>

@@ -34,11 +34,11 @@ const RefundPage = () => {
 
   const navigate = useNavigate();
 
-  console.log(refundData);
+  console.log("refund", refundAmount);
 
-  console.log(data);
+  // console.log(data);
 
-  console.log("inputdata", inputData);
+  // console.log("inputdata", inputData);
 
   const { id } = useParams();
 
@@ -371,12 +371,16 @@ const RefundPage = () => {
                     Refund Product Amount
                   </div>
                   <input
-                    type="number"
+                    type="text"
                     placeholder="Enter Amount"
                     value={refundAmount}
                     onWheel={(e) => e.target.blur()}
                     onChange={
-                      (e) => setRefundAmount(e.target.value)
+                      (e) => {
+                        const val = e.target.value;
+                        if (/^\d*\.?\d*$/.test(val)) setRefundAmount(val);
+                      }
+
                       // calcData?.refund
                       //   ? countTotal(
                       //       calcData?.refund?.transactions,
@@ -405,7 +409,10 @@ const RefundPage = () => {
                           title: "Refund to  Store Credit",
                           value: "Store-credit",
                         },
-                        { title: "Refund Back-to-Source", value: "Back-to-Source" },
+                        {
+                          title: "Refund Back-to-Source",
+                          value: "Back-to-Source",
+                        },
                       ]}
                       keyField="refund_type"
                       value={refundOption?.refund_type || "NA"}

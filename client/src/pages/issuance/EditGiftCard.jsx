@@ -78,19 +78,25 @@ const EditGiftCard = () => {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setCardData((prev) => ({ ...prev, [name]: value }));
+
+    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+      setCardData((prev) => ({ ...prev, [name]: value }));
+    }
   };
+
   const handleVariant = (event) => {
     const index = event.target.id;
     const name = event.target.name;
     const value = event.target.value;
 
     // console.log(index+name+value)
-    setCardData((prev) => {
-      const updatedVariants = [...prev.variants];
-      updatedVariants[index][name] = value;
-      return { ...prev, variants: updatedVariants };
-    });
+    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+      setCardData((prev) => {
+        const updatedVariants = [...prev.variants];
+        updatedVariants[index][name] = value;
+        return { ...prev, variants: updatedVariants };
+      });
+    }
   };
 
   // variant append and delete
