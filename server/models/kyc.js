@@ -40,7 +40,8 @@ var kycSchema = mongoose.Schema({
   subscription_payment: { type: Boolean, default: false },
   cin_number: { type: String, default: null },
   payu_txn_id:  { type: String, default: null },
-  payu_mihpayid: { type: String, default: null }
+  payu_mihpayid: { type: String, default: null },
+  billing_id: { type: String, default: null }
 });
 
 export default mongoose.model("kyc", kycSchema);

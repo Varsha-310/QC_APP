@@ -140,6 +140,7 @@ const ordercreateEvent = async (input, done, res) => {
           if( newOrder.financial_status == "paid") {
 
             for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
+              const type = "giftcard";
 
               const flag = await checkActivePlanUses(qwikcilver_gift_card.price, shopName);
               if(flag > 0){
@@ -201,7 +202,8 @@ const ordercreateEvent = async (input, done, res) => {
                       shopName,
                       parseInt(qwikcilver_gift_card.price),
                       newOrder.id,
-                      qwikcilver_gift_card.validity
+                      qwikcilver_gift_card.validity,
+                      type
                     );
                     console.log(giftCardDetails);
                     console.log(email);
@@ -224,7 +226,8 @@ const ordercreateEvent = async (input, done, res) => {
                     shopName,
                     parseInt(qwikcilver_gift_card.price),
                     newOrder.id,
-                    qwikcilver_gift_card.validity
+                    qwikcilver_gift_card.validity,
+                    type
                   );
                   console.log(
                     giftCardDetails,

@@ -386,8 +386,8 @@ export const handleRefundAction = async (req, res) => {
         }else if(amount && refund_type == "Store-credit"){
 
             if(!refundSession?.qc_gc_created){
-
-                const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180 );
+                const  type = "refund"
+                const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180, type );
                 console.log( "New Added Giftcard", giftCardDetails );
                 const custom_id = ordersData.customer.id == 7286901178670 ? "9709857928" :  ordersData.customer.id;
                 await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance );
