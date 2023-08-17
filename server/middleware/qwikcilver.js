@@ -9,7 +9,7 @@ import wallet from "../models/wallet.js";
 
 
 
-export const createGiftcard = async (store, amount, order , validity, type) => {
+export const createGiftcard = async (store, amount, order_id , validity, type) => {
 
   try {
 
@@ -32,16 +32,17 @@ export const createGiftcard = async (store, amount, order , validity, type) => {
      cpgn = setting.refund_cpgn
     }
     else{
-      cpgn = setting.cpgn
+	console.log("_------in giftcard type--------", cpgn)
+      cpgn = setting.giftcard_cpgn
     }
 
-  
+  console.log("cpgn type" , cpgn , type);  
     let data = {
       TransactionTypeId: "305",
       InputType: "3",
       TransactionModeId : "0",
       BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order.id,
+      InvoiceNumber: "ORD-" + order_id,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry : expirydate,

@@ -214,7 +214,9 @@ export const addGiftcard = async (req, res) => {
     let { store, customer_id, gc_pin } = req.body;
     const validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     if (validPin) {
-      if (validPin.expiry_date >= Date.now()) {
+	const presentTime = new Date(Date.now());
+       console.log(validPin.expiry_date,  presentTime);
+      if (validPin.expiry_date <  presentTime) {
         res.json(respondForbidden("card is expired !"));
       } else {
         const gcToWallet = await addGiftcardtoWallet(
