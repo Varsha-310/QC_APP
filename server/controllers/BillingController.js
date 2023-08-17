@@ -12,20 +12,31 @@ import Session from "../models/session.js";
  */
 const handleMandateNotification = async(type) => {
 
-    // Check Upgraded 
-    const notificableMarchant = await BillingHistory.find({
-        status: "FROZEN",
-        reminderData: { $lte : new Date(Date.now())},
-        isReminded: false,
-        plan_type: "public"
-    });
-    for (const bill of notificableMarchant) {
+    const today = new Date().getDate();
+    if([5,6].includes(today)){
 
-        const resp = await sendMandateNotification(bill);
-        bill.remark = resp.message;
-        bill.isReminded = resp.status == 1 ? true : false;
-        await bill.save();
+        const notificableMarchant = await BillingHistory.find({
+            status: "ACTIVE",
+            isReminded: false,
+            recordType: "Reccuring",
+            plan_type: "public"
+        });
+        for (const bill of notificableMarchant) {
+    
+            if(bill.invoiceNumber){
+
+                const resp = await sendMandateNotification(bill);
+                bill.remark = resp.message;
+                bill.isReminded = resp.status == 1 ? true : false;
+                await bill.save();
+            }else{
+
+                //TODO: Send notification to the about the missing invoice number 
+            }
+            continue;
+        }
     }
+    return 1;    
 }
 
 /**
@@ -129,19 +140,23 @@ const callPayUNotificationAPI = async(bill, mandateDetails) =>{
  */
 const handleReccuringPayment = async() => {
 
-    const reccuringmarchant = await BillingHistory.find({
-        status:"FROZEN",
-        billingDate: { $lte : new Date(Date.now())},
-        isReminded: true,
-        plan_type: "public"
-    });
-    for (const bill of reccuringmarchant) {
+    const today = new Date().getDate();
+    if([8,9].includes(today)){
+        const reccuringmarchant = await BillingHistory.find({
+            status:"ACTIVE",
+            recordType: "Reccuring",
+            isReminded: true,
+            plan_type: "public"
+        });
+        for (const bill of reccuringmarchant) {
 
-        const resp = await captureReccuringpayment(bill);
-        bill.remark = resp.message;
-        bill.status = resp.status == 1 ? "BILLED" : bill.status;
-        await bill.save();
+            const resp = await captureReccuringpayment(bill);
+            bill.remark = resp.message;
+            bill.status = resp.status == 1 ? "BILLED" : bill.status;
+            await bill.save();
+        }
     }
+    return 1;
 }
 
 const captureReccuringpayment = async() => {
@@ -433,7 +448,10 @@ export const handleBillingDetails = async(req, res) => {
  */
 export const changeMonthlyCycle = async() => {
     
-    const date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    const date = new Date(), y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
+    if(d != 1){
+        return 0;
+    }
     const firstday = new Date(y, m, 0);
     const query = {
         status: "ACTIVE",
@@ -480,7 +498,8 @@ const processMonthlyPlan = async(query, upgradedPlansList) => {
                 store_url: bill.store_url,
                 given_credit: bill.given_credit, 
                 used_credit: 0, 
-                extra_usage: 0,  
+                extra_usage: 0, 
+                usage_charge: bill.usage_charge,
                 montly_charge: bill.montly_charge,
                 monthly_gst: calculateGST(bill.montly_charge), 
                 upfront_amount: bill.montly_charge,

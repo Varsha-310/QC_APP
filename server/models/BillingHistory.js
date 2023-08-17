@@ -16,6 +16,7 @@ const billingHistorySchema = mongoose.Schema({
   extra_usage_amount: { type: Number,  default: 0},
   total_amount: { type: Number,  default: 0 },
   issue_date: { type: Date },
+  marchant_name: { type: String},
   plan_type: String,
   notifiedMerchant: {
     type: String,

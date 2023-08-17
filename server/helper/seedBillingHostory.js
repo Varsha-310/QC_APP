@@ -2,8 +2,6 @@ import { faker } from '@faker-js/faker';
 import BillingHistory from '../models/BillingHistory';
 import { calculateGST } from '../controllers/BillingController';
 import plan from '../models/plan.js';
-import store from '../models/store.js';
-
 
 /**
  * Seed Billing History Data
