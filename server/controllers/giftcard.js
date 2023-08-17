@@ -21,6 +21,7 @@ import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import orders from "../models/orders.js";
 import qc_gc from "../models/qc_gc.js";
+import store from "../models/store.js";
 
 /**
  * To create gifcard product
@@ -51,7 +52,7 @@ export const createGiftcardProducts = async (req, res) => {
       status: "active",
       store_url: store,
     });
-    const otherData = { validity: validity,terms:terms};
+    const otherData = { validity: validity, terms: terms };
     const createP = {
       ...newProduct,
       ...otherData,
@@ -95,13 +96,17 @@ export const updateGiftcardProduct = async (req, res) => {
     }
     console.log(updateObj);
     let updatedProduct = await shopify.product.update(product_id, updateObj);
-    if(validity){
+    if (validity) {
       updateObj["validity"] = validity;
     }
-    if(terms){
+    if (terms) {
       updateObj["terms"] = terms;
     }
-    await Product.updateOne({id : product_id}, {updateObj}, {upsert: true});
+    await Product.updateOne(
+      { id: product_id },
+      { updateObj },
+      { upsert: true }
+    );
 
     console.log(updatedProduct);
     res.json(respondSuccess("Product updated in shopify successfully"));
@@ -148,15 +153,17 @@ export const getGiftcardProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Current page number (default: 1)
     const limit = parseInt(req.query.limit) || 10; // Number of items per page (default: 10)
 
-    const count = await Product.countDocuments({ store_url: req.token.store_url });
+    const count = await Product.countDocuments({
+      store_url: req.token.store_url,
+    });
     const totalPages = Math.ceil(count / limit);
 
     // Adjust the page value if it exceeds the total number of pages
     const currentPage = page > totalPages ? totalPages : page;
 
     console.log(req.token.store_url);
-    let products = await Product.find({store_url: req.token.store_url})
-      .sort({ created_at:-1 })
+    let products = await Product.find({ store_url: req.token.store_url })
+      .sort({ created_at: -1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
     console.log(products);
@@ -207,20 +214,24 @@ export const addGiftcard = async (req, res) => {
     let { store, customer_id, gc_pin } = req.body;
     const validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     if (validPin) {
-      const gcToWallet = await addGiftcardtoWallet(
-        store,
-        customer_id,
-        gc_pin,
-        validPin.balance
-      );
-      if (gcToWallet.ResponseCode == "0") {
-        res.json({
-          ...respondWithData("card has been added to wallet"),
-        });
+      if (validPin.expiry_date >= Date.now()) {
+        res.json(respondForbidden("card is expired !"));
       } else {
-        res.json(
-          respondInternalServerError("Something went wrong try after sometime")
+        const gcToWallet = await addGiftcardtoWallet(
+          store,
+          customer_id,
+          gc_pin,
+          validPin.balance
         );
+        if (gcToWallet.status == "403") {
+          res.json(respondForbidden("card has been already added to wallet"));
+        } else {
+          res.json(
+            respondInternalServerError(
+              "Something went wrong try after sometime"
+            )
+          );
+        }
       }
     } else {
       res.json(respondForbidden("invalid card credentials"));
@@ -245,108 +256,120 @@ export const addGiftcardtoWallet = async (
   amount
 ) => {
   try {
-    const setting = await Store.findOne({ store_url: store });
-    let walletExists = await Wallet.findOne({
-      shopify_customer_id: customer_id,
+    const cardAlredyAdded = await wallet_history.findOne({
+      "transactions.gc_pin": gc_pin,
     });
-    console.log(walletExists, "-------***********------");
-    if (walletExists) {
-      let wallet_id = walletExists.wallet_id;
-      const shopify_gc_id = walletExists.shopify_giftcard_id;
-      console.log("back ", walletExists.shopify_giftcard_id);
-      const newAmount = walletExists.balance + amount;
-      console.log(newAmount);
-      let activatedCard = await activateCard(store, gc_pin);
+    if (cardAlredyAdded) {
+      return { status: 403 };
+    } else {
+      const setting = await Store.findOne({ store_url: store });
+      let walletExists = await Wallet.findOne({
+        shopify_customer_id: customer_id,
+      });
+      console.log(walletExists, "-------***********------");
+      if (walletExists) {
+        let wallet_id = walletExists.wallet_id;
+        const shopify_gc_id = walletExists.shopify_giftcard_id;
+        console.log("back ", walletExists.shopify_giftcard_id);
+        const newAmount = walletExists.balance + amount;
+        console.log(newAmount);
+        let activatedCard = await activateCard(store, gc_pin);
 
-      let transaction = await addToWallet(
-        store,
-        wallet_id,
-        gc_pin,
-        activatedCard.CardNumber
-      );
-      console.log(transaction);
-      if ((transaction.status == "200", transaction.data.ResponseCode == "0")) {
-        let updateShopifyGc = await updateShopifyGiftcard(
+        let transaction = await addToWallet(
           store,
-          setting.access_token,
-          shopify_gc_id,
-          amount
+          wallet_id,
+          gc_pin,
+          activatedCard.CardNumber
         );
-        console.log(updateShopifyGc);
-       // await wallet.updateOne(
-         // { shopify_customer_id: customer_id },
+        console.log(transaction);
+        if (
+          (transaction.status == "200", transaction.data.ResponseCode == "0")
+        ) {
+          let updateShopifyGc = await updateShopifyGiftcard(
+            store,
+            setting.access_token,
+            shopify_gc_id,
+            amount
+          );
+          console.log(updateShopifyGc);
+          // await wallet.updateOne(
+          // { shopify_customer_id: customer_id },
           //{ balance: newAmount },
           //{ upsert: true }
-        //);
-        await wallet_history.updateOne(
-          { wallet_id: wallet_id, customer_id: customer_id },
-          {
-            $push: {
-              transactions: {
-                transaction_type: "credit",
-                amount: amount,
-                gc_pin: gc_pin,
-                expires_at: activatedCard.ExpiryDate,
-                transaction_date: Date.now(),
+          //);
+          await wallet_history.updateOne(
+            { wallet_id: wallet_id, customer_id: customer_id },
+            {
+              $push: {
+                transactions: {
+                  transaction_type: "credit",
+                  amount: amount,
+                  gc_pin: gc_pin,
+                  expires_at: activatedCard.ExpiryDate,
+                  transaction_date: Date.now(),
+                },
               },
             },
-          },
-          { upsert: true }
-        );
-        walletExists.balance = parseFloat(walletExists.balance) + parseFloat(amount);
-        return transaction.data;
+            { upsert: true }
+          );
+          walletExists.balance =
+            parseFloat(walletExists.balance) + parseFloat(amount);
+          return transaction.data;
+        } else {
+          return false;
+        }
       } else {
-        return false;
-      }
-    } else {
-      console.log("wallet doesnt exists");
-      let walletCreated = await createWallet(store, customer_id);
-      let activatedCard = await activateCard(store, gc_pin);
-      console.log("activated card balance", activatedCard);
-      let gift_card = await createShopifyGiftcard(
-        store,
-        setting.access_token,
-        activatedCard.Balance
-      );
-      console.log("Shopify Gift Card Generated - ", gift_card);
-      console.log(walletCreated, "walletcreated");
-      await wallet.create({
-        wallet_id: walletCreated.WalletNumber,
-        shopify_customer_id: customer_id,
-        shopify_giftcard_id: gift_card.id,
-        shopify_giftcard_pin: gift_card.code,
-      });
-      let transaction = await addToWallet(
-        store,
-        walletCreated.WalletNumber,
-        gc_pin,
-        activatedCard.CardNumber
-      );
-      console.log(transaction);
-      if ((transaction.status == "200", transaction.data.ResponseCode == "0")) {
-        await wallet.updateOne(
-          { shopify_customer_id: customer_id },
-          { $inc: { balance: activatedCard.Balance } },
-          { upsert: true }
+        console.log("wallet doesnt exists");
+        let walletCreated = await createWallet(store, customer_id);
+        let activatedCard = await activateCard(store, gc_pin);
+        console.log("activated card balance", activatedCard);
+        let gift_card = await createShopifyGiftcard(
+          store,
+          setting.access_token,
+          activatedCard.Balance
         );
-        await wallet_history.updateOne(
-          { wallet_id: walletCreated.WalletNumber, customer_id: customer_id },
-          {
-            $push: {
-              transactions: {
-                transaction_type: "credit",
-                amount: amount,
-                transaction_date: Date.now(),
-                expires_at: activatedCard.ExpiryDate,
+        console.log("Shopify Gift Card Generated - ", gift_card);
+        console.log(walletCreated, "walletcreated");
+        await wallet.create({
+          wallet_id: walletCreated.WalletNumber,
+          shopify_customer_id: customer_id,
+          shopify_giftcard_id: gift_card.id,
+          shopify_giftcard_pin: gift_card.code,
+        });
+        let transaction = await addToWallet(
+          store,
+          walletCreated.WalletNumber,
+          gc_pin,
+          activatedCard.CardNumber
+        );
+        console.log(transaction);
+        if (
+          (transaction.status == "200", transaction.data.ResponseCode == "0")
+        ) {
+          await wallet.updateOne(
+            { shopify_customer_id: customer_id },
+            { $inc: { balance: activatedCard.Balance } },
+            { upsert: true }
+          );
+          await wallet_history.updateOne(
+            { wallet_id: walletCreated.WalletNumber, customer_id: customer_id },
+            {
+              $push: {
+                transactions: {
+                  transaction_type: "credit",
+                  amount: amount,
+                  transaction_date: Date.now(),
+                  expires_at: activatedCard.ExpiryDate,
+                },
               },
             },
-          },
-          { upsert: true }
-        );
+            { upsert: true }
+          );
 
-        return transaction.data;
-      } else {
-        return false;
+          return transaction.data;
+        } else {
+          return false;
+        }
       }
     }
   } catch (err) {
@@ -355,6 +378,11 @@ export const addGiftcardtoWallet = async (
   }
 };
 
+/**
+ * adding giftcards to wallet
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const addGiftcardtoWallets = async (req, res) => {
   try {
     let { customer_id, gc_pin, store } = req.body;
@@ -392,8 +420,12 @@ export const getWalletBalance = async (req, res) => {
       console.log("-----------------", walletExists);
       if (walletExists) {
         let balanceFetched = await fetchBalance(store, walletExists.wallet_id);
-        let shopifybalance = await getShopifyGiftcard(store,storeExists.access_token,walletExists.shopify_giftcard_id);
-        console.log(shopifybalance, "shopify giftcard balance")
+        let shopifybalance = await getShopifyGiftcard(
+          store,
+          storeExists.access_token,
+          walletExists.shopify_giftcard_id
+        );
+        console.log(shopifybalance, "shopify giftcard balance");
         console.log(balanceFetched);
         res.json({
           ...respondWithData("balance fetched"),
@@ -416,6 +448,11 @@ export const getWalletBalance = async (req, res) => {
   }
 };
 
+/**
+ * resend email for particular order
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const resendEmail = async (req, res) => {
   try {
     console.log(req.token.store_url, req.query.order_id);
@@ -438,13 +475,20 @@ export const resendEmail = async (req, res) => {
   }
 };
 
+/**
+ * order list of giftcard purchase
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const giftCardOrders = async (req, res) => {
   try {
     console.log(req.token);
     const page = parseInt(req.query.page) || 1; // Current page number
     const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
-    const gcOrders = await orders.find({store_url: req.token.store_url}).sort({ created_at:-1 });
+    const gcOrders = await orders
+      .find({ store_url: req.token.store_url })
+      .sort({ created_at: -1 });
 
     console.log(gcOrders.length);
 
@@ -537,6 +581,13 @@ export const giftCardAmount = async (store, id) => {
   }
 };
 
+/**
+ * create shopify giftcard
+ * @param {*} store 
+ * @param {*} token 
+ * @param {*} amount 
+ * @returns 
+ */
 const createShopifyGiftcard = async (store, token, amount) => {
   let data = JSON.stringify({
     gift_card: {
@@ -560,8 +611,14 @@ const createShopifyGiftcard = async (store, token, amount) => {
 };
 
 
+/**
+ * get shopify giftcard
+ * @param {*} store 
+ * @param {*} token 
+ * @param {*} id 
+ * @returns 
+ */
 const getShopifyGiftcard = async (store, token, id) => {
-
   let config = {
     method: "get",
     maxBodyLength: Infinity,
@@ -569,8 +626,8 @@ const getShopifyGiftcard = async (store, token, id) => {
     headers: {
       "X-Shopify-Access-Token": token,
       "Content-Type": "application/json",
-    }
- };
+    },
+  };
 
   const shopifyGc = await axios(config);
   console.log(shopifyGc.data.gift_card);
@@ -578,23 +635,26 @@ const getShopifyGiftcard = async (store, token, id) => {
 };
 
 const updateShopifyGiftcard = async (store, token, id, amount) => {
-console.log("----------------amount--------------------", amount);
+  console.log("----------------amount--------------------", amount);
   let data = JSON.stringify({
     adjustment: {
       amount: amount,
     },
   });
   let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
-      headers: { 
-        'X-Shopify-Access-Token': token, 
-        'Content-Type': 'application/json', 
-      },
-      data : data
-    };
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
+    headers: {
+      "X-Shopify-Access-Token": token,
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
   const shopifyGc = await axios(config);
-  console.log(shopifyGc.data, "--------------------shopify giftcard data-----------");
+  console.log(
+    shopifyGc.data,
+    "--------------------shopify giftcard data-----------"
+  );
   return shopifyGc.data.adjustment;
 };

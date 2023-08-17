@@ -174,6 +174,11 @@ export const dispatchTransaction = async (txnId) => {
     logger.info(err);
   }
 };
+/**
+ * to check merchant kyc status
+ * @param {*} req 
+ * @param {*} res 
+ */
 
 export const statusKyc = async (req, res) => {
   try {
@@ -198,6 +203,11 @@ export const statusKyc = async (req, res) => {
   }
 };
 
+/**
+ * to process data received over webhook from manch
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const kycDetails = async (req, res) => {
   logger.info("----------------kyc webhook----------------", req.body);
 
@@ -265,7 +275,8 @@ export const generateCSV = async (store) => {
     subscription_payment,
     cin_number,
     payu_txn_id,
-    payu_mihpayid
+    payu_mihpayid,
+    billing_id
    
   } = kycData;
 console.log(kycData.gstin)
@@ -290,7 +301,8 @@ console.log(kycData.gstin)
     "subscription_payment",
     "cin_number",
     "payu_txn_id",
-    "payu_mihpayid"
+    "payu_mihpayid",
+    "billing_id"
    
   ];
   const values = [
@@ -314,14 +326,15 @@ console.log(kycData.gstin)
     subscription_payment,
     cin_number,
     payu_txn_id,
-    payu_mihpayid
+    payu_mihpayid,
+    billing_id
   ];
 
   const csv = headers.join(", ") + "\n" + values.join(",");
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "anubhav.gupta_conslt@qwikcilver.com",
+    to: "anubhav.g@marmeto.com",
     subject: "KYC details of Merchant",
     attachments: [
       {

@@ -10,6 +10,7 @@ import store from "../models/store.js";
 import { generateCSV } from "./kycController.js";
 import payment_template from "../views/payment_completed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
+import kyc from "../models/kyc.js";
 
 
 /**
@@ -107,10 +108,22 @@ export const payuPayment = async (req, res) => {
     return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 };
 
+/**
+ * failure url for payu transaction
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export const failurePayment = async (req,res) => {
     return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
 }
 
+
+/**
+ * updating billing history after successful transaction
+ * @param {*} data 
+ * @returns 
+ */
 const updateBillingHistory = async (data) => {
 
     const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
@@ -143,6 +156,8 @@ const updateBillingHistory = async (data) => {
     email_template=email_template.replace("__given_credit__", getBilling.given_credit);
     email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
     email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
+    email_template=email_template.replace("__base_amount__", getBilling.upfront_amount);
+
 
     const options = {
         to: "anubhav.g@marmeto.com",
@@ -151,7 +166,7 @@ const updateBillingHistory = async (data) => {
         html: email_template,
       };
       await sendEmail(options);
-      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname});
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname  });
     await generateCSV(data.productinfo);
     return 1;
 };

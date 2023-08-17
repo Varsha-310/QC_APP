@@ -9,7 +9,7 @@ import wallet from "../models/wallet.js";
 
 
 
-export const createGiftcard = async (store, amount, order_id , validity) => {
+export const createGiftcard = async (store, amount, order , validity, type) => {
 
   try {
 
@@ -27,6 +27,13 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
     console.log("mydate", myDate, validity)
     myDate.setDate(myDate.getDate() + parseInt(validity));
     const expirydate = ((myDate).toISOString().slice(0, 10));
+    let cpgn;
+    if(type == "refund"){
+     cpgn = setting.refund_cpgn
+    }
+    else{
+      cpgn = setting.cpgn
+    }
 
   
     let data = {
@@ -34,13 +41,13 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
       InputType: "3",
       TransactionModeId : "0",
       BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order_id,
+      InvoiceNumber: "ORD-" + order.id,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry : expirydate,
       Cards: [
         {
-          CardProgramGroupName: setting.cpgn,
+          CardProgramGroupName: cpgn,
           Amount: amount,
           CurrencyCode: "INR"
         },
@@ -72,7 +79,7 @@ export const createGiftcard = async (store, amount, order_id , validity) => {
     
     await updateBilling(amount, store);
     console.log(gcCreation.data.Cards[0], "----------")
-    await qc_gc.create({gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expirt_date :gcCreation.data.Cards[0].ExpiryDate})
+    await qc_gc.create({ store_url : store , gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expiry_date :gcCreation.data.Cards[0].ExpiryDate , order_id : order_id})
     return gcCreation.data.Cards[0]
   }
 
@@ -236,6 +243,8 @@ export const createWallet = async (store ,customer_id) => {
  */
 export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
   try {
+ 
+ 
     let setting = await qcCredentials.findOne({store_url : store});
     console.log(store , setting , "---------------add to wallet----------------------------------------")
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
@@ -278,6 +287,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
       let cardAdded = await axios(config);
      console.log(cardAdded.data)
     return cardAdded;
+  
     
   } catch (err) {
     console.log(err)
