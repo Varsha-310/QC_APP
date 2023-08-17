@@ -459,13 +459,13 @@ export const getWalletBalance = async (req, res) => {
 export const resendEmail = async (req, res) => {
   try {
     console.log(req.token.store_url, req.query.order_id);
-    const qwikcilver_gift_card = await orders.findOne({
-      store_url: req.token.store_url,
+    const orderExists = await orders.findOne({
+      store_url: req.token.store_url ,
       id: req.query.order_id,
     });
 
-    if (qwikcilver_gift_card) {
-      console.log("-------------", qwikcilver_gift_card);
+    if (orderExists) {
+      console.log("-------------", orderExists);
       const giftCard = qc_gc.findOne({ order_id: req.query.order_id });
       const giftCardDetails = {
         CardNumber: giftCard.gc_number,
@@ -477,29 +477,31 @@ export const resendEmail = async (req, res) => {
       let message = "";
       let receiver = "";
       let image_url = "";
-	console.log(qwikcilver_gift_card.line_items[0].properties.length,"----------------founf-----------------")
-   	for (let i = 0; i < qwikcilver_gift_card.line_items[0].properties.length; i++) {
-        if (qwikcilver_gift_card.properties[i].name === "_Qc_img_url") {
-          image_url = qwikcilver_gift_card.properties[i].value;
+      const qwikcilver_gift_card = orderExists.line_items[0].properties
+	console.log(qwikcilver_gift_card,"----------------founf-----------------")
+   	for (let i = 0; i < qwikcilver_gift_card.length; i++) {
+      console.log(qwikcilver_gift_card[i].value, "--------------",i)
+        if (qwikcilver_gift_card[i].name === "_Qc_img_url") {
+          image_url = qwikcilver_gift_card[i].value;
         }
-        if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_email") {
-          email = qwikcilver_gift_card.properties[i].value;
+        if (qwikcilver_gift_card[i].name === "_Qc_recipient_email") {
+          email = qwikcilver_gift_card[i].value;
         }
         if (
-          qwikcilver_gift_card.properties[i].name === "_Qc_recipient_message"
+          qwikcilver_gift_card[i].name === "_Qc_recipient_message"
         ) {
-          message = qwikcilver_gift_card.properties[i].value;
+          message = qwikcilver_gift_card[i].value;
         }
 
-        if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_name") {
-          receiver = qwikcilver_gift_card.properties[i].value;
+        if (qwikcilver_gift_card[i].name === "_Qc_recipient_name") {
+          receiver = qwikcilver_gift_card[i].value;
         }
       }
       await sendEmailViaSendGrid(
         req.token.store_url,
         giftCardDetails,
         receiver,
-        email_id,
+        email,
         message,
         image_url
       );
