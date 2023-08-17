@@ -489,9 +489,9 @@ const processMonthlyPlan = async(query, upgradedPlansList) => {
 
             console.log("Old Data: ", bill);
             const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
-            const billingDate = new Date(y, m+1, 10);
-            const reminderDate = new Date(y, m+1, 6);
-            const issue_date = new Date(y,m,10);
+            const billingDate = new Date(y, m, 9);
+            const reminderDate = new Date(y, m, 6);
+            const issue_date = new Date(y,m,d);
             const newInstance = {
                 id: `BL${Date.now() + Math.random().toString(10).slice(2, 8)}`,
                 store_id: bill.store_id,    
