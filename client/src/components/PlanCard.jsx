@@ -18,24 +18,29 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
       <div className="plan-card-price">
         ₹ {plan?.price}
         <span>/Month</span>
+        <div className="plan-card-gst">+GST</div>
       </div>
 
       <div className="bar"></div>
 
-      <div className="plan-card-subtitle">Monthly Subscription Limits</div>
+      <div className="plan-card-subtitle">
+        Create store credits & gift cards
+      </div>
       <div className="plan-card-value">
-        <img src={RoundedTick} />
-        Plan Issuance Value - Rs {plan?.plan_limit}
+        {/* <img src={RoundedTick} alt="" /> */}
+        up to Rs {plan?.plan_limit}
       </div>
 
       <div className="bar"></div>
 
-      <div className="plan-card-subtitle-2">
-        Monthly Usage Fees (Charge beyond limits)
+      <div className="plan-card-subtitle">
+        {/* Monthly Usage Fees (Charge beyond limits) */}
+        Usage fee for issuance above limit
       </div>
       <div className="plan-card-value">
-        <img src={RoundedTick} />
-        As of (%) value of Issuance - {plan?.usage_charge}%
+        {/* <img src={RoundedTick} alt="" /> */}
+        {plan?.usage_charge}% of value of issuance
+        {/* As of (%) value of Issuance - {plan?.usage_charge}% */}
       </div>
 
       {/* btn  */}
