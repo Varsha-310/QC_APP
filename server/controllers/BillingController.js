@@ -513,7 +513,8 @@ const processMonthlyPlan = async(query, upgradedPlansList) => {
                 status: "ACTIVE", 
                 billingDate: billingDate,
                 planEndDate: bill.planEndDate,
-                usage_limit: bill.usage_limit
+                usage_limit: bill.usage_limit,
+                marchant_name: bill?.marchant_name
             }
             let invoiceAmount = parseFloat(newInstance.upfront_amount) + parseFloat(newInstance.monthly_gst);
             invoiceAmount = invoiceAmount + (parseFloat(bill.extra_usage_amount) + parseFloat(bill.extra_usage_gst));
