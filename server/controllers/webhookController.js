@@ -209,7 +209,6 @@ const ordercreateEvent = async (input, done, res) => {
                     console.log(email);
                     await sendEmailViaSendGrid(
                       shopName,
-                      newOrder,
                       giftCardDetails,                      
                       receiver,
                       email,

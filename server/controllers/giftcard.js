@@ -22,6 +22,7 @@ import wallet_history from "../models/wallet_history.js";
 import orders from "../models/orders.js";
 import qc_gc from "../models/qc_gc.js";
 import store from "../models/store.js";
+import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 
 /**
  * To create gifcard product
@@ -380,8 +381,8 @@ export const addGiftcardtoWallet = async (
 
 /**
  * adding giftcards to wallet
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 export const addGiftcardtoWallets = async (req, res) => {
   try {
@@ -450,8 +451,8 @@ export const getWalletBalance = async (req, res) => {
 
 /**
  * resend email for particular order
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 export const resendEmail = async (req, res) => {
   try {
@@ -461,8 +462,46 @@ export const resendEmail = async (req, res) => {
       id: req.query.order_id,
     });
 
-    console.log("-------------", orderExists);
     if (orderExists) {
+      console.log("-------------", orderExists);
+      const giftCard = qc_gc.findOne({ order_id: req.query, order_id });
+      const giftCardDetails = {
+        CardNumber: giftCard.gc_number,
+        CardPin: giftCard.gc_pin,
+        Balance: giftCard.balance,
+        ExpiryDate: giftCard.expiry_date,
+      };
+      const qwikcilver_gift_card = orders.findOne({ id: req.query.order_id });
+      let email = null;
+      let message = "";
+      let receiver = "";
+      let image_url = "";
+      for (let i = 0; i < qwikcilver_gift_card.properties.length; i++) {
+        if (qwikcilver_gift_card.properties[i].name === "_Qc_img_url") {
+          image_url = qwikcilver_gift_card.properties[i].value;
+        }
+        if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_email") {
+          email = qwikcilver_gift_card.properties[i].value;
+        }
+        if (
+          qwikcilver_gift_card.properties[i].name === "_Qc_recipient_message"
+        ) {
+          message = qwikcilver_gift_card.properties[i].value;
+        }
+
+        if (qwikcilver_gift_card.properties[i].name === "_Qc_recipient_name") {
+          receiver = qwikcilver_gift_card.properties[i].value;
+        }
+      }
+      await sendEmailViaSendGrid(
+        req.token.store_url,
+        giftCardDetails,
+        receiver,
+        email_id,
+        message,
+        image_url
+      );
+
       res.json(respondSuccess("email sent successfully"));
     } else {
       res.json(respondNotFound("order does not exists"));
@@ -477,8 +516,8 @@ export const resendEmail = async (req, res) => {
 
 /**
  * order list of giftcard purchase
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 export const giftCardOrders = async (req, res) => {
   try {
@@ -583,10 +622,10 @@ export const giftCardAmount = async (store, id) => {
 
 /**
  * create shopify giftcard
- * @param {*} store 
- * @param {*} token 
- * @param {*} amount 
- * @returns 
+ * @param {*} store
+ * @param {*} token
+ * @param {*} amount
+ * @returns
  */
 const createShopifyGiftcard = async (store, token, amount) => {
   let data = JSON.stringify({
@@ -610,13 +649,12 @@ const createShopifyGiftcard = async (store, token, amount) => {
   return shopifyGc.data.gift_card;
 };
 
-
 /**
  * get shopify giftcard
- * @param {*} store 
- * @param {*} token 
- * @param {*} id 
- * @returns 
+ * @param {*} store
+ * @param {*} token
+ * @param {*} id
+ * @returns
  */
 const getShopifyGiftcard = async (store, token, id) => {
   let config = {

@@ -21,7 +21,6 @@ function getReadableDate(dateObj) {
 
 export const sendEmailViaSendGrid = async (
   shopName,
-  order,
   giftCardDetails,
   receiver,
   email_id,
@@ -32,13 +31,6 @@ console.log("in the mail sender");
 
 var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
-// order.line_items[0].properties.forEach(obj => {
-//   if(obj.name === "image_url"){
-//     email_template = email_template.replace(
-//       "image_url", obj.value
-//     );
-//   }
-// })
 console.log("----------", giftCardDetails);
 let email_template = template;
 email_template = email_template.replace(
