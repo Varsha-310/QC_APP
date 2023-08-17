@@ -459,26 +459,26 @@ export const getWalletBalance = async (req, res) => {
 export const resendEmail = async (req, res) => {
   try {
     console.log(req.token.store_url, req.query.order_id);
-    const orderExists = await orders.findOne({
+    const qwikcilver_gift_card = await orders.findOne({
       store_url: req.token.store_url,
       id: req.query.order_id,
     });
 
-    if (orderExists) {
-      console.log("-------------", orderExists);
-      const giftCard = qc_gc.findOne({ order_id: req.query, order_id });
+    if (qwikcilver_gift_card) {
+      console.log("-------------", qwikcilver_gift_card);
+      const giftCard = qc_gc.findOne({ order_id: req.query.order_id });
       const giftCardDetails = {
         CardNumber: giftCard.gc_number,
         CardPin: giftCard.gc_pin,
         Balance: giftCard.balance,
         ExpiryDate: giftCard.expiry_date,
       };
-      const qwikcilver_gift_card = orders.findOne({ id: req.query.order_id });
       let email = null;
       let message = "";
       let receiver = "";
       let image_url = "";
-      for (let i = 0; i < qwikcilver_gift_card.properties.length; i++) {
+	console.log(qwikcilver_gift_card.line_items[0].properties.length,"----------------founf-----------------")
+   	for (let i = 0; i < qwikcilver_gift_card.line_items[0].properties.length; i++) {
         if (qwikcilver_gift_card.properties[i].name === "_Qc_img_url") {
           image_url = qwikcilver_gift_card.properties[i].value;
         }
