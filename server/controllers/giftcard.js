@@ -249,7 +249,7 @@ export const addGiftcard = async (req, res) => {
         gc_pin,
         validPin.balance
       );
-      if (gcToWallet.ResponseCode == "0") {
+      if (gcToWallet.status == "403") {
         res.json({
           ...respondWithData("card has been added to wallet"),
         });
@@ -281,6 +281,11 @@ export const addGiftcardtoWallet = async (
   amount
 ) => {
   try {
+    const cardAlredyAdded = await wallet_history.findOne({"transactions.gc_pin" : gc_pin})
+    if(cardAlredyAdded){
+      return {"status": 403}
+    }
+    else{
     const setting = await Store.findOne({ store_url: store });
     let walletExists = await Wallet.findOne({
       shopify_customer_id: customer_id,
@@ -385,6 +390,7 @@ export const addGiftcardtoWallet = async (
         return false;
       }
     }
+  }
   } catch (err) {
     console.log(err);
     return false;
