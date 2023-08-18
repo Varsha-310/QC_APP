@@ -18,21 +18,43 @@ import useUserAuthentication from "../../hooks/useUserAuthentication";
 const PlanSelection = () => {
   const tableContent = [
     {
-      title: "Provide a prepaid e-card",
+      title: "Issue digital gift card & store credits",
       basic: true,
       pro: true,
       premium: true,
       enterprise: true,
     },
     {
-      title: "Delivery template and thems for e-gift cards",
-      basic: false,
+      title:
+        "Online wallet for end users (for adding gift cards & store credits)",
+      basic: true,
       pro: true,
       premium: true,
       enterprise: true,
     },
     {
-      title: "Issue Physical Gift Card (pre-paid)",
+      title: "Pre-packaged templates for e-gift cards",
+      basic: false,
+      pro: false,
+      premium: false,
+      enterprise: true,
+    },
+    {
+      title: "Fixed denominations",
+      basic: true,
+      pro: true,
+      premium: true,
+      enterprise: true,
+    },
+    {
+      title: "Variable denominations",
+      basic: false,
+      pro: false,
+      premium: false,
+      enterprise: true,
+    },
+    {
+      title: "Issue physical gift card (pre-paid)",
       basic: false,
       pro: false,
       premium: false,
@@ -45,18 +67,19 @@ const PlanSelection = () => {
       premium: false,
       enterprise: true,
     },
-    {
-      title: "Report dashboard for all gift card transactions",
-      basic: false,
-      pro: true,
-      premium: true,
-      enterprise: true,
-    },
+
     {
       title: "Scheduled Reports: Daily, Weekly, Monthly",
       basic: true,
       pro: true,
       premium: true,
+      enterprise: true,
+    },
+    {
+      title: "Report dashboard for all gift card transactions",
+      basic: false,
+      pro: false,
+      premium: false,
       enterprise: true,
     },
     {
@@ -77,7 +100,7 @@ const PlanSelection = () => {
       title: "Distribution in Corporate & online channels",
       basic: false,
       pro: false,
-      premium: true,
+      premium: false,
       enterprise: true,
     },
     {
@@ -199,28 +222,20 @@ const PlanSelection = () => {
           />,
           document.getElementById("portal")
         )}
-      <div className="section-box-container">
-        <div className="section-box-title">Qwikcilver App Registration</div>
-        <div className="section-box-subtitle">
-          To complete registration, provide the necessary details and choose
-          your subscription plan.
-        </div>
 
-        <SectionTitle size="14px" weight="600" lineheight="24px" align="left">
-          <span style={{ color: "red" }}>*</span>Marked as Mandatory
-        </SectionTitle>
+      <div className="section-box-container">
+        <SectionHeading1
+          size="20px"
+          weight="600"
+          lineheight="20px"
+          align="center"
+          margin="0px 0px"
+        >
+          Start issuing store credits & gift cards to your customers
+        </SectionHeading1>
       </div>
       {/* plans */}
       <div className="package-detail">
-        <RectBtn
-          border=" "
-          width="100%"
-          height="45px"
-          weight="400"
-          active={false}
-        >
-          Describe your detail here
-        </RectBtn>
         <RectBtn
           border=" "
           width="100%"
@@ -266,7 +281,7 @@ const PlanSelection = () => {
       </div>
       <div style={{ margin: "40px 0px" }}>
         <PrimaryBtn $primary onClick={handleCnfPayment}>
-          Confirm Payment
+          Pay Now
         </PrimaryBtn>
       </div>
       {/* enterprise plan box */}
@@ -276,8 +291,8 @@ const PlanSelection = () => {
           We provide more flexible plans for enterprise. Please contact us to
           get the ultimate solution for you.
         </p>
-        <a href="mailto:">
-          E-mail:<span>sales@qwikcilver.com</span>
+        <a href="mailto:care@qwikcilver.com">
+          E-mail:<span>care@qwikcilver.com</span>
         </a>
       </div>
       <SectionHeading1
@@ -287,13 +302,13 @@ const PlanSelection = () => {
         align="center"
         margin="35px 0px"
       >
-        Compare Gift Card Benefits
+        Compare Qwikcilver App Benefits
       </SectionHeading1>
       {/* plan table */}
       <table className="plan-table">
         <thead>
           <tr>
-            <th>&nbsp;</th>
+            <th>Qwikcilver App Features</th>
             <th>Basic</th>
             <th>Pro</th>
             <th>Premium</th>

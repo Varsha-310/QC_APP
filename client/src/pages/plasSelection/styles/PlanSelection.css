@@ -1,7 +1,6 @@
 .plan-selection-container {
   background-color: var(--background-color);
 }
-
 /* terms and checkbox */
 .terms-check {
   display: flex;
@@ -103,6 +102,8 @@ input[type="checkbox"] {
 
 .package-detail {
   display: flex;
+  width: 50%;
+  margin: 30px auto;
   background-color: var(--background-light-color);
 }
 

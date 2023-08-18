@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles/PlanCard.css";
-import RoundedTick from "../assets/icons/svgs/cicletick.svg";
 import { CustomBtn } from "./BasicComponents";
 
 const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
@@ -53,6 +52,8 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
       ) : (
         ""
       )}
+
+      <div className="plan-card-maxlimit">* Max issuance as per plan is Rs {plan?.usage_limit || ""}</div>
     </div>
   );
 };

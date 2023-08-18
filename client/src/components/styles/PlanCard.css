@@ -69,7 +69,7 @@
   font-size: 12px;
   line-height: 18px;
   margin: 14px 0px 5px 0px;
-  color: #75859d;
+  color: #4a5566;
 }
 .plan-card-subtitle-2 {
   font-weight: 500;
@@ -94,7 +94,13 @@
 .plan-card-value img{
   margin: 0px 5px;
 }
-
+.plan-card-maxlimit{
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  margin: 14px 0px;
+  color: #75859d;
+}
 
 .plan-card-btn {
   margin: 20px 0px;

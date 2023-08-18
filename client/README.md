@@ -127,3 +127,44 @@ code:"ERR_NETWORK"
         <div className="plan-selection__plan-annually">Annually</div>
         <div className="plan-selection__plan-monthly">Monthly</div>
       </div>
+
+<!--  -->
+
+    try {
+      const res = await instance.post(url, {}, { headers });
+
+      if (res?.status === 200) {
+        const resData = res.data;
+        console.log(resData);
+        // for invalid or unauthorized token
+        if (resData?.code === 401) {
+          throw new Error(
+            "Authentication Failed: Unable to authenticate. Please log in again."
+          );
+        }
+        if (resData?.code === 403) {
+          throw new Error(
+            "Session Expired: Your Session has expired. Please log in again."
+          );
+        }
+
+        // for any other error
+        if (resData?.code !== 200) {
+          throw new Error("Network response was not OK.");
+        }
+
+        console.log(resData);
+        setKycData(resData.data);
+      }
+
+      // else {
+      //   throw new Error("Network response was not OK.");
+      // }
+    } catch (error) {
+      if (!navigator.onLine) {
+        console.log("No internet connection!");
+      } else {
+        // console.log(error);
+        setIsError(error.message);
+      }
+    }
