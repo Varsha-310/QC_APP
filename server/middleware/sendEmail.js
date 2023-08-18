@@ -99,7 +99,7 @@ export const sendEmail = (options) => {
     },
   });
   
-  // console.log(options);
+  console.log(options , "email options for sendgrid");
   smtpTransporter.sendMail(options, async function (error, info) {
     if (!error) {
       console.log("mail sent successfully !");

@@ -147,7 +147,8 @@ const updateBillingHistory = async (data) => {
         { store_url: data.productinfo },
         { $set: { "plan.plan_name": data.lastname } }
       );
-    await store.findOneAndUpdate({email : data.email, mandate : data});
+    const billingData = await BillingHistory.findOne({transaction_id : data.txnid})
+    await store.findOneAndUpdate({email : data.email}, {mandate : data});
     const storeDetails = await store.findOne({store_url: data.productinfo});
     const getBilling = await BillingHistory.findOne(
         { transaction_id : data.txnid });
@@ -159,16 +160,19 @@ const updateBillingHistory = async (data) => {
     email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
     email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
     email_template=email_template.replace("__base_amount__", getBilling.upfront_amount);
+    email_template=email_template.replace("__billing_id__", billingData.id);
+
 
 
     const options = {
-        to: "anubhav.g@marmeto.com",
+        to: data.email,
         from: "anubhav.g@marmeto.com",
         subject: "PAYMENT COMPLETED ",
         html: email_template,
       };
       await sendEmail(options);
-      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname  });
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname , billing_id : billingData.id });
     await generateCSV(data.productinfo);
+    await store.updateOne({store_url:data.productinfo}, { is_plan_done : true, is_payment_done: true});
     return 1;
 };

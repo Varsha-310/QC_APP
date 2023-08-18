@@ -195,6 +195,7 @@ export const statusKyc = async (req, res) => {
         payment: checkStatus.is_payment_done,
         email: checkStatus.email,
         name: checkStatus.name,
+        dashboard_activated: checkStatus.dashboard_activated
       },
     });
   } catch (err) {
@@ -334,11 +335,11 @@ console.log(kycData.gstin)
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "anubhav.g@marmeto.com",
+    to: "ShopifyKYC@qwikcilver.com",
     subject: "KYC details of Merchant",
     attachments: [
       {
-        filename: "kyc_data.csv",
+        filename: `KYC-${store}`,
         content: csv, // attaching csv in the content
       },
     ],
