@@ -28,7 +28,7 @@ export const create = async (req, res) => {
     const currentDay = currentDate.getDate();// Get the current day of the month
 
     const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
-    const remainingDays = parseInt(monthDays) - currentDay;
+    const remainingDays = parseInt(monthDays)+1 - currentDay;
     const dailyRate = getPlanData.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)

@@ -18,12 +18,15 @@ const seedBillingHistory = async(plan) => {
     const used_credit = faker.number.int({min:15000, max:100000});
     let tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
     m = m-1;
+    d = d -6;
     const issue_date = new Date(y, m, d);
     const billingExp = new Date(y+10, m, d);
-    const monthDays = new Date(y, m+1, 0).getDate();
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate(); //Get the current day of the month
-    const remainingDays = parseInt(monthDays) - currentDay;
+    const monthDays = new Date(y, m+2, 0).getDate();
+
+    //Get the current day of the month
+    console.log("Months end days: ",  parseInt(monthDays)+1, "Issue days:", issue_date.getDate());
+    const remainingDays = parseInt(monthDays)+1 - issue_date.getDate();
+    console.log("Remaining Days: ", remainingDays);
     const dailyRate = plan.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
@@ -50,7 +53,6 @@ const seedBillingHistory = async(plan) => {
         status: "ACTIVE",
         issue_date: issue_date,
         billingDate: issue_date,
-        remiderDate: reminderDate,
         transaction_id: faker.string.alphanumeric({min:10})
     };
     billingData.extra_usage =  billingData.used_credit > billingData.given_credit ? billingData.used_credit - billingData.given_credit : 0;
@@ -70,7 +72,7 @@ const seedBillingHistory = async(plan) => {
 export const seedDummyData = async() => {
 
     const plans = await plan.find({});
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
 
         const randInt = faker.number.int({min:0, max:1});
         console.log(randInt, plans[randInt]);
@@ -88,13 +90,10 @@ export const seedDummyData = async() => {
 export const seedChangedData = async() => {
 
     const plans = await plan.find({});
-    const stores = [
-        "Conn---Armstrong.myshopify.com", "Wisozk-Group.myshopify.com", "Kertzmann,-Conn-and-Gislason.myshopify.com",
-        "Skiles-Group.myshopify.com", "Rodriguez-and-Sons.myshopify.com", "Wilderman,-Schmitt-and-Cremin.myshopify.com"
-    ];
+    const stores = [ "Kris,-Mann-and-Hoppe.myshopify.com", "Kris-and-Sons.myshopify.com"];
     for (let i = 0; i < 1; i++) {
 
-        await seedPlanChange(plans[2], "Veum,-Lemke-and-Sauer.myshopify.com");
+        await seedPlanChange(plans[2], "Lockman-and-Sons.myshopify.com");
     }
     return 1;
 }
@@ -129,12 +128,11 @@ const seedPlanChange = async(plan, storeUrl) => {
         used_credit: 0,
         usage_limit: plan.usage_limit,
         upfront_amount: calculatedPayment,
-        planEndDate: exisitngData.planEndDate,
+        planEndDate:issue_date,
         status: "ACTIVE",
         oracleUserId: exisitngData.oracleUserId,
         issue_date: issue_date,
-        billingDate: exisitngData.billingDate,
-        remiderDate: exisitngData.remiderDate,
+        billingDate: issue_date,
         transaction_id: faker.string.alphanumeric({min: 10}),
         total_amount: totalAmount,
         recordType: "Upgraded"
