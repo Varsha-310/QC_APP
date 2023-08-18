@@ -14,13 +14,17 @@ import StarFull from "../../assets/icons/pngs/Star.png";
 import StarNull from "../../assets/icons/pngs/StarNull.png";
 import Toast from "../../components/Toast";
 import useScrollTop from "../../hooks/useScrollTop";
+import useUserAuthentication from "../../hooks/useUserAuthentication";
 
 const DashboardHome = () => {
+  useUserAuthentication();
+  useScrollTop();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const [kycData, setKycData] = useState(null);
 
-  console.log(isError);
+  console.log(kycData);
 
   const getKycStatus = async () => {
     const url = "/kyc/status";
@@ -33,8 +37,7 @@ const DashboardHome = () => {
 
       if (res?.status === 200) {
         const resData = res.data;
-        console.log(resData);
-        // for invalid or unauthorized token
+
         if (resData?.code === 401) {
           throw new Error(
             "Authentication Failed: Unable to authenticate. Please log in again."
@@ -48,23 +51,14 @@ const DashboardHome = () => {
 
         // for any other error
         if (resData?.code !== 200) {
-          throw new Error("Network response was not OK.");
+          throw new Error("There is some Error in the server.");
         }
-
-        console.log(resData);
+        // console.log(resData);
         setKycData(resData.data);
       }
-
-      // else {
-      //   throw new Error("Network response was not OK.");
-      // }
     } catch (error) {
-      if (!navigator.onLine) {
-        console.log("No internet connection!");
-      } else {
-        // console.log(error);
-        setIsError(error.message);
-      }
+      // console.log(error);
+      setIsError(error.message);
     }
   };
 
@@ -90,24 +84,15 @@ const DashboardHome = () => {
   };
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-
-    if (token) {
-      setUserToken(token);
-      sessionStorage.setItem("qcUserStatus", true);
-    }
-
     getKycStatus();
   }, []);
-
-
+  
   if (isError) {
     return <Toast>{isError}</Toast>;
   }
 
   return (
-    <div className="dashboard-home-container">
+    <div className="dashboard-home-container component">
       {isLoading &&
         createPortal(<Spinner />, document.getElementById("portal"))}
       <div className="section-box-container">
@@ -134,27 +119,31 @@ const DashboardHome = () => {
         </section>
       </div>
 
-      <div className="section-box-container">
-        <SectionHeading1
-          weight="500"
-          size="24px"
-          align="center"
-          lineheight="26px"
-        >
-          Start Your Registration
-        </SectionHeading1>
-        <p className="section-para" style={{ marginTop: "30px" }}>
-          Qwikcilver App has been successfully installed on your Shopify
-          Account. To start issuing pre-paid gift cards and store credits from
-          your website, complete the KYC process.
-        </p>
+      {kycData?.dashboard_activated !== "true" ? (
+        <div className="section-box-container">
+          <SectionHeading1
+            weight="500"
+            size="24px"
+            align="center"
+            lineheight="26px"
+          >
+            Start Your Registration
+          </SectionHeading1>
+          <p className="section-para" style={{ marginTop: "30px" }}>
+            Qwikcilver App has been successfully installed on your Shopify
+            Account. To start issuing pre-paid gift cards and store credits from
+            your website, complete the KYC process.
+          </p>
 
-        <div style={{ margin: "30px 0px" }}>
-          <PrimaryBtn $primary onClick={handleKYC}>
-            Start Registration
-          </PrimaryBtn>
+          <div style={{ margin: "30px 0px" }}>
+            <PrimaryBtn $primary onClick={handleKYC}>
+              Start Registration
+            </PrimaryBtn>
+          </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
 
       <div className="section-box-container">
         <p className="section-para">Share your thoughts about us with us.</p>

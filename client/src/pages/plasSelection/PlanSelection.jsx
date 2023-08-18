@@ -13,6 +13,7 @@ import instance from "../../axios";
 import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
 import { createPortal } from "react-dom";
 import Toast from "../../components/Toast";
+import useUserAuthentication from "../../hooks/useUserAuthentication";
 
 const PlanSelection = () => {
   const tableContent = [
@@ -171,20 +172,11 @@ const PlanSelection = () => {
     console.log("after");
   };
 
+  // if token then set
+  useUserAuthentication();
+
   useEffect(() => {
     fetchPlan();
-  }, []);
-
-  // if token then set
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-
-    if (token) {
-      setUserToken(token);
-      sessionStorage.setItem("qcUserStatus", true);
-    }
-    // getKycStatus();
   }, []);
 
   if (isError) {

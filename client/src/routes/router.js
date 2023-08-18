@@ -26,6 +26,7 @@ import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
 import ProtectedRoute from "../components/ProtectedRoutes/ProtectedRoute";
 import { isUserAuthenticated } from "../utils/userAuthenticate";
+import { checkAuthLoader } from "../utils/auth";
 
 const router = createBrowserRouter([
   {
@@ -103,19 +104,35 @@ const router = createBrowserRouter([
       },
       {
         path: "/resend-gift-card",
-        element: <ResendGiftCard />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <ResendGiftCard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/refunds",
-        element: <RefundList />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundList />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/refunds/:id",
-        element: <RefundPage />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/configuration",
-        element: <RefundSetting />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundSetting />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/terms-and-conditions",

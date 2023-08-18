@@ -29,7 +29,7 @@ const setUserStatus = () => {
 const getUserStatus = () => {
   const status = sessionStorage.getItem("qcUserStatus");
 
-  return status ? true : false;
+  return status?.toString() === "true" ? true : false;
 };
 
 /**
@@ -40,7 +40,7 @@ const isUserAuthenticated = () => {
   const token = getUserToken();
   const status = getUserStatus();
 
-  if (token && status) {
+  if (!!token && status) {
     return true;
   } else {
     return false;
