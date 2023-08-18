@@ -100,12 +100,13 @@ app.use("/giftcard" , giftcardRoute);
 // payment routes
 app.use("/payment", paymentRoute);
 
-app.get('/', function (req, res) {
+// app.get('/', function (req, res) {
   
-  console.log( "Requested Url", req.url);
-  res.sendStatus(200);
+  // console.log( "Requested Url", req.url);
+  // res.sendStatus(200);
  // res.sendFile(path.join(__dirname, './client/build', 'index.html'));
-});
+// });
+
 // cron to check webhooks for every store
 cron.schedule("* * * * *", () => {
   // cronToCheckWebhooks();
