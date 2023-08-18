@@ -76,7 +76,7 @@ export const initiatieKyc = async (req, res) => {
         ) {
           let storeDetails = await store.updateOne(
             { store_url: storeUrl },
-            { status: "kYC initiated" },
+            { status: "kYC initiated" , shopify_id : storeData.shopify_id },
             { upsert: true }
           );
           const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true})
@@ -243,10 +243,9 @@ export const kycDetails = async (req, res) => {
       },
   }, {upsert: true}
   );
+  await store.updateOne({shopify_id :data.formFillData.shopifyID}, {is_kyc_done : true});
 
   res.json(respondSuccess("webhook received"));
-
-  console.log(kycData);
 };
 
 /**
