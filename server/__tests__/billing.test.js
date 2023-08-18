@@ -42,6 +42,19 @@ const authorization = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJx
     
 //   it(`Chnage Monthly Cycle`, async () => {
     
+//     const res = await seedDummyData();
+//     // console.log(res.body);
+//     expect(res).toEqual(1);
+//   });
+// });
+
+/**
+ * Change Billing Cyecle on month end
+ */
+// describe("Billing: Chnage Cycle",() => {
+    
+//   it(`Chnage Monthly Cycle`, async () => {
+    
 //     const res = await seedChangedData();
 //     // console.log(res.body);
 //     expect(res).toEqual(1);

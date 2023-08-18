@@ -23,10 +23,13 @@ export const create = async (req, res) => {
     console.log(storeData)
     const getPlanData = await plan.findOne({plan_name : req.body.plan_name});
     console.log(getPlanData)
+
     const currentDate = new Date();
-    const currentDay = currentDate.getDate(); // Get the current day of the month
-    const remainingDays = 30 - currentDay;
-    const dailyRate = getPlanData.price / 30;
+    const currentDay = currentDate.getDate();// Get the current day of the month
+
+    const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
+    const remainingDays = parseInt(monthDays) - currentDay;
+    const dailyRate = getPlanData.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
     let myDate = new Date();
@@ -112,18 +115,15 @@ export const failurePayment = async (req,res) => {
 
 const updateBillingHistory = async (data) => {
 
-    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
-    const issue_date = new Date(y, m, d);
-    const billingDate = new Date(y, m+1, 10);
-    const reminderDate = new Date(y, m+1, 6);
+    con//st tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const issue_date = new Date();
     await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
         { transaction_id : data.txnid },
         { 
             status: "ACTIVE",
             issue_date: issue_date,
-            billingDate: billingDate,
-            remiderDate: reminderDate 
+            billingDate: issue_date
         }
     );
     console.log(updateBilling);

@@ -16,26 +16,26 @@ const seedBillingHistory = async(plan) => {
     // return res.sendStatus(200);
 
     const used_credit = faker.number.int({min:15000, max:100000});
-    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
-
+    let tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
+    m = m-1;
     const issue_date = new Date(y, m, d);
-    const billingDate = new Date(y, m+1, 10);
-    const reminderDate = new Date(y, m+1, 6);
     const billingExp = new Date(y+10, m, d);
-
+    const monthDays = new Date(y, m+1, 0).getDate();
     const currentDate = new Date();
-    const currentDay = currentDate.getDate(); // Get the current day of the month
-    const remainingDays = 30 - currentDay;
-    const dailyRate = plan.price / 30;
+    const currentDay = currentDate.getDate(); //Get the current day of the month
+    const remainingDays = parseInt(monthDays) - currentDay;
+    const dailyRate = plan.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
     const calculatedGst = calculateGST(calculatedPayment);
     const totalAmount = (parseFloat(calculatedPayment) + parseFloat(calculatedGst));
 
+    const company = faker.company.name();
     const billingData = {
         id: `BL${faker.number.int()}`,
         store_id: faker.number.int({min:100000000000, max:999999999999}),    
-        store_url: `${faker.company.name().split(" ").join("-")}.myshopify.com`,
+        store_url: `${company.split(" ").join("-")}.myshopify.com`,
+        marchant_name: company,
         given_credit: plan.plan_limit,
         montly_charge: plan.price,
         used_credit: used_credit,
@@ -49,7 +49,7 @@ const seedBillingHistory = async(plan) => {
         planEndDate: billingExp,
         status: "ACTIVE",
         issue_date: issue_date,
-        billingDate: billingDate,
+        billingDate: issue_date,
         remiderDate: reminderDate,
         transaction_id: faker.string.alphanumeric({min:10})
     };
@@ -69,7 +69,7 @@ const seedBillingHistory = async(plan) => {
  */
 export const seedDummyData = async() => {
 
-    const plans = await plan.find({});seedChangedData
+    const plans = await plan.find({});
     for (let i = 0; i < 1; i++) {
 
         const randInt = faker.number.int({min:0, max:1});
