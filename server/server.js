@@ -13,10 +13,10 @@ import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
-import path from "path";
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-let __dirname = path.dirname(__filename);
+// import path from "path";
+// import { fileURLToPath } from 'url';
+// const __filename = fileURLToPath(import.meta.url);
+// let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
@@ -25,7 +25,7 @@ import paymentRoute from "./routes/payment.js";
 
 export const app = express();
 
-// CORS configuration
+//CORS Configuration
 app.use(function (req, res, next) {
 
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -52,7 +52,6 @@ app.use(bodyParser.urlencoded({
 
 app.enable("trust proxy", true);
 
-
 // Api rate limiter
 const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -60,12 +59,13 @@ const apiLimiter = rateLimit({
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
-console.log("Path Before",__dirname);
-__dirname = __dirname.substring(0,__dirname.length - 7);
-console.log("Path after", __dirname);
-const publicPath = path.join('./client/build');
-app.use(express.static(publicPath));
-app.use(express.static(path.join(__dirname, "js")));
+
+// console.log("Path Before",__dirname);
+// __dirname = __dirname.substring(0,__dirname.length - 7);
+// console.log("Path after", __dirname);
+// const publicPath = path.join('./client/build');
+// app.use(express.static(publicPath));
+// app.use(express.static(path.join(__dirname, "js")));
 
 //a shopify routes
 app.use("/shopify", shopifyRoute);
@@ -103,7 +103,8 @@ app.use("/payment", paymentRoute);
 app.get('/', function (req, res) {
   
   console.log( "Requested Url", req.url);
-  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
+  res.sendStatus(200);
+ // res.sendFile(path.join(__dirname, './client/build', 'index.html'));
 });
 // cron to check webhooks for every store
 cron.schedule("* * * * *", () => {

@@ -458,21 +458,23 @@ export const getWalletBalance = async (req, res) => {
  */
 export const resendEmail = async (req, res) => {
   try {
-    console.log(req.token.store_url, req.query.order_id);
+    // console.log(req.token.store_url, req.query.order_id);
     const orderExists = await orders.findOne({
-      store_url: req.token.store_url ,
+      store_url: "qwikcilver-public-app-teststore.myshopify.com" ,
       id: req.query.order_id,
     });
 
     if (orderExists) {
       console.log("-------------", orderExists);
-      const giftCard = qc_gc.findOne({ order_id: req.query.order_id });
+      const giftCard = await  qc_gc.findOne({ order_id: req.query.order_id });
       const giftCardDetails = {
         CardNumber: giftCard.gc_number,
         CardPin: giftCard.gc_pin,
         Balance: giftCard.balance,
         ExpiryDate: giftCard.expiry_date,
       };
+      console.log(giftCard, "---------------------------")
+
       let email = null;
       let message = "";
       let receiver = "";

@@ -9,10 +9,7 @@ import store from "../models/store.js";
 import product from "../models/product.js";
 import { getShopifyObject } from "../helper/shopify.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
-import {
-  createGiftcard,
-  redeemWallet,
-} from "../middleware/qwikcilver.js";
+import { createGiftcard, redeemWallet } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 import { checkActivePlanUses } from "./BillingController.js";

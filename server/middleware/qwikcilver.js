@@ -93,7 +93,9 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
 };
 
 export const qwikcilverToken = () => {
+
   try {
+    
     let myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     let data = {
@@ -431,9 +433,8 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
     if(giftcardExists) return null;
     
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = ++parseInt(setting.unique_transaction_id); 
+    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
     setting.markModified("unique_transaction_id");
-
     const myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     const data = {

@@ -15,20 +15,31 @@ import { sendEmail } from "../middleware/sendEmail.js";
  */
 const handleMandateNotification = async(type) => {
 
-    // Check Upgraded 
-    const notificableMarchant = await BillingHistory.find({
-        status: "FROZEN",
-        reminderData: { $lte : new Date(Date.now())},
-        isReminded: false,
-        plan_type: "public"
-    });
-    for (const bill of notificableMarchant) {
+    const today = new Date().getDate();
+    if([5,6].includes(today)){
 
-        const resp = await sendMandateNotification(bill);
-        bill.remark = resp.message;
-        bill.isReminded = resp.status == 1 ? true : false;
-        await bill.save();
+        const notificableMarchant = await BillingHistory.find({
+            status: "ACTIVE",
+            isReminded: false,
+            recordType: "Reccuring",
+            plan_type: "public"
+        });
+        for (const bill of notificableMarchant) {
+    
+            if(bill.invoiceNumber){
+
+                const resp = await sendMandateNotification(bill);
+                bill.remark = resp.message;
+                bill.isReminded = resp.status == 1 ? true : false;
+                await bill.save();
+            }else{
+
+                //TODO: Send notification to the about the missing invoice number 
+            }
+            continue;
+        }
     }
+    return 1;    
 }
 
 /**
@@ -132,19 +143,23 @@ const callPayUNotificationAPI = async(bill, mandateDetails) =>{
  */
 const handleReccuringPayment = async() => {
 
-    const reccuringmarchant = await BillingHistory.find({
-        status:"FROZEN",
-        billingDate: { $lte : new Date(Date.now())},
-        isReminded: true,
-        plan_type: "public"
-    });
-    for (const bill of reccuringmarchant) {
+    const today = new Date().getDate();
+    if([8,9].includes(today)){
+        const reccuringmarchant = await BillingHistory.find({
+            status:"ACTIVE",
+            recordType: "Reccuring",
+            isReminded: true,
+            plan_type: "public"
+        });
+        for (const bill of reccuringmarchant) {
 
-        const resp = await captureReccuringpayment(bill);
-        bill.remark = resp.message;
-        bill.status = resp.status == 1 ? "BILLED" : bill.status;
-        await bill.save();
+            const resp = await captureReccuringpayment(bill);
+            bill.remark = resp.message;
+            bill.status = resp.status == 1 ? "BILLED" : bill.status;
+            await bill.save();
+        }
     }
+    return 1;
 }
 
 const captureReccuringpayment = async() => {
@@ -337,16 +352,16 @@ export const checkActivePlanUses = async(amount, store_url) => {
 export const updateBilling = async(amount, store_url) => {
 
     const billingData = await BillingHistory.findOne({ store_url, status:"ACTIVE" });
-    console.log(":", amount, billingData.used_credit);
+    console.log(":", amount, billingData);
     if(billingData){
         
         const billing = {
             used_credit: (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2)
         };
-        billing.extra_uasge = billing.used_credit - billingData.given_credit;
-        billing.extra_usage_amount = ((parseFloat(billing.extra_uasge) * parseFloat(billingData.usage_charge)) / 100).toFixed(2);
+        billing.extra_usage =  billing.used_credit > billingData.given_credit ? (parseFloat(billing.used_credit) - billingData.given_credit) : 0;
+        billing.extra_usage_amount = ((parseFloat(billing.extra_usage) * parseFloat(billingData.usage_charge)) / 100).toFixed(2);
         billing.extra_usage_gst = calculateGST(billing.extra_usage_amount);
-        billing.total_amount = (parseFloat(billingData.montly_charge) + parseFloat(billing.extra_usage_amount) + parseFloat(billingData.monthly_gst) + parseFloat(billing.extra_usage_gst)).toFixed(2);
+        billing.total_amount = (parseFloat(billingData.montly_charge) + parseFloat(billing.extra_usage_amount)).toFixed(2);
         console.log(billing);
         await BillingHistory.updateOne({id: billingData.id}, billing);
         return true;
@@ -415,7 +430,7 @@ export const handleBillingList = async(req, res) => {
 
 
 /**
- * 
+ * Hanldle Current Billing Uses
  * 
  * @param {*} req 
  * @param {*} res 
@@ -443,63 +458,172 @@ export const handleBillingDetails = async(req, res) => {
  * Change Plan On  Month Change
  * 
  */
-export const changePlanMonthly = async() => {
-
-    const date = new Date(), y = date.getFullYear(), m = date.getMonth();
-    const lastDay = new Date(y, m, 0);
-    const query = {
-        status: {$in : ["ACTIVE", "UPGRADED"]},
-        issue_date: {$lt:lastDay}
+export const changeMonthlyCycle = async() => {
+    
+    const date = new Date(), y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
+    if(d != 1){
+        return 0;
     }
+    const firstday = new Date(y, m, 0);
+    const query = {
+        status: "ACTIVE",
+        issue_date: {$lt:firstday}
+    }
+    console.log(query);
     const tam = await BillingHistory.countDocuments(query);
+    console.log("Totoal Documents",tam);
+
+    const upgradedPlans = await BillingHistory.find({...query, status: "UPGRADED"},{store_url:1});
+    const upgradedPlansList = upgradedPlans.map(item => item.store_url);
+    console.log(upgradedPlansList);
+
     const count = Math.ceil(tam/100);
+    console.log(count);
     for (let i = 0; i < count; i++) {
           
-        await processMonthlyPlan(query);
+       await processMonthlyPlan(query, upgradedPlansList);
     }
+    return 1;
 }
 
 /**
  * Process Monthy Plan
  * 
  * @param {*} query 
- * @returns 
+ * @returns lastDay
  */
-const processMonthlyPlan = async(query) => {
+const processMonthlyPlan = async(query, upgradedPlansList) => {
 
     const activeMarchant = await BillingHistory.find(query).limit(100);
     for (const bill of activeMarchant) {
 
-        if(bill.status == "ACTIVE"){
+        try{
 
-            const remiderDate = "";
-            const billingDate = "";
+            console.log("Old Data: ", bill);
+            const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
+            const billingDate = new Date(y, m, 9);
+            const reminderDate = new Date(y, m, 6);
+            const issue_date = new Date(y,m,d);
             const newInstance = {
                 id: `BL${Date.now() + Math.random().toString(10).slice(2, 8)}`,
                 store_id: bill.store_id,    
                 store_url: bill.store_url,
                 given_credit: bill.given_credit, 
                 used_credit: 0, 
-                extra_usage: 0,  
+                extra_usage: 0, 
+                usage_charge: bill.usage_charge,
                 montly_charge: bill.montly_charge,
-                monthly_gst: bill.monthly_gst, 
+                monthly_gst: calculateGST(bill.montly_charge), 
+                upfront_amount: bill.montly_charge,
                 total_amount: bill.monthly_gst+bill.montly_charge,
-                issue_date: Date.now(),
+                issue_date: issue_date,
                 plan_type: bill.plan_type,
                 recordType: "Reccuring",
-                remiderDate: remiderDate,
+                remiderDate: reminderDate,
                 oracleUserId: bill.oracleUserId, 
                 planName: bill.planName,
                 status: "ACTIVE", 
                 billingDate: billingDate,
                 planEndDate: bill.planEndDate,
                 usage_limit: bill.usage_limit,
-
+                marchant_name: bill?.marchant_name
             }
-            await BillingHistory.insert(newInstance);
+            let invoiceAmount = parseFloat(newInstance.upfront_amount) + parseFloat(newInstance.monthly_gst);
+            invoiceAmount = invoiceAmount + (parseFloat(bill.extra_usage_amount) + parseFloat(bill.extra_usage_gst));
+            newInstance.invoiceAmount = invoiceAmount.toFixed(2);
+
+            //Logs Previous Months data 
+            newInstance.prevData = await getPrevMonthData(bill);
+            
+            //check upgraded plans
+            if(upgradedPlansList.includes(bill.store_url)){
+
+                const data =  await getChangeMonthData(bill.store_url);
+                newInstance.invoiceAmount = parseFloat(newInstance.invoiceAmount) + parseFloat(data.amount);
+                newInstance.prevData = data.data.concat(newInstance.prevData) ;
+            }
+            console.log("New Instance:", newInstance);
+            await BillingHistory.create(newInstance);
+            bill.status = "FROZEN";
+            await bill.save();
+        }catch(e) {
+
+            console.log(e)
         }
-        bill.status = "FROZEN";
-        await bill.save();       
     }
     return 1;
+}
+
+/**
+ * Get Last month data for logs
+ * 
+ * @param {*} bill 
+ * @returns 
+ */
+const getPrevMonthData = async(bill) => {
+
+    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
+    const date1 = new Date(bill.issue_date);
+    const date2 = new Date(y,m,0);
+    const diffDays = date2.getDate() - date1.getDate();
+    console.log(date2.getDate(), date1.getDate(), diffDays);
+    return [{
+        ref_id: bill.id,
+        store: bill.store_url,
+        extra_usage_amount: bill.extra_usage_amount,
+        extra_usage_gst: bill.extra_usage_gst,
+        planName: bill.planName,
+        type: bill.recordType,
+        montly_premium_used: bill.upfront_amount,
+        gst_on_monthly_premium: bill.monthly_gst,
+        no_of_days: diffDays,
+        deducted_preminum: parseFloat(bill.upfront_amount) + parseFloat(bill.monthly_gst)
+    }]
+}
+
+/**
+ * Get Prev Data from history
+ * 
+ * @param {*} store 
+ */
+const getChangeMonthData = async(store) => {
+
+    const prevData = await BillingHistory.find({ store_url: store, status: "UPGRADED"});
+    let deduction = 0;
+    let used =0;
+    console.log("Upgraded Plans", prevData);
+    const prevUsed = [];
+    for (const element of prevData) {
+        
+        deduction += parseFloat(element.upfront_amount) + parseFloat(element.monthly_gst);
+        const date1 = new Date(element.issue_date);
+        const date2 = new Date(element.planEndDate);
+        const diffDays = date2.getDate() - date1.getDate();
+        console.log(date2.getDate(), date1.getDate(),diffDays);
+        const oneDayCost = element.montly_charge / 30;
+        const used_charge = oneDayCost * diffDays;
+        const used_gst = calculateGST(used_charge);
+        console.log("Used Day:", diffDays, "Used Amount:", used_charge);
+        used+=parseFloat(element.extra_usage_amount)+parseFloat(element.extra_usage_gst) + parseFloat(used_charge) + parseFloat(used_gst);
+        prevUsed.push({
+            ref_id: element.id,
+            store: element.store_url,
+            extra_usage_amount: element.extra_usage_amount,
+            extra_usage_gst: element.extra_usage_gst,
+            planName: element.planName,
+            type: element.recordType,
+            montly_premium_used: used_charge,
+            gst_on_monthly_premium: used_gst,
+            no_of_days: diffDays,
+            deducted_preminum: parseFloat(element.upfront_amount) + parseFloat(element.monthly_gst)
+        });
+        element.status = "FROZEN";
+        await element.save();
+    }
+    console.log("Deduction:", deduction, "Used:", used);
+    console.log("Previous Used:", prevUsed);
+    return {
+        amount: (used - deduction).toFixed(2),
+        data :prevUsed
+    };
 }
