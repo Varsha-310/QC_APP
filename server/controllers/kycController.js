@@ -76,7 +76,7 @@ export const initiatieKyc = async (req, res) => {
         ) {
           let storeDetails = await store.updateOne(
             { store_url: storeUrl },
-            { status: "kYC initiated" },
+            { status: "kYC initiated" , shopify_id : storeData.shopify_id },
             { upsert: true }
           );
           const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true})
@@ -195,6 +195,7 @@ export const statusKyc = async (req, res) => {
         payment: checkStatus.is_payment_done,
         email: checkStatus.email,
         name: checkStatus.name,
+        dashboard_activated: checkStatus.dashboard_activated
       },
     });
   } catch (err) {
@@ -242,10 +243,9 @@ export const kycDetails = async (req, res) => {
       },
   }, {upsert: true}
   );
+  await store.updateOne({shopify_id :data.formFillData.shopifyID}, {is_kyc_done : true});
 
   res.json(respondSuccess("webhook received"));
-
-  console.log(kycData);
 };
 
 /**
@@ -334,11 +334,11 @@ console.log(kycData.gstin)
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "anubhav.g@marmeto.com",
+    to: "ShopifyKYC@qwikcilver.com",
     subject: "KYC details of Merchant",
     attachments: [
       {
-        filename: "kyc_data.csv",
+        filename: `KYC-${store}`,
         content: csv, // attaching csv in the content
       },
     ],

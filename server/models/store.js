@@ -24,14 +24,14 @@ let storeSchema = mongoose.Schema({
     usage_limit: { type: Number },
     usage_charge: { type: String },
     plan_limit: { type: Number },
-    price: { type: Number },
-  
+    price: { type: Number }
   },
   InvoiceUserId: String, // Marchent user id that us used for generate invoice by qc.
   is_installed: { type: Boolean, default: false },
   is_kyc_done: { type: Boolean, default: false },
   is_plan_done: { type: Boolean, default: false },
   is_payment_done: { type: Boolean, default: false },
+  dashboard_activated: {type: String , default : false},
   //To store the mandate Details
   mandate: Object,
   auth_token: {type:String}

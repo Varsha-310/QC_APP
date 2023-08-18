@@ -9,7 +9,7 @@ import wallet from "../models/wallet.js";
 
 
 
-export const createGiftcard = async (store, amount, order , validity, type) => {
+export const createGiftcard = async (store, amount, order_id , validity, type) => {
 
   try {
 
@@ -32,16 +32,17 @@ export const createGiftcard = async (store, amount, order , validity, type) => {
      cpgn = setting.refund_cpgn
     }
     else{
-      cpgn = setting.cpgn
+	console.log("_------in giftcard type--------", cpgn)
+      cpgn = setting.giftcard_cpgn
     }
 
-  
+  console.log("cpgn type" , cpgn , type);  
     let data = {
       TransactionTypeId: "305",
       InputType: "3",
       TransactionModeId : "0",
       BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order.id,
+      InvoiceNumber: "ORD-" + order_id,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry : expirydate,
@@ -92,7 +93,9 @@ export const createGiftcard = async (store, amount, order , validity, type) => {
 };
 
 export const qwikcilverToken = () => {
+
   try {
+    
     let myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     let data = {
@@ -430,9 +433,8 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
     if(giftcardExists) return null;
     
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = ++parseInt(setting.unique_transaction_id); 
+    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
     setting.markModified("unique_transaction_id");
-
     const myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     const data = {

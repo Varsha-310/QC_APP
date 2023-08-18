@@ -12,7 +12,6 @@ import payment_template from "../views/payment_completed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
 import kyc from "../models/kyc.js";
 
-
 /**
  * create payment
  * @param {*} req
@@ -28,10 +27,13 @@ export const create = async (req, res) => {
     console.log(storeData)
     const getPlanData = await plan.findOne({plan_name : req.body.plan_name});
     console.log(getPlanData)
+
     const currentDate = new Date();
-    const currentDay = currentDate.getDate(); // Get the current day of the month
-    const remainingDays = 30 - currentDay;
-    const dailyRate = getPlanData.price / 30;
+    const currentDay = currentDate.getDate();// Get the current day of the month
+
+    const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
+    const remainingDays = parseInt(monthDays) - currentDay;
+    const dailyRate = getPlanData.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
     let myDate = new Date();
@@ -61,9 +63,10 @@ export const create = async (req, res) => {
     const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDate();
     const billingExp = new Date(y+10, m, d);
     await BillingHistory.updateOne({
-            store_url: store_url,
-            status: "PENDING"
-    },{
+        store_url: store_url,
+        status: "PENDING"
+      },{
+        id: `BL${Date.now() + Math.random().toString(10).slice(2, 8)}`,
         store_url: store_url,
         given_credit: getPlanData.plan_limit,
         montly_charge: getPlanData.price,
@@ -74,10 +77,12 @@ export const create = async (req, res) => {
         transaction_id: paymentData.txnid,
         upfront_amount: calculatedPayment,
         invoiceAmount: totalAmount,
+        planEndDate: billingExp,
+        marchant_name: storeData.name,
+        store_id: storeData.shopify_id
 
-        planEndDate: billingExp
-    }, {upsert: true});
-    
+      }, {upsert: true}
+    );
 
     res.json({
         ...respondWithData("payment URL"),
@@ -126,18 +131,15 @@ export const failurePayment = async (req,res) => {
  */
 const updateBillingHistory = async (data) => {
 
-    const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
-    const issue_date = new Date(y, m, d);
-    const billingDate = new Date(y, m+1, 10);
-    const reminderDate = new Date(y, m+1, 6);
+    con//st tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    const issue_date = new Date();
     await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
         { transaction_id : data.txnid },
         { 
             status: "ACTIVE",
             issue_date: issue_date,
-            billingDate: billingDate,
-            remiderDate: reminderDate 
+            billingDate: issue_date
         }
     );
     console.log(updateBilling);
@@ -145,7 +147,8 @@ const updateBillingHistory = async (data) => {
         { store_url: data.productinfo },
         { $set: { "plan.plan_name": data.lastname } }
       );
-    await store.findOneAndUpdate({email : data.email, mandate : data});
+    const billingData = await BillingHistory.findOne({transaction_id : data.txnid})
+    await store.findOneAndUpdate({email : data.email}, {mandate : data});
     const storeDetails = await store.findOne({store_url: data.productinfo});
     const getBilling = await BillingHistory.findOne(
         { transaction_id : data.txnid });
@@ -157,16 +160,19 @@ const updateBillingHistory = async (data) => {
     email_template=email_template.replace("__usage_charge__", getBilling.usage_charge);
     email_template=email_template.replace("__usage_limit__", getBilling.usage_limit);
     email_template=email_template.replace("__base_amount__", getBilling.upfront_amount);
+    email_template=email_template.replace("__billing_id__", billingData.id);
+
 
 
     const options = {
-        to: "anubhav.g@marmeto.com",
+        to: data.email,
         from: "anubhav.g@marmeto.com",
         subject: "PAYMENT COMPLETED ",
         html: email_template,
       };
       await sendEmail(options);
-      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname  });
+      await kyc.updateOne({store_url: data.productinfo}, {subscription_payment: true , payu_txn_id : data.txnid ,payu_mihpayid: data.mihpayid ,package_details : data.lastname , billing_id : billingData.id });
     await generateCSV(data.productinfo);
+    await store.updateOne({store_url:data.productinfo}, { is_plan_done : true, is_payment_done: true});
     return 1;
 };

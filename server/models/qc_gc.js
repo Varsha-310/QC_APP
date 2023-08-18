@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 /*Scheme for QC giftcards */
 
 const qcGiftcardSchema = mongoose.Schema({
+  store_url: { type: String },
   gc_pin: { type: String },
   gc_number: { type: String },
   balance: { type: Number },

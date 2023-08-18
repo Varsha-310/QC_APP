@@ -9,7 +9,7 @@ let payment_template = `
             <div class="subject_text" style="margin-bottom: 0.5rem;">
                 <span class="subject_heading" style="font-weight: 600;">Subject:</span>
                 <span class="subject_content">
-                    <span>Payment Received. Your Order No: </span><span class="order_number">SH-123456</span> is under
+                    <span>Payment Received. Your Order No: </span><span class="order_number">__billing_id__</span> is under
                     process.
                 </span>
             </div>
@@ -22,7 +22,7 @@ let payment_template = `
                     <p class="content_para1">Dear <span class="merchant_name">__merchant__</span>,</p>
                     <p class="content_para2" style="margin-bottom: 1rem;">Thanks for submitting the KYC data. Your payment
                         of Rs. <span class="payment_amount">__base_amount__</span>, towards the Order No: <span
-                            class="order_number">(SH-123456)</span>, has been received.</p>
+                            class="order_number">(__billing_id__)</span>, has been received.</p>
                     <p class="content_para3" style="margin-bottom: 0.1rem;">Please find below the details of the
                         subscription plan that you have opted for.
                     </p>
