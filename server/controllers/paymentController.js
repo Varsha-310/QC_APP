@@ -29,10 +29,10 @@ export const create = async (req, res) => {
     console.log(getPlanData)
     const currentDate = new Date();
     const currentDay = currentDate.getDate(); // Get the current day of the month
-    const remainingDays = 30 - currentDay;
-    const dailyRate = getPlanData.price / 30;
-    const calculatedPayment = remainingDays * dailyRate;
-    console.log(remainingDays,dailyRate,calculatedPayment)
+    const remainingDays = 31 - currentDay;
+    // const dailyRate = getPlanData.price / 31;
+    const calculatedPayment = (getPlanData.price * remainingDays)/ 31;
+    console.log(remainingDays,calculatedPayment)
     let myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 10));
     const calculatedGst = calculateGST(calculatedPayment);
