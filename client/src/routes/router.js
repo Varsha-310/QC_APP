@@ -21,6 +21,7 @@ import {
   FaqPage,
   Issues,
   PaymentFailed,
+  LoggedOut,
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
@@ -152,6 +153,10 @@ const router = createBrowserRouter([
       },
       { path: "/refund_success", element: <RefundConfirmation /> },
       { path: "/payment-unsuccessful", element: <PaymentFailed /> },
+      {
+        path: "/log-out",
+        element: <LoggedOut />,
+      },
     ],
   },
   { path: "/select-plan", element: <PlanSelection /> },

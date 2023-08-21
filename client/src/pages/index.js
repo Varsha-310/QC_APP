@@ -18,6 +18,7 @@ import FaqPage from "./others/FaqPage";
 import ErrorPage from "./ErrorPage";
 import Issues from "./others/Issues";
 import PaymentFailed from "./others/PaymentFailed";
+import LoggedOut from "./others/LoggedOut";
 
 export {
   DashboardHome,
@@ -40,4 +41,5 @@ export {
   FaqPage,
   Issues,
   PaymentFailed,
+  LoggedOut
 };

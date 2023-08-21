@@ -93,8 +93,7 @@ const CurrentUsages = () => {
                   </CustomContainer>
 
                   <div className="transaction-detail__plan-due-date">
-                    Due On{" "}
-                    {new Date(uses?.billingDate).toDateString().slice(4, 10)}
+                    Due On {"8, "+ getNextMonth(uses?.issue_date)}
                   </div>
                 </div>
               </div>
@@ -149,8 +148,8 @@ const CurrentUsages = () => {
               {/* expected charges */}
               <div className="transaction-detail__plan-fees transaction-detail__box-bg">
                 <div className="transaction-detail__detail-heading">
-                  Expected Charges -{" "}
-                  {uses?.planEndDate ? formatDate(uses?.planEndDate) : ""}
+                  Expected Charges - {getNextMonth(uses?.issue_date)}
+                  {/* {uses?.planEndDate ? formatDate(uses?.planEndDate) : ""} */}
                 </div>
 
                 <div className="gift-card__text-box-container">
@@ -203,7 +202,7 @@ const CurrentUsages = () => {
                                   parseFloat(uses?.given_credit)) *
                                   parseFloat(uses?.usage_charge)) /
                                   100
-                              ).toFixed(2)
+                              )
                             : parseFloat("00.00"))
                       ).toFixed(2)}
                     </TextElement>
@@ -244,4 +243,22 @@ const formatDate = (dtObj, dt) => {
     } ${date.getDate()}, ${date.getFullYear()}`;
   }
   return `${monthAr[date.getMonth()]}, ${date.getFullYear()}`;
+};
+const getNextMonth = (dtObj) => {
+  const date = new Date(dtObj);
+  const monthAr = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return monthAr[date.getMonth() + 1];
 };
