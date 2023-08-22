@@ -1,8 +1,4 @@
-import {
-  respondSuccess,
-  respondInternalServerError,
-  respond,
-} from "../helper/response.js";
+import {respondSuccess} from "../helper/response.js";
 import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
@@ -14,9 +10,6 @@ import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 import { checkActivePlanUses } from "./BillingController.js";
 
-// const orderUpdateQueue = new Queue(ordercreateEvent, { maxRetries: 2, retryDelay: 1000 });
-
-
 /**
  * To handle order creation webhook
  * @param {*} req
@@ -26,7 +19,6 @@ export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
   orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
-  //ordercreateEvent({ shop, order }, res);
   res.json(respondSuccess("webhook received"));
 };
 
@@ -35,7 +27,6 @@ export const orderCreated = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-
 export const orderUpdated = (req, res) => {
   // console.log(req.body);
   handleOrderCreatewebhook(req, res);
@@ -48,7 +39,7 @@ export const orderUpdated = (req, res) => {
  * @param {*} res
  */
 export const orderDeleted = (req, res) => {
-  // res.json(respondSuccess("webhook received"));
+  res.json(respondSuccess("webhook received"));
 };
 
 /**
@@ -56,13 +47,12 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (input, done, res) => {
+const ordercreateEvent = async (input, done) => {
 
   try {
 
     console.log("------------order create event-----------------");
     const { shop, order } = input;
-    let isGiftcardOrder = false;
     let shopName = shop;
     console.log("Shop Name", shop);
 
@@ -105,8 +95,6 @@ const ordercreateEvent = async (input, done, res) => {
 
         for (let line_item of newOrder.line_items) {
 
-          //Check for the order lineitems whether it contains a QC Giftcard Product
-          // gift_card_product = "";
           let gift_card_product = await product
             .findOne({
               id: line_item.product_id,
@@ -284,7 +272,9 @@ export const productCreateEvent = async (req, res) => {
         new processPrd(updatedProduct, shopName); //Store the product to DB
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    return res.json(respondInternalServerError());
+}
 };
 
 /**
@@ -292,7 +282,6 @@ export const productCreateEvent = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-
 export const handleOrderCreatewebhook = async (req, res) => {
   
   try {
@@ -308,9 +297,9 @@ export const handleOrderCreatewebhook = async (req, res) => {
     });
     console.log(data ,"Webhook Complieted");
   } catch (err) {
-
     logger.info(err);
     console.log(err);
+    return res.json(respondInternalServerError());
   }
 };
 
@@ -333,7 +322,11 @@ export const productUpdateEvent = async (req, res) => {
         new processPrd(updatedProduct, shopName); //Update the data in DB
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return res.json(respondInternalServerError());
+
+  }
 };
 
 /**
@@ -360,9 +353,16 @@ export const productDeleteEvent = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
+    return res.json(respondInternalServerError());
+
   }
 };
 
+/**
+ * processing product update webhook
+ * @param {*} updatedProduct 
+ * @param {*} store 
+ */
 function processPrd(updatedProduct, store) {
   
   let product_id = updatedProduct.id;
@@ -387,6 +387,11 @@ function processPrd(updatedProduct, store) {
     });
 }
 
+/**
+ * processing merchant data from QC
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const getQcCredentials = async (req,res) =>{
 
   logger.info("--------webhook data from QC---------------");

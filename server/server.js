@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
 import planRoute from "./routes/plan.js";
 import shopifyRoute from "./routes/shopify.js";
-import { respondSuccess, respondInternalServerError } from "./helper/response.js";
+import { respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
 import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";

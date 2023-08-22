@@ -343,23 +343,7 @@ console.log(kycData.gstin)
       },
     ],
   };
-
-  var smtpTransporter = NodeMailer.createTransport({
-    port: 587,
-    host: "smtp.sendgrid.net",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
    console.log(options);
-  smtpTransporter.sendMail(options, async function (error, info) {
-    if (!error) {
-      console.log("csv sent successfully !");
-      // Resolve if the mail is sent successfully
-    } else {
-      console.log(error);
-    }
-  });
+   await sendEmail(options);
+   return true;
 };
