@@ -368,6 +368,7 @@ export const addGiftcardtoWallet = async (
                   amount: amount,
                   transaction_date: Date.now(),
                   expires_at: activatedCard.ExpiryDate,
+                  type:type
                 },
               },
             },
