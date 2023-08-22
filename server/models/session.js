@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { paymentStatus } from "./Transactions.js";
 
+/*Scheme for storing payment session details */
 const sessionStatus = [ "initiated", "completed", "rejected", "processing", "retry", "failed"];
 const SessionSchema = mongoose.Schema({
 

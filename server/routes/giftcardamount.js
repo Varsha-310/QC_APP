@@ -1,7 +1,5 @@
 import { Router } from "express";
 import {checkGiftCardAmount} from "../controllers/giftcardamountController";
-// import {validateCalculateRefundApi} from "../helper/validator"
-// import {verifyJwt} from "../helper/jwtHelper"
 
 const checkGiftCardAmountRoute = Router();
 

@@ -27,6 +27,7 @@ webhookRoute.post("/productupdated", productUpdateEvent);
 // api for product delete webhook
 webhookRoute.post("/productdeleted", productDeleteEvent);
 
+// webhook from QC for merchant data
 webhookRoute.post("/qc/credentials", getQcCredentials)
 
  export default webhookRoute;

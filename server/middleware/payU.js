@@ -17,22 +17,6 @@ const generateHash = (payload) => {
 };
 
 /**
- * function submit payment form to payU
- * @param {*} payload 
- * @returns 
- */
-const generateHtml = (payload) => {
-  console.log(process.env.payupaymenturl);
-  let data = `<form action=${process.env.payupaymenturl} method="POST">`;
-  for (let obj in payload)
-    data += `<input  name=${obj} value=${payload[obj]} />`;
-  data += '<input type="submit" />';
-  return data;
-
-};
-
-
-/**
  * creating payment
  * @param {*} storeData 
  * @param {*} billingData 

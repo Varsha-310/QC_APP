@@ -19,6 +19,4 @@ paymentRoute.post("/payu/fail", failurePayment);
 // route to verify payment
 paymentRoute.post("/payu/verify", verifyPayuTranscation);
 
-
-
 export default paymentRoute;

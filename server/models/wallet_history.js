@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-/*Scheme for storing wallet details */
 
+/*Scheme for storing wallet history details */
 const walletHistorySchema = mongoose.Schema({
   
   wallet_id: { type: String },

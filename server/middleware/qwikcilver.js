@@ -1,14 +1,20 @@
 import { respondInternalServerError } from "../helper/response.js";
 import axios from "axios";
-import Store from "../models/store.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
 import { updateBilling } from "../controllers/BillingController.js";
 import wallet from "../models/wallet.js";
 
-
-
+/**
+ * method to create giftcard on QC
+ * @param {*} store 
+ * @param {*} amount 
+ * @param {*} order_id 
+ * @param {*} validity 
+ * @param {*} type 
+ * @returns 
+ */
 export const createGiftcard = async (store, amount, order_id , validity, type) => {
 
   try {
@@ -87,43 +93,19 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
 }
 
   catch (err) {
-    console.log(err)
-    return false
-  }
-};
-
-export const qwikcilverToken = () => {
-
-  try {
-    
-    let myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
-    let data = {
-      TerminalId: "QwikPOS-Corporate-01",
-      UserName: "ayurmall.intuser",
-      Password: "Temp@123",
-    };
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${process.env.QC_API_URL}/XNP/api/v3/authorize`,
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
-      },
-      data: data,
-    };
-
-    let token = axios(config);
-
-  } catch (err) {
+    console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
 
+/**
+ * to check QC wallet balance
+ * @param {*} store 
+ * @param {*} walletData 
+ * @returns 
+ */
 export const fetchBalance = async (store ,walletData) => {
   try {
     console.log(walletData);
@@ -171,8 +153,10 @@ export const fetchBalance = async (store ,walletData) => {
       return balance;
     }
   } catch (err) {
-    // console.log(err)
-    return false;
+    console.log(err);
+    res.json(
+      respondInternalServerError()
+    );
   }
 };
 
@@ -294,9 +278,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
     
   } catch (err) {
     console.log(err)
-    console.log(err.response.status, err.response.data.ResponseCode);
-    if (err.response.status == 401 && err.response.data.ResponseCode == 10744) {
-    }
+    return false
   }
 };
 

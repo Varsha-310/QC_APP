@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/*Scheme for storing qc_credentials */
 const qc_credentials = mongoose.Schema({
   store_url: String,
   username: String,
