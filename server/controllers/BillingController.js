@@ -7,7 +7,7 @@ import crypto from "crypto";
 import Session from "../models/session.js";
 import template from "../views/plan_limit_exceed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
-
+import cron from "node-cron";
 
 /**
  * Handle the corn iteration for the send Predebit Notification
@@ -469,6 +469,7 @@ export const changeMonthlyCycle = async() => {
         status: "ACTIVE",
         issue_date: {$lt:firstday}
     }
+
     console.log(query);
     const tam = await BillingHistory.countDocuments(query);
     console.log("Totoal Documents",tam);
@@ -615,6 +616,8 @@ const getChangeMonthData = async(store) => {
             montly_premium_used: used_charge,
             gst_on_monthly_premium: used_gst,
             no_of_days: diffDays,
+            adj_credit: 0 - (parseFloat(element.upfront_amount) - used_charge),
+            adj_gst: 0 - (parseFloat(element.monthly_gst) - used_gst),
             deducted_preminum: parseFloat(element.upfront_amount) + parseFloat(element.monthly_gst)
         });
         element.status = "FROZEN";
@@ -627,3 +630,11 @@ const getChangeMonthData = async(store) => {
         data :prevUsed
     };
 }
+
+
+cron.schedule("0 0 1 * * *", () => {
+
+    changeMonthlyCycle();
+    handleReccuringPayment();
+    handleMandateNotification();
+});
