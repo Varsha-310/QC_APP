@@ -334,7 +334,7 @@ console.log(kycData.gstin)
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "ShopifyKYC@qwikcilver.com",
+    to: "qc.serviceautomation_testing@qwikcilver.com",
     subject: "KYC details of Merchant",
     attachments: [
       {
@@ -353,10 +353,10 @@ console.log(kycData.gstin)
     },
   });
 
-  // console.log(options);
+   console.log(options);
   smtpTransporter.sendMail(options, async function (error, info) {
     if (!error) {
-      console.log("mail sent successfully !");
+      console.log("csv sent successfully !");
       // Resolve if the mail is sent successfully
     } else {
       console.log(error);
