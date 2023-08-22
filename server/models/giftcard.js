@@ -10,7 +10,8 @@ const giftcardSchema = mongoose.Schema({
   qc_request: ({}),
   qc_response: ({}),
   code: { type: String },
-  order_id: { type: String }
+  order_id: { type: String },
+  type:{type:string}
 });
 
 export default mongoose.model("Giftcard", giftcardSchema);

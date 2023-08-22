@@ -222,7 +222,8 @@ const ordercreateEvent = async (input, done) => {
                     shopName,
                     custom_id,
                     giftCardDetails.CardPin,
-                    giftCardDetails.Balance
+                    giftCardDetails.Balance,
+                    type
                   );
               }
             }
