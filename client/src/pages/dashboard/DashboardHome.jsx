@@ -6,6 +6,7 @@ import {
   SectionHeading1,
 } from "../../components/BasicComponents";
 
+
 import instance from "../../axios";
 import { createPortal } from "react-dom";
 import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
@@ -92,6 +93,7 @@ const DashboardHome = () => {
   }
 
   return (
+    
     <div className="dashboard-home-container component">
       {isLoading &&
         createPortal(<Spinner />, document.getElementById("portal"))}
@@ -119,7 +121,7 @@ const DashboardHome = () => {
         </section>
       </div>
 
-      {kycData?.dashboard_activated !== "true" ? (
+      {kycData?.dashboard_activated !== true ? (
         <div className="section-box-container">
           <SectionHeading1
             weight="500"
@@ -158,6 +160,7 @@ const DashboardHome = () => {
 
       {/* <img src={Giftbox} alt="" className="giftbox" />   */}
     </div>
+    
   );
 };
 

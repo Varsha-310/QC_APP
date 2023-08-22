@@ -27,7 +27,7 @@ import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
 import ProtectedRoute from "../components/ProtectedRoutes/ProtectedRoute";
 import { isUserAuthenticated } from "../utils/userAuthenticate";
-import { checkAuthLoader } from "../utils/auth";
+// import { checkAuthLoader } from "../utils/auth";
 
 const router = createBrowserRouter([
   {
