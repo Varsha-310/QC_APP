@@ -32,7 +32,7 @@ export const create = async (req, res) => {
     const currentDay = currentDate.getDate();// Get the current day of the month
 
     const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
-    const remainingDays = parseInt(monthDays) - currentDay;
+    const remainingDays = parseInt(monthDays) - currentDay + 1;
     const dailyRate = getPlanData.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
@@ -131,7 +131,7 @@ export const failurePayment = async (req,res) => {
  */
 const updateBillingHistory = async (data) => {
 
-    con//st tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
+    //const tempDate = new Date(), y = tempDate.getFullYear(), m = tempDate.getMonth(), d= tempDate.getDay();
     const issue_date = new Date();
     await BillingHistory.updateMany({store_url: data.productinfo , status :"ACTIVE"} , {status : "UPGRADED"});
     const updateBilling = await BillingHistory.updateOne(
@@ -140,7 +140,8 @@ const updateBillingHistory = async (data) => {
             status: "ACTIVE",
             issue_date: issue_date,
             billingDate: issue_date
-        }
+        },	
+        {upsert: true}
     );
     console.log(updateBilling);
    await store.updateOne(
@@ -166,7 +167,7 @@ const updateBillingHistory = async (data) => {
 
     const options = {
         to: data.email,
-        from: "anubhav.g@marmeto.com",
+        from: "merchantalerts@qwikcilver.com",
         subject: "PAYMENT COMPLETED ",
         html: email_template,
       };
