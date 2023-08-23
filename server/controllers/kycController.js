@@ -10,6 +10,7 @@ import kycs from "../models/kyc.js";
 import store from "../models/store.js";
 import NodeMailer from "nodemailer";
 import kyc from "../models/kyc.js";
+import { sendEmail } from "../middleware/sendEmail.js";
 
 /**
  * Method to initiate kyc

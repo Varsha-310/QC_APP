@@ -242,12 +242,13 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
  * @returns 
  */
 export const firstNotification = async(store, baseAmount, capAmount) => {
+    
 
     console.log("firstNotification");
     let email_template = template;
     const options = {
-        to: "shopifykyc@qwikcilver.com",
-        from: "varshaa@marmeto.com",
+        to: "merchantalerts@qwikcilver.com",
+        from: email,
         subject: "PLAN LIMIT EXCEEDED",
         html: email_template,
       };
@@ -315,7 +316,7 @@ export const checkActivePlanUses = async(amount, store_url) => {
                 
                 switch (flag) {
                     case 1:
-                        await firstNotification();
+                        await firstNotification(store_url);
                         break;
                     case 2:
                         await secondNotification();
