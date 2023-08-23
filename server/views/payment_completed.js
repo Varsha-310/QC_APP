@@ -22,7 +22,7 @@ let payment_template = `
                     <p class="content_para1">Dear <span class="merchant_name">__merchant__</span>,</p>
                     <p class="content_para2" style="margin-bottom: 1rem;">Thanks for submitting the KYC data. Your payment
                         of Rs. <span class="payment_amount">__base_amount__</span>, towards the Order No: <span
-                            class="order_number">(__billing_id__)</span>, has been received.</p>
+                            class="order_number">__billing_id__</span>, has been received.</p>
                     <p class="content_para3" style="margin-bottom: 0.1rem;">Please find below the details of the
                         subscription plan that you have opted for.
                     </p>
@@ -39,8 +39,8 @@ let payment_template = `
                         <tr style="outline: 1px solid #000;">
                             <th
                                 style="outline: 1px solid #000;font-weight: normal;width: 70%;padding:0 0.9rem 0 0.75rem;text-align: start;">
-                                Pro-rata amount for <span class="month_name">April</span>-<span
-                                    class="full_year">2023</span>:
+                                Pro-rata amount for <span class="month_name">__month__</span>-<span
+                                    class="full_year">__year__</span>:
                             </th>
                             <td style="outline: 1px solid #000;width: 70%;padding:0 0.9rem 0 0.75rem;text-align: start;">Rs.
                                 <span class="base_amount">__base_amount__</span> (Including GST at <span
