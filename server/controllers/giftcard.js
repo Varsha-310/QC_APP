@@ -440,9 +440,10 @@ export const getWalletBalance = async (req, res) => {
  */
 export const resendEmail = async (req, res) => {
   try {
-    // console.log(req.token.store_url, req.query.order_id);
+    
+    console.log(req.token.store_url, "stsore");
     const orderExists = await orders.findOne({
-      store_url: "qwikcilver-public-app-teststore.myshopify.com",
+      store_url: req.token.store_url,
       id: req.query.order_id,
     });
 
