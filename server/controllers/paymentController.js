@@ -174,6 +174,7 @@ const updateBillingHistory = async (data) => {
   const getBilling = await BillingHistory.findOne({
     transaction_id: data.txnid,
   });
+  const amount = parseFloat(getBilling.invoiceAmount.toFixed(2));
   let email_template = payment_template;
   email_template = email_template.replace("__merchant__", storeDetails.name);
   email_template = email_template.replace("__plan_name__", data.lastname);
@@ -195,7 +196,7 @@ const updateBillingHistory = async (data) => {
   );
   email_template = email_template.replace(
     "__base_amount__",
-    getBilling.invoiceAmount
+    amount
   );
   email_template = email_template.replace("__billing_id__", billingData.id);
   email_template = email_template.replace("__month__", month);
