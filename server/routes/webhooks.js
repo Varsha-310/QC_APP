@@ -2,7 +2,6 @@ import { Router } from "express";
 import { verifyShopifyHook } from "../helper/validator.js";
 import { orderCreated, orderDeleted, orderUpdated, productCreateEvent, productDeleteEvent, productUpdateEvent,getQcCredentials } from "../controllers/webhookController.js";
 import { appUninstalled } from "../controllers/shopifyController.js";
-import { qwikcilverToken } from "../middleware/qwikcilver.js";
 
 const webhookRoute = Router();
 
@@ -27,6 +26,7 @@ webhookRoute.post("/productupdated", productUpdateEvent);
 // api for product delete webhook
 webhookRoute.post("/productdeleted", productDeleteEvent);
 
+// webhook from QC for merchant data
 webhookRoute.post("/qc/credentials", getQcCredentials)
 
  export default webhookRoute;

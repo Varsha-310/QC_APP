@@ -1,5 +1,4 @@
 import axios from "axios";
-// import storeBilling from "../models/storeBilling";
 import crypto from "crypto";
 
 /**
@@ -15,22 +14,6 @@ const generateHash = (payload) => {
   hash.update(paymentString, "utf-8");
   return hash.digest("hex");
 };
-
-/**
- * function submit payment form to payU
- * @param {*} payload 
- * @returns 
- */
-const generateHtml = (payload) => {
-  console.log(process.env.payupaymenturl);
-  let data = `<form action=${process.env.payupaymenturl} method="POST">`;
-  for (let obj in payload)
-    data += `<input  name=${obj} value=${payload[obj]} />`;
-  data += '<input type="submit" />';
-  return data;
-
-};
-
 
 /**
  * creating payment
@@ -64,9 +47,9 @@ const createPayload = (storeData, billingData, amount) => {
     txnid: `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,
     amount: amount,
     productinfo: storeData.store_url,
-    firstname: "varsha",
+    firstname: storeData.firstname,
     email: storeData.email,
-    phone: "8095379504",
+    phone: storeData.phone,
     lastname: storeData.plan_name,
     surl: `${process.env.APP_URL}/payment/payu/success`,
     furl: `${process.env.APP_URL}/payment/payu/fail`,

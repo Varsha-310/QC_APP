@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/*Scheme for storing payment transaction details */
 export const paymentStatus = ["successful", "refunded", "rejected", "pending", "payment_processing", "disputed"];
 const TransactionSchema = mongoose.Schema({
   store_id: {type : String},

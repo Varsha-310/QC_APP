@@ -19,6 +19,16 @@ function getReadableDate(dateObj) {
   return `${day}-${month}-${year}  ${hours}:${minutes}`;
 }
 
+/**
+ * to create payload for sending gc emails to customers
+ * @param {*} shopName 
+ * @param {*} giftCardDetails 
+ * @param {*} receiver 
+ * @param {*} email_id 
+ * @param {*} message 
+ * @param {*} image_url 
+ * @returns 
+ */
 export const sendEmailViaSendGrid = async (
   shopName,
   giftCardDetails,
@@ -66,29 +76,15 @@ const options = {
   html: email_template,
 };
 console.log(options);
-
-var smtpTransporter = NodeMailer.createTransport({
-  port: 587,
-  host: "smtp.sendgrid.net",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
-// console.log(options);
-smtpTransporter.sendMail(options, async function (error, info) {
-  if (!error) {
-    console.log("mail sent successfully !");
-    // Resolve if the mail is sent successfully
-    
-  } else {
-    console.log(error);
-  
-  }
-})
+await sendEmail(options);
+return true;
 };
 
+
+/**
+ * method to email through sendGrid
+ * @param {*} options 
+ */
 export const sendEmail = (options) => {
   var smtpTransporter = NodeMailer.createTransport({
     port: 587,

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/*Scheme for storing refund logs */
 const RefundsLogs =   mongoose.Schema({
     
   store_url: { type: String },

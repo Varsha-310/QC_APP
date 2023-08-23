@@ -60,7 +60,7 @@ export const verifyJwt = (req, res, next) => {
   } catch (err) {
     console.log("asdfghjkl;", err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };

@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 /*Scheme for shopify giftcards */
-
 const giftcardSchema = mongoose.Schema({
   id: { type: String },
   balance: { type: String },
@@ -11,7 +10,8 @@ const giftcardSchema = mongoose.Schema({
   qc_request: ({}),
   qc_response: ({}),
   code: { type: String },
-  order: Object
+  order_id: { type: String },
+  type:{type:string}
 });
 
 export default mongoose.model("Giftcard", giftcardSchema);

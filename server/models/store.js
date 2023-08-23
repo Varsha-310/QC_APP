@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/*Scheme for storing store details */
 let storeSchema = mongoose.Schema({
   store_url: { type: String },
   installed_at: { type: Date },

@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
-/*Scheme for storing user details */
-
+/*Scheme for storing merchant kyc details */
 var kycSchema = mongoose.Schema({
   store_url: { type: String },
   shopify_id: { type: String },

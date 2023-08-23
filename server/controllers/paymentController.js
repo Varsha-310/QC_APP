@@ -22,7 +22,6 @@ export const create = async (req, res) => {
     
     console.log(req.token,"-----------------creating payment------------------------");
     const store_url = req.token.store_url
-    //  const store_url = "qc-plus-store.myshopify.com";
     const storeData = await stores.findOne({ store_url: store_url});
     console.log(storeData)
     const getPlanData = await plan.findOne({plan_name : req.body.plan_name});
@@ -32,7 +31,7 @@ export const create = async (req, res) => {
     const currentDay = currentDate.getDate();// Get the current day of the month
 
     const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
-    const remainingDays = parseInt(monthDays) - currentDay + 1;
+    const remainingDays = parseInt(monthDays)+1 - currentDay;
     const dailyRate = getPlanData.price / parseInt(monthDays);
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays,dailyRate,calculatedPayment)
@@ -89,7 +88,6 @@ export const create = async (req, res) => {
         data:{payload : paymentData,
         url : process.env.payupaymenturl}
     });
-    // res.send(paymentData[0]);
   } catch (err) {
     logger.info(err);
     console.log(err);
@@ -104,13 +102,12 @@ export const create = async (req, res) => {
  * @returns
  */
 export const payuPayment = async (req, res) => {
-    console.log(req, "------------requewt body-------------------");
     let reqData = req.body;
     console.log(reqData, "-----------------request data--------------------");
     if (reqData.status == "success") {
         await updateBillingHistory(reqData);
     }
-    return res.redirect(`${process.env.CLIENT_URL}kyc-status?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    return res.redirect(`${process.env.CLIENT_URL}kyc-status`);
 };
 
 /**
@@ -120,7 +117,7 @@ export const payuPayment = async (req, res) => {
  * @returns 
  */
 export const failurePayment = async (req,res) => {
-    return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLm15c2hvcGlmeS5jb20iLCJpYXQiOjE2OTE2NjY1MjJ9.WdLbbyBhAR8h1RH1hn92lAYjuvUNVC-fKDfQR37U2hQ`);
+    return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful`);
 }
 
 

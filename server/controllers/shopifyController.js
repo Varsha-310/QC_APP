@@ -6,7 +6,7 @@ import {
 } from "../helper/response.js";
 import cookie from "cookie";
 import crypto from "crypto";
-import { checkWebhooks } from "../config/custom.js";
+import { checkWebhooks } from "../helper/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
 import refundSetting from "../models/refundSetting.js";
 
@@ -34,7 +34,7 @@ export const install = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -97,12 +97,12 @@ export const installCallback = async (req, res) => {
         }
       }
     } else {
-      res.json(respondNotAcceptable("Required parameters are missing"));
+      res.json(respondNotAcceptable());
     }
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -142,7 +142,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -172,7 +172,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     return shopData;
   } catch (error) {
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -210,7 +210,7 @@ export const getAccessToken = async (shop, code, res) => {
     return accessToken;
   } catch (error) {
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -226,10 +226,3 @@ export const appUninstalled = async (req, res) => {
   await store.findOneAndUpdate({ store_url: domain }, { isInstalled: false });
   res.json(respondSuccess("webhook received"));
 };
-
-/**
- * Method for dataList method
- * @param {*} req
- * @param {*} res
- * @returns
- */

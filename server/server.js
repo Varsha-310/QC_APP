@@ -7,16 +7,12 @@ import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
 import planRoute from "./routes/plan.js";
 import shopifyRoute from "./routes/shopify.js";
-import { respondSuccess, respondInternalServerError } from "./helper/response.js";
+import { respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
 import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
-// import path from "path";
-// import { fileURLToPath } from 'url';
-// const __filename = fileURLToPath(import.meta.url);
-// let __dirname = path.dirname(__filename);
 import refundRoute from "./routes/refund.js";
 import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
@@ -60,52 +56,35 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-// console.log("Path Before",__dirname);
-// __dirname = __dirname.substring(0,__dirname.length - 7);
-// console.log("Path after", __dirname);
-// const publicPath = path.join('./client/build');
-// app.use(express.static(publicPath));
-// app.use(express.static(path.join(__dirname, "js")));
-
 //a shopify routes
-app.use("/shopify", shopifyRoute);
+app.use("/shopify", apiLimiter ,shopifyRoute);
 
 // Billing API
-app.use("/billing", billingRoute);
+app.use("/billing",apiLimiter, billingRoute);
 
 // GDPR routes
-app.use("/gdpr", gdprRoute);
+app.use("/gdpr",apiLimiter, gdprRoute);
 
 //webhooks routes
-app.use("/webhooks", webhookRoute)
+app.use("/webhooks",apiLimiter, webhookRoute)
 
 //refund setting route
-app.use("/refund", refundRoute)
+app.use("/refund",apiLimiter, refundRoute)
 
 //Store details route
-app.use("/order", orderRoute)
-
-//Checking giftcard amount
-//app.use("/giftcardamount", checkamount)
+app.use("/order",apiLimiter, orderRoute)
 
 //kyc routes
-app.use("/kyc", kycRoute);
+app.use("/kyc",apiLimiter, kycRoute);
 
 // plan routes
-app.use("/plan" , planRoute);
+app.use("/plan" ,apiLimiter, planRoute);
 
 // giftcard routes
-app.use("/giftcard" , giftcardRoute);
+app.use("/giftcard" ,apiLimiter, giftcardRoute);
 
 // payment routes
-app.use("/payment", paymentRoute);
-
-// app.get('/', function (req, res) {
-  
-  // console.log( "Requested Url", req.url);
-  // res.sendStatus(200);
- // res.sendFile(path.join(__dirname, './client/build', 'index.html'));
-// });
+app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
 cron.schedule("* * * * *", () => {
@@ -116,7 +95,6 @@ cron.schedule("* * * * *", () => {
 // Database and Port connection
 mongoose
    .connect(process.env.DB_URL)
-  //.connect("mongodb://0.0.0.0:27017/QC-DB1")
   .then(() => {
 
     app.listen(process.env.PORT);

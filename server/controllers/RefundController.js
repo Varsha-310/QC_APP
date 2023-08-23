@@ -390,7 +390,7 @@ export const handleRefundAction = async (req, res) => {
                 const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180, type );
                 console.log( "New Added Giftcard", giftCardDetails );
                 const custom_id = ordersData.customer.id == 7286901178670 ? "9709857928" :  ordersData.customer.id;
-                await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance );
+                await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance , type);
                 const _trans = transactions.find(item => item.gateway != "gift_card");
                 trans.push({
                     "kind":"refund",

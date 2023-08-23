@@ -65,7 +65,7 @@ export const createGiftcardProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -114,7 +114,7 @@ export const updateGiftcardProduct = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -139,7 +139,7 @@ export const deleteGiftcardProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -178,7 +178,7 @@ export const getGiftcardProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -200,7 +200,7 @@ export const getSelectedGc = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -213,22 +213,30 @@ export const getSelectedGc = async (req, res) => {
 export const addGiftcard = async (req, res) => {
   try {
     let { store, customer_id, gc_pin } = req.body;
+    const type = "giftcard";
     const validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     if (validPin) {
-	const presentTime = new Date(Date.now());
-       console.log(validPin.expiry_date,  presentTime);
-      if (validPin.expiry_date <  presentTime) {
+      const presentTime = new Date(Date.now());
+      console.log(validPin.expiry_date, presentTime);
+      if (validPin.expiry_date < presentTime) {
         res.json(respondForbidden("card is expired !"));
       } else {
         const gcToWallet = await addGiftcardtoWallet(
           store,
           customer_id,
           gc_pin,
-          validPin.balance
+          validPin.balance,
+          type
         );
         if (gcToWallet.status == "403") {
           res.json(respondForbidden("card has been already added to wallet"));
-        } else {
+        } 
+        if (gcToWallet.ResponseCode == "0") {
+          res.json({
+            ...respondWithData("card has been added to wallet"),
+          });
+        }
+          else {
           res.json(
             respondInternalServerError(
               "Something went wrong try after sometime"
@@ -242,7 +250,7 @@ export const addGiftcard = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -256,7 +264,8 @@ export const addGiftcardtoWallet = async (
   store,
   customer_id,
   gc_pin,
-  amount
+  amount,
+  type
 ) => {
   try {
     const cardAlredyAdded = await wallet_history.findOne({
@@ -295,11 +304,6 @@ export const addGiftcardtoWallet = async (
             amount
           );
           console.log(updateShopifyGc);
-          // await wallet.updateOne(
-          // { shopify_customer_id: customer_id },
-          //{ balance: newAmount },
-          //{ upsert: true }
-          //);
           await wallet_history.updateOne(
             { wallet_id: wallet_id, customer_id: customer_id },
             {
@@ -310,6 +314,7 @@ export const addGiftcardtoWallet = async (
                   gc_pin: gc_pin,
                   expires_at: activatedCard.ExpiryDate,
                   transaction_date: Date.now(),
+                  type:type
                 },
               },
             },
@@ -363,6 +368,7 @@ export const addGiftcardtoWallet = async (
                   amount: amount,
                   transaction_date: Date.now(),
                   expires_at: activatedCard.ExpiryDate,
+                  type:type
                 },
               },
             },
@@ -378,30 +384,6 @@ export const addGiftcardtoWallet = async (
   } catch (err) {
     console.log(err);
     return false;
-  }
-};
-
-/**
- * adding giftcards to wallet
- * @param {*} req
- * @param {*} res
- */
-export const addGiftcardtoWallets = async (req, res) => {
-  try {
-    let { customer_id, gc_pin, store } = req.body;
-    console.log(gc_pin);
-
-    if (gc_pin == "PG5DN8GTX4BHYB" && customer_id == "7061732262207") {
-      res.json({
-        ...respondWithData("card has been added to wallet"),
-      });
-    } else {
-      res.json(respondForbidden("invalid card credentials"));
-    }
-  } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
   }
 };
 
@@ -446,7 +428,7 @@ export const getWalletBalance = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -458,40 +440,42 @@ export const getWalletBalance = async (req, res) => {
  */
 export const resendEmail = async (req, res) => {
   try {
-    // console.log(req.token.store_url, req.query.order_id);
+    
+    console.log(req.token.store_url, "stsore");
     const orderExists = await orders.findOne({
-      store_url: "qwikcilver-public-app-teststore.myshopify.com" ,
+      store_url: req.token.store_url,
       id: req.query.order_id,
     });
 
     if (orderExists) {
       console.log("-------------", orderExists);
-      const giftCard = await  qc_gc.findOne({ order_id: req.query.order_id });
+      const giftCard = await qc_gc.findOne({ order_id: req.query.order_id });
       const giftCardDetails = {
         CardNumber: giftCard.gc_number,
         CardPin: giftCard.gc_pin,
         Balance: giftCard.balance,
         ExpiryDate: giftCard.expiry_date,
       };
-      console.log(giftCard, "---------------------------")
+      console.log(giftCard, "---------------------------");
 
       let email = null;
       let message = "";
       let receiver = "";
       let image_url = "";
-      const qwikcilver_gift_card = orderExists.line_items[0].properties
-	console.log(qwikcilver_gift_card,"----------------founf-----------------")
-   	for (let i = 0; i < qwikcilver_gift_card.length; i++) {
-      console.log(qwikcilver_gift_card[i].value, "--------------",i)
+      const qwikcilver_gift_card = orderExists.line_items[0].properties;
+      console.log(
+        qwikcilver_gift_card,
+        "----------------founf-----------------"
+      );
+      for (let i = 0; i < qwikcilver_gift_card.length; i++) {
+        console.log(qwikcilver_gift_card[i].value, "--------------", i);
         if (qwikcilver_gift_card[i].name === "_Qc_img_url") {
           image_url = qwikcilver_gift_card[i].value;
         }
         if (qwikcilver_gift_card[i].name === "_Qc_recipient_email") {
           email = qwikcilver_gift_card[i].value;
         }
-        if (
-          qwikcilver_gift_card[i].name === "_Qc_recipient_message"
-        ) {
+        if (qwikcilver_gift_card[i].name === "_Qc_recipient_message") {
           message = qwikcilver_gift_card[i].value;
         }
 
@@ -515,7 +499,7 @@ export const resendEmail = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -561,7 +545,7 @@ export const giftCardOrders = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong, try again later")
+      respondInternalServerError()
     );
   }
 };
@@ -592,7 +576,7 @@ export const walletTransaction = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -623,6 +607,7 @@ export const giftCardAmount = async (store, id) => {
     }
   } catch (err) {
     console.log(err);
+    return false;
   }
 };
 
@@ -634,25 +619,30 @@ export const giftCardAmount = async (store, id) => {
  * @returns
  */
 const createShopifyGiftcard = async (store, token, amount) => {
-  let data = JSON.stringify({
-    gift_card: {
-      initial_value: amount,
-    },
-  });
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `https://${store}/admin/api/2023-07/gift_cards.json`,
-    headers: {
-      "X-Shopify-Access-Token": token,
-      "Content-Type": "application/json",
-    },
-    data: data,
-  };
+  try {
+    let data = JSON.stringify({
+      gift_card: {
+        initial_value: amount,
+      },
+    });
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `https://${store}/admin/api/2023-07/gift_cards.json`,
+      headers: {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
 
-  const shopifyGc = await axios(config);
-  console.log(shopifyGc.data.gift_card);
-  return shopifyGc.data.gift_card;
+    const shopifyGc = await axios(config);
+    console.log(shopifyGc.data.gift_card);
+    return shopifyGc.data.gift_card;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };
 
 /**
@@ -663,42 +653,60 @@ const createShopifyGiftcard = async (store, token, amount) => {
  * @returns
  */
 const getShopifyGiftcard = async (store, token, id) => {
-  let config = {
-    method: "get",
-    maxBodyLength: Infinity,
-    url: `https://${store}/admin/api/2023-07/gift_cards/${id}.json`,
-    headers: {
-      "X-Shopify-Access-Token": token,
-      "Content-Type": "application/json",
-    },
-  };
+  try {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://${store}/admin/api/2023-07/gift_cards/${id}.json`,
+      headers: {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json",
+      },
+    };
 
-  const shopifyGc = await axios(config);
-  console.log(shopifyGc.data.gift_card);
-  return shopifyGc.data.gift_card;
+    const shopifyGc = await axios(config);
+    console.log(shopifyGc.data.gift_card);
+    return shopifyGc.data.gift_card;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };
 
+/**
+ * to update amount of shopify giftcard
+ * @param {*} store
+ * @param {*} token
+ * @param {*} id
+ * @param {*} amount
+ * @returns
+ */
 const updateShopifyGiftcard = async (store, token, id, amount) => {
-  console.log("----------------amount--------------------", amount);
-  let data = JSON.stringify({
-    adjustment: {
-      amount: amount,
-    },
-  });
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
-    headers: {
-      "X-Shopify-Access-Token": token,
-      "Content-Type": "application/json",
-    },
-    data: data,
-  };
-  const shopifyGc = await axios(config);
-  console.log(
-    shopifyGc.data,
-    "--------------------shopify giftcard data-----------"
-  );
-  return shopifyGc.data.adjustment;
+  try {
+    console.log("----------------amount--------------------", amount);
+    let data = JSON.stringify({
+      adjustment: {
+        amount: amount,
+      },
+    });
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `https://${store}/admin/api/2023-07/gift_cards/${id}/adjustments.json`,
+      headers: {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    const shopifyGc = await axios(config);
+    console.log(
+      shopifyGc.data,
+      "--------------------shopify giftcard data-----------"
+    );
+    return shopifyGc.data.adjustment;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-/*Scheme for storing wallet details */
 
+/*Scheme for storing wallet history details */
 const walletHistorySchema = mongoose.Schema({
   
   wallet_id: { type: String },
@@ -13,6 +13,7 @@ const walletHistorySchema = mongoose.Schema({
       gc_pin: String,
       expires_at: Date,
       transaction_date: Date,
+      type: {type: String , enum: ["refund", "giftcard"]}, 
     },
   ],
   logs: [],

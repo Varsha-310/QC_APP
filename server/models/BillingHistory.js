@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+/*Scheme for storing billing history*/
 const billingHistorySchema = mongoose.Schema({
   
   id: String,
