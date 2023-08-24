@@ -241,13 +241,30 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
  * @param {*} capAmount 
  * @returns 
  */
-export const firstNotification = async(store, baseAmount, capAmount) => {
+export const firstNotification = async(store_url) => {
+    const storeDetails = await store.findOne({store_url:store_url});
+    const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
+    
 
     console.log("firstNotification");
     let email_template = template;
+    email_template = email_template.replace("__merchant__", storeDetails.name);
+  email_template = email_template.replace("__plan_name__", storeDetails.plan.plan_name);
+  email_template = email_template.replace(
+    "__given_credit__",
+    getBilling.given_credit
+  );
+  email_template = email_template.replaceAll(
+    "__usage_charge__",
+    getBilling.usage_charge
+  );
+  email_template = email_template.replace(
+    "__usage_limit__",
+    getBilling.usage_limit
+  );
     const options = {
-        to: "shopifykyc@qwikcilver.com",
-        from: "varshaa@marmeto.com",
+        from: "merchantalerts@qwikcilver.com",
+        to: "anubhav.g@marmeto.com",
         subject: "PLAN LIMIT EXCEEDED",
         html: email_template,
       };
@@ -315,7 +332,7 @@ export const checkActivePlanUses = async(amount, store_url) => {
                 
                 switch (flag) {
                     case 1:
-                        await firstNotification();
+                        await firstNotification(store_url);
                         break;
                     case 2:
                         await secondNotification();
