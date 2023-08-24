@@ -26,11 +26,12 @@ const useUserAuthentication = () => {
   const setUserCredentials = async (token) => {
     setUserToken(token);
 
-    const active_status = await getKycStatus(token);
+    setUserStatus(true);
+    // const active_status = await getKycStatus(token);
 
-    if (active_status?.dashboard_activated === true) {
-      setUserStatus(true);
-    }
+    // if (active_status?.dashboard_activated === true) {
+    //   setUserStatus(true);
+    // }
     // console.log("activestatus", active_status);
   };
 
