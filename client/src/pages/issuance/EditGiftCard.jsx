@@ -90,7 +90,15 @@ const EditGiftCard = () => {
     const value = event.target.value;
 
     // console.log(index+name+value)
-    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+    if (name === "price") {
+      if (/^(?!.*\..*\.)[0-9]*(\.[0-9]*)?$/.test(value)) {
+        setCardData((prev) => {
+          const updatedVariants = [...prev.variants];
+          updatedVariants[index][name] = value;
+          return { ...prev, variants: updatedVariants };
+        });
+      }
+    } else if (/^[a-zA-z0-9.\s]*$/.test(value)) {
       setCardData((prev) => {
         const updatedVariants = [...prev.variants];
         updatedVariants[index][name] = value;
@@ -343,7 +351,7 @@ const EditGiftCard = () => {
                 onWheel={(e) => e.target.blur()}
               />
               <input
-                type="number"
+                type="text"
                 className="gift-card__variant-input-price gift-card__input"
                 id={index}
                 name="price"

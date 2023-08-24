@@ -36,6 +36,8 @@ const CreateGiftCard = () => {
     validity: "",
   });
 
+  console.log(cardData);
+
   // error
   const [isError, setIsError] = useState(null);
 
@@ -43,16 +45,13 @@ const CreateGiftCard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
 
-  const [selectedImage, setSelectedImage] = useState([]);
   const [previewImage, setPreviewImage] = useState([]);
+
+  console.log(previewImage);
 
   const navigate = useNavigate();
 
   const scrollContainer = useRef(null);
-
-  // image preview slider scroll values
-  const SCROLL_LEFT = -100;
-  const SCROLL_RIGHT = 100;
 
   // image slider next and prev btns
   const imageSlider = (val) => {
@@ -64,13 +63,6 @@ const CreateGiftCard = () => {
     }
   };
 
-  // choose image slider preview
-  const sliderScroll = (val) => {
-    scrollContainer.current.scrollBy({
-      left: val,
-      behaviour: "smooth",
-    });
-  };
   // handle on change
   const handleChange = (event) => {
     const name = event.target.name;
@@ -85,8 +77,17 @@ const CreateGiftCard = () => {
     const name = event.target.name;
     const value = event.target.value;
 
-    // console.log(index+name+value)
-    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+    // console.log(index + name + value);
+
+    if (name === "price") {
+      if (/^(?!.*\..*\.)[0-9]*(\.[0-9]*)?$/.test(value)) {
+        setCardData((prev) => {
+          const updatedVariants = [...prev.variants];
+          updatedVariants[index][name] = value;
+          return { ...prev, variants: updatedVariants };
+        });
+      }
+    } else if (/^[a-zA-z0-9.\s]*$/.test(value)) {
       setCardData((prev) => {
         const updatedVariants = [...prev.variants];
         updatedVariants[index][name] = value;
@@ -117,12 +118,9 @@ const CreateGiftCard = () => {
 
   // file input
   const handleFileInput = (event) => {
-    // const files = Array.from(event.target.files);
     // setImages(files);
     const file = event.target.files[0];
-
     if (file) {
-      setSelectedImage((prev) => [...prev, file]);
       const reader = new FileReader();
 
       reader.onloadend = () => {
@@ -131,7 +129,6 @@ const CreateGiftCard = () => {
           if (img.width === 600 && img.height === 250) {
             // Image dimensions are valid
             // data without base64 prefix
-            console.log(reader.result.split(",")[0]);
             const dataURLWithoutPrefix = reader.result.split(",")[1];
             setPreviewImage((prev) => [
               ...prev,
@@ -148,9 +145,6 @@ const CreateGiftCard = () => {
         img.src = reader.result;
       };
       reader.readAsDataURL(file);
-    } else {
-      setSelectedImage(null);
-      setPreviewImage(null);
     }
   };
 
@@ -211,7 +205,6 @@ const CreateGiftCard = () => {
       console.log(res.data);
     } catch (e) {
       alert("Something went wrong!");
-      // console.log(e);
     } finally {
       setIsLoading(false);
     }
@@ -262,7 +255,7 @@ const CreateGiftCard = () => {
                 <FaChevronCircleRight />
               </div>
 
-              {previewImage.length !== 0 ? (
+              {previewImage?.length !== 0 ? (
                 <img
                   src={
                     "data:image/jpeg;base64," +
@@ -276,14 +269,6 @@ const CreateGiftCard = () => {
             </div>
 
             <div className="gift-card__scroll-container">
-              {/* <div
-              onClick={() => sliderScroll(SCROLL_LEFT)}
-              className="gift-card__slider-btns"
-              id="scroll-left"
-            >
-              <FaChevronCircleLeft />
-            </div> */}
-
               <div className="gift-card__preview-scroll" ref={scrollContainer}>
                 {previewImage.length > 0 &&
                   previewImage.map((item, index) => (
@@ -296,14 +281,6 @@ const CreateGiftCard = () => {
                     </figure>
                   ))}
               </div>
-
-              {/* <div
-              onClick={() => sliderScroll(SCROLL_RIGHT)}
-              className="gift-card__slider-btns"
-              id="scroll-right"
-            >
-              <FaChevronCircleRight />
-            </div> */}
             </div>
           </div>
 
@@ -377,7 +354,7 @@ const CreateGiftCard = () => {
                 onWheel={(e) => e.target.blur()}
               />
               <input
-                type="number"
+                type="text"
                 className="gift-card__variant-input-price gift-card__input"
                 id={index}
                 name="price"
