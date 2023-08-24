@@ -286,6 +286,12 @@ export const secondNotification = async (store_url, baseAmount, capAmount) => {
     const storeDetails = await store.findOne({store_url:store_url});
     const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
     let email_template = half_limit_template
+    email_template = email_template.replace("__merchant__", storeDetails.name);
+    email_template = email_template.replace("__plan_name__", storeDetails.plan.plan_name);
+    email_template = email_template.replaceAll(
+      "__usage_limit__",
+      getBilling.usage_limit
+    );
     console.log("secondNotification");
     const options = {
         from: "merchantalerts@qwikcilver.com",
@@ -311,6 +317,12 @@ export const thirdNotification = async(store_url, baseAmount, capAmount) => {
     const storeDetails = await store.findOne({store_url:store_url});
     const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
     let email_template = complete_limit_template
+    email_template = email_template.replace("__merchant__", storeDetails.name);
+    email_template = email_template.replace("__plan_name__", storeDetails.plan.plan_name);
+    email_template = email_template.replaceAll(
+      "__usage_limit__",
+      getBilling.usage_limit
+    );
     console.log("thirdNotification");
     const options = {
         from: "merchantalerts@qwikcilver.com",
