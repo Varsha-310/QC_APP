@@ -43,7 +43,7 @@ let payment_template = `
                                     class="full_year">__year__</span>:
                             </th>
                             <td style="outline: 1px solid #000;width: 70%;padding:0 0.9rem 0 0.75rem;text-align: start;">Rs.
-                                <span class="base_amount">__baseamount__</span> (Including GST at <span
+                                <span class="base_amount">__base_amount__</span> (Including GST at <span
                                     class="gst_percentage">18%</span>)*</td>
                         </tr>
                         <tr style="outline: 1px solid #000;">

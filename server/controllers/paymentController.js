@@ -194,15 +194,11 @@ const updateBillingHistory = async (data) => {
     "__usage_limit__",
     getBilling.usage_limit
   );
-  email_template = email_template.replace(
+  email_template = email_template.replaceAll(
     "__base_amount__",
     amount
   );
-  email_template = email_template.replace(
-    "__baseamount__",
-    amount
-  );
-  email_template = email_template.replace("__billing_id__", billingData.id);
+  email_template = email_template.replaceAll("__billing_id__", billingData.id);
   email_template = email_template.replace("__month__", month);
   email_template = email_template.replace("__year__", year);
 
