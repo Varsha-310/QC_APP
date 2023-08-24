@@ -264,7 +264,7 @@ export const firstNotification = async(store_url) => {
   );
     const options = {
         from: "merchantalerts@qwikcilver.com",
-        to: "anubhav.g@marmeto.com",
+        to: storeDetails.email,
         subject: "PLAN LIMIT EXCEEDED",
         html: email_template,
       };
