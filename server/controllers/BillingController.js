@@ -282,7 +282,7 @@ export const firstNotification = async(store_url) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const secondNotification = async (store, baseAmount, capAmount) => {
+export const secondNotification = async (store_url, baseAmount, capAmount) => {
     const storeDetails = await store.findOne({store_url:store_url});
     const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
     let email_template = half_limit_template
@@ -305,7 +305,7 @@ export const secondNotification = async (store, baseAmount, capAmount) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const thirdNotification = async(store, baseAmount, capAmount) => {
+export const thirdNotification = async(store_url, baseAmount, capAmount) => {
 
     console.log("thirdNotification");
     const storeDetails = await store.findOne({store_url:store_url});
@@ -337,13 +337,13 @@ export const checkActivePlanUses = async(amount, store_url) => {
             const incoming_amount = (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2);
             const total_allowd = (parseInt(billingData.given_credit) + parseInt(billingData.usage_limit));
             if(parseInt(incoming_amount) > total_allowd){
-
+                
                 flag = 3;
-            }else if(incoming_amount >= (parseFloat(billingData.given_credit) + parseFloat(billingData.usage_limit)/2)){
+            }else if(incoming_amount >= total_allowd/2){
 
                 flag = 2;
             }else if(incoming_amount >= billingData.given_credit){
-                
+
                 flag = 1;
             }
 
