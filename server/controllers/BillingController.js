@@ -242,7 +242,7 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
  * @returns 
  */
 export const firstNotification = async(store_url) => {
-    const storeData = await store.findOne({store_url:store_url});
+    const storeDetails = await store.findOne({store_url:store_url});
     const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
     
 
@@ -254,7 +254,7 @@ export const firstNotification = async(store_url) => {
     "__given_credit__",
     getBilling.given_credit
   );
-  email_template = email_template.replace(
+  email_template = email_template.replaceAll(
     "__usage_charge__",
     getBilling.usage_charge
   );
