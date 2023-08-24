@@ -6,6 +6,8 @@ import store from "../models/store.js";
 import crypto from "crypto";
 import Session from "../models/session.js";
 import template from "../views/plan_limit_exceed.js";
+import half_limit_template from "../views/half_limit_exceed.js";
+import complete_limit_template from "../views/complete_limit_exceed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
 import cron from "node-cron";
 
@@ -280,9 +282,18 @@ export const firstNotification = async(store_url) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const secondNotification = (store, baseAmount, capAmount) => {
-
+export const secondNotification = async (store, baseAmount, capAmount) => {
+    const storeDetails = await store.findOne({store_url:store_url});
+    const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
+    let email_template = half_limit_template
     console.log("secondNotification");
+    const options = {
+        from: "merchantalerts@qwikcilver.com",
+        to: storeDetails.email,
+        subject: "PLAN LIMIT EXCEEDED",
+        html: email_template,
+      };
+      await sendEmail(options);
     return 0;
 }
 
@@ -294,9 +305,20 @@ export const secondNotification = (store, baseAmount, capAmount) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const thiredNotification = (store, baseAmount, capAmount) => {
+export const thirdNotification = async(store, baseAmount, capAmount) => {
 
-    console.log("thiredNotification");
+    console.log("thirdNotification");
+    const storeDetails = await store.findOne({store_url:store_url});
+    const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
+    let email_template = complete_limit_template
+    console.log("thirdNotification");
+    const options = {
+        from: "merchantalerts@qwikcilver.com",
+        to: storeDetails.email,
+        subject: "PLAN LIMIT EXCEEDED",
+        html: email_template,
+      };
+      await sendEmail(options);
     return 0;
 }
 
@@ -335,10 +357,10 @@ export const checkActivePlanUses = async(amount, store_url) => {
                         await firstNotification(store_url);
                         break;
                     case 2:
-                        await secondNotification();
+                        await secondNotification(store_url);
                         break;
                     case 3:
-                        await thiredNotification()
+                        await thirdNotification(store_url)
                         break;
                 }
                 billingData.notifiedMerchant = flag;
