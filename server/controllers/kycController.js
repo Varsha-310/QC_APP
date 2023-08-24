@@ -82,7 +82,7 @@ export const initiatieKyc = async (req, res) => {
             { upsert: true }
           );
           const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
-          await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
+         // await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
 
           res.json({
             ...respondWithData("KYC URL"),

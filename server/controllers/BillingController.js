@@ -247,8 +247,8 @@ export const firstNotification = async(store, baseAmount, capAmount) => {
     console.log("firstNotification");
     let email_template = template;
     const options = {
-        to: "merchantalerts@qwikcilver.com",
-        from: email,
+        from: "merchantalerts@qwikcilver.com",
+        to: "anubhav.g@marmeto.com",
         subject: "PLAN LIMIT EXCEEDED",
         html: email_template,
       };

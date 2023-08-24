@@ -399,7 +399,7 @@ export const getQcCredentials = async (req,res) =>{
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------",req.body);
   res.send(respondSuccess("webhook received"));
-  const {giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn} = req.body
-  await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
+ // const {giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn} = req.body
+ // await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
   await store.updateOne({shopify_id : shopify_id}, {dashboard_activated :true})
 }
