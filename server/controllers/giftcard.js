@@ -213,6 +213,7 @@ export const getSelectedGc = async (req, res) => {
 export const addGiftcard = async (req, res) => {
   try {
     let { store, customer_id, gc_pin } = req.body;
+    const type = "giftcard";
     const validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     if (validPin) {
       const presentTime = new Date(Date.now());
@@ -224,11 +225,18 @@ export const addGiftcard = async (req, res) => {
           store,
           customer_id,
           gc_pin,
-          validPin.balance
+          validPin.balance,
+          type
         );
         if (gcToWallet.status == "403") {
           res.json(respondForbidden("card has been already added to wallet"));
-        } else {
+        } 
+        if (gcToWallet.ResponseCode == "0") {
+          res.json({
+            ...respondWithData("card has been added to wallet"),
+          });
+        }
+          else {
           res.json(
             respondInternalServerError(
               "Something went wrong try after sometime"
@@ -256,7 +264,8 @@ export const addGiftcardtoWallet = async (
   store,
   customer_id,
   gc_pin,
-  amount
+  amount,
+  type
 ) => {
   try {
     const cardAlredyAdded = await wallet_history.findOne({
@@ -305,6 +314,7 @@ export const addGiftcardtoWallet = async (
                   gc_pin: gc_pin,
                   expires_at: activatedCard.ExpiryDate,
                   transaction_date: Date.now(),
+                  type:type
                 },
               },
             },
@@ -358,6 +368,7 @@ export const addGiftcardtoWallet = async (
                   amount: amount,
                   transaction_date: Date.now(),
                   expires_at: activatedCard.ExpiryDate,
+                  type:type
                 },
               },
             },
@@ -429,9 +440,10 @@ export const getWalletBalance = async (req, res) => {
  */
 export const resendEmail = async (req, res) => {
   try {
-    // console.log(req.token.store_url, req.query.order_id);
+    
+    console.log(req.token.store_url, "stsore");
     const orderExists = await orders.findOne({
-      store_url: "qwikcilver-public-app-teststore.myshopify.com",
+      store_url: req.token.store_url,
       id: req.query.order_id,
     });
 

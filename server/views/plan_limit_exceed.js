@@ -18,16 +18,16 @@ let template = `
                             style="margin-top: 0.5rem;max-height: 2.1rem;" src="./assets/qwikcilver_logo.png"
                             alt="qwikcilver_logo"></span></h3>
                 <div class="content_container_content" style="padding: 0.2rem 2rem;">
-                    <p class="content_para1">Dear <span class="merchant_name">Merchant</span>,</p>
+                    <p class="content_para1">Dear <span class="merchant_name">__merchant__</span>,</p>
                     <p class="content_para2" style="margin-bottom: 1rem;">Thanks for using the Qwikcilver App. This mail is
                         to alert you that you
-                        have exceeded the plan issuance limit of Rs. <span class="store_credit_subscription">20,000</span>
-                        under your <b><span class="plan_name">Basic</span> Subscription Plan</b>.</p>
+                        have exceeded the plan issuance limit of Rs. <span class="store_credit_subscription">__given_credit__</span>
+                        under your <b><span class="plan_name">__plan_name__</span> Subscription Plan</b>.</p>
                     <p class="content_para3" style="margin-bottom: 0.1rem;">Now onwards, all the store credit & gift card
                         issuances from the
-                        Qwikcilver App will be charged at a flat rate of <span class="overlimit_rate_percentage">2.5</span>%
+                        Qwikcilver App will be charged at a flat rate of <span class="overlimit_rate_percentage">__usage_charge__</span>%
                         *per issuance. You
-                        will be able to securely issue Rs. <span class="overlimit_amount">100,000</span> worth of Store
+                        will be able to securely issue Rs. <span class="overlimit_amount">__usage_limit__</span> worth of Store
                         Credits and Gift
                         Cards at the above rate.
                     </p>
@@ -45,7 +45,7 @@ let template = `
                         <span class="note_heading" style="font-weight: 600;">* Note:</span> This means if you issue Rs. 100
                         worth of Store credit or
                         Gift card, the usage charges
-                        for you will be Rs. 2.5.
+                        for you will be Rs. __usage_charge__.
                     </p>
                 </div>
             </div>

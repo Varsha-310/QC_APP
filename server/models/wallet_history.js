@@ -13,6 +13,7 @@ const walletHistorySchema = mongoose.Schema({
       gc_pin: String,
       expires_at: Date,
       transaction_date: Date,
+      type: {type: String , enum: ["refund", "giftcard"]}, 
     },
   ],
   logs: [],

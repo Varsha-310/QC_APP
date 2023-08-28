@@ -154,7 +154,7 @@ const PlanSelection = () => {
       // const scPlan
       const scPlan = res.data.data.selectedPlan;
       const crPlan = res.data.data.plans.find(
-        (item) => item.plan_name.toLowerCase() === scPlan.toLowerCase()
+        (item) => item.plan_name?.toLowerCase() === scPlan?.toLowerCase()
       );
       setSelectedPlan(crPlan);
     } catch (error) {

@@ -10,6 +10,8 @@ import kycs from "../models/kyc.js";
 import store from "../models/store.js";
 import NodeMailer from "nodemailer";
 import kyc from "../models/kyc.js";
+import { sendEmail } from "../middleware/sendEmail.js";
+import qcCredentials from "../models/qcCredentials.js";
 
 /**
  * Method to initiate kyc
@@ -79,7 +81,9 @@ export const initiatieKyc = async (req, res) => {
             { status: "kYC initiated" , shopify_id : storeData.shopify_id },
             { upsert: true }
           );
-          const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true})
+          const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
+         // await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
+
           res.json({
             ...respondWithData("KYC URL"),
             data: dispatchResponse.data.signURL,
@@ -334,7 +338,7 @@ console.log(kycData.gstin)
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "anubhav.g@marmeto.com",
+    to: "qc.serviceautomation_testing@qwikcilver.com",
     subject: "KYC details of Merchant",
     attachments: [
       {
