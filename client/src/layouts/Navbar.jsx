@@ -33,6 +33,12 @@ const Navbar = () => {
     };
   }, [popUp]);
 
+  // useEffect(() => {
+  //   if (userEmail !== sessionStorage.getItem("qcUserEmail")) {
+  //     setUserEmail(sessionStorage.getItem("qcUserEmail"));
+  //   }
+  // }, [userEmail]);
+
   return (
     <div className="navbar-container">
       <GiHamburgerMenu onClick={handleMenu} className="navbar-menu-btn" />
@@ -50,6 +56,9 @@ const Navbar = () => {
             </li>
             <li className="navbar-menu-item" onClick={() => setPopUp(!popUp)}>
               <img src={UserIcon} alt="" />
+              <span className="nav-bar__user-email">
+                {sessionStorage.getItem("qcUserEmail") || ""}
+              </span>
               <img src={DownArrow} alt="" />
             </li>
           </ul>

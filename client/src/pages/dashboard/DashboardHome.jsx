@@ -55,6 +55,7 @@ const DashboardHome = () => {
         }
         // console.log(resData);
         setKycData(resData.data);
+        sessionStorage.setItem("qcUserEmail", resData?.data?.email);
       }
     } catch (error) {
       // console.log(error);
@@ -87,6 +88,7 @@ const DashboardHome = () => {
     getKycStatus();
   }, []);
 
+  useEffect(() => {});
   if (isError) {
     return <Toast>{isError}</Toast>;
   }

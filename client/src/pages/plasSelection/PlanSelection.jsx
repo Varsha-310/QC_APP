@@ -290,7 +290,9 @@ const PlanSelection = () => {
           Pay Now
         </PrimaryBtn>
       </div>
+
       {/* enterprise plan box */}
+
       {/* <div className="enterprise_plan-box">
         <div className="plan-box-title">Enterprise Plan</div>
         <p className="box-text">
@@ -974,14 +976,18 @@ const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
                 // );
               })}
 
-            <input type="submit" className="payment-btn" value={"Confirm"} />
+            <input type="submit" className="payment-btn" value={"Yes"} />
           </form>
           <div
             className="payment-btn"
             onClick={() => setReponsePaymentData(false)}
           >
-            Decline
+            No
           </div>
+        </div>
+        <div className="subscription-note">
+          Note: You will be paying Rs.{" "}
+          {reponsePaymentData?.payload?.amount.toFixed(2)} (Inclusive of GST).
         </div>
       </div>
     </div>
