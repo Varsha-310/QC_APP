@@ -24,6 +24,7 @@ const RefundList = () => {
     "Fulfillment Status",
     "Initiate Refund",
     "Refund Mode",
+    "Refund Status",
   ];
 
   // fetching data
@@ -83,7 +84,7 @@ const RefundList = () => {
       ) : (
         <>
           <div className="section-box-container">
-            <div className="section-box-title">Issue Store Credits</div>
+            <div className="section-box-title">Store-Credits & Refunds</div>
           </div>
           <div className="app-table__list-actions">
             <abbr title="Sync Data">

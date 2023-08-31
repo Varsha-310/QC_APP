@@ -531,6 +531,7 @@ export const giftCardOrders = async (req, res) => {
     const sortedOrders = pagedOrders.map((obj) => {
       return {
         id: obj.id,
+        order_number :obj.order_number,
         customer: obj.customer,
         created_at: obj.created_at,
       };

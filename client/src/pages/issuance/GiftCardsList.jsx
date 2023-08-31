@@ -65,10 +65,10 @@ const GiftCardsList = () => {
       ) : (
         <>
           <div className="section-box-container">
-            <div className="section-box-title">My Gift Cards</div>
+            <div className="section-box-title">Gift Card SKU's</div>
           </div>
           <GiftCardTable data={data?.data} deleteItem={deleteItem} />
-          
+
           <Pagination
             total={data.count}
             perPage={10}

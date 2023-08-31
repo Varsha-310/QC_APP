@@ -46,6 +46,7 @@ const RefundListTable = ({ headings, data }) => {
               )} */}
             </td>
             <td>{row?.Refund_Mode}</td>
+            <td>{row?.refund_status}</td>
           </tr>
         ))}
       </tbody>

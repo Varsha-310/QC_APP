@@ -58,12 +58,11 @@ const KycProgress = () => {
           <>
             <div className="status-heading">
               <SectionHeading1 weight="500" size="20px" lineheight="20px">
-                Your Account Has Been Activated.
+                Your Qwikcilver dashboard active.
               </SectionHeading1>
             </div>
             <p className="box-text">
-              You can now log in and start using services. Thank you for
-              choosing us!
+              Easily and securely manage all you store credits and gift cards.
             </p>
           </>
         ) : (
