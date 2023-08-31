@@ -24,6 +24,7 @@ const RefundList = () => {
     "Fulfillment Status",
     "Initiate Refund",
     "Refund Mode",
+    "Refund Status",
   ];
 
   // fetching data

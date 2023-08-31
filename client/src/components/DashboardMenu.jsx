@@ -111,7 +111,7 @@ const DashboardMenu = () => {
                   active={"/kyc-status" === location.pathname}
                 >
                   <HiOutlineIdentification className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -272,7 +272,7 @@ const DashboardMenu = () => {
                   active={"/kyc-status" === location.pathname}
                 >
                   <HiOutlineIdentification className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
