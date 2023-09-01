@@ -55,7 +55,7 @@ let email_template = `
                                                                 </p>
                                                                 <p style="margin:0;padding:0">
                                                                     <span>
-                                                                        Can be Redeemed at <a href="__store__"> store* <br />
+                                                                        Can be Redeemed at <a href="__store__"> store* </a> <br />
 																		Valid Till __Expiry__
                                                                     </span>
                                                                 </p>
