@@ -55,7 +55,7 @@ let email_template = `
                                                                 </p>
                                                                 <p style="margin:0;padding:0">
                                                                     <span>
-                                                                        Can be Redeemed at stores* <br />
+                                                                        Can be Redeemed at <a href="__store__"> store* <br />
 																		Valid Till __Expiry__
                                                                     </span>
                                                                 </p>
@@ -115,18 +115,18 @@ let email_template = `
                                 <tr>
 									<td style="line-height:1.6">
 									<ul style="margin:0;padding:0">
-										1. <span style="line-height:13px"> This e-Gift card once issued is activated.<br />
-										2. <span style="line-height:13px"> This e-Gift card is valid on all categories, at the participating showrooms in India. <br />
-										3. <span style="line-height:13px"> This e-Gift card is allowed for one time redemption only.<br />
-										4. <span style="line-height:13px"> This Gift Card is valid for 6 months from date of activation/issuance.<br />
-										5. <span style="line-height:13px"> Any unused balance on the e-Gift card will not be refunded or credited. <br />
-										6. <span style="line-height:13px"> Balance / expiry may be checked at the Shopify cash counters.<br />
-										7.<span style="line-height:13px"> Shopify will not replace or reimburse the value of your card if its lost, stolen, or expired.<br />
-										8.<span style="line-height:13px"> This  e-Gift Card is non-encashable.<br />
-										9.<span style="line-height:13px"> Bearer is responsible if an e-Gift Card is lost, stolen, destroyed or used without permission.<br />
-										10.<span style="line-height:13px"> For this e-Gift Card, Indian law is applicable and jurisdiction shall be Bangalore.<br />
-										11.<span style="line-height:13px"> These terms & conditions are subject to change at any time, without any prior notice.<br />
-										12.<span style="line-height:13px"> For Balance & Expiry Check, SMS – GETBAL (space) 16 Digit Gift card number to 9876543210.<br />										
+										1. <span style="line-height:13px"> E Gift Card is valid for a period of 6 or 12 months from its date of issue.<br />
+										2. <span style="line-height:13px"> This Gift Card shall be subject to applicable laws or any new law, rules and/or regulations as may be promulgated / imposed by the Government, RBI, or any other statutory/regulatory authority. <br />
+										3. <span style="line-height:13px"> No returns and no refunds on gift cards purchased through any channels<br />
+										4. <span style="line-height:13px"> E Gift Card is redeemable for merchandise at Merchant’s website and retail outlet within India. This Gift Voucher is redeemable during its validity<br />
+										5. <span style="line-height:13px"> E Gift Card is not redeemable for cash or credit nor can be exchanged for another Gift card. <br />
+										6. <span style="line-height:13px"> If the invoice value is greater than the Gift Card value customer can pay the balance amount through Cash, Debit Card, and Credit Card as the case may be.<br />
+										7.<span style="line-height:13px">  Merchant shall not be liable and responsible for any unauthorized and/or fraudulent purchase/s made using this E Gift Card.<br />
+										8.<span style="line-height:13px"> The holder of this E Gift Card shall be solely responsible for the safe custody of the E Gift Card and the credentials mentioned on it. E Gift Card is a bearer instrument<br />
+										9.<span style="line-height:13px"> For balance enquiry & expiry details, please add the gift card to your account / wallet on the merchant website<br />
+										10.<span style="line-height:13px"> Merchant reserves the right to amend the terms & conditions at its discretion without prior notice.<br />
+										11.<span style="line-height:13px"> Disputes if any, shall be subject to Delhi jurisdiction.<br />
+										12.<span style="line-height:13px"> E-gift cards are normally delivered instantly. But sometimes delivery can be delayed up-to 24 - 48 hours.<br />										
 									</ul>
 									</td>
                                 </tr>
