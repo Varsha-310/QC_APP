@@ -184,7 +184,7 @@ input[type="checkbox"] {
 .payment-form {
   display: flex;
   background-color: #ffffff;
-  width: 50%;
+  width: 60%;
   height: 40%;
   border-radius: 5px;
   display: flex;
@@ -211,7 +211,11 @@ input[type="checkbox"] {
   border-radius: 5px;
   cursor: pointer;
 }
-
+.subscription-note{
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-dark-color);
+}
 @media only screen and (max-width: 900px) {
   .plans {
     flex-wrap: wrap;

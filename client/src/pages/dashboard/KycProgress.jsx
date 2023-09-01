@@ -69,7 +69,7 @@ const KycProgress = () => {
           <>
             <div className="status-heading">
               <SectionHeading1 weight="500" size="20px" lineheight="20px">
-                KYC status - Progress
+                Registration status - Progress
               </SectionHeading1>
               <img
                 className="kyc-status__progress"

@@ -59,6 +59,11 @@
   cursor: pointer;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+.nav-bar__user-email{
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-color);
+}
 @media only screen and (max-width: 900px) {
   .navbar-menu-btn {
     display: block;
