@@ -80,23 +80,21 @@ export const installCallback = async (req, res) => {
       }
       const storeStatus = await store.findOne({ store_url: shop });
       let token = await createJwt(shop);
+      let accessToken = await getAccessToken(shop, code, res);
 
       if (storeStatus && storeStatus.is_installed == true) {
 
-        await store.updateOne({store_url : shop} , {auth_token : token});
+        await store.updateOne({store_url : shop} , {auth_token : token, access_token: accessToken});
         return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
       } else {
-        let accessToken = await getAccessToken(shop, code, res);
-
-        if (accessToken) {
-          // console.log(accessToken, "accessToken");
-          let storeData = await getShopifyStoreData(shop, accessToken);
-          if (storeData) {
-            let response = await saveStoreData(storeData, shop, accessToken, token);
-            // console.log(response ,"response of store data");
-            await checkWebhooks(shop, accessToken);
-            return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
-          }
+      
+        // console.log(accessToken, "accessToken");
+        let storeData = await getShopifyStoreData(shop, accessToken);
+        if (storeData) {
+          let response = await saveStoreData(storeData, shop, accessToken, token);
+          // console.log(response ,"response of store data");
+          await checkWebhooks(shop, accessToken);
+          return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
         }
       }
     } else {
