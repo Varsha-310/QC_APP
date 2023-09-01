@@ -29,7 +29,6 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
     await setting.save();
 
     let myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
     console.log("mydate", myDate, validity)
     myDate.setDate(myDate.getDate() + parseInt(validity));
     const expirydate = ((myDate).toISOString().slice(0, 10));
@@ -73,7 +72,7 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -116,7 +115,6 @@ export const fetchBalance = async (store ,walletData) => {
       setting.markModified("unique_transaction_id");
       await setting.save();
       let myDate = new Date();
-      const date = ((myDate).toISOString().slice(0, 10));
     let data = {
       TransactionTypeId: 3503,
       InputType: "1",
@@ -135,7 +133,7 @@ export const fetchBalance = async (store ,walletData) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -176,7 +174,6 @@ export const createWallet = async (store ,customer_id) => {
     const idempotency_key = generateIdempotencyKey()
     await setting.save();
     let myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
     let data = {
       TransactionTypeId: 3500,
       BusinessReferenceNumber: "",
@@ -199,7 +196,7 @@ export const createWallet = async (store ,customer_id) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -239,9 +236,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
     await setting.save();
-    let myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
-    
+    let myDate = new Date();    
       let data = {
         TransactionTypeId: "3508",
         IdempotencyKey: idempotency_key,
@@ -264,7 +259,7 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
         url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
         headers: {
           "Content-Type": "application/json;charset=UTF-8 ",
-          DateAtClient: date,
+          DateAtClient: myDate,
           TransactionId: transactionId,
           Authorization: `Bearer ${process.env.Authorization}`,
         },
@@ -300,7 +295,6 @@ export const activateCard = async (store ,gc_pin) => {
       const idempotency_key = generateIdempotencyKey();
     console.log(gc_pin);
     let myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
     let data = {
       TransactionTypeId: 322,
       InputType: "1",
@@ -314,7 +308,7 @@ export const activateCard = async (store ,gc_pin) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -355,7 +349,6 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       const idempotency_key = generateIdempotencyKey();
       await setting.save();
       let myDate = new Date();
-      const date = ((myDate).toISOString().slice(0, 10));
     let data = {
       TransactionTypeId: 3504,
       InputType:"1",
@@ -377,7 +370,7 @@ export const redeemWallet = async (store ,wallet_id,amount) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
@@ -418,7 +411,6 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
     setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
     setting.markModified("unique_transaction_id");
     const myDate = new Date();
-    const date = ((myDate).toISOString().slice(0, 10));
     const data = {
       InputType:"1",
       Cards:[{  
@@ -434,7 +426,7 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: setting.unique_transaction_id,
         Authorization: `Bearer ${process.env.Authorization}`,
       },
