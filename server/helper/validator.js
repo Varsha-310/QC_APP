@@ -295,24 +295,17 @@ export const verifyShopifyHook = async (req, res, next) => {
 
   try {
     
-    console.log("in shopify webhook verification");
-    const storeData = store.findOne({store_url : req.headers['X-Shopify-Shop-Domain']})
-    const api_secret = storeData.access_token ?? "";
+    const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
     const body = req.rawBody;
-    console.log(body);
-  
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)
       .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
-    console.log(providedHmac, digest)
-    
     if (digest == providedHmac) {
-      console.log("shopy webhook verified");
       next();
     } else {
-      res.json(respondUnauthorized("not shopify webhook"));
+      res.json(respondUnauthorized("Unautherised request", {}));
     }
   } catch (e) {
     console.log(e);

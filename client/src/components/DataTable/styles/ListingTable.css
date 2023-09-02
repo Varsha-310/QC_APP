@@ -13,7 +13,7 @@
 /* for refund table grid */
 
 .refund-table tr {
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: repeat(10, 1fr);
 }
 
 /* resend mail table grid */
@@ -96,13 +96,16 @@
   color: rgb(0, 176, 0);
   text-shadow: 0px 0px #000000;
 }
+.refund-table {
+  width: max-content !important;
+}
 
-@media only screen and (max-width: 900px) {
+/* @media only screen and (max-width: 900px) {
   .refund-list__containe-table {
     width: 100%;
-    overflow-y: auto;
+    overflow-x: auto;
   }
   .refund-table {
     width: max-content !important;
   }
-}
+} */

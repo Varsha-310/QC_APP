@@ -213,7 +213,7 @@ const CreateGiftCard = () => {
   return (
     <div className="gift-card__container component">
       <div className="section-box-container">
-        <div className="section-box-title">Create Gift Card</div>
+        <div className="section-box-title">Publish Gift Card</div>
       </div>
       {/* <div className="gift-card__active-status"></div> */}
       <div className="section-box-container component">
@@ -337,7 +337,7 @@ const CreateGiftCard = () => {
               Variant Name <span className="mandatory">*</span>
             </label>
             <label className="gift-card__label">
-              Variant Value <span className="mandatory">*</span>
+              Denomination <span className="mandatory">*</span>
             </label>
             <label></label>
           </div>
@@ -376,8 +376,8 @@ const CreateGiftCard = () => {
         {/* error */}
         {isError && <div className="gift-card__error">{isError}</div>}
 
-        <PrimaryBtn $primary onClick={handleSubmit}>
-          Create
+        <PrimaryBtn $primary width={"230px"} onClick={handleSubmit}>
+          Create & Publish Gift Card
         </PrimaryBtn>
       </div>
     </div>

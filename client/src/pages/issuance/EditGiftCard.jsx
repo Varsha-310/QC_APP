@@ -334,7 +334,7 @@ const EditGiftCard = () => {
               Variant Name <span className="mandatory">*</span>
             </label>
             <label className="gift-card__label">
-              Gift Card Price <span className="mandatory">*</span>
+            Denomination <span className="mandatory">*</span>
             </label>
             <label></label>
           </div>

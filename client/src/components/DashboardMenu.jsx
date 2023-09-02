@@ -111,7 +111,7 @@ const DashboardMenu = () => {
                   active={"/kyc-status" === location.pathname}
                 >
                   <HiOutlineIdentification className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -133,7 +133,7 @@ const DashboardMenu = () => {
                     style={{ width: "20px" }}
                   />
 
-                  <TabItemLable>Create Gift Card</TabItemLable>
+                  <TabItemLable>Publish Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
 
@@ -143,7 +143,7 @@ const DashboardMenu = () => {
                   active={"/my-gift-card" === location.pathname}
                 >
                   <HiOutlineWallet className="menu-icons" />
-                  <TabItemLable>My Gift Cards</TabItemLable>
+                  <TabItemLable>Gift Card SKU’s</TabItemLable>
                 </SubTabBox>
               </li>
 
@@ -153,7 +153,7 @@ const DashboardMenu = () => {
                   active={"/resend-gift-card" === location.pathname}
                 >
                   <PiKeyReturn className="menu-icons" />
-                  <TabItemLable>Re-send Gift Card</TabItemLable>
+                  <TabItemLable>Gift Card Orders</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -171,7 +171,7 @@ const DashboardMenu = () => {
                 >
                   {/* <StoreCredit className="menu-icons" /> */}
                   <HiOutlineReceiptRefund className="menu-icons" />
-                  <TabItemLable>Issue Store Credits</TabItemLable>
+                  <TabItemLable>Store-Credits & Refunds</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
@@ -272,7 +272,7 @@ const DashboardMenu = () => {
                   active={"/kyc-status" === location.pathname}
                 >
                   <HiOutlineIdentification className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -294,7 +294,7 @@ const DashboardMenu = () => {
                     style={{ width: "20px" }}
                   />
 
-                  <TabItemLable>Create Gift Card</TabItemLable>
+                  <TabItemLable>Publish Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
 
@@ -304,7 +304,7 @@ const DashboardMenu = () => {
                   active={"/my-gift-card" === location.pathname}
                 >
                   <HiOutlineWallet className="menu-icons" />
-                  <TabItemLable>My Gift Cards</TabItemLable>
+                  <TabItemLable>Gift Card SKU’s</TabItemLable>
                 </SubTabBox>
               </li>
 
@@ -314,7 +314,7 @@ const DashboardMenu = () => {
                   active={"/resend-gift-card" === location.pathname}
                 >
                   <PiKeyReturn className="menu-icons" />
-                  <TabItemLable>Re-send Gift Card</TabItemLable>
+                  <TabItemLable>Gift Card Orders</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -332,7 +332,7 @@ const DashboardMenu = () => {
                 >
                   {/* <StoreCredit className="menu-icons" /> */}
                   <HiOutlineReceiptRefund className="menu-icons" />
-                  <TabItemLable>Issue Store Credits</TabItemLable>
+                  <TabItemLable>Store-Credits & Refunds</TabItemLable>
                 </SubTabBox>
               </li>
               <li>

@@ -83,7 +83,7 @@ const ResendGiftCard = () => {
   return (
     <div className="component">
       <div className="section-box-container">
-        <div className="section-box-title">Resend Gift Card</div>
+        <div className="section-box-title">Gift Card Orders</div>
       </div>
 
       {!!orders && orders?.total !== 0 ? (

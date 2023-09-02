@@ -6,6 +6,8 @@ import store from "../models/store.js";
 import crypto from "crypto";
 import Session from "../models/session.js";
 import template from "../views/plan_limit_exceed.js";
+import half_limit_template from "../views/half_limit_exceed.js";
+import complete_limit_template from "../views/complete_limit_exceed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
 import cron from "node-cron";
 
@@ -264,7 +266,7 @@ export const firstNotification = async(store_url) => {
   );
     const options = {
         from: "merchantalerts@qwikcilver.com",
-        to: "anubhav.g@marmeto.com",
+        to: storeDetails.email,
         subject: "PLAN LIMIT EXCEEDED",
         html: email_template,
       };
@@ -280,9 +282,24 @@ export const firstNotification = async(store_url) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const secondNotification = (store, baseAmount, capAmount) => {
-
+export const secondNotification = async (store_url, baseAmount, capAmount) => {
+    const storeDetails = await store.findOne({store_url:store_url});
+    const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
+    let email_template = half_limit_template
+    email_template = email_template.replace("__merchant__", storeDetails.name);
+    email_template = email_template.replace("__plan_name__", storeDetails.plan.plan_name);
+    email_template = email_template.replaceAll(
+      "__usage_limit__",
+      getBilling.usage_limit
+    );
     console.log("secondNotification");
+    const options = {
+        from: "merchantalerts@qwikcilver.com",
+        to: storeDetails.email,
+        subject: "PLAN LIMIT EXCEEDED",
+        html: email_template,
+      };
+      await sendEmail(options);
     return 0;
 }
 
@@ -294,9 +311,26 @@ export const secondNotification = (store, baseAmount, capAmount) => {
  * @param {*} capAmount 
  * @returns 
  */
-export const thiredNotification = (store, baseAmount, capAmount) => {
+export const thirdNotification = async(store_url, baseAmount, capAmount) => {
 
-    console.log("thiredNotification");
+    console.log("thirdNotification");
+    const storeDetails = await store.findOne({store_url:store_url});
+    const getBilling = await BillingHistory.findOne({store_url:store_url , status: "ACTIVE"});
+    let email_template = complete_limit_template
+    email_template = email_template.replace("__merchant__", storeDetails.name);
+    email_template = email_template.replace("__plan_name__", storeDetails.plan.plan_name);
+    email_template = email_template.replaceAll(
+      "__usage_limit__",
+      getBilling.usage_limit
+    );
+    console.log("thirdNotification");
+    const options = {
+        from: "merchantalerts@qwikcilver.com",
+        to: storeDetails.email,
+        subject: "PLAN LIMIT EXCEEDED",
+        html: email_template,
+      };
+      await sendEmail(options);
     return 0;
 }
 
@@ -315,13 +349,13 @@ export const checkActivePlanUses = async(amount, store_url) => {
             const incoming_amount = (parseFloat(billingData.used_credit) + parseFloat(amount)).toFixed(2);
             const total_allowd = (parseInt(billingData.given_credit) + parseInt(billingData.usage_limit));
             if(parseInt(incoming_amount) > total_allowd){
-
+                
                 flag = 3;
-            }else if(incoming_amount >= (parseFloat(billingData.given_credit) + parseFloat(billingData.usage_limit)/2)){
+            }else if(incoming_amount >= total_allowd/2){
 
                 flag = 2;
             }else if(incoming_amount >= billingData.given_credit){
-                
+
                 flag = 1;
             }
 
@@ -335,10 +369,10 @@ export const checkActivePlanUses = async(amount, store_url) => {
                         await firstNotification(store_url);
                         break;
                     case 2:
-                        await secondNotification();
+                        await secondNotification(store_url);
                         break;
                     case 3:
-                        await thiredNotification()
+                        await thirdNotification(store_url)
                         break;
                 }
                 billingData.notifiedMerchant = flag;
