@@ -343,14 +343,15 @@ export const handleRefundAction = async (req, res) => {
         console.log("GC Refund Details:", refund_type, gcRfDetails);
         
         //process gc reverse transaction
-        if(gcRfDetails.gc_rf_amount && (!refundSession?.gc_refunded_at)){
+        if(gcRfDetails.gc_rf_amount && (!refundSession?.gc_refunded?.status)){
 
             const getOrderGCAmount = await getOrderTransactionDetails(orderId, store_url, accessToken);
             // console.log("Order Transacion", getOrderGCAmount);
             const gc_transaciton = getOrderGCAmount.data.transactions.find(item => item.gateway == "gift_card");
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
-            await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount);
+            const logs1 = await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount, refundSession?.gc_refunded);
+            if(!logs1.status) throw Error("Error while reversing the amount");
             trans.push({
                 "kind":"refund",
                 "gateway": gcRfDetails.gc_trans.gateway,
@@ -359,7 +360,7 @@ export const handleRefundAction = async (req, res) => {
             });
             amount = gcRfDetails.refundableAmount;
             refundSession = await updateRefundLogs(sessionQuery, {
-                "gc_refunded_at": new Date(),
+                "gc_refunded": logs1,
                 "gc_rf_amount": gcRfDetails.gc_rf_amount,
                 ...logs
             })
@@ -385,26 +386,41 @@ export const handleRefundAction = async (req, res) => {
 
         }else if(amount && refund_type == "Store-credit"){
 
-            if(!refundSession?.qc_gc_created){
-                const  type = "refund"
-                const giftCardDetails = await createGiftcard(store_url, amount, orderId, 180, type );
-                console.log( "New Added Giftcard", giftCardDetails );
-                const custom_id = ordersData.customer.id == 7286901178670 ? "9709857928" :  ordersData.customer.id;
-                await addGiftcardtoWallet( store_url, custom_id, giftCardDetails.CardPin, giftCardDetails.Balance , type);
-                const _trans = transactions.find(item => item.gateway != "gift_card");
-                trans.push({
-                    "kind":"refund",
-                    "gateway": _trans.gateway,
-                    "parent_id": _trans.parent_id,
-                    "amount":0
-                });
+            const  type = "refund";
+            let giftCardDetails = {};
+            let logData = refundSession?.qc_gc_created || {};
+            if(!refundSession?.qc_gc_created?.createGC?.status){
+
+                const logsGC = await createGiftcard(store_url, amount, orderId, 180, type, refundSession?.qc_gc_created?.createGC);
+                logData["createGC"] = logsGC;
                 refundSession = await updateRefundLogs(sessionQuery, {
-                    qc_gc_created: new Date(),
+                    qc_gc_created: logData,
                     qc_gc_amount: amount,
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
+                if(!logsGC.status) throw new Error("Error: Create Gift Card");
+                giftCardDetails = logsGC.resp.Cards[0];
             }
+            if(!refundSession?.qc_gc_created?.wallet?.status){
+
+                const logsGC = await addGiftcardtoWallet( store_url, ordersData.customer.id, giftCardDetails.CardPin, giftCardDetails.Balance , type, refundSession?.qc_gc_created?.wallet);
+                logData["wallet"] = logsGC;
+                refundSession = await updateRefundLogs(sessionQuery, {
+                    qc_gc_created: logData,
+                    qc_gc_amount: amount,
+                    ...logs
+                });
+                sessionQuery["logs.id"] = refundSession.id;
+                if(!logsGC.status) throw new Error("Error: Create Gift Card");
+            }
+            const _trans = transactions.find(item => item.gateway != "gift_card");
+            trans.push({
+                "kind":"refund",
+                "gateway": _trans.gateway,
+                "parent_id": _trans.parent_id,
+                "amount":0
+            });
         }
 
         // Findal process of the refunds

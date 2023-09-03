@@ -223,6 +223,7 @@ const orderSchema = new Schema({
         enum: ["N/A", "NO", "YES"],
         default: "N/A"
     },
+    remarks: { type: String, default: null }
 });
 
 export default mongoose.model('orders', orderSchema);

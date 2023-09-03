@@ -15,13 +15,13 @@ import wallet from "../models/wallet.js";
  * @param {*} type 
  * @returns 
  */
-export const createGiftcard = async (store, amount, order_id , validity, type) => {
+export const createGiftcard = async (store, amount, order_id, validity, type, customer = {}, logs = {}) => {
 
+  logs["status"] = false;
   try {
 
-    console.log(amount, "amount")
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------",setting , store);
+    console.log("------------------store qc credeentials-------------------------", setting, store);
     let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
@@ -33,24 +33,24 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
     myDate.setDate(myDate.getDate() + parseInt(validity));
     const expirydate = ((myDate).toISOString().slice(0, 10));
     let cpgn;
-    if(type == "refund"){
-     cpgn = setting.refund_cpgn
+    if (type == "refund") {
+      cpgn = setting.refund_cpgn
     }
-    else{
-	console.log("_------in giftcard type--------", cpgn)
+    else {
+      console.log("_------in giftcard type--------", cpgn)
       cpgn = setting.giftcard_cpgn
     }
 
-  console.log("cpgn type" , cpgn , type);  
-    let data = {
+    console.log("cpgn type", cpgn, type);
+    let data = (type == "giftcard" && logs?.req) ? logs.req : {
       TransactionTypeId: "305",
       InputType: "3",
-      TransactionModeId : "0",
+      TransactionModeId: "0",
       BusinessReferenceNumber: "",
       InvoiceNumber: "ORD-" + order_id,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
-      Expiry : expirydate,
+      Expiry: expirydate,
       Cards: [
         {
           CardProgramGroupName: cpgn,
@@ -59,14 +59,15 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
         },
       ],
       Purchaser: {
-        FirstName: "varsha",
-        LastName: "One",
-        Mobile: "+8095379504",
-        Email: "testinguser@gmail.com",
+        FirstName: customer?.first_name || "varsha",
+        LastName: customer?.last_name || "One",
+        Mobile: customer?.email || "+8095379504",
+        Email: customer?.phone || "testinguser@gmail.com",
       },
       Notes: "CreateAndIssue Testing",
     };
-
+    logs["req"] = data;
+    
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
@@ -79,23 +80,33 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
       data: data,
     };
 
-   const gcCreation = await axios(config);
-   console.log(gcCreation, "******************")
-   if ( gcCreation.status == "200" &&  gcCreation.data.ResponseCode == "0") {
-    
-    await updateBilling(amount, store);
-    console.log(gcCreation.data.Cards[0], "----------")
-    await qc_gc.create({ store_url : store , gc_pin :gcCreation.data.Cards[0].CardPin , gc_number : gcCreation.data.Cards[0].CardNumber, balance :gcCreation.data.Cards[0].Balance , expiry_date :gcCreation.data.Cards[0].ExpiryDate , order_id : order_id})
-    return gcCreation.data.Cards[0]
+    const gcCreation = await axios(config);
+    console.log(gcCreation, "******************")
+    logs["resp"] = gcCreation.data;
+    if (gcCreation.status == "200" && gcCreation.data.ResponseCode == "0") {
+
+      if(!logs?.updateBillingAt){
+
+        await updateBilling(amount, store);
+        logs["updateBillingAt"] = new Date().toISOString();
+      }
+      console.log(gcCreation.data.Cards[0], "----------")
+      if(!logs?.qcUpdatedToDB){
+
+        await qc_gc.create({ store_url: store, gc_pin: gcCreation.data.Cards[0].CardPin, gc_number: gcCreation.data.Cards[0].CardNumber, balance: gcCreation.data.Cards[0].Balance, expiry_date: gcCreation.data.Cards[0].ExpiryDate, order_id: order_id })
+        logs["qcUpdatedToDB"] = new Date().toISOString();
+      }
+      logs["resp"] = gcCreation.data;
+      logs["status"] = true;
+      return type == "giftcard" ? logs : gcCreation.data.Cards[0];
+    }
+    return logs;
   }
-
-}
-
   catch (err) {
+
     console.log(err);
-    res.json(
-      respondInternalServerError()
-    );
+    logs["error"] = err;
+    return logs;
   }
 };
 
@@ -105,16 +116,16 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
  * @param {*} walletData 
  * @returns 
  */
-export const fetchBalance = async (store ,walletData) => {
+export const fetchBalance = async (store, walletData) => {
   try {
     console.log(walletData);
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
+    console.log("------------------store qc credeentials-------------------------", setting.password, setting.unique_transaction_id);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
-      setting.unique_transaction_id = transactionId + 1; // Append it by 1
-      setting.markModified("unique_transaction_id");
-      await setting.save();
-      let myDate = new Date();
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+    let myDate = new Date();
     let data = {
       TransactionTypeId: 3503,
       InputType: "1",
@@ -163,8 +174,9 @@ export const fetchBalance = async (store ,walletData) => {
  * @param {*} req
  * @param {*} res
  */
-export const createWallet = async (store ,customer_id) => {
+export const createWallet = async (store, customer_id, logs = {}) => {
 
+  logs["status"] = false;
   try {
 
     let setting = await qcCredentials.findOne({ store_url: store });
@@ -174,13 +186,13 @@ export const createWallet = async (store ,customer_id) => {
     const idempotency_key = generateIdempotencyKey()
     await setting.save();
     let myDate = new Date();
-    let data = {
+    let data = logs?.req ? logs.req : {
       TransactionTypeId: 3500,
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
       Quantity: 1,
-      ExecutionMode:"0",
-      WalletProgramGroupName : setting.wpgn,
+      ExecutionMode: "0",
+      WalletProgramGroupName: setting.wpgn,
       IdempotencyKey: idempotency_key,
       Wallets: [
         {
@@ -190,7 +202,7 @@ export const createWallet = async (store ,customer_id) => {
       ],
       Notes: "Test Wallet Creation for Testing",
     };
-
+    logs["req"] = data;
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
@@ -202,21 +214,24 @@ export const createWallet = async (store ,customer_id) => {
       },
       data: data,
     };
-
     let walletCreation = await axios(config);
-    console.log("Wallet data",walletCreation.status, walletCreation.data);
-    if (
-      (walletCreation.status == "200", walletCreation.data.ResponseCode == "0")
-    ) {
-      return walletCreation.data.Wallets[0];
+    logs["resp"] = walletCreation?.data;
+    console.log("Wallet data", walletCreation.status, walletCreation.data);
+    if (walletCreation.status == "200" && walletCreation.data.ResponseCode == "0") {
+
+      logs["status"] = true;
+     // return walletCreation.data.Wallets[0];
     }
-    else{
-      console.log("Wallet Error", walletCreation);
-    }
+    // else {
+    //   console.log("Wallet Error", walletCreation);
+    // }
+    return logs;
   } catch (err) {
 
+    logs["error"] = err;
     console.log(err);
-    throw Error("Internal Server Error");
+    return logs;
+    //throw Error("Internal Server Error");
   }
 };
 
@@ -225,56 +240,62 @@ export const createWallet = async (store ,customer_id) => {
  * @param {*} wallet_id
  * @param {*} gc_pin
  */
-export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
+export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs) => {
+
+  logs["status"] = false;
   try {
- 
- 
-    let setting = await qcCredentials.findOne({store_url : store});
-    console.log(store , setting , "---------------add to wallet----------------------------------------")
+
+    let setting = await qcCredentials.findOne({ store_url: store });
+    console.log(store, setting, "---------------add to wallet----------------------------------------")
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
     await setting.save();
     let myDate = new Date();
-    
-      let data = {
-        TransactionTypeId: "3508",
-        IdempotencyKey: idempotency_key,
-        Cards: [
-          {
-            CardNumber: wallet_id,
-            PaymentInstruments: [
-              {
-                InstrumentNumber: gc_number,
-                InstrumentPin: gc_pin,
-              },
-            ],
-          },
-        ],
-        Notes: "Test Add Card to Wallet",
-      };
 
-      let config = {
-        method: "post",
-        url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
-        headers: {
-          "Content-Type": "application/json;charset=UTF-8 ",
-          DateAtClient: myDate,
-          TransactionId: transactionId,
-          Authorization: `Bearer ${process.env.Authorization}`,
+    let data = logs?.req ? logs.req : {
+      TransactionTypeId: "3508",
+      IdempotencyKey: idempotency_key,
+      Cards: [
+        {
+          CardNumber: wallet_id,
+          PaymentInstruments: [
+            {
+              InstrumentNumber: gc_number,
+              InstrumentPin: gc_pin,
+            },
+          ],
         },
-        data: data,
-      };
+      ],
+      Notes: "Test Add Card to Wallet",
+    };
 
-      let cardAdded = await axios(config);
-     console.log(cardAdded.data)
-    return cardAdded;
-  
-    
+    logs["req"] = data;
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8 ",
+        DateAtClient: myDate,
+        TransactionId: transactionId,
+        Authorization: `Bearer ${process.env.Authorization}`,
+      },
+      data: data,
+    };
+
+    let cardAdded = await axios(config);
+    console.log(cardAdded.data)
+    logs["resp"] = cardAdded;
+    if (cardAdded.status == "200" && cardAdded.data.ResponseCode == "0")
+      logs["status"] = true;
+
+    return logs;
   } catch (err) {
+
     console.log(err)
-    return false
+    logs["error"] = err;
+    return logs;
   }
 };
 
@@ -283,26 +304,28 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
  * @param {*} gc_pin
  * @returns
  */
-export const activateCard = async (store ,gc_pin) => {
+export const activateCard = async (store, gc_pin, logs = {}) => {
 
+  logs["status"] = false;
   try {
 
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------", setting.unique_transaction_id);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
-      setting.unique_transaction_id = transactionId + 1; // Append it by 1
-      setting.markModified("unique_transaction_id");
-      await setting.save();
-      const idempotency_key = generateIdempotencyKey();
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+    const idempotency_key = generateIdempotencyKey();
     console.log(gc_pin);
     let myDate = new Date();
-    let data = {
+    let data = logs?.req ? logs?.req : {
       TransactionTypeId: 322,
       InputType: "1",
       IdempotencyKey: idempotency_key,
       Cards: [{ CardPin: gc_pin }],
       Notes: "Activate Only",
     };
+    logs["req"] = data;
 
     let config = {
       method: "post",
@@ -317,17 +340,18 @@ export const activateCard = async (store ,gc_pin) => {
     };
 
     let activation = await axios(config);
+    logs["resp"] = activation?.data;
     console.log(activation.data, "******************");
-   if (
-      activation.status == "200" &&
-      activation.data.ResponseCode == "0"
-    ) {
-      return activation.data.Cards[0]
+    if (activation.status == "200" && activation.data.ResponseCode == "0" ) {
+      
+      logs["status"] = true;
     }
+    return logs;
   } catch (err) {
 
     console.log(err);
-    throw Error("Internal Server Error");
+    logs["error"] = err;
+    return logs;
   }
 };
 
@@ -338,35 +362,37 @@ export const activateCard = async (store ,gc_pin) => {
  * @param {*} customer_id 
  * @returns 
  */
-export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
+export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) => {
 
+  logs["status"] = false;
   try {
 
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------",setting.password, setting.unique_transaction_id);
+    console.log("------------------store qc credeentials-------------------------", setting.password, setting.unique_transaction_id);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
-      setting.unique_transaction_id = transactionId + 1; // Append it by 1
-      setting.markModified("unique_transaction_id");
-      const idempotency_key = generateIdempotencyKey();
-      await setting.save();
-      let myDate = new Date();
-    let data = {
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey();
+    await setting.save();
+    let myDate = new Date();
+    let data = logs?.req ? logs.req : {
       TransactionTypeId: 3504,
-      InputType:"1",
-      PreAuthType:1,
+      InputType: "1",
+      PreAuthType: 1,
       BusinessReferenceNumber: "",
       InvoiceNumber: "Inv-01",
       IdempotencyKey: idempotency_key,
-      BillAmount : bill_amount,
+      BillAmount: bill_amount,
       Quantity: 1,
-         Cards:[{  
-        CardNumber:wallet_id,
-        CurrencyCode:"INR",
+      Cards: [{
+        CardNumber: wallet_id,
+        CurrencyCode: "INR",
         Amount: amount
       }],
       Notes: "Test Wallet Redeem for Testing",
     };
 
+    logs["req"] = data;
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
@@ -380,16 +406,22 @@ export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
     };
 
     let walletRedemption = await axios(config);
-    console.log(walletRedemption.data)
+    logs["resp"] = walletRedemption?.data;
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
 
+      logs["status"] = true; 
       console.log(walletRedemption.data.Wallets);
-      await wallet_history.updateOne({wallet_id: wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
-      return walletRedemption.data.Wallets;
+      await wallet_history.updateOne({ wallet_id: wallet_id }, { $push: { transactions: { transaction_type: "debit", amount: amount, transaction_date: Date.now() } } }, { upsert: true });
+      //return walletRedemption.data.Wallets;
     }
+    return logs;
+    //return false;
   } catch (err) {
+
+    logs["error"] = err;
     console.log(err);
-    return false;
+    return logs;
+    //return false;
   }
 };
 
@@ -402,27 +434,29 @@ export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
  * @param {*} amount 
  * @returns 
  */
-export const reverseRedeemWallet = async (store ,gc_id, amount) => {
-  
+export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
+
+  logs["status"] = false;
   try {
 
-    const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id});
-    if(giftcardExists) return null;
-    
+    const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id });
+    if (giftcardExists) return null;
+
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1; 
+    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1;
     setting.markModified("unique_transaction_id");
     const myDate = new Date();
-    const data = {
-      InputType:"1",
-      Cards:[{  
-        CardNumber:giftcardExists.wallet_id,
-        CurrencyCode:"INR",
+    const data = logs?.req ? logs.req : {
+      InputType: "1",
+      Cards: [{
+        CardNumber: giftcardExists.wallet_id,
+        CurrencyCode: "INR",
         Amount: amount
       }],
       Notes: "Test Wallet Reverse Redeem for Testing",
     };
 
+    logs["req"] = data;
     const config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
@@ -437,16 +471,20 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
 
     const walletRedemption = await axios(config);
     console.log(walletRedemption.data)
+    logs["resp"] = walletRedemption?.data;
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
 
-      await wallet_history.updateOne({wallet_id: giftcardExists.wallet_id},{$push:{transactions: {transaction_type : "credit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
-      return walletRedemption.data;
+      logs["status"] = true;
+      await wallet_history.updateOne({ wallet_id: giftcardExists.wallet_id }, { $push: { transactions: { transaction_type: "credit", amount: amount, transaction_date: Date.now() } } }, { upsert: true });
+      //return walletRedemption.data;
     }
     await setting.save();
+    return logs;
   } catch (err) {
 
+    logs["error"] = err;
     console.log(err);
-    throw Error("Error while reversing the amount");
+    return logs;
   }
 };
 
