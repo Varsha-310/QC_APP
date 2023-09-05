@@ -11,6 +11,8 @@ import { checkActivePlanUses } from "./BillingController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import cron from "node-cron";
+import { Console } from "console";
+import axios from "axios";
 
 /**
  * To handle order update webhook
@@ -42,6 +44,11 @@ const ordercreateEvent = async (input, done) => {
   try {
 
     const { shop, order } = input;
+     // checking Existing Session.
+     const logQuery = {
+      store: shop,
+      orderId: order.id
+    };
     console.log("------------order create event-----------------", shop);
     // Store Order
     await orders.updateOne({
@@ -74,18 +81,16 @@ const ordercreateEvent = async (input, done) => {
         }
       }
 
-      // checking Existing Session.
-      const logQuery = {
-        store: shop,
-        orderId: order.id
-      };
-      const OrderSession = await OrderCreateEventLog.findOne(logQuery);
+     await OrderCreateEventLog.updateOne({store: shop},{orderId: order.id}, {upsert: true})
+      let OrderSession = await OrderCreateEventLog.findOne({store: shop ,orderId: order.id});
+      console.log(OrderSession ,"ordersession")
       if (OrderSession?.status == "done") {
 
         done(null, true);
         return; // skip if already processed.
       }
-      OrderSession = OrderSession ? OrderSession : logQuery;
+      // OrderSession = OrderSession ? OrderSession : logQuery;
+      console.log(OrderSession , "ordersession")
 
       //check gc in the order & process
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
@@ -106,6 +111,7 @@ const ordercreateEvent = async (input, done) => {
           { id: newOrder.id },
           { is_giftcard_order: true }
         );
+        await OrderCreateEventLog.updateOne({orderId: order.id}, {action: "gift"})
 
         //  check financial status
         if (newOrder.financial_status == "paid") {
@@ -118,6 +124,7 @@ const ordercreateEvent = async (input, done) => {
 
               console.log("Plan Limit has been exceeded.")
               await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "NO" });
+              await orderCancel(newOrder.id,shop);
               done();
               return 1;
             }
@@ -184,8 +191,8 @@ const ordercreateEvent = async (input, done) => {
                     newOrder.customer,
                     OrderSession?.other?.createGC
                   );
-                  OrderSession["other"]["createGC"] = logs;
-                  await OrderCreateEventLog.updateOne(logQuery, OrderSession, {upsert: true});
+                  // OrderSession["other"]["createGC"] = logs;
+                  await OrderCreateEventLog.updateOne(logQuery, {"gift.createGC" : logs}, {upsert: true});
                   if(!logs.status) throw new Error("Error: Create Gift Card");
                   giftCardDetails = logs.resp.Cards[0];
                 }
@@ -200,14 +207,16 @@ const ordercreateEvent = async (input, done) => {
                     message,
                     image_url
                   );
-                  OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
-                  await OrderCreateEventLog.updateOne(logQuery, OrderSession, {upsert: true});
+                  // OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
+                  await OrderCreateEventLog.updateOne(logQuery,{"gift.sentEmailAt" :new Date().toISOString()}, {upsert: true});
                 }
               }
             }
             else {
 
               console.log("purchased for self");
+              await OrderCreateEventLog.updateOne({orderId: order.id},{action: "self"});
+
               let giftCardDetails = {};
               if(OrderSession?.self?.createGC?.status == true){
 
@@ -223,8 +232,8 @@ const ordercreateEvent = async (input, done) => {
                   newOrder.customer,
                   OrderSession?.self?.createGC
                 );
-                OrderSession["self"]["createGC"] = logs;
-                await OrderCreateEventLog.updateOne(logQuery, OrderSession, {upsert: true});
+                // OrderSession["self"]["createGC"] = logs;
+                await OrderCreateEventLog.updateOne(logQuery, {"self.createGC" : logs}, {upsert: true});
                 if(!logs.status) throw new Error("Error: Create Gift Card");
                 giftCardDetails = logs.resp.Cards[0];
               }
@@ -239,8 +248,8 @@ const ordercreateEvent = async (input, done) => {
                   type,
                   OrderSession?.self?.wallet
                 );
-                OrderSession["self"]["wallet"] = logs;
-                await OrderCreateEventLog.updateOne(logQuery, OrderSession, {upsert: true});
+                // OrderSession["self"]["wallet"] = logs;
+                await OrderCreateEventLog.updateOne(logQuery,{"self.wallet" : logs}, {upsert: true});
                 if(!logs.status) throw new Error("Error: Add Gift Card To Wallet");
               }
             }
@@ -262,14 +271,14 @@ const ordercreateEvent = async (input, done) => {
               order.current_total_price,
               OrderSession?.redeem
             );
-            OrderSession["redeem"] = redeemed;
-            await OrderCreateEventLog.updateOne(logQuery, OrderSession, {upsert: true});
+            // OrderSession["redeem"] = redeemed;
+            await OrderCreateEventLog.updateOne(logQuery, {redeem : redeemed}, {upsert: true});
             if(!logs.status) throw new Error("Error: Redeem Gift Card");
           }
         }
       }
     }
-    await OrderCreateEventLog.updateOne(logQuery, {status: "done"});
+    await OrderCreateEventLog.updateOne(logQuery, {$inc :{ numberOfRetried : 1 } , status: "done" });
     done(null, true);
   } catch (err) {
 
@@ -453,7 +462,8 @@ export const getQcCredentials = async (req, res) => {
 /**
  * Shedule Cron for Retry the Failed Error
  */
-cron.schedule("0 */10 * * * *", async() => {
+export const failedOrders = async()=> {
+  console.log("checking for failed orders")
 
   const failedOrders = await OrderCreateEventLog.find({
     status: "retry",
@@ -468,4 +478,29 @@ cron.schedule("0 */10 * * * *", async() => {
       console.log("Order Processed:", a,b);
     });
   }
-});
+};
+
+/**
+ * shopify order cancel
+ * @param {*} id 
+ * @param {*} shop 
+ */
+const orderCancel = async (id , shop ) => {
+  try{
+const storeData = await store.findOne({store_url : shop})
+let config = {
+  method: 'post',
+  url: `https://${shop}/admin/api/2023-07/orders/${id}/cancel.json`,
+  headers: { 
+    'X-Shopify-Access-Token': storeData.auth_token
+  }
+};
+const responseData = await axios(config);
+console.log(responseData)
+
+  }
+  catch(err){
+    console.log(err);
+  }
+
+}

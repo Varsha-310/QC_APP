@@ -7,12 +7,12 @@ const OCELog = mongoose.Schema({
   orderId: Number,
   action: {
     type: String, 
-    enum: ["redeem","self","other"], 
+    enum: ["redeem","self","gift"], 
     default: "redeem"
   },
   redeem: Object,
   self: Object,
-  other: Object,
+  gift: Object,
   retriedAt: Date,
   numberOfRetried: {
     type:Number,

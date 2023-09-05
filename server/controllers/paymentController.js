@@ -100,7 +100,7 @@ export const create = async (req, res) => {
 
     res.json({
       ...respondWithData("payment URL"),
-      data: { payload: paymentData, url: process.env.payupaymenturl },
+      data: { payload: paymentData, url: process.env.payupaymenturl , days : remainingDays },
     });
   } catch (err) {
     logger.info(err);
