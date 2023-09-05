@@ -584,26 +584,18 @@ export const resendEmail = async (req, res) => {
 
 export const giftCardOrders = async (req, res) => {
   try {
+    let gcOrders;
+
     console.log(req.token);
 
     if (req.query.orderNo) {
-      const gcOrder = await orders.findOne({
+       gcOrders = await orders.find({
         store_url: req.token.store_url,
         order_number: req.query.orderNo,
       });
-      console.log(gcOrder.id);
-
-      res.json({
-        ...respondWithData("fetched order"),
-        data: {
-          id: gcOrder.id,
-          order_number: gcOrder.order_number,
-          customer: gcOrder.customer,
-          created_at: gcOrder.created_at,
-        },
-      });
+      console.log(gcOrders)
+     
     } else {
-      let gcOrders;
       console.log(req.query)
       if (req.query.startDate && req.query.endDate) {
         console.log("-------------in filtering orders by date--------------");
@@ -625,6 +617,7 @@ export const giftCardOrders = async (req, res) => {
           .find({ store_url: req.token.store_url })
           .sort({ created_at: -1 });
       }
+    }
       const page = parseInt(req.query.page) || 1; // Current page number
       const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
@@ -645,14 +638,12 @@ export const giftCardOrders = async (req, res) => {
           created_at: obj.created_at,
         };
       });
-
-      // console.log(sortedOrders, "----------------------------");
       res.json({
         ...respondWithData("fetched orders"),
         data: sortedOrders,
         total: gcOrders.length,
       });
-    }
+    
   } catch (err) {
     console.log(err);
     res.json(respondInternalServerError());
