@@ -13,7 +13,7 @@ const complete_limit_template = `
                     </span>
             </div>
             <div class="content_container" style="border: 1.25px solid #000;padding-bottom: 1rem;">
-                <h3 class="content_heading" style="background-color: #B72027;color: #fff;margin: 0;"><span class="logo_text" style="font-size: 2rem;padding: 0.2rem 2rem;"><img style="margin-top: 0.5rem;max-height: 2.1rem;" src="./assets/qwikcilver_logo.png"
+                <h3 class="content_heading" style="background-color: #B72027;color: #fff;margin: 0;"><span class="logo_text" style="font-size: 2rem;padding: 0.2rem 2rem;"><img style="margin-top: 0.5rem;max-height: 2.1rem;" src="https://uatdashboard.qwikcilver.com/public/images/qcLogo.png"
                             alt="qwikcilver_logo"></span></h3>
                 <div class="content_container_content" style="padding: 0.2rem 2rem;">
                     <p class="content_para1">Dear <span class="merchant_name">__merchant__</span>,</p>

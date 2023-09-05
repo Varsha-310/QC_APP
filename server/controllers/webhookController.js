@@ -11,8 +11,19 @@ import { checkActivePlanUses } from "./BillingController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import cron from "node-cron";
-import { Console } from "console";
 import axios from "axios";
+
+/**
+ * To handle order creation webhook
+ * @param {*} req
+ * @param {*} res
+ */
+export const orderCreated = (req, res) => {
+
+  console.log("order created", req.headers);
+  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  res.json(respondSuccess("webhook received"));
+};
 
 /**
  * To handle order update webhook
@@ -121,14 +132,12 @@ const ordercreateEvent = async (input, done) => {
             const type = "giftcard";
             const flag = await checkActivePlanUses(qwikcilver_gift_card.price, shop);
             if (flag > 0) {
-
-              console.log("Plan Limit has been exceeded.")
-              await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "NO" });
-              await orderCancel(newOrder.id,shop);
-              done();
-              return 1;
-            }
-
+                console.log("Plan Limit has been exceeded.")
+                await orders.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
+                await orderCancel(newOrder.id,shop);
+                done();
+                return 1;
+              }
             console.log("____________QC giftcard created______________", qwikcilver_gift_card);
             let email = null;
             let message = "";
@@ -292,17 +301,6 @@ const ordercreateEvent = async (input, done) => {
  */
 const orderCreateQueue = new Queue(ordercreateEvent, { maxRetries: 1, retryDelay: 10000, batchSize: 1 });
 
-/**
- * To handle order creation webhook
- * @param {*} req
- * @param {*} res
- */
-export const orderCreated = (req, res) => {
-
-  console.log("order created", req.headers);
-  orderCreateQueue.push({ shop: req.headers["x-shopify-shop-domain"], order: req.body });
-  res.json(respondSuccess("webhook received"));
-};
 
 //Webhooks for Product Create Activity
 export const productCreateEvent = async (req, res) => {
@@ -492,7 +490,7 @@ let config = {
   method: 'post',
   url: `https://${shop}/admin/api/2023-07/orders/${id}/cancel.json`,
   headers: { 
-    'X-Shopify-Access-Token': storeData.auth_token
+    'X-Shopify-Access-Token': storeData.access_token
   }
 };
 const responseData = await axios(config);

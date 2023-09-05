@@ -605,7 +605,7 @@ export const giftCardOrders = async (req, res) => {
     } else {
       let gcOrders;
       console.log(req.query)
-      if (req.query.start_date && req.query.end_date) {
+      if (req.query.startDate && req.query.endDate) {
         console.log("-------------in filtering orders by date--------------");
         gcOrders = await orders
           .find({
@@ -613,8 +613,8 @@ export const giftCardOrders = async (req, res) => {
               {
                 store_url: req.token.store_url,
                 created_at: {
-                  $gte: new Date(req.query.start_date),
-                  $lte: new Date(req.query.end_date),
+                  $gte: new Date(req.query.startDate),
+                  $lte: new Date(req.query.endDate),
                 },
               },
             ],
