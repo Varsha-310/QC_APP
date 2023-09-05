@@ -619,7 +619,7 @@ export const giftCardOrders = async (req, res) => {
       }
     }
       const page = parseInt(req.query.page) || 1; // Current page number
-      const limit = parseInt(req.query.limit) || 10; // Number of items per page
+      const limit = parseInt(req.query.pageSize) || 10; // Number of items per page
 
       console.log(gcOrders.length);
 
