@@ -10,6 +10,7 @@ import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 import { checkActivePlanUses } from "./BillingController.js";
 import qcCredentials from "../models/qcCredentials.js";
+import axios from "axios";
 
 /**
  * To handle order creation webhook
@@ -134,7 +135,9 @@ const ordercreateEvent = async (input, done) => {
 
                 console.log("Plan Limit has been exceeded.")
                 await orders.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
-                done();
+                await orderCancel(newOrder.id,shop);
+
+		done();
                 return 1;
               }
 
@@ -403,4 +406,29 @@ export const getQcCredentials = async (req,res) =>{
   const {giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn} = req.body
  // await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
   await store.updateOne({shopify_id : shopify_id}, {dashboard_activated :true})
+}
+
+/**
+ * shopify order cancel
+ * @param {*} id 
+ * @param {*} shop 
+ */
+const orderCancel = async (id , shop ) => {
+  try{
+const storeData = await store.findOne({store_url : shop})
+let config = {
+  method: 'post',
+  url: `https://${shop}/admin/api/2023-07/orders/${id}/cancel.json`,
+  headers: { 
+    'X-Shopify-Access-Token': storeData.access_token
+  }
+};
+const responseData = await axios(config);
+console.log(responseData)
+
+  }
+  catch(err){
+    console.log(err);
+  }
+
 }

@@ -512,42 +512,77 @@ export const resendEmail = async (req, res) => {
 export const giftCardOrders = async (req, res) => {
   try {
     console.log(req.token);
-    const page = parseInt(req.query.page) || 1; // Current page number
-    const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
-    const gcOrders = await orders
-      .find({ store_url: req.token.store_url })
-      .sort({ created_at: -1 });
+    if (req.query.orderNo) {
+      const gcOrder = await orders.findOne({
+        store_url: req.token.store_url,
+        order_number: req.query.orderNo,
+      });
+      console.log(gcOrder.id);
 
-    console.log(gcOrders.length);
+      res.json({
+        ...respondWithData("fetched order"),
+        data: {
+          id: gcOrder.id,
+          order_number: gcOrder.order_number,
+          customer: gcOrder.customer,
+          created_at: gcOrder.created_at,
+        },
+      });
+    } else {
+      let gcOrders;
+      console.log(req.query)
+      if (req.query.startDate && req.query.endDate) {
+        console.log("-------------in filtering orders by date--------------");
+        gcOrders = await orders
+          .find({
+            $and: [
+              {
+                store_url: req.token.store_url,
+                created_at: {
+                  $gte: new Date(req.query.startDate),
+                  $lte: new Date(req.query.endDate),
+                },
+              },
+            ],
+          })
+          .sort({ created_at: -1 });
+      } else {
+        gcOrders = await orders
+          .find({ store_url: req.token.store_url })
+          .sort({ created_at: -1 });
+      }
+      const page = parseInt(req.query.page) || 1; // Current page number
+      const limit = parseInt(req.query.limit) || 10; // Number of items per page
 
-    // Calculate the start and end index for the current page
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
+      console.log(gcOrders.length);
 
-    // Extract the orders for the current page
-    const pagedOrders = gcOrders.slice(startIndex, endIndex);
+      // Calculate the start and end index for the current page
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
 
-    const sortedOrders = pagedOrders.map((obj) => {
-      return {
-        id: obj.id,
-        order_number :obj.order_number,
-        customer: obj.customer,
-        created_at: obj.created_at,
-      };
-    });
+      // Extract the orders for the current page
+      const pagedOrders = gcOrders.slice(startIndex, endIndex);
 
-    console.log(sortedOrders, "----------------------------");
-    res.json({
-      ...respondWithData("fetched orders"),
-      data: sortedOrders,
-      total: gcOrders.length,
-    });
+      const sortedOrders = pagedOrders.map((obj) => {
+        return {
+          id: obj.id,
+          order_number: obj.order_number,
+          customer: obj.customer,
+          created_at: obj.created_at,
+        };
+      });
+
+      // console.log(sortedOrders, "----------------------------");
+      res.json({
+        ...respondWithData("fetched orders"),
+        data: sortedOrders,
+        total: gcOrders.length,
+      });
+    }
   } catch (err) {
     console.log(err);
-    res.json(
-      respondInternalServerError()
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -566,11 +601,13 @@ export const walletTransaction = async (req, res) => {
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
     } else {
+	const walletHistory =  history.transactions;
+	delete walletHistory.gc_pin
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
           balance: 980,
-          transactions: history.transactions.reverse(),
+          transactions: walletHistory.reverse(),
         },
       });
     }
