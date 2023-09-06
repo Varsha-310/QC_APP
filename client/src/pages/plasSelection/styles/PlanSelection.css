@@ -161,6 +161,7 @@ input[type="checkbox"] {
 }
 .terms-pop__container table {
   border-collapse: collapse;
+  width: 100%;
 }
 .terms-pop__container table th,
 .terms-pop__container table td {
@@ -211,10 +212,29 @@ input[type="checkbox"] {
   border-radius: 5px;
   cursor: pointer;
 }
-.subscription-note{
+.subscription-note {
   font-size: 14px;
   text-align: center;
   color: var(--text-dark-color);
+}
+
+.plan-check {
+  color: rgb(0, 139, 0);
+  font-size: 30px;
+  width: 100%;
+  margin: 0px auto;
+}
+.plan-cross {
+  width: 100%;
+  color: rgb(218, 1, 1);
+  font-size: 22px;
+  margin: 0px auto;
+}
+.inline-table-text {
+  font-weight: 400;
+}
+.plan-table__note{
+  margin: 20px 0px;
 }
 @media only screen and (max-width: 900px) {
   .plans {

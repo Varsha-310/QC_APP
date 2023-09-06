@@ -414,6 +414,7 @@ const RefundPage = () => {
                           value: "Back-to-Source",
                         },
                       ]}
+                      emptyText={"Select Refund Mode"}
                       keyField="refund_type"
                       value={refundOption?.refund_type || "NA"}
                       setvalue={setRefundOption}

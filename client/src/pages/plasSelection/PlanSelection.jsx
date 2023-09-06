@@ -16,6 +16,8 @@ import Toast from "../../components/Toast";
 import useUserAuthentication from "../../hooks/useUserAuthentication";
 import CustomPlanCard from "../../components/CustomPlanCard";
 
+import { BsCheck2, BsXLg } from "react-icons/bs";
+
 const PlanSelection = () => {
   const tableContent = [
     {
@@ -55,7 +57,7 @@ const PlanSelection = () => {
       enterprise: true,
     },
     {
-      title: "Issue physical gift card (pre-paid)",
+      title: "Issue physical gift card",
       basic: false,
       pro: false,
       premium: false,
@@ -77,7 +79,7 @@ const PlanSelection = () => {
       enterprise: true,
     },
     {
-      title: "Report dashboard for all gift card transactions",
+      title: "Report dashboard for all gift card and store credit transactions",
       basic: false,
       pro: false,
       premium: false,
@@ -91,14 +93,14 @@ const PlanSelection = () => {
       enterprise: true,
     },
     {
-      title: "Customised Issuane and Redemption rules",
+      title: "Customised Issuance and Redemption rules",
       basic: false,
       pro: false,
       premium: false,
       enterprise: true,
     },
     {
-      title: "Distribution in Corporate & online channels",
+      title: "Distribution in Corporate & Online channels",
       basic: false,
       pro: false,
       premium: false,
@@ -223,7 +225,6 @@ const PlanSelection = () => {
           />,
           document.getElementById("portal")
         )}
-
       <div className="section-box-container">
         <SectionHeading1
           size="20px"
@@ -291,19 +292,6 @@ const PlanSelection = () => {
         </PrimaryBtn>
       </div>
 
-      {/* enterprise plan box */}
-
-      {/* <div className="enterprise_plan-box">
-        <div className="plan-box-title">Enterprise Plan</div>
-        <p className="box-text">
-          We provide more flexible plans for enterprise. Please contact us to
-          get the ultimate solution for you.
-        </p>
-        <a href="mailto:care@qwikcilver.com">
-          E-mail:<span>care@qwikcilver.com</span>
-        </a>
-      </div> */}
-
       <SectionHeading1
         size="20px"
         weight="500"
@@ -331,28 +319,28 @@ const PlanSelection = () => {
                 <td>{rowData.title}</td>
                 <td>
                   {rowData.basic ? (
-                    <img src={Tick} alt="" />
+                    <BsCheck2 className="plan-check" />
                   ) : (
                     <span className="dash"></span>
                   )}
                 </td>
                 <td>
                   {rowData.pro ? (
-                    <img src={Tick} alt="" />
+                    <BsCheck2 className="plan-check" />
                   ) : (
                     <span className="dash"></span>
                   )}
                 </td>
                 <td>
                   {rowData.premium ? (
-                    <img src={Tick} alt="" />
+                    <BsCheck2 className="plan-check" />
                   ) : (
                     <span className="dash"></span>
                   )}
                 </td>
                 <td>
                   {rowData.enterprise ? (
-                    <img src={Tick} alt="" />
+                    <BsCheck2 className="plan-check" />
                   ) : (
                     <span className="dash"></span>
                   )}
@@ -362,6 +350,12 @@ const PlanSelection = () => {
           })}
         </tbody>
       </table>
+
+      <div className="plan-table__note">
+        Note: Some of the features mentioned in the Enterprise Plan may need
+        additional integrations with Qwikcilver API's & product modules. This
+        will be implemented separately as per Merchant's requirements
+      </div>
     </div>
   );
 };
@@ -372,17 +366,20 @@ export default PlanSelection;
 const TermsPopUp = ({ setTerms }) => {
   return (
     <div className="terms-pop__container">
-      <h2>TERMS AND CONDITIONS GOVERNING THE GIFT CARD PROCESSING SERVICES</h2>
+      <h2>
+        TERMS AND CONDITIONS GOVERNING THE QWIKCILVER APP GIFT CARD PROCESSING
+        SERVICES
+      </h2>
 
       <ol>
         <li>
           The Merchant Issuer is desirous of issuing the Gift card and launching
           the gift card program by leveraging the technical capabilities and
           services of Pine Labs. This Agreement describes the framework upon
-          which Pine Labs has agreed to offer (i) its gift card solutions (“gift
-          cards”), to the Merchant (“Merchant Issuer”). The specifications,
-          scope and the manner in which the solutions will be provided are set
-          out in Annexure A hereto (“Project”).
+          which Pine Labs has agreed to offer (i) its gift card solutions (
+          <b>“gift cards”</b>), to the Merchant (<b>“Merchant Issuer”</b>). The
+          specifications, scope and the manner in which the solutions will be
+          provided are set out in <b>Annexure A</b> hereto (“Project”).
         </li>
         <li>
           The products covered by this Agreement consist of the gift cards,
@@ -391,10 +388,12 @@ const TermsPopUp = ({ setTerms }) => {
         </li>
         <li>
           The commercial terms agreed by the parties for the purposes of the
-          Project are set out in Annexure B hereto. The primary responsibilities
-          of the Merchant Issuer are set out in Annexure C hereto. Each Party
-          will designate a representative to act as the primary point-
-          of-contact for the purposes of this Agreement.
+          Project are set out in <b>Annexure B</b> hereto.
+        </li>
+        <li>
+          The primary responsibilities of the Merchant Issuer are set out in
+          Annexure C hereto. Each Party will designate a representative to act
+          as the primary point- of-contact for the purposes of this Agreement.
         </li>
         <li>
           Subject to the limitation of liability, each party shall indemnify,
@@ -424,15 +423,15 @@ const TermsPopUp = ({ setTerms }) => {
           particular purpose.
         </li>
         <li>
-          Confidentiality: Each party shall treat all data and information
-          including the commercial terms and the terms and conditions agreed
-          between the parties hereunder (including Cardholder information),
-          (&quot;Confidential Information&quot;), disclosed to it or which comes
-          into its possession or knowledge in connection with this arrangement
-          as confidential. Further, the Merchant Issuer hereby agrees Pine Labs
-          may use the personal information of the Merchant Issuer in any
-          marketing or promotional activities associated with the Project at any
-          time during the term of this Agreement.
+          <b>Confidentiality</b>: Each party shall treat all data and
+          information including the commercial terms and the terms and
+          conditions agreed between the parties hereunder (including Cardholder
+          information), (<b>&quot;Confidential Information&quot;</b>), disclosed
+          to it or which comes into its possession or knowledge in connection
+          with this arrangement as confidential. Further, the Merchant Issuer
+          hereby agrees Pine Labs may use the personal information of the
+          Merchant Issuer in any marketing or promotional activities associated
+          with the Project at any time during the term of this Agreement.
         </li>
         <li>
           Notwithstanding anything stated in this arrangement, both parties
@@ -458,7 +457,8 @@ const TermsPopUp = ({ setTerms }) => {
           purpose of performing the Services provided by Pine Labs through its
           Distribution channels and social media to facilitate sale of Merchant
           Gift Card and for purposes of data analysis and marketing in
-          accordance with Pine Labs Privacy Policy.
+          accordance with Pine Labs Privacy Policy. . Pine Labs and Qwikcilver
+          are Trademarks owned and operated by Pine Labs Private Limited.
         </li>
         <li>
           The arrangement contemplated by these terms shall commence from the
@@ -496,15 +496,15 @@ const TermsPopUp = ({ setTerms }) => {
           Delhi shall have exclusive jurisdiction.
         </li>
         <li>
-          <b> Notices:</b> Any notices, requests and other communications
+          <b>Notices:</b> Any notices, requests and other communications
           required or permitted hereunder shall be in writing and shall be given
           by hand against written acknowledgement or receipt, or sent by
           registered mail, followed by a confirmation letter by registered mail,
           at or to each of the parties at the addresses set forth herein above.
         </li>
         <li>
-          Amendments: This Agreement can be modified, supplement or amended only
-          by written agreement executed by both parties.
+          <b>Amendments:</b> This Agreement can be modified, supplement or
+          amended only by written agreement executed by both parties.
         </li>
       </ol>
 
@@ -550,8 +550,9 @@ const TermsPopUp = ({ setTerms }) => {
       <h4>B: Process for Issuance of gift cards from Merchant Website:</h4>
       <ol>
         <li>
-          Merchant should download the Pine Labs Plugin from Shopify App store
-          and complete the KYC and onboarding processes.
+          Merchant should download the Pine Labs Plugin (also called Qwikcilver
+          app) from Shopify App store and complete the KYC and onboarding
+          processes.
         </li>
         <li>
           Once Merchant is onboarded to Pine Labs platform, the merchant will be
@@ -633,18 +634,14 @@ const TermsPopUp = ({ setTerms }) => {
       <table>
         <tr>
           <th>
-            Pine Labs App for Merchants on Shopify - Pricing Plans Basic Pro
-            Premium Same Pricing for both Gift Card &amp; Refund Issuance
+            Qwikcilver App for Merchants on Shopify{" "}
+            <div className="inline-table-text">
+              Same Pricing for both Gift Card & Refund Issuance
+            </div>
           </th>
           <th>Basic</th>
           <th>Pro</th>
           <th>Premium</th>
-        </tr>
-        <tr>
-          <td>Subscription Fee (Price / Per Month $)</td>
-          <td>$5.0</td>
-          <td>$10</td>
-          <td>$20</td>
         </tr>
         <tr>
           <td>Subscription Fee (Price / Per Month INR)</td>
@@ -653,7 +650,7 @@ const TermsPopUp = ({ setTerms }) => {
           <td>₹1,599</td>
         </tr>
         <tr>
-          <td>Subscription Limits (Monthly Digital Issuance)</td>
+          <th>Subscription Limits (Monthly Digital Issuance)</th>
           <td></td>
           <td></td>
           <td></td>
@@ -681,8 +678,8 @@ const TermsPopUp = ({ setTerms }) => {
         <tr>
           <td>Usage Issuance Cap</td>
           <td>1,00,000</td>
-          <td>1,50,000</td>
           <td>2,00,000</td>
+          <td>3,00,000</td>
         </tr>
         <tr>
           <td>Plan Features</td>
@@ -693,13 +690,13 @@ const TermsPopUp = ({ setTerms }) => {
         <tr>
           <td>Issue Digital Gift Cards &amp; Refund Cards</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
         </tr>
         <tr>
@@ -707,109 +704,145 @@ const TermsPopUp = ({ setTerms }) => {
             Online Wallet for End Users (for storing Gift &amp; Refund cards)
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
         </tr>
         <tr>
           <td>Pre-packaged templates for e-gift cards</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Fixed Denominations</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
         </tr>
         <tr>
           <td>Variable Denominations</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Issue Physical Gift Card</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Bulk Issuance Tool</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Scheduled Reports: Daily, Weekly, Monthly</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
           <td>
-            <img src={Tick} alt="" />
+            <BsCheck2 className="plan-check" />
           </td>
         </tr>
         <tr>
           <td>Realtime dashboard for all gift card transactions</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Omni channel integration (Store POS, Website, Mobile app)</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Customised Issuance and Redemption rules</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Distribution in Corporate &amp; online channels</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
         <tr>
           <td>Retail Distribution as per requirements (online to off-line)</td>
-          <td>-</td>
-          <td>-</td>
           <td>
-            <img src={Tick} alt="" />
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
+          </td>
+          <td>
+            <BsXLg className="plan-cross" />
           </td>
         </tr>
       </table>
@@ -819,8 +852,8 @@ const TermsPopUp = ({ setTerms }) => {
       <h3>Merchant’s Roles &amp; Responsibilities</h3>
       <ol>
         <li>
-          Install the Pine Labs plugin (also called app) from the Shopify App
-          Store
+          Install the Pine Labs plugin (also called Qwikcilver app) from the
+          Shopify App Store
         </li>
         <li>
           Complete the Online KYC Process, to help Pine Labs onboard the
@@ -897,10 +930,8 @@ const TermsPopUp = ({ setTerms }) => {
           Government, RBI, or any other statutory/regulatory authority.
         </li>
         <li>
-          No returns and no refunds on gift cards purchased through Pine Labs
-          channels (for example woohoo.in.) Please check the refund policy at{" "}
-          <a href="http://www.woohoo.in/faq">http://www.woohoo.in/faq</a> for
-          further details.
+          No returns and no refunds on gift cards purchased through any
+          channels.
         </li>
         <li>
           E Gift Card is redeemable for merchandise at Merchant’s website and
@@ -926,10 +957,8 @@ const TermsPopUp = ({ setTerms }) => {
           Gift Card is a bearer instrument.
         </li>
         <li>
-          For balance enquiry &amp; expiry, visit{" "}
-          <a href="https://www.woohoo.in/balenq">
-            https://www.woohoo.in/balenq
-          </a>
+          For balance enquiry &amp; expiry, visit details, please add the gift
+          card to your account / wallet on the merchant website.
         </li>
         <li>
           Merchant reserves the right to amend the terms &amp; conditions at its
@@ -987,7 +1016,8 @@ const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
         </div>
         <div className="subscription-note">
           Note: You will be paying Rs.{" "}
-          {reponsePaymentData?.payload?.amount.toFixed(2)} (Inclusive of GST).
+          {reponsePaymentData?.payload?.amount.toFixed(2)} (Inclusive of GST)
+          towards {reponsePaymentData?.days} Days of Subscription.
         </div>
       </div>
     </div>
