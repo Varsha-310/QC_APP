@@ -7,16 +7,11 @@ function getReadableDate(dateObj) {
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
     year = d.getFullYear();
-    let hours = "" + d.getHours();
-    let minutes = "" + d.getMinutes();
-    let seconds = "" + d.getSeconds();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
-  if (hours.length < 2) hours = "0" + hours;
-  if (minutes.length < 2) minutes = "0" + minutes;
-  if (seconds.length < 2) seconds = "0" + seconds;
-  return `${day}-${month}-${year}  ${hours}:${minutes}`;
+
+  return `${day}-${month}-${year}`;
 }
 
 /**
@@ -68,6 +63,11 @@ email_template = email_template.replace(
 email_template = email_template.replace(
   "template_image", image_url
 );
+email_template = email_template.replace(
+  "__store__", `https://${shopName}`
+);
+
+
 // Framing the mail options
 const options = {
   to: email_id,
