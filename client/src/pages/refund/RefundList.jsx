@@ -8,7 +8,7 @@ import { BiSync } from "react-icons/bi";
 import "./styles/RefundList.css";
 
 const RefundList = () => {
-  const PER_PAGE_ITEM = 10;
+  const PER_PAGE_ITEM = 15;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [refundData, setRefundData] = useState(null);
