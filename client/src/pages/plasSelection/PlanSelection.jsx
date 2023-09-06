@@ -14,6 +14,7 @@ import { getUserToken, setUserToken } from "../../utils/userAuthenticate";
 import { createPortal } from "react-dom";
 import Toast from "../../components/Toast";
 import useUserAuthentication from "../../hooks/useUserAuthentication";
+import CustomPlanCard from "../../components/CustomPlanCard";
 
 const PlanSelection = () => {
   const tableContent = [
@@ -264,6 +265,11 @@ const PlanSelection = () => {
             />
           );
         })}
+
+        <CustomPlanCard
+          plan={{ plan_name: "Enterprise" }}
+          btnText={"Contact"}
+        />
       </div>
       <div className="section-box-container">
         <div className="terms-check">
@@ -275,7 +281,7 @@ const PlanSelection = () => {
               !!e.target.checked ? setIsAgree(true) : setIsAgree(false);
             }}
           />
-          I accept Gift Card Processing
+          I accept Qwikcilver App
           <Link onClick={() => setTerms(true)}>Terms & Conditions</Link>
         </div>
       </div>
@@ -285,7 +291,7 @@ const PlanSelection = () => {
         </PrimaryBtn>
       </div>
       {/* enterprise plan box */}
-      <div className="enterprise_plan-box">
+      {/* <div className="enterprise_plan-box">
         <div className="plan-box-title">Enterprise Plan</div>
         <p className="box-text">
           We provide more flexible plans for enterprise. Please contact us to
@@ -294,7 +300,8 @@ const PlanSelection = () => {
         <a href="mailto:care@qwikcilver.com">
           E-mail:<span>care@qwikcilver.com</span>
         </a>
-      </div>
+      </div> */}
+
       <SectionHeading1
         size="20px"
         weight="500"
@@ -683,83 +690,125 @@ const TermsPopUp = ({ setTerms }) => {
         </tr>
         <tr>
           <td>Issue Digital Gift Cards &amp; Refund Cards</td>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>
             Online Wallet for End Users (for storing Gift &amp; Refund cards)
           </td>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Pre-packaged templates for e-gift cards</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Fixed Denominations</td>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Variable Denominations</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Issue Physical Gift Card</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Bulk Issuance Tool</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Scheduled Reports: Daily, Weekly, Monthly</td>
-          <td>-</td>
-          <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Realtime dashboard for all gift card transactions</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Omni channel integration (Store POS, Website, Mobile app)</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Customised Issuance and Redemption rules</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Distribution in Corporate &amp; online channels</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
         <tr>
           <td>Retail Distribution as per requirements (online to off-line)</td>
           <td>-</td>
           <td>-</td>
-          <td>-</td>
+          <td>
+            <img src={Tick} alt="" />
+          </td>
         </tr>
       </table>
 
@@ -902,7 +951,8 @@ const PaymentConfirmPopup = ({ reponsePaymentData, setReponsePaymentData }) => {
     <div className="payment-confirm-popup">
       <div className="payment-form">
         <div className="payment-confirm-msg">
-          Are you sure you want to confirm payment?
+          Are you sure you want to make payment towards Qwikcilver App
+          Subscription plan
         </div>
 
         <div className="payment-confirm-btns">

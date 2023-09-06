@@ -30,9 +30,7 @@ export const verifyGetGiftcard = async (req, res,next) => {
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -50,9 +48,7 @@ export const verifySendEmail = async (req, res, next) => {
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -71,9 +67,7 @@ export const validateGetBalance = async (req, res, next) => {
     };
     await validateParamsMethod(req,  validationRule, res , next);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -100,9 +94,7 @@ const validateParamsMethod = async (req, validationRule,res , next) => {
     });
   } catch (err) {
     console.log(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json( respondInternalServerError());
   }
 };
 
@@ -124,9 +116,7 @@ export const validatecreateGiftcard = async (req, res, next) => {
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json( respondInternalServerError());
   }
 };
 
@@ -137,17 +127,18 @@ export const validatecreateGiftcard = async (req, res, next) => {
  * @param {*} next
  */
 export const validateUpdateGiftcard = async (req, res, next) => {
+  
   try {
+    
     console.log("api validation")
     const validationRule = {
       product_id: "required|string"
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
-console.log(err)
-    res.json(
-      respondInternalServerError()
-    );
+    
+    console.log(err)
+    res.json(respondInternalServerError());
   }
 };
 
@@ -158,7 +149,9 @@ console.log(err)
  * @param {*} next
  */
 export const validateAddToWallet = async (req, res, next) => {
+  
   try {
+    
     console.log("api validation")
     const validationRule = {
       customer_id : "required|string",
@@ -167,6 +160,7 @@ export const validateAddToWallet = async (req, res, next) => {
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
+
     res.json(respondInternalServerError());
   }
 };
@@ -182,18 +176,20 @@ const validateMethod = async (req, validationRule, res, next) => {
 
   await validator(req.body, validationRule, {}, (err, status) => {
     if (!status) {
+      
       res.json(respondValidationError(err));
     } else {
-	console.log(err);
+	    
+      console.log(err);
       next();
     }
   });
 };
 
 
-
 export const validategetStoresDataMethod = async (req, res, next, validationRule) => {
   try {
+    
      await validator(req.query, validationRule, {}, (err, status) => {
       if (!status) {
         console.log(err)
@@ -204,8 +200,8 @@ export const validategetStoresDataMethod = async (req, res, next, validationRule
     });
   }
   catch (err) {
-    res.json( err,respondInternalServerError("Something went wrong try after sometime")
-    )
+
+    res.json(respondInternalServerError())
   }
 };
 
@@ -214,7 +210,9 @@ export const validategetStoresDataMethod = async (req, res, next, validationRule
  * Validation rules for the updateConfigapi route
  */
 export const validateUpdateConfigApi = async (req, res, next) => {
+  
   try {
+
     const validationRule = {
       prepaid: "required|string",
       cod: "required|string",
@@ -225,10 +223,9 @@ export const validateUpdateConfigApi = async (req, res, next) => {
     };
     await validateMethod(req,  validationRule, res , next);
   } catch (err) {
+
     console.log(err);
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -256,7 +253,7 @@ export const validateRefundCalculate = async (req, res, next) => {
   } catch (err) {
 
     console.log(err);
-    return res.json( respondInternalServerError() );
+    return res.json(respondInternalServerError());
   }
 };
 
@@ -295,26 +292,20 @@ export const verifyShopifyHook = async (req, res, next) => {
 
   try {
     
-    console.log("in shopify webhook verification");
-    const storeData = store.findOne({store_url : req.headers['X-Shopify-Shop-Domain']})
-    const api_secret = storeData.access_token ?? "";
+    const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
     const body = req.rawBody;
-    console.log(body);
-  
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)
       .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
-    console.log(providedHmac, digest)
-    
     if (digest == providedHmac) {
-      console.log("shopy webhook verified");
       next();
     } else {
-      res.json(respondUnauthorized("not shopify webhook"));
+      res.json(respondUnauthorized("Unautherised request", {}));
     }
   } catch (e) {
+    
     console.log(e);
     res.json(respondInternalServerError());
   }
@@ -322,26 +313,32 @@ export const verifyShopifyHook = async (req, res, next) => {
 
 /**
  * verify generated hash to verify api
+ * 
  * @param {*} req
  * @param {*} res
  */
 export const verifyHmacForApi = (req, res) => {
+
   try {
+
     const hmac_secret = process.env.HMAC_SECRET ?? "";
+    const date = req.headers["timestamp"]?.toString();
+    const body = req.body || req.query;
+    body["date"] = date;
     const digest = crypto
       .createHmac("sha256", hmac_secret)
       .update(body)
-      .digest("base64");
+      .digest("hex");
     const providedHmac = req.headers["Authorization"]?.toString();
-
     if (digest == providedHmac) {
+
       next();
     } else {
+
       res.json(respondUnauthorized("not a valid request"));
     }
   } catch (e) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+
+    res.json(respondInternalServerError());
   }
 };

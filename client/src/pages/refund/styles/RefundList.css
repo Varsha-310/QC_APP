@@ -1,9 +1,17 @@
 .refund-list__container {
-  width: 100%;
+  width: 80%;
 }
+.refund-list__container-table {
+  width: 100%;
+  overflow-x: scroll;
+}
+
 @media only screen and (max-width: 900px) {
+  .refund-list__container {
+    width: 100%;
+  }
   .refund-list__container-table {
-    width: 95vw;
-    overflow-y: scroll;
+    width: 100%;
+    overflow-x: scroll;
   }
 }

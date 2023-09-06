@@ -3,12 +3,15 @@ import store from "../models/store.js";
 import {
   respondInternalServerError,
   respondNotAcceptable,
+  respondSuccess,
 } from "../helper/response.js";
 import cookie from "cookie";
 import crypto from "crypto";
 import { checkWebhooks } from "../helper/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
 import refundSetting from "../models/refundSetting.js";
+import Jwt from "jsonwebtoken";
+
 
 /**
  * Method for installation method
@@ -77,23 +80,21 @@ export const installCallback = async (req, res) => {
       }
       const storeStatus = await store.findOne({ store_url: shop });
       let token = await createJwt(shop);
+      let accessToken = await getAccessToken(shop, code, res);
 
       if (storeStatus && storeStatus.is_installed == true) {
-        await store.updateOne({store_url : shop} , {auth_token : token})
-        
+
+        await store.updateOne({store_url : shop} , {auth_token : token, access_token: accessToken});
         return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
       } else {
-        let accessToken = await getAccessToken(shop, code, res);
-
-        if (accessToken) {
-          // console.log(accessToken, "accessToken");
-          let storeData = await getShopifyStoreData(shop, accessToken);
-          if (storeData) {
-            let response = await saveStoreData(storeData, shop, accessToken);
-            // console.log(response ,"response of store data");
-            await checkWebhooks(shop, accessToken);
-            return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
-          }
+      
+        // console.log(accessToken, "accessToken");
+        let storeData = await getShopifyStoreData(shop, accessToken);
+        if (storeData) {
+          let response = await saveStoreData(storeData, shop, accessToken, token);
+          // console.log(response ,"response of store data");
+          await checkWebhooks(shop, accessToken);
+          return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
         }
       }
     } else {
@@ -114,9 +115,8 @@ export const installCallback = async (req, res) => {
  * @param {*} accessToken
  * @returns
  */
-export const saveStoreData = async (shopData, shop, accessToken) => {
+export const saveStoreData = async (shopData, shop, accessToken, token) => {
   try {
-  
   
     const data = {
       shopify_id: shopData.shop.id,
@@ -128,7 +128,7 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
       is_installed: true,
-      auth_token : shopData.auth_token
+      auth_token : token
     };
     console.log(data);
     let storeDetails = await store.updateOne(
@@ -171,9 +171,7 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {
-    res.json(
-      respondInternalServerError()
-    );
+    res.json(respondInternalServerError());
   }
 };
 
@@ -226,3 +224,23 @@ export const appUninstalled = async (req, res) => {
   await store.findOneAndUpdate({ store_url: domain }, { isInstalled: false });
   res.json(respondSuccess("webhook received"));
 };
+
+/**
+ * Logout method
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const logoutSession = async (req, res)=>{
+
+  try {
+    
+    await store.updateOne({store_url : req.token.store_url} , {auth_token : ""});
+    return res.json(respondSuccess("Successfully Logout"));
+  } catch (error) {
+    
+    console.log("Logout Error,",error);
+    return res.json(respondInternalServerError());
+  }
+}
