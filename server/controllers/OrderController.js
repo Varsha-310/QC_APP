@@ -132,7 +132,7 @@ export const handleOrderDataList = async (req, res) => {
         if (req.query.payment_gateway_names) {
             filter.payment_gateway_names = req.query.payment_gateway_names;
         };
-        const orders = await orderModel.find(
+                const orders = await orderModel.find(
             filter,
             { id:1, updated_at:1, 'customer.first_name':1,
               total_price:1,status:1,payment_gateway_names:1,

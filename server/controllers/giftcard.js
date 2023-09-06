@@ -270,7 +270,7 @@ export const addGiftcardtoWallet = async (
 
       logs["activate"] = activatedCardLog;
       if (!activatedCardLog?.status) return logs;
-      let activatedCard = activatedCardLog.resp.Cards[0];
+            let activatedCard = activatedCardLog.resp.Cards[0];
 
       const setting = await Store.findOne({ store_url: store });
       let walletExists = await Wallet.findOne({

@@ -78,12 +78,12 @@ const ordercreateEvent = async (input, done) => {
 
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
-
+        console.log(line_item.product_id)
         let gift_card_product = await product.findOne({
           id: line_item.product_id,
         }).lean(); //Get the product from DB
 
-        console.log("Giftcard Products: ", gift_card_product.id);
+        console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
 
           console.log("is giftcard product");
@@ -258,7 +258,8 @@ const ordercreateEvent = async (input, done) => {
                   OrderSession?.self?.wallet
                 );
                 // OrderSession["self"]["wallet"] = logs;
-                await OrderCreateEventLog.updateOne(logQuery,{"self.wallet" : logs}, {upsert: true});
+                console.log(logs, "logs of wallet")
+                await OrderCreateEventLog.updateOne({ store: shop, orderId: order.id},{"self.wallet" : logs});
                 if(!logs.status) throw new Error("Error: Add Gift Card To Wallet");
               }
             }

@@ -299,7 +299,7 @@ export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs = {}
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: date,
         TransactionId: transactionId,
-        Authorization: `Bearer ${process.env.Authorization}`,
+        Authorization: `Bearer ${setting.token}`,
       },
       data: data,
     };
@@ -333,7 +333,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
   try {
 
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------", setting.unique_transaction_id);
+    console.log("------------------store qc credeentials-------------------------", setting);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
@@ -364,7 +364,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
     };
 
     let activation = await axios(config);
-    logs["resp"] = activation?.data;
+        logs["resp"] = activation?.data;
     if (activation.status == "200" && activation.data.ResponseCode == "0" ) {
       
       logs["status"] = true;
