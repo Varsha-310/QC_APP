@@ -114,8 +114,7 @@ export const handleSyncOrder = (req, res) => {
 
 export const handleOrderDataList = async (req, res) => {
 
-    try {
-       
+    try {       
         let page = Number(req.query.page) || 1;
         let limit = Number(req.query.limit) || 20;
         let skip = (page - 1) * limit;
@@ -132,7 +131,18 @@ export const handleOrderDataList = async (req, res) => {
         if (req.query.payment_gateway_names) {
             filter.payment_gateway_names = req.query.payment_gateway_names;
         };
-                const orders = await orderModel.find(
+        if(req.query.orderNo){
+          filter.order_number = req.query.orderNo
+        }
+        if(req.query.startDate && req.query.endDate){
+          filter.created_at ={
+            $gte :new Date(req.query.startDate),
+            $lte:new Date(req.query.endDate)
+          }
+          
+        }
+        console.log(filter, "filter added");
+          const orders = await orderModel.find(
             filter,
             { id:1, updated_at:1, 'customer.first_name':1,
               total_price:1,status:1,payment_gateway_names:1,
