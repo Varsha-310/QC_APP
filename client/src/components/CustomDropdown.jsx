@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import "./styles/CustomDropdown.css";
 
-const CustomDropdown = ({ options, keyField, value, setvalue }) => {
+const CustomDropdown = ({ options, keyField, value, setvalue, emptyText }) => {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -14,7 +14,9 @@ const CustomDropdown = ({ options, keyField, value, setvalue }) => {
         className="dropdown-btn"
       >
         {/* {validity ? (validity === "180" ? "6 months" : "12 months") : "Select"} */}
-        {options.find((item) => item.value === value)?.title || "select"}
+        {options.find((item) => item.value === value)?.title ||
+          emptyText ||
+          "select"}
         <span>{isActive ? <FaCaretUp /> : <FaCaretDown />}</span>
       </div>
       <div

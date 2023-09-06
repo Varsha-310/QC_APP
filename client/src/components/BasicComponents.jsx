@@ -12,7 +12,7 @@ const TEXT_BOLD_COLOR = "#182560";
 const RATING_COLOR = "#fec600";
 
 const PrimaryBtn = styled.button`
-  font-family: "Poppins", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 14px;
   line-height: 21px;
   width: ${(props) => props?.width || "180px"};
@@ -40,7 +40,7 @@ const CustomBtn = styled.div`
   justify-content: center;
   margin: 0px auto;
   border-radius: 8px;
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   height: ${(props) => props?.height || "30px"};
   width: ${(props) => props?.width || "85px"};
   font-weight: ${(props) => props?.weight || "600"};
@@ -54,7 +54,7 @@ const CustomBtn = styled.div`
 `;
 
 const RectBtn = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +76,7 @@ const RectBtn = styled.div`
 `;
 
 const TabBox = styled(Link)`
-  font-family: "Poppins", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
@@ -111,7 +111,7 @@ const SubTabBox = styled(Link)`
 `;
 
 const TabItemLable = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -121,7 +121,7 @@ const TabItemLable = styled.div`
   color: ${TEXT_DARK_COLOR};
 `;
 const TabSubItemLable = styled(Link)`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -159,7 +159,7 @@ const SectionHeading1 = styled.div`
   justify-content: ${(props) => props?.align || "left"};
 `;
 const SectionTitle = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   width: 100%;
   font-weight: ${(props) => props?.weight};
@@ -169,7 +169,7 @@ const SectionTitle = styled.div`
   color: ${TEXT_BOLD_COLOR};
 `;
 const SectionPara = styled.p`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -200,7 +200,7 @@ const CustomContainer = styled.div`
 `;
 
 const TextRegular = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
