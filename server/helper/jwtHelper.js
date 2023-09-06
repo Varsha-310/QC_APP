@@ -8,15 +8,18 @@ import { respondInternalServerError, respondUnauthorized } from "./response.js";
  * @param {*} res
  */
 export const createJwt = async (shop) => {
+
   console.log("create jwt start");
   try {
+
     let secretKey = process.env.JWT_SECRET;
     let payload = { store_url: shop };
     console.log("----payload--------", payload);
-    let jwtToken = await Jwt.sign(payload, secretKey);
-    console.log("JWT TOken TEst");
+    let jwtToken = await Jwt.sign(payload, secretKey, {expiresIn: "1d"});
+    console.log("JWT Token Test");
     return jwtToken;
   } catch (err) {
+
     console.log(err)
     console.log("Error in JWT helper tokem");
     return false;
@@ -29,8 +32,11 @@ export const createJwt = async (shop) => {
  * @param {*} next
  */
 export const verifyJwt = (req, res, next) => {
+
   try {
-     console.log("-----in verify jwt----------" , req.headers)
+    
+    console.log(req.headers);
+    console.log("-----in verify jwt----------" , req.headers)
     if (req.headers.authorization) {
       Jwt.verify(
         req.headers.authorization,
@@ -38,13 +44,15 @@ export const verifyJwt = (req, res, next) => {
         async function (err, payload) {
           if (!err) {
             req.token = payload;
-            // console.log(payload , "payload")
+            console.log(payload , "payload")
             let storeExists = await Store.findOne({
-              store_url: payload.store_url,
+              auth_token: req.headers.authorization
             });
             if (storeExists) {
+             
               next();
             } else {
+              
               console.log(err)
               res.json(respondUnauthorized("Invalid jwt token"));
             }
