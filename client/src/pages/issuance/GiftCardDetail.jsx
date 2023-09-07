@@ -140,7 +140,7 @@ const GiftCardDetail = () => {
             <label className="gift-card__label">Description</label>
             <div className="gift-card__input">{cardData?.body_html}</div>
 
-            <label className="gift-card__label">Terms & Condition</label>
+            <label className="gift-card__label">Terms & Conditions</label>
             <div className="gift-card__input">
               {cardData?.terms ? cardData?.terms : "N/A"}
             </div>

@@ -257,9 +257,7 @@ const RefundPage = () => {
         createPortal(<Spinner />, document.getElementById("portal"))}
 
       <div className="section-box-container">
-        <div className="section-box-title bold">
-          Refunding Order No: {id} Orders Via Gift Card
-        </div>
+        <div className="section-box-title bold">Refunding Order No: {id}</div>
       </div>
 
       {setting === null ? (

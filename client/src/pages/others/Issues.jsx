@@ -4,8 +4,8 @@ const Issues = () => {
   useScrollTop();
   return (
     <div className="issues-container component">
+      <div className="component-primary-heading">Have an Issue?</div>
       <div className="section-box-container">
-        <h3>Have an Issue?</h3>
         <p>
           Please use Qwikcilver’s Support Dashboard to raise any Issues you are
           facing.

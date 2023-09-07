@@ -30,7 +30,10 @@
   align-items: center;
   justify-content: center;
 }
-
+.gift-cards-table td:first-child {
+  justify-content: left;
+  padding-left: 50px;
+}
 .gift-cards-table tbody tr {
   margin: 0px 0px;
   box-shadow: 0px 10px 15px -7px rgba(0, 0, 0, 0.1);

@@ -125,9 +125,7 @@ const ResendGiftCard = () => {
 
   return (
     <div className="component">
-      <div className="section-box-container">
-        <div className="section-box-title">Gift Card Orders</div>
-      </div>
+      <div className="component-primary-heading">Gift Card Orders</div>
 
       <div className="app-table__list-actions">
         <Input

@@ -49,9 +49,7 @@ const CurrentUsages = () => {
 
   return (
     <div className="transaction-detail__container">
-      <div className="section-box-container">
-        <div className="section-box-title">Current Usage</div>
-      </div>
+      <div className="component-primary-heading">Current Usage</div>
 
       {data?.length > 0 ? (
         data?.reverse().map((uses, index) => {
@@ -59,12 +57,12 @@ const CurrentUsages = () => {
             <div key={uses?.id}>
               <div className="section-box-container">
                 {/* <div className="transaction-detail__detail-heading"> */}
-                {index === 0 ? "Current Plan" : "Previous Plan"}
-                {/* </div> */}
+                {index === 0 ? "Current Plan" : "Previous Plan"}{" : "}
+                {uses?.planName || "NA"}
               </div>
 
               {/* plan */}
-              <div className="transaction-detail__plan-data">
+              {/* <div className="transaction-detail__plan-data">
                 <div className="transaction-detail__plan-detail transaction-detail__box-bg">
                   <TextElement>
                     Invoice Number : {uses?.invoiceNumber || "NA"}
@@ -96,10 +94,10 @@ const CurrentUsages = () => {
                     Due On {"8, "+ getNextMonth(uses?.issue_date)}
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* plan details & usages */}
-              <div className="transaction-detail__plan-charges transaction-detail__box-bg">
+              {/* <div className="transaction-detail__plan-charges transaction-detail__box-bg">
                 <div className="transaction-detail__detail-heading">
                   Your Current Plan - {uses?.planName || "NA"}
                 </div>
@@ -143,7 +141,7 @@ const CurrentUsages = () => {
                     </TextElement>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* expected charges */}
               <div className="transaction-detail__plan-fees transaction-detail__box-bg">

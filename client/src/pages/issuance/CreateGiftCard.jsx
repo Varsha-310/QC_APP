@@ -212,9 +212,8 @@ const CreateGiftCard = () => {
 
   return (
     <div className="gift-card__container component">
-      <div className="section-box-container">
-        <div className="section-box-title">Publish Gift Card</div>
-      </div>
+      <div className="component-primary-heading">Publish Gift Card</div>
+
       {/* <div className="gift-card__active-status"></div> */}
       <div className="section-box-container component">
         {isLoading &&
@@ -304,7 +303,7 @@ const CreateGiftCard = () => {
               value={cardData.description}
               onChange={handleChange}
             />
-            <label className="gift-card__label">Terms & Condition</label>
+            <label className="gift-card__label">Terms & Conditions</label>
             <textarea
               type="text"
               className="gift-card__input"
