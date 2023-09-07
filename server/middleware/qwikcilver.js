@@ -75,7 +75,7 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
@@ -151,7 +151,7 @@ export const fetchBalance = async (store, walletData) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization:  `Bearer ${setting.token}`,
       },
@@ -224,7 +224,7 @@ export const createWallet = async (store, customer_id, logs = {}) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
@@ -356,7 +356,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
@@ -425,7 +425,7 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
@@ -496,7 +496,7 @@ export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
+        DateAtClient: myDate,
         TransactionId: setting.unique_transaction_id,
         Authorization: `Bearer ${setting.token}`,
       },
