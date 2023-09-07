@@ -16,7 +16,7 @@ const CustomDropdown = ({ options, keyField, value, setvalue, emptyText }) => {
         {/* {validity ? (validity === "180" ? "6 months" : "12 months") : "Select"} */}
         {options.find((item) => item.value === value)?.title ||
           emptyText ||
-          "select"}
+          "Select"}
         <span>{isActive ? <FaCaretUp /> : <FaCaretDown />}</span>
       </div>
       <div

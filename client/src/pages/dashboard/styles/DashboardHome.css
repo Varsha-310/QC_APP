@@ -1,5 +1,4 @@
 .section-para {
-  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -7,9 +6,6 @@
   display: flex;
   justify-content: center;
   color: var(--text-dark-color);
-}
-.dashboard-home-container .section-box-container:nth-child(3) {
-  /* height: 250px; */
 }
 .rating-stars {
   display: flex;

@@ -214,23 +214,6 @@ const EditGiftCard = () => {
 
         <div className="gift-card__card-details">
           <div className="gift-card__card-preview">
-            {/* <div className="gift-card__upload-image">
-              <span>Ratio 600x250</span>
-              <div className="file-input-container">
-                <input
-                  type="file"
-                  id="file-input"
-                  className="file-input"
-                  accept="image/png, image/jpg, image/jpeg"
-                  // multiple
-                  onChange={handleFileInput}
-                />
-                <img src={UploadIcon} alt="" />
-                <label htmlFor="file-input" className="file-input-label">
-                  Change image
-                </label>
-              </div>
-            </div> */}
             <div className="gift-card__preview-img">
               <div
                 onClick={() => imageSlider("prev")}
@@ -301,7 +284,7 @@ const EditGiftCard = () => {
               value={cardData.body_html}
               onChange={handleChange}
             />
-            <label className="gift-card__label">Terms and Condition</label>
+            <label className="gift-card__label">Terms and Conditions</label>
             <textarea
               type="text"
               className="gift-card__input"
@@ -334,7 +317,7 @@ const EditGiftCard = () => {
               Variant Name <span className="mandatory">*</span>
             </label>
             <label className="gift-card__label">
-            Denomination <span className="mandatory">*</span>
+              Denomination <span className="mandatory">*</span>
             </label>
             <label></label>
           </div>

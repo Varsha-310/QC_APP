@@ -144,7 +144,7 @@ const NestedTabBox = styled(Link)`
 `;
 
 const SectionHeading1 = styled.div`
-  font-family: "Epilogue";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   width: 100%;
   font-weight: ${(props) => props?.weight};
@@ -185,7 +185,7 @@ const Dot = styled.div`
   border-radius: 50px;
   background-color: ${(props) => (props?.fill ? FRAME_COLOR : "#FFFFFF")};
   border: 1px solid ${FRAME_COLOR};
-  margin: 8px 10px 8px 10px; 
+  margin: 8px 10px 8px 10px;
   z-index: 20;
 `;
 

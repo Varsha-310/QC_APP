@@ -64,9 +64,8 @@ const GiftCardsList = () => {
         <BarLoading />
       ) : (
         <>
-          <div className="section-box-container">
-            <div className="section-box-title">Gift Card SKU's</div>
-          </div>
+          <div className="component-primary-heading">Gift Card SKU's</div>
+
           <GiftCardTable data={data?.data} deleteItem={deleteItem} />
 
           <Pagination

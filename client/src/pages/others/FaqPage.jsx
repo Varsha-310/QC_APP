@@ -19,9 +19,7 @@ const FaqPage = () => {
 
   return (
     <div className="component">
-      <div className="section-box-container">
-        <div className="section-box-title bold">FAQ’s</div>
-      </div>
+      <div className="component-primary-heading">FAQ’s</div>
 
       <div className="faq-component">
         <div className="faq-sections">

@@ -1,14 +1,11 @@
 .contact-input {
   display: grid;
   grid-template-columns: 1fr 4fr;
-  margin: 20px 0px;
+  margin: 10px 0px;
 }
 .account-page__store-detail {
   width: 100%;
-  padding: 15px 50px;
-  border: 1px solid #b72028;
-
-  font-family: "Epilogue";
+  padding: 5px 50px;
   font-weight: 500;
   font-size: 16px;
   line-height: 16px;

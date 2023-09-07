@@ -49,9 +49,7 @@ const AccountPage = () => {
 
   return (
     <div className="account_page-container" style={{ width: "100%" }}>
-      <div className="section-box-container">
-        <div className="section-box-title">My Plan</div>
-      </div>
+      <div className="component-primary-heading">My Plan</div>
 
       <CustomContainer margin="30px 0px" align="center">
         {planData?.data?.plans ? (
@@ -79,10 +77,7 @@ const AccountPage = () => {
           <PrimaryBtn $primary>Upgrade Plan</PrimaryBtn>
         </Link>
       </CustomContainer>
-
-      <div className="section-box-container">
-        <div className="section-box-title-regular">Store Contact</div>
-      </div>
+      <div className="component-primary-heading">Store Contact</div>
 
       <div className="section-box-container">
         <div className="contact-input">

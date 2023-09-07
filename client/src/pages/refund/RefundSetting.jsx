@@ -103,20 +103,13 @@ const RefundSetting = () => {
     <div className="refund-setting__component component">
       {isLoading &&
         createPortal(<Spinner />, document.getElementById("portal"))}
-
-      <div className="section-box-container">
-        <div className="section-box-title">Store Credit Preferences</div>
-        <div className="section-box-subtitle">
-          This settings allows you to credit the refund to a store credit.
-        </div>
-      </div>
-
+      <div className="component-primary-heading">Store Credit Preferences</div>
+      This settings allows you to credit the refund to a store credit.
       <div className="section-box-container">
         <div className="refund-setting__title">
           What is the desired action? Select as Applicable
         </div>
       </div>
-
       <div className="section-box-container">
         <div className="refund-setting__header refund-setting__table-grid">
           <div className="refund-setting__headings">

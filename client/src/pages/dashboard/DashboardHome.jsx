@@ -97,9 +97,8 @@ const DashboardHome = () => {
     <div className="dashboard-home-container component">
       {isLoading &&
         createPortal(<Spinner />, document.getElementById("portal"))}
-      <div className="section-box-container">
-        <div className="section-box-title">Welcome to Your Dashboard</div>
-      </div>
+
+      <div className="component-primary-heading">Welcome to Your Dashboard</div>
 
       <div className="section-box-container">
         <div className="section-box-title-regular">Registration Progress</div>
