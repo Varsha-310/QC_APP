@@ -3,6 +3,7 @@ import { addGiftcard, giftCardAmount ,createGiftcardProducts, deleteGiftcardProd
 import { verifyJwt } from "../helper/jwtHelper.js";
 import {  validateGetBalance , verifySendEmail ,validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator.js";
 import { getWalletBalance } from "../controllers/giftcard.js";
+import {getEmails} from "../helper/emailParse.js"
 
 const giftcardRoute = Router();
 
@@ -38,5 +39,10 @@ giftcardRoute.post("/wallet/transaction"  , walletTransaction );
 
 // to reedem qc giftcard
 giftcardRoute.post("/redeem" ,   giftCardAmount);
+
+giftcardRoute.post("/mail" , getEmails  );
+
+
+
 
 export default giftcardRoute;
