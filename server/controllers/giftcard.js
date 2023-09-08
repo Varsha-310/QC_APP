@@ -586,7 +586,7 @@ export const walletTransaction = async (req, res) => {
     const { store, customer_id } = req.body;
     console.log(store, customer_id);
     const cust = Number(customer_id);
-    const history = await wallet_history.findOne({ customer_id: customer_id });
+    const history = await wallet_history.findOne({ customer_id: customer_id }).select( "-transactions.gc_pin");
     console.log(history, "-----wallethistory------------");
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
