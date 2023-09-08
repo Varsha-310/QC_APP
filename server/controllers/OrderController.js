@@ -114,45 +114,54 @@ export const handleSyncOrder = (req, res) => {
 
 export const handleOrderDataList = async (req, res) => {
 
-    try {
-       
-        let page = Number(req.query.page) || 1;
-        let limit = Number(req.query.limit) || 20;
-        let skip = (page - 1) * limit;
-        const storeUrl = req.token.store_url;
-        const storeUrlFilter = { store_url: storeUrl };
-      
-        // Fetch all the data present in the particular store 
+  try {       
+      let page = Number(req.query.page) || 1;
+      let limit = Number(req.query.limit) || 20;
+      let skip = (page - 1) * limit;
+      const storeUrl = req.token.store_url;
+      const storeUrlFilter = { store_url: storeUrl };
+    
+      // Fetch all the data present in the particular store 
 
-        const filter = { ...storeUrlFilter }
+      const filter = { ...storeUrlFilter }
 
-        if (req.query.Refund_Mode) {
-            filter.Refund_Mode = req.query.Refund_Mode;
+      if (req.query.Refund_Mode) {
+          filter.Refund_Mode = req.query.Refund_Mode;
+      }
+      if (req.query.payment_gateway_names) {
+          filter.payment_gateway_names = req.query.payment_gateway_names;
+      };
+      if(req.query.orderNo){
+        filter.order_number = req.query.orderNo
+      }
+      if(req.query.startDate && req.query.endDate){
+        filter.created_at ={
+          $gte :new Date(req.query.startDate),
+          $lte:new Date(req.query.endDate)
         }
-        if (req.query.payment_gateway_names) {
-            filter.payment_gateway_names = req.query.payment_gateway_names;
-        };
+        
+      }
+      console.log(filter, "filter added");
         const orders = await orderModel.find(
-            filter,
-            { id:1, updated_at:1, 'customer.first_name':1,
-              total_price:1,status:1,payment_gateway_names:1,
-              Refund_Mode:1,refund_status:1,
-              financial_status: 1, fulfillment_status:1,
-              refund_status: 1, order_number: 1
-            })
-            .sort({ created_at:-1 })
-            .skip(skip)
-            .limit(limit);
-        const totalCount = await orderModel.countDocuments(filter); 
-        return res.json(respondWithData("Success",{orders, totalOrders: totalCount}))
-    } catch (err) {
+          filter,
+          { id:1, updated_at:1, 'customer.first_name':1,
+            total_price:1,status:1,payment_gateway_names:1,
+            Refund_Mode:1,refund_status:1,
+            financial_status: 1, fulfillment_status:1,
+            refund_status: 1, order_number: 1
+          })
+          .sort({ created_at:-1 })
+          .skip(skip)
+          .limit(limit);
+      const totalCount = await orderModel.countDocuments(filter); 
+      return res.json(respondWithData("Success",{orders, totalOrders: totalCount}))
+  } catch (err) {
 
-        logger.info(err);
-        console.log(err);
-       return res.json(respondInternalServerError())
-    }
+      logger.info(err);
+      console.log(err);
+     return res.json(respondInternalServerError())
+  }
 };
-
 
 /**
  * Function to handle pagination and filter the data according to store url.
