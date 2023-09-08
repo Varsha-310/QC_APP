@@ -25,6 +25,11 @@
   justify-content: center;
   color: #000000;
 }
+.gift-cards-table thead tr th:first-child {
+  justify-content: left;
+  padding-left: 40px;
+}
+
 .gift-cards-table td {
   display: flex;
   align-items: center;

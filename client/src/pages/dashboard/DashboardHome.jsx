@@ -136,15 +136,10 @@ const DashboardHome = () => {
 
       {kycData?.dashboard_activated !== true ? (
         <div className="section-box-container">
-          <SectionHeading1
-            weight="500"
-            size="24px"
-            align="center"
-            lineheight="26px"
-          >
+          <div className="section-box-title-regular">
             Start Your Registration
-          </SectionHeading1>
-          <p className="section-para" style={{ marginTop: "30px" }}>
+          </div>
+          <p className="section-para" style={{ marginTop: "20px" }}>
             Qwikcilver App has been successfully installed on your Shopify
             Account. To start issuing pre-paid gift cards and store credits from
             your website, complete the registration process.

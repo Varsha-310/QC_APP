@@ -9,8 +9,8 @@
 }
 .faq-component p {
   margin: 10px 0px;
-  font-size: 16px;
-  line-height: 160%;
+  font-size: 14px;
+  line-height: 140%;
 }
 .faq-component p b {
   font-weight: 600;
@@ -19,6 +19,7 @@
   list-style: inherit;
   text-align: justify;
   margin-left: 20px;
+  font-size: 14px;
 }
 .faq-component li p:first-child {
   font-weight: 600;

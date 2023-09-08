@@ -77,7 +77,7 @@ const AccountPage = () => {
           <PrimaryBtn $primary>Upgrade Plan</PrimaryBtn>
         </Link>
       </CustomContainer>
-      <div className="component-primary-heading">Store Contact</div>
+      <div className="component-primary-heading">Linked Store Contact</div>
 
       <div className="section-box-container">
         <div className="contact-input">

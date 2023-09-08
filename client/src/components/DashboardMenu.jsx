@@ -198,7 +198,7 @@ const DashboardMenu = () => {
               <li>
                 <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
                   {/* <HiOutlineDocumentMagnifyingGlass className="menu-icons" /> */}
-                  <TabItemLable>FAQ</TabItemLable>
+                  <TabItemLable>FAQ's</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
@@ -362,7 +362,7 @@ const DashboardMenu = () => {
               <li>
                 <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
                   {/* <HiOutlineDocumentMagnifyingGlass className="menu-icons" /> */}
-                  <TabItemLable>FAQ</TabItemLable>
+                  <TabItemLable>FAQ's</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
