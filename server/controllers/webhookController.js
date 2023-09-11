@@ -85,7 +85,9 @@ const ordercreateEvent = async (input, done) => {
             checkAmount.amount,
             order.current_total_price
           );
-          console.log(redeemed);
+          console.log(redeemed.id , order.id);
+	const txn_update = await orders.updateOne({id: order.id},{redeem_txn_id : redeemed.id});
+          console.log(txn_update)
         }
       } else {
 
@@ -399,7 +401,7 @@ function processPrd(updatedProduct, store) {
  * @param {*} res 
  */
 export const getQcCredentials = async (req,res) =>{
-
+ console.log("--------------------webhook from QC------------------");
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------",req.body);
   res.send(respondSuccess("webhook received"));

@@ -89,7 +89,7 @@ export const installCallback = async (req, res) => {
       } else {
       
         // console.log(accessToken, "accessToken");
-        let storeData = await getShopifyStoreData(shop, accessToken);
+        let storeData = await getShopifyStoreData(shop, accessToken, res);
         if (storeData) {
           let response = await saveStoreData(storeData, shop, accessToken, token);
           // console.log(response ,"response of store data");
@@ -153,7 +153,7 @@ export const saveStoreData = async (shopData, shop, accessToken, token) => {
  * @param {*} accessToken
  * @returns
  */
-export const getShopifyStoreData = async (shop, accessToken) => {
+export const getShopifyStoreData = async (shop, accessToken, res) => {
   try {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
@@ -171,7 +171,9 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {
-    res.json(respondInternalServerError());
+	console.log(error);
+	return error;
+    //res.json(respondInternalServerError());
   }
 };
 

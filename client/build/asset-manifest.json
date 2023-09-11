@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.65df6b2f.css",
-    "main.js": "/static/js/main.edce31bf.js",
+    "main.css": "/static/css/main.1465d14d.css",
+    "main.js": "/static/js/main.d3d91f30.js",
     "static/media/qc_logo_transparent.png": "/static/media/qc_logo_transparent.47f2caba228bff4a9947.png",
     "static/media/cardcap.png": "/static/media/cardcap.224eb196d6ad6f4e3f78.png",
     "static/media/dummyGiftcardImage.png": "/static/media/dummyGiftcardImage.0f3bcd8f2ee5e66b9496.png",
@@ -25,11 +25,11 @@
     "static/media/tick.svg": "/static/media/tick.caa5c6d9eeeffa7120bda6ab81d1c599.svg",
     "static/media/deletefill.svg": "/static/media/deletefill.8ad2b3f2ee3af57056db287687f09c94.svg",
     "static/media/DownArr.svg": "/static/media/DownArr.d8a9e080929123652b474a40fba8b35c.svg",
-    "main.65df6b2f.css.map": "/static/css/main.65df6b2f.css.map",
-    "main.edce31bf.js.map": "/static/js/main.edce31bf.js.map"
+    "main.1465d14d.css.map": "/static/css/main.1465d14d.css.map",
+    "main.d3d91f30.js.map": "/static/js/main.d3d91f30.js.map"
   },
   "entrypoints": [
-    "static/css/main.65df6b2f.css",
-    "static/js/main.edce31bf.js"
+    "static/css/main.1465d14d.css",
+    "static/js/main.d3d91f30.js"
   ]
 }

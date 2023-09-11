@@ -163,10 +163,13 @@ export const getGiftcardProducts = async (req, res) => {
     const currentPage = page > totalPages ? totalPages : page;
 
     console.log(req.token.store_url);
-    let products = await Product.find({ store_url: req.token.store_url })
+    let products;
+if(totalPages > 0){
+      products =  await Product.find({ store_url: req.token.store_url })
       .sort({ created_at: -1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
+}
     console.log(products);
     res.json({
       success: true,

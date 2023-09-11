@@ -350,7 +350,7 @@ export const handleRefundAction = async (req, res) => {
             const gc_transaciton = getOrderGCAmount.data.transactions.find(item => item.gateway == "gift_card");
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
-            await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount);
+            await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount,ordersData.redeem_txn_id);
             trans.push({
                 "kind":"refund",
                 "gateway": gcRfDetails.gc_trans.gateway,
