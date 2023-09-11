@@ -418,7 +418,7 @@ export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
 
       console.log(walletRedemption.data.Wallets);
       await wallet_history.updateOne({wallet_id: wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
-      return walletRedemption.data.Wallets;
+      return {wallet : walletRedemption.data.Wallets, id :transactionId};
     }
   } catch (err) {
     console.log(err);
@@ -473,7 +473,7 @@ export const reverseRedeemWallet = async (store ,gc_id, amount) => {
       },
       data: data,
     };
-
+ 
     const walletRedemption = await axios(config);
     console.log(walletRedemption.data)
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {

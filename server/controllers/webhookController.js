@@ -86,6 +86,8 @@ const ordercreateEvent = async (input, done) => {
             order.current_total_price
           );
           console.log(redeemed);
+          const txn_update = await orders.updateOne({id: order.id},{redeem_txn_id : redeemed.id});
+          console.log(txn_update)
         }
       } else {
 
