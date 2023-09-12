@@ -272,8 +272,8 @@ export const addGiftcardtoWallet = async (
       if (!activatedCardLog?.status) return logs;
             let activatedCard = activatedCardLog.resp.Cards[0];
 
-      const setting = await Store.findOne({ store_url: store });
-      let walletExists = await Wallet.findOne({
+        const setting = await Store.findOne({ store_url: store });
+        let walletExists = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
       console.log(walletExists, "-------***********------");
@@ -293,13 +293,8 @@ export const addGiftcardtoWallet = async (
             );
         logs["updateW"] = transactionLog;
         if (!transactionLog?.status) return logs;
-        let transaction = activatedCardLog.resp;
-
-        console.log(transaction);
-        if (
-          transaction.status == "200" &&
-          transaction.data.ResponseCode == "0"
-        ) {
+        else {
+         
           if (!logs?.wallet?.shopifyGCUpdateAt) {
             let updateShopifyGc = await updateShopifyGiftcard(
               store,
@@ -342,10 +337,9 @@ export const addGiftcardtoWallet = async (
         );
         logs["createW"] = walletCreatedLog;
         if (!walletCreatedLog?.status) return logs;
-        let walletCreated = activatedCardLog.resp.Wallets[0];
 
+        let walletCreated = walletCreatedLog.resp.Wallets[0];
         console.log("activated card balance", activatedCard);
-
         let gift_card = {};
         if (logs?.shopifyGCCreatedAt) {
           gift_card = await createShopifyGiftcard(
@@ -382,12 +376,8 @@ export const addGiftcardtoWallet = async (
             );
         logs["updateW"] = transactionLog;
         if (!transactionLog?.status) return logs;
-        let transaction = activatedCardLog.resp;
-        console.log(transaction);
-        if (
-          transaction.status == "200" &&
-          transaction.data.ResponseCode == "0"
-        ) {
+        else { 
+
           logs["status"] = true;
           await wallet.updateOne(
             { shopify_customer_id: customer_id },
