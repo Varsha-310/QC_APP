@@ -51,9 +51,9 @@ export const createGiftcardProducts = async (req, res) => {
       tags: tags,
       variants: variants,
       status: "active",
-      store_url: store,
+     
     });
-    const otherData = { validity: validity, terms: terms };
+    const otherData = { validity: validity, terms: terms ,  store_url: store };
     const createP = {
       ...newProduct,
       ...otherData,

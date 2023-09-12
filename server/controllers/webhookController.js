@@ -20,7 +20,8 @@ import axios from "axios";
 export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
-  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  // orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  ordercreateEvent(req,res)
   res.json(respondSuccess("webhook received"));
 };
 
@@ -49,13 +50,14 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (input, done) => {
+const ordercreateEvent = async (req,res) => {
 
   try {
 
     console.log("------------order create event-----------------");
-    const { shop, order } = input;
-    let shopName = shop;
+    const order = req.body;
+    const shop = req.headers["x-shopify-shop-domain"];
+    const shopName = shop;
     console.log("Shop Name", shop);
 
     // Store Order
@@ -140,7 +142,7 @@ const ordercreateEvent = async (input, done) => {
                 await orders.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
                 await orderCancel(newOrder.id,shop);
 
-		done();
+		// done();
                 return 1;
               }
 
@@ -243,7 +245,7 @@ const ordercreateEvent = async (input, done) => {
       }
     }
     //complete order
-    done();
+    // done();
   } catch (err) {
 
     console.log(err);
