@@ -229,7 +229,8 @@ export const addGiftcard = async (req, res) => {
           customer_id,
           gc_pin,
           validPin.balance,
-          type
+          type,
+          validPin.order_id
         );
         if (gcToWallet.status == "403") {
           res.json(respondForbidden("card has been already added to wallet"));
@@ -268,7 +269,8 @@ export const addGiftcardtoWallet = async (
   customer_id,
   gc_pin,
   amount,
-  type
+  type,
+  order_id
 ) => {
   try {
     const cardAlredyAdded = await wallet_history.findOne({
@@ -331,7 +333,7 @@ export const addGiftcardtoWallet = async (
         }
       } else {
         console.log("wallet doesnt exists");
-        let walletCreated = await createWallet(store, customer_id);
+        let walletCreated = await createWallet(store, customer_id , order_id);
         let activatedCard = await activateCard(store, gc_pin);
         console.log("activated card balance", activatedCard);
         let gift_card = await createShopifyGiftcard(

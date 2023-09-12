@@ -49,7 +49,7 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
       InputType: "3",
       TransactionModeId : "0",
       BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order_id,
+      InvoiceNumber: `ORD-${order_id}`,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry : expirydate,
@@ -66,7 +66,6 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
         Mobile: "+8095379504",
         Email: "testinguser@gmail.com",
       },
-      Notes: "CreateAndIssue Testing",
     };
 
     let config = {
@@ -132,7 +131,6 @@ export const fetchBalance = async (store ,walletData) => {
           CurrencyCode: "INR",
         },
       ],
-      Notes: "Wallet Balance Enquiry",
     };
 
     let config = {
@@ -178,7 +176,7 @@ export const fetchBalance = async (store ,walletData) => {
  * @param {*} req
  * @param {*} res
  */
-export const createWallet = async (store ,customer_id) => {
+export const createWallet = async (store ,customer_id , order_id) => {
 
   try {
 
@@ -194,7 +192,7 @@ export const createWallet = async (store ,customer_id) => {
     let data = {
       TransactionTypeId: 3500,
       BusinessReferenceNumber: "",
-      InvoiceNumber: "Inv-01",
+      InvoiceNumber: `ORD-${order_id}`,
       Quantity: 1,
       ExecutionMode:"0",
       WalletProgramGroupName : setting.wpgn,
@@ -204,9 +202,8 @@ export const createWallet = async (store ,customer_id) => {
           ExternalWalletID: customer_id,
           CurrencyCode: "INR",
         },
-      ],
-      Notes: "Test Wallet Creation for Testing",
-    };
+      ]
+        };
 
     let config = {
       method: "post",
@@ -273,7 +270,6 @@ export const addToWallet = async (store ,wallet_id, gc_pin, gc_number) => {
             ],
           },
         ],
-        Notes: "Test Add Card to Wallet",
       };
 
       let config = {
@@ -328,7 +324,6 @@ export const activateCard = async (store ,gc_pin) => {
       InputType: "1",
       IdempotencyKey: idempotency_key,
       Cards: [{ CardPin: gc_pin }],
-      Notes: "Activate Only",
     };
 
     let config = {
@@ -369,7 +364,7 @@ export const activateCard = async (store ,gc_pin) => {
  * @param {*} customer_id 
  * @returns 
  */
-export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
+export const redeemWallet = async (store ,wallet_id,amount , bill_amount , id) => {
 
   try {
 
@@ -388,7 +383,7 @@ export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
       InputType:"1",
       PreAuthType:1,
       BusinessReferenceNumber: "",
-      InvoiceNumber: "Inv-01",
+      InvoiceNumber: `ORD-${id}`,
       IdempotencyKey: idempotency_key,
       BillAmount : bill_amount,
       Quantity: 1,
@@ -397,7 +392,6 @@ export const redeemWallet = async (store ,wallet_id,amount , bill_amount) => {
         CurrencyCode:"INR",
         Amount: amount
       }],
-      Notes: "Test Wallet Redeem for Testing",
     };
 
     let config = {
@@ -461,7 +455,6 @@ export const reverseRedeemWallet = async (store ,gc_id, amount, id) => {
         CurrencyCode:"INR",
         Amount: amount
       }],
-      Notes: "Test Wallet Reverse Redeem for Testing",
     };
 
     const config = {

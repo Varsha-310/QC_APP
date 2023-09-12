@@ -83,7 +83,8 @@ const ordercreateEvent = async (input, done) => {
             shopName,
             checkAmount.id,
             checkAmount.amount,
-            order.current_total_price
+            order.current_total_price,
+            order.id
           );
           console.log(redeemed.id , order.id);
           const txn_update = await orders.updateOne({id: order.id},{redeem_txn_id : redeemed.id});
@@ -230,7 +231,8 @@ const ordercreateEvent = async (input, done) => {
                     custom_id,
                     giftCardDetails.CardPin,
                     giftCardDetails.Balance,
-                    type
+                    type,
+                    newOrder.id
                   );
               }
             }
