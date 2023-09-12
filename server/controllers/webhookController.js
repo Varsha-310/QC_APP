@@ -86,7 +86,7 @@ const ordercreateEvent = async (input, done) => {
             order.current_total_price
           );
           console.log(redeemed.id , order.id);
-	const txn_update = await orders.updateOne({id: order.id},{redeem_txn_id : redeemed.id});
+          const txn_update = await orders.updateOne({id: order.id},{redeem_txn_id : redeemed.id});
           console.log(txn_update)
         }
       } else {
@@ -406,7 +406,9 @@ export const getQcCredentials = async (req,res) =>{
   logger.info("----------webhook from QC--------",req.body);
   res.send(respondSuccess("webhook received"));
   const {giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn} = req.body
- // await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
+  console.log(giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn)
+ const log  = await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
+ console.log(log)
   await store.updateOne({shopify_id : shopify_id}, {dashboard_activated :true})
 }
 

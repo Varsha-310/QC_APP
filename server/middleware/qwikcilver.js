@@ -475,7 +475,7 @@ export const reverseRedeemWallet = async (store ,gc_id, amount, id) => {
       },
       data: data,
     };
-
+ 
     const walletRedemption = await axios(config);
     console.log(walletRedemption.data)
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
