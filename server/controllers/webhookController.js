@@ -196,7 +196,8 @@ const ordercreateEvent = async (input, done) => {
                       parseInt(qwikcilver_gift_card.price),
                       newOrder.id,
                       qwikcilver_gift_card.validity,
-                      type
+                      type,
+                      newOrder.customer
                     );
                     console.log(giftCardDetails);
                     console.log(email);

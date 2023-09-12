@@ -15,7 +15,7 @@ import wallet from "../models/wallet.js";
  * @param {*} type 
  * @returns 
  */
-export const createGiftcard = async (store, amount, order_id , validity, type) => {
+export const createGiftcard = async (store, amount, order_id , validity, type , customer = {}) => {
 
   try {
 
@@ -61,10 +61,10 @@ export const createGiftcard = async (store, amount, order_id , validity, type) =
         },
       ],
       Purchaser: {
-        FirstName: "varsha",
-        LastName: "One",
-        Mobile: "+8095379504",
-        Email: "testinguser@gmail.com",
+        FirstName: customer?.first_name || "varsha",
+        LastName: customer?.last_name || "One",
+        Mobile: customer?.email || "+8095379504",
+        Email: customer?.phone || "testinguser@gmail.com",
       },
     };
 
