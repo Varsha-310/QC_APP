@@ -201,27 +201,37 @@ export const getSelectedGc = async (req, res) => {
  * @param {*} res
  */
 export const addGiftcard = async (req, res) => {
+  let gcToWallet = {};
+        let logs = {};
+        let { store, customer_id, gc_pin } = req.body;
+        let validPin;
+        const type = "giftcard";
+
   try {
-    let { store, customer_id, gc_pin } = req.body;
-    const type = "giftcard";
-    const validPin = await qc_gc.findOne({ gc_pin: gc_pin });
+   validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     if (validPin) {
       const presentTime = new Date(Date.now());
       console.log(validPin.expiry_date, presentTime);
       if (validPin.expiry_date < presentTime) {
         res.json(respondForbidden("card is expired !"));
       } else {
-        const gcToWallet = await addGiftcardtoWallet(
+        
+        
+          
+          gcToWallet = await addGiftcardtoWallet(
             store,
             customer_id,
             gc_pin,
             validPin.balance,
-            type
+            type,
+            logs
           );
-                  if (gcToWallet.status == "403") {
-          res.json(respondForbidden("card has been already added to wallet"));
+          
+          logs = gcToWallet;
+        if (gcToWallet.status == "403") {
+          return res.json(respondForbidden("card has been already added to wallet"));
         }
-        if (gcToWallet.ResponseCode == "0") {
+        if (gcToWallet.updateW.resp.ResponseCode == "0") {
           res.json({
             ...respondWithData("card has been added to wallet"),
           });
@@ -238,6 +248,22 @@ export const addGiftcard = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    for(let i =0; i< 3; i++){
+      await sleep(10000);    
+      gcToWallet = await addGiftcardtoWallet(
+        store,
+        customer_id,
+        gc_pin,
+        validPin.balance,
+        type,
+        logs
+      );
+      if(gcToWallet.staus){
+        break;
+      }
+      logs = gcToWallet;
+    }
     res.json(respondInternalServerError());
   }
 };
@@ -260,6 +286,7 @@ export const addGiftcardtoWallet = async (
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
     });
+    console.log(cardAlredyAdded , "cardAlredyAdded")
     if (cardAlredyAdded) {
       return { status: 403 };
     } else {
