@@ -73,7 +73,7 @@ const ordercreateEvent = async (input,done) => {
       order,
       { upsert: true }
     );
-
+    let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
     if (settings) {
 
@@ -83,7 +83,7 @@ const ordercreateEvent = async (input,done) => {
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
         console.log(line_item.product_id)
-        let gift_card_product = await product.findOne({
+         gift_card_product = await product.findOne({
           id: line_item.product_id,
         }).lean(); //Get the product from DB
 
