@@ -21,8 +21,9 @@ import axios from "axios";
 export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
-  // orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
-  ordercreateEvent(req,res)
+  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+
+  // ordercreateEvent(shop,order,res)
   res.json(respondSuccess("webhook received"));
 };
 
@@ -51,15 +52,18 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (req,res) => {
+const ordercreateEvent = async (input,done) => {
 
   try {
+    const { shop, order } = input;
+     // checking Existing Session.
+     const logQuery = {
+      store: shop,
+      orderId: order.id
+    };
 
     console.log("------------order create event-----------------");
-    const order = req.body;
-    const shop = req.headers["x-shopify-shop-domain"];
-    const shopName = shop;
-    console.log("Shop Name", shop);
+    console.log("Shop Name", shop , order.id);
 
     // Store Order
     await orders.updateOne({
