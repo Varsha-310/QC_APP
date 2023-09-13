@@ -30,7 +30,8 @@ export const sendEmailViaSendGrid = async (
   receiver,
   email_id,
   message,
-  image_url
+  image_url,
+  product_title
 ) => {;
 console.log("in the mail sender");
 
@@ -69,6 +70,10 @@ email_template = email_template.replaceAll(
 email_template = email_template.replaceAll( 
   "__domain__", `${shopName}`
 );
+email_template = email_template.replaceAll( 
+  "__product_title__", product_title
+);
+
 
 
 

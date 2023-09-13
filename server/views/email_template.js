@@ -72,9 +72,7 @@ let email_template = `
                                                                                                     <p
                                                                                                         style="margin:0;padding:0 0 15px 0">
                                                                                                         <span
-                                                                                                            style="font-size:20px">Shopify
-                                                                                                            eGift
-                                                                                                            Card</span>
+                                                                                                            style="font-size:20px">__product_title__</span>
                                                                                                     </p>
                                                                                                 </td>
                                                                                                 <td style="font-weight:bold;vertical-align:top;padding-left:15px;text-align:left"

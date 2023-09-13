@@ -220,7 +220,8 @@ const ordercreateEvent = async (input,done) => {
                     receiver,
                     email,
                     message,
-                    image_url
+                    image_url,
+                    gift_card_product.title
                   );
                   // OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
                   await OrderCreateEventLog.updateOne(logQuery,{"gift.sentEmailAt" :new Date().toISOString()}, {upsert: true});
