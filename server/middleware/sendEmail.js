@@ -63,9 +63,13 @@ email_template = email_template.replace(
 email_template = email_template.replace(
   "template_image", image_url
 );
-email_template = email_template.replace(
+email_template = email_template.replaceAll( __domain__*
   "__store__", `https://${shopName}`
 );
+email_template = email_template.replaceAll( 
+  "__domain__", `${shopName}`
+);
+
 
 
 // Framing the mail options
