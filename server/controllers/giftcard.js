@@ -212,13 +212,13 @@ export const addGiftcard = async (req, res) => {
         res.json(respondForbidden("card is expired !"));
       } else {
         const gcToWallet = await addGiftcardtoWallet(
-          store,
-          customer_id,
-          gc_pin,
-          validPin.balance,
-          type
-        );
-        if (gcToWallet.status == "403") {
+            store,
+            customer_id,
+            gc_pin,
+            validPin.balance,
+            type
+          );
+                  if (gcToWallet.status == "403") {
           res.json(respondForbidden("card has been already added to wallet"));
         }
         if (gcToWallet.ResponseCode == "0") {

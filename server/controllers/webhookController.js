@@ -92,7 +92,7 @@ const ordercreateEvent = async (input, done) => {
         }
       }
 
-     await OrderCreateEventLog.updateOne({store: shop},{orderId: order.id}, {upsert: true})
+    // await OrderCreateEventLog.updateOne({store: shop},{orderId: order.id}, {upsert: true})
       let OrderSession = await OrderCreateEventLog.findOne({store: shop ,orderId: order.id});
       console.log(OrderSession ,"ordersession")
       if (OrderSession?.status == "done") {
@@ -100,7 +100,8 @@ const ordercreateEvent = async (input, done) => {
         done(null, true);
         return; // skip if already processed.
       }
-      // OrderSession = OrderSession ? OrderSession : logQuery;
+      OrderSession = OrderSession ? OrderSession : logQuery;
+      const numberOfRetried = OrderSession?.numberOfRetried ? parseInt(OrderSession?.numberOfRetried)+1 : 1;
       console.log(OrderSession , "ordersession")
 
       //check gc in the order & process
@@ -122,7 +123,7 @@ const ordercreateEvent = async (input, done) => {
           { id: newOrder.id },
           { is_giftcard_order: true }
         );
-        await OrderCreateEventLog.updateOne({orderId: order.id}, {action: "gift"})
+        await OrderCreateEventLog.updateOne(logQuery, {action: "gift", numberOfRetried, ...logQuery}, {upsert: true});
 
         //  check financial status
         if (newOrder.financial_status == "paid") {
@@ -288,7 +289,7 @@ const ordercreateEvent = async (input, done) => {
         }
       }
     }
-    await OrderCreateEventLog.updateOne(logQuery, {$inc :{ numberOfRetried : 1 } , status: "done" });
+    await OrderCreateEventLog.updateOne(logQuery, {status: "done" }).then(resp => console.log("Final Updates:", resp));
     done(null, true);
   } catch (err) {
 
@@ -466,14 +467,13 @@ export const failedOrders = async()=> {
 
   const failedOrders = await OrderCreateEventLog.find({
     status: "retry",
-    numberOfRetried: { $lte: 3}
+    numberOfRetried: { $lt: 3}
   });
 
   for (const iterator of failedOrders) {
    
     const orderData = await orders.findOne({id: iterator.orderId, store_url: iterator.store});
     await ordercreateEvent({shop: iterator.store, order:orderData}, (a,b) =>{
-      
       console.log("Order Processed:", a,b);
     });
   }

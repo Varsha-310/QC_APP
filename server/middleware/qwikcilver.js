@@ -109,8 +109,8 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
     err.response.data.ResponseCode == "10744"){
       await authToken(store);
     }
-    console.log(err);
-    logs["error"] = err;
+    console.log(err.response);
+    logs["error"] = err.response.data;
     return logs;
   }
 };
@@ -244,7 +244,7 @@ export const createWallet = async (store, customer_id, logs = {}) => {
     return logs;
   } catch (err) {
 
-    logs["error"] = err;
+    logs["error"] = err.response.data;
     console.log(err);
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
@@ -317,7 +317,7 @@ export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs = {}
       await authToken(store);
     }
     console.log(err)
-    logs["error"] = err;
+    logs["error"] = err.response.data;
     return logs;
   }
 };
@@ -376,7 +376,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
       await authToken(store);
     }
     console.log(err);
-    logs["error"] = err;
+    logs["error"] = err.response.data;
     return logs;
   }
 };
@@ -445,7 +445,7 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
  
   } catch (err) {
 
-    logs["error"] = err;
+    logs["error"] = err.response.data;
     console.log(err);
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
@@ -516,7 +516,7 @@ export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
     return logs;
   } catch (err) {
 
-    logs["error"] = err;
+    logs["error"] = err.response.data;
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
       await authToken(store);
