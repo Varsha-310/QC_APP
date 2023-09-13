@@ -21,7 +21,8 @@ import axios from "axios";
 export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
-  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  // orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+  ordercreateEvent(req,res)
   res.json(respondSuccess("webhook received"));
 };
 
@@ -50,17 +51,16 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (input, done) => {
+const ordercreateEvent = async (req,res) => {
 
   try {
 
-    const { shop, order } = input;
-     // checking Existing Session.
-     const logQuery = {
-      store: shop,
-      orderId: order.id
-    };
-    console.log("------------order create event-----------------", shop);
+    console.log("------------order create event-----------------");
+    const order = req.body;
+    const shop = req.headers["x-shopify-shop-domain"];
+    const shopName = shop;
+    console.log("Shop Name", shop);
+
     // Store Order
     await orders.updateOne({
       store_url: shop,
@@ -136,7 +136,8 @@ const ordercreateEvent = async (input, done) => {
                 console.log("Plan Limit has been exceeded.")
                 await orders.updateOne({id: newOrder.id}, {qc_gc_created: "NO"});
                 await orderCancel(newOrder.id,shop);
-                done();
+
+		// done();
                 return 1;
             }
             console.log("____________QC giftcard created______________", qwikcilver_gift_card);
@@ -256,6 +257,7 @@ const ordercreateEvent = async (input, done) => {
                   giftCardDetails.CardPin,
                   giftCardDetails.Balance,
                   type,
+                  newOrder.id,
                   OrderSession?.self?.wallet
                 );
                 // OrderSession["self"]["wallet"] = logs;
@@ -280,6 +282,7 @@ const ordercreateEvent = async (input, done) => {
               checkAmount.id,
               checkAmount.amount,
               order.current_total_price,
+              order.id,
               OrderSession?.redeem
             );
             // OrderSession["redeem"] = redeemed;
@@ -290,11 +293,11 @@ const ordercreateEvent = async (input, done) => {
       }
     }
     await OrderCreateEventLog.updateOne(logQuery, {status: "done" }).then(resp => console.log("Final Updates:", resp));
-    done(null, true);
+    // done(null, true);
   } catch (err) {
 
     console.log(err);
-    done(null, false);
+    // done(null, false);
   }
 };
 
@@ -449,14 +452,16 @@ function processPrd(updatedProduct, store) {
  * @param {*} req 
  * @param {*} res 
  */
-export const getQcCredentials = async (req, res) => {
-
+export const getQcCredentials = async (req,res) =>{
+ console.log("--------------------webhook from QC------------------");
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------", req.body);
   res.send(respondSuccess("webhook received"));
-  const { giftcard_cpgn, oracle_id, password, refund_cpgn, shopify_id, support_url, terminal_id, username, wpgn } = req.body
-  // await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
-  await store.updateOne({ shopify_id: shopify_id }, { dashboard_activated: true })
+  const {giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn} = req.body
+  console.log(giftcard_cpgn , oracle_id, password , refund_cpgn, shopify_id , support_url , terminal_id, username ,wpgn)
+ const log  = await qcCredentials.updateOne({shopify_id:shopify_id}, { giftcard_cpgn :giftcard_cpgn , refund_cpgn : refund_cpgn , oracle_id : oracle_id , password : password , terminal_id : terminal_id , username : username , wpgn : wpgn}, {upsert: true})
+ console.log(log)
+  await store.updateOne({shopify_id : shopify_id}, {dashboard_activated :true})
 }
 
 /**

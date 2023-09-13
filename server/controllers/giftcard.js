@@ -51,9 +51,9 @@ export const createGiftcardProducts = async (req, res) => {
       tags: tags,
       variants: variants,
       status: "active",
-      store_url: store,
+     
     });
-    const otherData = { validity: validity, terms: terms };
+    const otherData = { validity: validity, terms: terms ,  store_url: store };
     const createP = {
       ...newProduct,
       ...otherData,
@@ -157,10 +157,13 @@ export const getGiftcardProducts = async (req, res) => {
     const currentPage = page > totalPages ? totalPages : page;
 
     console.log(req.token.store_url);
-    let products = await Product.find({ store_url: req.token.store_url })
+    let products;
+if(totalPages > 0){
+      products =  await Product.find({ store_url: req.token.store_url })
       .sort({ created_at: -1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
+}
     console.log(products);
     res.json({
       success: true,
@@ -224,7 +227,8 @@ export const addGiftcard = async (req, res) => {
             gc_pin,
             validPin.balance,
             type,
-            logs
+            logs,
+            validPin.order_id
           );
           
           logs = gcToWallet;
@@ -250,14 +254,15 @@ export const addGiftcard = async (req, res) => {
     console.log(err);
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     for(let i =0; i< 3; i++){
-      await sleep(10000);    
+      await sleep(17000);    
       gcToWallet = await addGiftcardtoWallet(
         store,
         customer_id,
         gc_pin,
         validPin.balance,
         type,
-        logs
+        logs,
+        validPin.order_id
       );
       if(gcToWallet.staus){
         break;
@@ -279,7 +284,8 @@ export const addGiftcardtoWallet = async (
   gc_pin,
   amount,
   type,
-  logs = {}
+  logs = {},
+  order_id
 ) => {
   logs["status"] = false;
   try {
@@ -360,7 +366,8 @@ export const addGiftcardtoWallet = async (
         let walletCreatedLog = await createWallet(
           store,
           customer_id,
-          logs?.createW
+          logs?.createW,
+          order_id
         );
         logs["createW"] = walletCreatedLog;
         if (!walletCreatedLog?.status) return logs;
@@ -666,7 +673,6 @@ export const giftCardOrders = async (req, res) => {
     res.json(respondInternalServerError());
   }
 };
-
 /**
  * to fetch wallet trasnaction
  * @param {*} req
@@ -677,7 +683,7 @@ export const walletTransaction = async (req, res) => {
     const { store, customer_id } = req.body;
     console.log(store, customer_id);
     const cust = Number(customer_id);
-    const history = await wallet_history.findOne({ customer_id: customer_id });
+    const history = await wallet_history.findOne({ customer_id: customer_id }).select( "-transactions.gc_pin");
     console.log(history, "-----wallethistory------------");
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));

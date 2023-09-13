@@ -49,7 +49,7 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
       InputType: "3",
       TransactionModeId: "0",
       BusinessReferenceNumber: "",
-      InvoiceNumber: "ORD-" + order_id,
+      InvoiceNumber: `ORD-${order_id}`,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
       Expiry: expirydate,
@@ -66,7 +66,6 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
         Mobile: customer?.email || "+8095379504",
         Email: customer?.phone || "testinguser@gmail.com",
       },
-      Notes: "CreateAndIssue Testing",
     };
     logs["req"] = data;
     
@@ -142,7 +141,6 @@ export const fetchBalance = async (store, walletData) => {
           CurrencyCode: "INR",
         },
       ],
-      Notes: "Wallet Balance Enquiry",
     };
 
     let config = {
@@ -188,7 +186,7 @@ export const fetchBalance = async (store, walletData) => {
  * @param {*} req
  * @param {*} res
  */
-export const createWallet = async (store, customer_id, logs = {}) => {
+export const createWallet = async (store, customer_id,order_id, logs = {}) => {
 
   logs["status"] = false;
   try {
@@ -205,7 +203,7 @@ export const createWallet = async (store, customer_id, logs = {}) => {
     let data = logs?.req ? logs.req : {
       TransactionTypeId: 3500,
       BusinessReferenceNumber: "",
-      InvoiceNumber: "Inv-01",
+      InvoiceNumber: `ORD-${order_id}`,
       Quantity: 1,
       ExecutionMode: "0",
       WalletProgramGroupName: setting.wpgn,
@@ -216,7 +214,6 @@ export const createWallet = async (store, customer_id, logs = {}) => {
           CurrencyCode: "INR",
         },
       ],
-      Notes: "Test Wallet Creation for Testing",
     };
     logs["req"] = data;
     let config = {
@@ -288,7 +285,6 @@ export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs = {}
           ],
         },
       ],
-      Notes: "Test Add Card to Wallet",
     };
 
     logs["req"] = data;
@@ -347,7 +343,6 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
       InputType: "1",
       IdempotencyKey: idempotency_key,
       Cards: [{ CardPin: gc_pin }],
-      Notes: "Activate Only",
     };
     logs["req"] = data;
 
@@ -388,7 +383,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
  * @param {*} customer_id 
  * @returns 
  */
-export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) => {
+export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, logs) => {
 
   logs["status"] = false;
   try {
@@ -407,7 +402,7 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
       InputType: "1",
       PreAuthType: 1,
       BusinessReferenceNumber: "",
-      InvoiceNumber: "Inv-01",
+      InvoiceNumber: `ORD-${id}`,
       IdempotencyKey: idempotency_key,
       BillAmount: bill_amount,
       Quantity: 1,
@@ -416,7 +411,6 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
         CurrencyCode: "INR",
         Amount: amount
       }],
-      Notes: "Test Wallet Redeem for Testing",
     };
 
     logs["req"] = data;
@@ -438,8 +432,9 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
 
       logs["status"] = true; 
       console.log(walletRedemption.data.Wallets);
-      await wallet_history.updateOne({ wallet_id: wallet_id }, { $push: { transactions: { transaction_type: "debit", amount: amount, transaction_date: Date.now() } } }, { upsert: true });
- 
+      await wallet_history.updateOne({wallet_id: wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
+     // return walletRedemption.data.Wallets;
+	return {wallet : walletRedemption.data.Wallets, id :transactionId};
     }
     return logs;
  
@@ -466,10 +461,11 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount, logs) 
  * @param {*} amount 
  * @returns 
  */
-export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
+export const reverseRedeemWallet = async (store, gc_id, amount, id,logs ={}) => {
 
   logs["status"] = false;
   try {
+	console.log("---------------in reverse redeem---------------",store ,gc_id, amount, id);
 
     const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id });
     if (giftcardExists) return null;
@@ -487,7 +483,6 @@ export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
         CurrencyCode: "INR",
         Amount: amount
       }],
-      Notes: "Test Wallet Reverse Redeem for Testing",
     };
 
     logs["req"] = data;
@@ -497,12 +492,12 @@ export const reverseRedeemWallet = async (store, gc_id, amount, logs ={}) => {
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: date,
-        TransactionId: setting.unique_transaction_id,
+        TransactionId: id,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
     };
-
+ 
     const walletRedemption = await axios(config);
     console.log(walletRedemption.data)
     logs["resp"] = walletRedemption?.data;

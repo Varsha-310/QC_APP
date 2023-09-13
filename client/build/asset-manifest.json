@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.8b20287e.css",
-    "main.js": "/static/js/main.63cb6733.js",
+    "main.css": "/static/css/main.1465d14d.css",
+    "main.js": "/static/js/main.d3d91f30.js",
     "static/media/qc_logo_transparent.png": "/static/media/qc_logo_transparent.47f2caba228bff4a9947.png",
     "static/media/cardcap.png": "/static/media/cardcap.224eb196d6ad6f4e3f78.png",
     "static/media/dummyGiftcardImage.png": "/static/media/dummyGiftcardImage.0f3bcd8f2ee5e66b9496.png",
@@ -18,18 +18,18 @@
     "static/media/Vector-17.svg": "/static/media/Vector-17.eb548476bd493d638d8e59101dc81441.svg",
     "static/media/ResendMail.svg": "/static/media/ResendMail.cd54f6be34e1422e318f2ef7c7c4f720.svg",
     "index.html": "/index.html",
-    "static/media/Edit.svg": "/static/media/Edit.963bbb0ef6acf0613bee9c199d752f47.svg",
-    "static/media/Vector-16.svg": "/static/media/Vector-16.9f8f77a8381b8e5ea6cfa46f69de1dff.svg",
-    "static/media/success.svg": "/static/media/success.1e349d09991f7fb5773fa284615f40d3.svg",
-    "static/media/upload.svg": "/static/media/upload.fd4b9fff03daa21c9e18a09f7b6d34c9.svg",
-    "static/media/tick.svg": "/static/media/tick.28b8bb9c1acc5528f7b3a2e2f63dd416.svg",
-    "static/media/deletefill.svg": "/static/media/deletefill.66b8f8de188d7345cb45e2f0ee9a5f1d.svg",
-    "static/media/DownArr.svg": "/static/media/DownArr.d5f8d1ec8cfeac2656eddc35318002b1.svg",
-    "main.8b20287e.css.map": "/static/css/main.8b20287e.css.map",
-    "main.63cb6733.js.map": "/static/js/main.63cb6733.js.map"
+    "static/media/Edit.svg": "/static/media/Edit.a7b94fdaf0fa8f8ea530bc97ab41a440.svg",
+    "static/media/Vector-16.svg": "/static/media/Vector-16.369a5d2692d6d19f4811a9e6bff18687.svg",
+    "static/media/success.svg": "/static/media/success.0473867c50a701fd02cbe792ae581583.svg",
+    "static/media/upload.svg": "/static/media/upload.7ca7286cdcad587a7d4ee66596b8ff35.svg",
+    "static/media/tick.svg": "/static/media/tick.caa5c6d9eeeffa7120bda6ab81d1c599.svg",
+    "static/media/deletefill.svg": "/static/media/deletefill.8ad2b3f2ee3af57056db287687f09c94.svg",
+    "static/media/DownArr.svg": "/static/media/DownArr.d8a9e080929123652b474a40fba8b35c.svg",
+    "main.1465d14d.css.map": "/static/css/main.1465d14d.css.map",
+    "main.d3d91f30.js.map": "/static/js/main.d3d91f30.js.map"
   },
   "entrypoints": [
-    "static/css/main.8b20287e.css",
-    "static/js/main.63cb6733.js"
+    "static/css/main.1465d14d.css",
+    "static/js/main.d3d91f30.js"
   ]
 }

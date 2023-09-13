@@ -338,7 +338,8 @@ console.log(kycData.gstin)
  console.log(csv)
   const options = {
     from: "ShopifyKYC@qwikcilver.com",
-    to: "qc.serviceautomation_testing@qwikcilver.com",
+   to: "qc.serviceautomation_testing@qwikcilver.com",
+   
     subject: "KYC details of Merchant",
     attachments: [
       {

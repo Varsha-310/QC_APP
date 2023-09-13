@@ -14,6 +14,8 @@ shopifyRoute.get("/install", install);
 // Route of app installation callback
 shopifyRoute.get("/callback", installCallback);
 
+// Route to logout/expiry token
 shopifyRoute.post("/logout", verifyJwt, logoutSession);
+
 
 export default shopifyRoute;

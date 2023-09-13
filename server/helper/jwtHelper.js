@@ -34,9 +34,7 @@ export const createJwt = async (shop) => {
 export const verifyJwt = (req, res, next) => {
 
   try {
-    
-    console.log(req.headers);
-    console.log("-----in verify jwt----------" , req.headers)
+    console.log("-----in verify jwt----------", req.headers);
     if (req.headers.authorization) {
       Jwt.verify(
         req.headers.authorization,
@@ -52,12 +50,11 @@ export const verifyJwt = (req, res, next) => {
              
               next();
             } else {
-              
-              console.log(err)
+              console.log(err);
               res.json(respondUnauthorized("Invalid jwt token"));
             }
           } else {
-            console.log(err)
+            console.log(err);
             res.json(respondUnauthorized("Invalid jwt token"));
           }
         }
@@ -67,8 +64,6 @@ export const verifyJwt = (req, res, next) => {
     }
   } catch (err) {
     console.log("asdfghjkl;", err);
-    res.json(
-      respondInternalServerError()
-    );
+    res.json(respondInternalServerError());
   }
 };

@@ -223,7 +223,8 @@ const orderSchema = new Schema({
         enum: ["N/A", "NO", "YES"],
         default: "N/A"
     },
-    remarks: { type: String, default: null }
+    redeem_txn_id: {type: String},
+
 });
 
 export default mongoose.model('orders', orderSchema);
