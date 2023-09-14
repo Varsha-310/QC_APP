@@ -21,9 +21,10 @@ import axios from "axios";
 export const orderCreated = (req, res) => {
 
   console.log("order created", req.headers);
-  orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
-
-  // ordercreateEvent(shop,order,res)
+  // orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
+ const shop = req.headers["x-shopify-shop-domain"];
+ const order = req.body;
+  ordercreateEvent(shop,order,res)
   res.json(respondSuccess("webhook received"));
 };
 
@@ -52,11 +53,14 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (input,done) => {
+const ordercreateEvent = async (shop,order,res) => {
 
   try {
-    const { shop, order } = input;
+    // const { shop, order } = input;
      // checking Existing Session.
+    
+    // const shopName = shop;
+    console.log("Shop Name", shop, order.id);
      const logQuery = {
       store: shop,
       orderId: order.id
@@ -101,7 +105,7 @@ const ordercreateEvent = async (input,done) => {
       console.log(OrderSession ,"ordersession")
       if (OrderSession?.status == "done") {
 
-        done(null, true);
+        // done(null, true);
         return; // skip if already processed.
       }
       OrderSession = OrderSession ? OrderSession : logQuery;
@@ -117,7 +121,7 @@ const ordercreateEvent = async (input,done) => {
             { id: newOrder.id },
             { is_giftcard_order: true, remarks: "Gift Card Is used for buy the Gift Card" }
           );
-          done();
+          // done();
           return 1;
         }
 
@@ -479,13 +483,12 @@ export const failedOrders = async()=> {
     status: "retry",
     numberOfRetried: { $lt: 3}
   });
+  console.log(failedOrders , "failed order list")
 
   for (const iterator of failedOrders) {
    
     const orderData = await orders.findOne({id: iterator.orderId, store_url: iterator.store});
-    await ordercreateEvent({shop: iterator.store, order:orderData}, (a,b) =>{
-      console.log("Order Processed:", a,b);
-    });
+    await ordercreateEvent(orderData.store_url,orderData)
   }
 };
 
