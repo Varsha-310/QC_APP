@@ -227,8 +227,8 @@ export const addGiftcard = async (req, res) => {
             gc_pin,
             validPin.balance,
             type,
-            logs,
-            validPin.order_id
+            validPin.order_id,
+            logs
           );
           
           logs = gcToWallet;
@@ -261,8 +261,8 @@ export const addGiftcard = async (req, res) => {
         gc_pin,
         validPin.balance,
         type,
-        logs,
-        validPin.order_id
+        validPin.order_id,
+        logs
       );
       if(gcToWallet.staus){
         break;
@@ -284,8 +284,9 @@ export const addGiftcardtoWallet = async (
   gc_pin,
   amount,
   type,
-  logs = {},
-  order_id
+  order_id,
+  logs = {}
+ 
 ) => {
   logs["status"] = false;
   try {

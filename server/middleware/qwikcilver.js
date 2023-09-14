@@ -5,6 +5,7 @@ import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
 import { updateBilling } from "../controllers/BillingController.js";
 import wallet from "../models/wallet.js";
+import orders from "../models/orders.js";
 
 /**
  * method to create giftcard on QC
@@ -383,8 +384,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
  * @param {*} customer_id 
  * @returns 
  */
-export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, logs) => {
-
+export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, logs = {}) => {
   logs["status"] = false;
   try {
 
@@ -433,8 +433,9 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
       logs["status"] = true; 
       console.log(walletRedemption.data.Wallets);
       await wallet_history.updateOne({wallet_id: wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
+      await orders.updateOne({id: id}, {redeem_txn_id:transactionId});
      // return walletRedemption.data.Wallets;
-	return {wallet : walletRedemption.data.Wallets, id :transactionId};
+	// return {wallet : walletRedemption.data.Wallets, id :transactionId};
     }
     return logs;
  
