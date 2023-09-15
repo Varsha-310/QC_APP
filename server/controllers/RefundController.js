@@ -391,7 +391,7 @@ export const handleRefundAction = async (req, res) => {
             let logData = refundSession?.qc_gc_created || {};
             if(!refundSession?.qc_gc_created?.createGC?.status){
 
-                const logsGC = await createGiftcard(store_url, amount, orderId, 180, type, refundSession?.qc_gc_created?.createGC);
+                const logsGC = await createGiftcard(store_url, amount, orderId, 180, type,ordersData.customer , refundSession?.qc_gc_created?.createGC);
                 logData["createGC"] = logsGC;
                 refundSession = await updateRefundLogs(sessionQuery, {
                     qc_gc_created: logData,
@@ -399,12 +399,13 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
+	console.log(logsGC , "---------------logs create gc------------------");
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
                 giftCardDetails = logsGC.resp.Cards[0];
             }
             if(!refundSession?.qc_gc_created?.wallet?.status){
 
-                const logsGC = await addGiftcardtoWallet( store_url, ordersData.customer.id, giftCardDetails.CardPin, giftCardDetails.Balance , type, refundSession?.qc_gc_created?.wallet);
+                const logsGC = await addGiftcardtoWallet( store_url, ordersData.customer.id, giftCardDetails.CardPin, giftCardDetails.Balance , type,orderId, refundSession?.qc_gc_created?.wallet);
                 logData["wallet"] = logsGC;
                 refundSession = await updateRefundLogs(sessionQuery, {
                     qc_gc_created: logData,

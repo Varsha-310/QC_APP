@@ -101,7 +101,9 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
       logs["resp"] = gcCreation.data;
       logs["status"] = true;
       return type == "giftcard" ? logs : gcCreation.data.Cards[0];
+	console.log(logs, "------------create giftcard logs---------------");
     }
+
     return logs;
   }
   catch (err) {
@@ -467,9 +469,10 @@ export const reverseRedeemWallet = async (store, gc_id, amount, id,logs ={}) => 
   logs["status"] = false;
   try {
 	console.log("---------------in reverse redeem---------------",store ,gc_id, amount, id);
-
-    const giftcardExists = await wallet.findOne({ shopify_giftcard_id: gc_id });
-    if (giftcardExists) return null;
+	const string_id = gc_id.toString();
+    const giftcardExists = await wallet.findOne({ shopify_giftcard_id: string_id});
+console.log(giftcardExists,string_id,"giftcardExists"); 
+   if (giftcardExists){
 
     const setting = await qcCredentials.findOne({ store_url: store });
     setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1;
@@ -509,7 +512,9 @@ export const reverseRedeemWallet = async (store, gc_id, amount, id,logs ={}) => 
       //return walletRedemption.data;
     }
     await setting.save();
+
     return logs;
+}
   } catch (err) {
 
     logs["error"] = err.response.data;

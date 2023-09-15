@@ -228,7 +228,7 @@ export const addGiftcard = async (req, res) => {
             validPin.balance,
             type,
             validPin.order_id,
-            logs
+	   logs
           );
           
           logs = gcToWallet;
@@ -261,8 +261,8 @@ export const addGiftcard = async (req, res) => {
         gc_pin,
         validPin.balance,
         type,
-        validPin.order_id,
-        logs
+        logs,
+        validPin.order_id
       );
       if(gcToWallet.staus){
         break;
@@ -286,7 +286,6 @@ export const addGiftcardtoWallet = async (
   type,
   order_id,
   logs = {}
- 
 ) => {
   logs["status"] = false;
   try {
@@ -367,8 +366,8 @@ export const addGiftcardtoWallet = async (
         let walletCreatedLog = await createWallet(
           store,
           customer_id,
-          order_id,
-	 logs?.createW
+          logs?.createW,
+          order_id
         );
         logs["createW"] = walletCreatedLog;
         if (!walletCreatedLog?.status) return logs;
@@ -376,7 +375,7 @@ export const addGiftcardtoWallet = async (
         let walletCreated = walletCreatedLog.resp.Wallets[0];
         console.log("activated card balance", activatedCard);
         let gift_card = {};
-        //if (logs?.shopifyGCCreatedAt) {
+        if (logs?.shopifyGCCreatedAt) {
           gift_card = await createShopifyGiftcard(
             store,
             setting.access_token,
@@ -384,7 +383,7 @@ export const addGiftcardtoWallet = async (
           );
           console.log("Shopify Gift Card Generated - ", gift_card);
           logs["shopifyGCCreatedAt"] = new Date().toISOString();
-        //}
+        }
 
         console.log(walletCreated, "walletcreated");
         await wallet.updateOne(
@@ -397,7 +396,7 @@ export const addGiftcardtoWallet = async (
             shopify_customer_id: customer_id,
             shopify_giftcard_id: gift_card.id,
             shopify_giftcard_pin: gift_card.code,
-          },{upsert:true}
+          }
         );
 
         let transactionLog = logs?.updateW?.status

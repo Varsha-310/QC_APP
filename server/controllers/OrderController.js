@@ -47,6 +47,8 @@ const processSyncOrders = async (req) => {
     const lastOrder = await orderModel.findOne({ store_url: store })
       .sort({ created_at: 1 })
       .limit(1);
+
+console.log("_____________last order_____________",lastOrder)
     const storeObj = await Store.findOne({ store_url: store });
     console.log(storeObj);
     if (!storeObj) {
@@ -56,6 +58,7 @@ const processSyncOrders = async (req) => {
     }
 
     let sinceId = lastOrder ? lastOrder.id : "0"; 
+console.log("_____________sinceid_____________", sinceId )
     const countUrl = `https://${storeObj.store_url}/admin/api/${API_VERSION}/orders/count.json?since_id=${sinceId}`;
     const ordersCount = await fetchOurders(storeObj.access_token, countUrl);
 
@@ -124,7 +127,7 @@ export const handleOrderDataList = async (req, res) => {
       // Fetch all the data present in the particular store 
 
       const filter = { ...storeUrlFilter }
-      filter.is_giftcard_order = false
+     // filter.is_giftcard_order = false
 
       if (req.query.Refund_Mode) {
           filter.Refund_Mode = req.query.Refund_Mode;

@@ -1,0 +1,281 @@
+import { getShopifyObject } from "../helper/shopify.js";
+import Product from "../models/product.js";
+import {
+  respondInternalServerError,
+  respondSuccess,
+  respondUnauthorized,
+  respondNotFound,
+  respondWithData,
+  respondForbidden,
+} from "../helper/response.js";
+import Store from "../models/store.js";
+import axios from "axios";
+import Wallet from "../models/wallet.js";
+import {
+  fetchBalance,
+  addToWallet,
+  createWallet,
+  activateCard,
+} from "../middleware/qwikcilver.js";
+import wallet from "../models/wallet.js";
+import wallet_history from "../models/wallet_history.js";
+import orders from "../models/orders.js";
+import qc_gc from "../models/qc_gc.js";
+import store from "../models/store.js";
+import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+
+/**
+ * To create gifcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const createGiftcardProducts = async (req, res) => {
+  try {
+    console.log("createGiftcardProducts function start");
+    let store = req.token.store_url;
+    let { description, title, images, variants, validity, terms } = req.body;
+    console.log(store);
+    let shopify = await getShopifyObject(store);
+    console.log("createGiftcardProducts test1");
+    let tags = "qc_giftcard";
+    console.log("createGiftcardProducts shopify call start");
+    console.log("Body shopify");
+
+    let newProduct = await shopify.product.create({
+      // Create a product in Shopify with the details sent in API
+      title: title,
+      body_html: description,
+      terms,
+      product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
+      images: images,
+      tags: tags,
+      variants: variants,
+      status: "active",
+     
+    });
+    const otherData = { validity: validity, terms: terms ,  store_url: store };
+    const createP = {
+      ...newProduct,
+      ...otherData,
+    };
+    await Product.create(createP);
+    console.log("createGiftcardProducts response shopify");
+    console.log(newProduct);
+    res.json(respondSuccess("Product created in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+
+/**
+ * Update giftcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const updateGiftcardProduct = async (req, res) => {
+  try {
+    let store = req.token.store_url;
+    let { images, title, description, variants, product_id, validity, terms } =
+      req.body;
+    let shopify = await getShopifyObject(store); // Get Shopify Object
+    let updateObj = {};
+    //Update only the fields sent in request
+    if (images && images.length >= 0) {
+      updateObj["images"] = images;
+    }
+    if (title) {
+      updateObj["title"] = title;
+    }
+    if (description) {
+      updateObj["body_html"] = description;
+    }
+    if (variants) {
+      updateObj["variants"] = variants;
+    }
+    console.log(updateObj);
+    let updatedProduct = await shopify.product.update(product_id, updateObj);
+    if (validity) {
+      updateObj["validity"] = validity;
+    }
+    if (terms) {
+      updateObj["terms"] = terms;
+    }
+    await Product.updateOne(
+      { id: product_id },
+      { updateObj },
+      { upsert: true }
+    );
+
+    console.log(updatedProduct);
+    res.json(respondSuccess("Product updated in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+
+/**
+ * Delet giftcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const deleteGiftcardProducts = async (req, res) => {
+  try {
+    console.log("deleteGiftcardProducts function start");
+    let store = req.token.store_url;
+    let { product_id } = req.body;
+    console.log(store);
+    let shopify = await getShopifyObject(store); //Get Shopify Object
+
+    let newProduct = await shopify.product.delete(product_id);
+    await Product.deleteOne({ id: product_id });
+    console.log(newProduct);
+    res.json(respondSuccess("Product deleted in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+/**
+ import { getShopifyObject } from "../helper/shopify.js";
+import Product from "../models/product.js";
+import {
+  respondInternalServerError,
+  respondSuccess,
+  respondUnauthorized,
+  respondNotFound,
+  respondWithData,
+  respondForbidden,
+} from "../helper/response.js";
+import Store from "../models/store.js";
+import axios from "axios";
+import Wallet from "../models/wallet.js";
+import {
+  fetchBalance,
+  addToWallet,
+  createWallet,
+  activateCard,
+} from "../middleware/qwikcilver.js";
+import wallet from "../models/wallet.js";
+import wallet_history from "../models/wallet_history.js";
+import orders from "../models/orders.js";
+import qc_gc from "../models/qc_gc.js";
+import store from "../models/store.js";
+import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+
+/**
+ * To create gifcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const createGiftcardProducts = async (req, res) => {
+  try {
+    console.log("createGiftcardProducts function start");
+    let store = req.token.store_url;
+    let { description, title, images, variants, validity, terms } = req.body;
+    console.log(store);
+    let shopify = await getShopifyObject(store);
+    console.log("createGiftcardProducts test1");
+    let tags = "qc_giftcard";
+    console.log("createGiftcardProducts shopify call start");
+    console.log("Body shopify");
+
+    let newProduct = await shopify.product.create({
+      // Create a product in Shopify with the details sent in API
+      title: title,
+      body_html: description,
+      terms,
+      product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
+      images: images,
+      tags: tags,
+      variants: variants,
+      status: "active",
+     
+    });
+    const otherData = { validity: validity, terms: terms ,  store_url: store };
+    const createP = {
+      ...newProduct,
+      ...otherData,
+    };
+    await Product.create(createP);
+    console.log("createGiftcardProducts response shopify");
+    console.log(newProduct);
+    res.json(respondSuccess("Product created in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+
+/**
+ * Update giftcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const updateGiftcardProduct = async (req, res) => {
+  try {
+    let store = req.token.store_url;
+    let { images, title, description, variants, product_id, validity, terms } =
+      req.body;
+    let shopify = await getShopifyObject(store); // Get Shopify Object
+    let updateObj = {};
+    //Update only the fields sent in request
+    if (images && images.length >= 0) {
+      updateObj["images"] = images;
+    }
+    if (title) {
+      updateObj["title"] = title;
+    }
+    if (description) {
+      updateObj["body_html"] = description;
+    }
+    if (variants) {
+      updateObj["variants"] = variants;
+    }
+    console.log(updateObj);
+    let updatedProduct = await shopify.product.update(product_id, updateObj);
+    if (validity) {
+      updateObj["validity"] = validity;
+    }
+    if (terms) {
+      updateObj["terms"] = terms;
+    }
+    await Product.updateOne(
+      { id: product_id },
+      { updateObj },
+      { upsert: true }
+    );
+
+    console.log(updatedProduct);
+    res.json(respondSuccess("Product updated in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+
+/**
+ * Delet giftcard product
+ * @param {*} req
+ * @param {*} res
+ */
+export const deleteGiftcardProducts = async (req, res) => {
+  try {
+    console.log("deleteGiftcardProducts function start");
+    let store = req.token.store_url;
+    let { product_id } = req.body;
+    console.log(store);
+    let shopify = await getShopifyObject(store); //Get Shopify Object
+
+    let newProduct = await shopify.product.delete(product_id);
+    await Product.deleteOne({ id: product_id });
+    console.log(newProduct);
+    res.json(respondSuccess("Product deleted in shopify successfully"));
+  } catch (error) {
+    console.log(error);
+    res.json(respondInternalServerError());
+  }
+};
+/**
+ 
