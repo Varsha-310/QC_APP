@@ -208,7 +208,7 @@ const ordercreateEvent = async (shop,order,res) => {
                     qwikcilver_gift_card.validity,
                     type,
                     newOrder.customer,
-                    OrderSession?.other?.createGC
+                    OrderSession?.gift?.createGC
                   );
                   // OrderSession["other"]["createGC"] = logs;
                   await OrderCreateEventLog.updateOne(logQuery, {"gift.createGC" : logs}, {upsert: true});

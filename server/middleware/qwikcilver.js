@@ -44,8 +44,8 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
       cpgn = setting.giftcard_cpgn
     }
 
-    console.log("cpgn type", cpgn, type);
-    let data = (type == "giftcard" && logs?.req) ? logs.req : {
+    console.log("cpgn type", cpgn, type ,logs?.req );
+    let data = ( logs?.req) ? logs.req : {
       TransactionTypeId: "305",
       InputType: "3",
       TransactionModeId: "0",
@@ -80,6 +80,7 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
 
     const gcCreation = await axios(config);
@@ -98,21 +99,25 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
         await qc_gc.create({ store_url: store, gc_pin: gcCreation.data.Cards[0].CardPin, gc_number: gcCreation.data.Cards[0].CardNumber, balance: gcCreation.data.Cards[0].Balance, expiry_date: gcCreation.data.Cards[0].ExpiryDate, order_id: order_id })
         logs["qcUpdatedToDB"] = new Date().toISOString();
       }
+      
       logs["resp"] = gcCreation.data;
       logs["status"] = true;
       return type == "giftcard" ? logs : gcCreation.data.Cards[0];
-	console.log(logs, "------------create giftcard logs---------------");
     }
 
     return logs;
   }
   catch (err) {
-    if(err.response.status == "401" &&
-    err.response.data.ResponseCode == "10744"){
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
+
+    if(err?.response?.status == "401" &&
+    err?.response?.data?.ResponseCode == "10744"){
       await authToken(store);
     }
-    console.log(err.response);
-    logs["error"] = err.response.data;
+    logs["error"] = err?.response?.data;
     return logs;
   }
 };
@@ -157,6 +162,7 @@ export const fetchBalance = async (store, walletData) => {
         Authorization:  `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
 
     let walletDetails = await axios(config);
@@ -172,6 +178,10 @@ export const fetchBalance = async (store, walletData) => {
     }
   } catch (err) {
     console.log(err);
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
       console.log( "----------balance-------------------");
@@ -229,6 +239,7 @@ export const createWallet = async (store, customer_id,order_id, logs = {}) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
@@ -243,7 +254,10 @@ export const createWallet = async (store, customer_id,order_id, logs = {}) => {
     // }
     return logs;
   } catch (err) {
-
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
     logs["error"] = err.response.data;
     console.log(err);
     if(err.response.status == "401" &&
@@ -301,6 +315,7 @@ export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs = {}
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
 
     let cardAdded = await axios(config);
@@ -311,6 +326,10 @@ export const addToWallet = async (store, wallet_id, gc_pin, gc_number, logs = {}
 
     return logs;
   } catch (err) {
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
       await authToken(store);
@@ -359,6 +378,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
 
     let activation = await axios(config);
@@ -369,6 +389,10 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
     }
     return logs;
   } catch (err) {
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
       await authToken(store);
@@ -426,6 +450,7 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
 
     let walletRedemption = await axios(config);
@@ -442,6 +467,10 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
     return logs;
  
   } catch (err) {
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
 
     logs["error"] = err.response.data;
     console.log(err);
@@ -500,6 +529,7 @@ console.log(giftcardExists,string_id,"giftcardExists");
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      timeout: 17000
     };
  
     const walletRedemption = await axios(config);
@@ -516,7 +546,10 @@ console.log(giftcardExists,string_id,"giftcardExists");
     return logs;
 }
   } catch (err) {
-
+    if(err?.code == "ECONNABORTED"){
+      logs["error"] = err?.code
+    return logs;
+    }
     logs["error"] = err.response.data;
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
@@ -554,7 +587,8 @@ let config = {
     'Content-Type': 'application/json;charset=UTF-8', 
     'DateAtClient': date
   },
-  data : data
+  data : data,
+  timeout: 17000
 };
 
 const authData = await axios(config);

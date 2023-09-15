@@ -88,7 +88,7 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule(" */17 * * * * *", () => {
+cron.schedule("*/3 * * * *", () => {
   // cronToCheckWebhooks();
   // console.log("checking webhooks!");
   failedOrders();
