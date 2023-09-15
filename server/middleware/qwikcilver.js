@@ -161,8 +161,7 @@ export const fetchBalance = async (store, walletData) => {
         TransactionId: transactionId,
         Authorization:  `Bearer ${setting.token}`,
       },
-      data: data,
-      timeout: 17000
+      data: data
     };
 
     let walletDetails = await axios(config);
@@ -178,10 +177,6 @@ export const fetchBalance = async (store, walletData) => {
     }
   } catch (err) {
     console.log(err);
-    if(err?.code == "ECONNABORTED"){
-      logs["error"] = err?.code
-    return logs;
-    }
     if(err.response.status == "401" &&
     err.response.data.ResponseCode == "10744"){
       console.log( "----------balance-------------------");

@@ -254,7 +254,7 @@ export const addGiftcard = async (req, res) => {
     console.log(err);
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     for(let i =0; i< 3; i++){
-      await sleep(17000);    
+      await sleep(180000);    
       gcToWallet = await addGiftcardtoWallet(
         store,
         customer_id,
