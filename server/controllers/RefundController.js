@@ -351,6 +351,12 @@ export const handleRefundAction = async (req, res) => {
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
             const logs1 = await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount,ordersData.redeem_txn_id, refundSession?.gc_refunded);
+            refundSession = await updateRefundLogs(sessionQuery, {
+                "gc_refunded": logs1,
+                "gc_rf_amount": gcRfDetails.gc_rf_amount,
+                ...logs
+            })
+            sessionQuery["logs.id"] = refundSession.id;
             if(!logs1.status) throw Error("Error while reversing the amount");
             trans.push({
                 "kind":"refund",
@@ -359,12 +365,6 @@ export const handleRefundAction = async (req, res) => {
                 "amount": gcRfDetails.gc_trans.amount
             });
             amount = gcRfDetails.refundableAmount;
-            refundSession = await updateRefundLogs(sessionQuery, {
-                "gc_refunded": logs1,
-                "gc_rf_amount": gcRfDetails.gc_rf_amount,
-                ...logs
-            })
-            sessionQuery["logs.id"] = refundSession.id;
         }
        
         if(amount && refund_type == "Back-to-Source" && (!refundSession?.other_rf_at) && refSetting.cod_con != "cod_woth_gc"){
@@ -399,7 +399,7 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
-	console.log(logsGC , "---------------logs create gc------------------");
+	            console.log(logsGC , "---------------logs create gc------------------");
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
                 giftCardDetails = logsGC.resp.Cards[0];
             }
