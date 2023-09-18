@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/RefundPage.css";
 import { useParams, useNavigate } from "react-router";
-import { Dot, PrimaryBtn } from "../../components/BasicComponents";
+import { PrimaryBtn } from "../../components/BasicComponents";
 import CustomDropdown from "../../components/CustomDropdown";
 import instance from "../../axios";
 import { getUserToken } from "../../utils/userAuthenticate";
@@ -31,14 +31,9 @@ const RefundPage = () => {
   const [refundOption, setRefundOption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
+  const [taxPercent, setTaxPercent] = useState(0);
 
   const navigate = useNavigate();
-
-  console.log("refund", refundAmount);
-
-  // console.log(data);
-
-  // console.log("inputdata", inputData);
 
   const { id } = useParams();
 
@@ -52,9 +47,7 @@ const RefundPage = () => {
     try {
       const res = await instance.get(url, { headers });
       const resData = res?.data;
-      console.log(resData.data);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -72,39 +65,42 @@ const RefundPage = () => {
 
     try {
       const res = await instance.post(url, body, { headers });
-      const resData = res.data;
+      const resData = await res.data;
 
-      console.log("resdata", resData);
-      // setData(resData.data);
+      // setData("************", resData.data);
+      const totalPrice = parseFloat(resData?.data?.total_price);
+      const totalTax = parseFloat(resData?.data?.total_tax);
+      const taxPercentage = (totalTax * 100) / (totalPrice - totalTax);
+
+      setTaxPercent(taxPercentage);
 
       // to calculate refund quantity
-      const dum = [];
+      const tempData = [];
       const refundLines = resData.data?.refunds;
 
       if (refundLines?.length !== 0) {
         if (refundLines?.length !== 0) {
           refundLines.forEach((refundHistory) => {
             refundHistory?.refund_line_items.forEach((product) => {
-              const prodIndex = dum.findIndex(
+              const prodIndex = tempData.findIndex(
                 (item) => item.id === product.line_item_id
               );
 
               if (prodIndex === -1) {
-                dum.push({ id: product.line_item_id, qty: product.quantity });
+                tempData.push({
+                  id: product.line_item_id,
+                  qty: product.quantity,
+                });
               } else {
-                // console.log(dum[prodIndex].qty);
-                console.log("index", prodIndex);
-                dum[prodIndex].qty += product.quantity;
+                tempData[prodIndex].qty += product.quantity;
               }
             });
           });
         }
       }
 
-      console.log("dum", dum);
-
       const calculatedData = resData.data.line_items.map((prod) => {
-        const proditem = dum.find((item) => item.id === prod.id);
+        const proditem = tempData.find((item) => item.id === prod.id);
 
         return proditem
           ? { ...prod, quantity: prod.quantity - proditem.qty }
@@ -121,7 +117,6 @@ const RefundPage = () => {
         totalTax: 0,
       }));
       setInputData(emptyInputArray);
-      console.log("emptyinput", emptyInputArray);
 
       // transactions
       // const transactions = resData?.data?.refunds;
@@ -133,19 +128,17 @@ const RefundPage = () => {
       //     });
       //   }
       // });
-
-      // console.log("transaction", transactions);
-      // console.log("totalrefund", totalRefunded);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   // to initiate refund
   const handleInitiate = async () => {
     setIsLoading(true);
 
-    const lineData = inputData.map((item) => ({ id: item.id, qty: item.qty }));
+    const lineData = inputData.map((item) => ({
+      id: item.id,
+      qty: item.qty !== "" ? item.qty : "0",
+    }));
 
     const url = "/refund/initiate";
     const headers = {
@@ -158,12 +151,10 @@ const RefundPage = () => {
       amount: refundAmount,
       refund_type: refundOption?.refund_type || null,
     };
-    console.log("body", body);
 
     try {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
-      console.log("initiate", resData);
 
       if (resData?.success === true) {
         navigate("/refund_success", { replace: true });
@@ -171,7 +162,6 @@ const RefundPage = () => {
 
       alert(resData.message);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -180,12 +170,11 @@ const RefundPage = () => {
   // to fetch  max refundable amount
   const calcRefund = async (oid, data) => {
     setIsCalcLoading(true);
-    console.log("calculate");
     const url = "/refund/calculate";
     const headers = {
       Authorization: getUserToken(),
     };
-    console.log(inputData);
+
     const body = {
       orderId: oid,
       line_items: data,
@@ -195,9 +184,7 @@ const RefundPage = () => {
       const res = await instance.post(url, body, { headers });
       const resData = res.data;
       setCaclData(resData.data);
-      console.log(resData);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsCalcLoading(false);
     }
@@ -207,10 +194,7 @@ const RefundPage = () => {
   const handleQuantityChange = (itemId, newQty, totalQty, price, taxlines) => {
     const qtyValue = Number(newQty);
 
-    const taxPerItem = taxlines.reduce((acc, curr) => {
-      const cvalue = parseFloat(curr.price);
-      return (acc + cvalue) / totalQty;
-    }, 0);
+    const taxPerItem = price * (taxPercent / 100);
 
     if (!isNaN(qtyValue) && qtyValue >= 0 && qtyValue <= totalQty) {
       const itemIndex = inputData.findIndex((item) => item.id === itemId);
@@ -231,10 +215,6 @@ const RefundPage = () => {
         setInputData((prev) => [...prev, newItem]);
       }
     }
-    // else {
-    //   const updatedInputData = inputData.filter((item) => item.id !== itemId);
-    //   setInputData(updatedInputData);
-    // }
   };
 
   useScrollTop();
@@ -344,10 +324,7 @@ const RefundPage = () => {
                     <td>Tax</td>
                     <td>₹ {countTotal(inputData, "totalTax")}</td>
                   </tr>
-                  {/* <tr>
-                  <td>Shipping</td>
-                  <td>₹00</td>
-                </tr> */}
+
                   <tr id="total-refund">
                     <td>Refund Total</td>
                     <td>

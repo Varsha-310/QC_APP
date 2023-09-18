@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./styles/RefundSetting.css";
 import { PrimaryBtn } from "../../components/BasicComponents";
-import axios from "axios";
 import instance from "../../axios";
 import { getUserToken } from "../../utils/userAuthenticate";
 import Spinner from "../../components/Loaders/Spinner";
