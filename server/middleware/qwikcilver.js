@@ -102,7 +102,7 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
       
       logs["resp"] = gcCreation.data;
       logs["status"] = true;
-      return type == "giftcard" ? logs : gcCreation.data.Cards[0];
+      //return type == "giftcard" ? logs : gcCreation.data.Cards[0];
     }
 
     return logs;
@@ -451,11 +451,12 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
     let walletRedemption = await axios(config);
     logs["resp"] = walletRedemption?.data;
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
+	console.log("redeem successfull");
 
       logs["status"] = true; 
       console.log(walletRedemption.data.Wallets);
       await wallet_history.updateOne({wallet_id: wallet_id},{$push:{transactions: {transaction_type : "debit" , amount :amount , transaction_date:Date.now()}}}, {upsert:true});
-      await orders.updateOne({id: id}, {redeem_txn_id:transactionId});
+      await orders.updateOne({id: id}, {redeem_txn_id:walletRedemption?.data.TransactionId});
      // return walletRedemption.data.Wallets;
 	// return {wallet : walletRedemption.data.Wallets, id :transactionId};
     }
