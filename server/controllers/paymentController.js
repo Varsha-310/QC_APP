@@ -64,7 +64,7 @@ export const create = async (req, res) => {
       billing_amount: totalAmount,
       billing_start_date: date,
       billing_currency: "INR",
-      billing_cycle: "YEARLY",
+      billing_cycle: "ADHOC",
     };
     let paymentData = createPayment(store, billingData, totalAmount);
     console.log(paymentData, "-----------------------------");
