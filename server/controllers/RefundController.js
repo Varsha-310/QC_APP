@@ -4,7 +4,7 @@ import axios from "axios";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
 import store from "../models/store.js";
-import { createGiftcard, reverseRedeemWallet } from "../middleware/qwikcilver.js";
+import { createGiftcard, cancelRedeemWallet } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
 import { checkActivePlanUses } from "./BillingController.js";
@@ -350,7 +350,7 @@ export const handleRefundAction = async (req, res) => {
             const gc_transaciton = getOrderGCAmount.data.transactions.find(item => item.gateway == "gift_card");
             console.log("Gc_Transaction:", gc_transaciton);
             const gift_gc_id = gc_transaciton.receipt.gift_card_id;
-            const logs1 = await reverseRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount,ordersData.redeem_txn_id, refundSession?.gc_refunded);
+            const logs1 = await cancelRedeemWallet(store_url, gift_gc_id, gcRfDetails.gc_rf_amount,ordersData.id, ordersData.redeem_txn_id,refundSession?.gc_refunded);
             refundSession = await updateRefundLogs(sessionQuery, {
                 "gc_refunded": logs1,
                 "gc_rf_amount": gcRfDetails.gc_rf_amount,

@@ -6,6 +6,7 @@ import wallet_history from "../models/wallet_history.js";
 import { updateBilling } from "../controllers/BillingController.js";
 import wallet from "../models/wallet.js";
 import orders from "../models/orders.js";
+import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 
 /**
  * method to create giftcard on QC
@@ -489,39 +490,50 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
  * @param {*} amount 
  * @returns 
  */
-export const reverseRedeemWallet = async (store, gc_id, amount, id,logs ={}) => {
+export const cancelRedeemWallet = async (store, gc_id, amount, order_id,txn_id ,logs ={}) => {
 
   logs["status"] = false;
   try {
-	console.log("---------------in reverse redeem---------------",store ,gc_id, amount, id);
+	console.log("---------------in cancel redeem---------------",store ,gc_id, amount, order_id);
 	const string_id = gc_id.toString();
-    const giftcardExists = await wallet.findOne({ shopify_giftcard_id: string_id});
-console.log(giftcardExists,string_id,"giftcardExists"); 
+  const giftcardExists = await wallet.findOne({ shopify_giftcard_id: string_id});
+  console.log(giftcardExists,string_id,"giftcardExists"); 
    if (giftcardExists){
-
+    const redeemData = OrderCreateEventLog({store : store_url , orderId: order_id})
     const setting = await qcCredentials.findOne({ store_url: store });
-    setting.unique_transaction_id = parseInt(setting.unique_transaction_id) + 1;
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
+    const idempotency_key = generateIdempotencyKey();
     const myDate = new Date();
     const date = ((myDate).toISOString().slice(0, 22));
 
-    const data = logs?.req ? logs.req : {
-      InputType: "1",
-      Cards: [{
-        CardNumber: giftcardExists.wallet_id,
-        CurrencyCode: "INR",
-        Amount: amount
-      }],
-    };
+    const data = logs?.req ? logs.req :{
+      TransactionTypeId: 3504,
+      IdempotencyKey: idempotency_key,
+      Cards: [
+        {
+          CardNumber: giftcardExists.wallet_id,
+          CurrencyCode: "INR",
+          Amount: amount,
+          OriginalRequest: {
+            OriginalBatchNumber: redeemData.redeem.resp.CurrentBatchNumber,
+            OriginalTransactionId: txn_id,
+            OriginalInvoiceNumber: redeemData.redeem.resp.Cards[0].InvoiceNumber,
+            OriginalApprovalCode: redeemData.redeem.resp.Cards[0].ApprovalCode
+          }
+        }
+      ]
+    }
 
     logs["req"] = data;
     const config = {
       method: "post",
-      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/cancel`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
         DateAtClient: date,
-        TransactionId: id,
+        TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
