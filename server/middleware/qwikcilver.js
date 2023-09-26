@@ -422,7 +422,6 @@ export const redeemWallet = async (store, wallet_id, amount, bill_amount,id, log
     let data = logs?.req ? logs.req : {
       TransactionTypeId: 3504,
       InputType: "1",
-      PreAuthType: 1,
       BusinessReferenceNumber: "",
       InvoiceNumber: `ORD-${id}`,
       IdempotencyKey: idempotency_key,
@@ -547,7 +546,7 @@ console.log(redeemData, "-----------------------------")
     if (walletRedemption.status == "200", walletRedemption.data.ResponseCode == "0") {
 
       logs["status"] = true;
-      await wallet_history.updateOne({ wallet_id: giftcardExists.wallet_id }, { $push: { transactions: { transaction_type: "credit", amount: amount, transaction_date: Date.now() } } }, { upsert: true });
+      await wallet_history.updateOne({ wallet_id: giftcardExists.wallet_id }, { $push: { transactions: { transaction_type: "credit", amount: amount, type:"refund",  transaction_date: Date.now() } } }, { upsert: true });
       //return walletRedemption.data;
     }
     await setting.save();
