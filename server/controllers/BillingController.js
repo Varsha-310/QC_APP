@@ -18,17 +18,18 @@ import cron from "node-cron";
 const handleMandateNotification = async(type) => {
 
     const today = new Date().getDate();
-    if([5,6].includes(today)){
-
+    if([25].includes(today)){
+    console.log("-----------")
         const notificableMarchant = await BillingHistory.find({
             status: "ACTIVE",
             isReminded: false,
             recordType: "Reccuring",
-            plan_type: "public"
+            // plan_type: "public"
         });
+        console.log(notificableMarchant);
         for (const bill of notificableMarchant) {
-    
-            if(bill.invoiceNumber){
+     console.log(bill , "bill");
+            if(bill.invoiceAmount){
 
                 const resp = await sendMandateNotification(bill);
                 bill.remark = resp.message;
@@ -70,7 +71,8 @@ const generateHashForNotification = (payload) => {
  */
 const sendMandateNotification = async(bill) => {
 
-    const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
+    const mandateDetails = await store.findOne({store_url :bill.store_url}, {mandate:1, store_url:1});
+    console.log(mandateDetails , "----------mandate details----------------")
     if(!mandateDetails){ 
 
         //TO-DO: Send Notification to the QC regading it 
@@ -86,7 +88,7 @@ const sendMandateNotification = async(bill) => {
         plan: bill.plan,
         seesion_id: Date.now() + Math.random().toString(10).slice(2, 7),
     };
-    const apiResp = await callPayUNotificationAPI(bill, mandateDetails);
+    const apiResp = await callPayUNotificationAPI(bill, mandateDetails.mandate);
     if(apiResp.status == 1){
 
         session.status = "completed";
@@ -109,25 +111,44 @@ const sendMandateNotification = async(bill) => {
  * @returns 
  */
 const callPayUNotificationAPI = async(bill, mandateDetails) =>{
+console.log(mandateDetails , "mandateDetails");
+const randomId = Date.now() + Math.random().toString(10).slice(2, 8);
+const date = new Date(bill.billingDate),
+ mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+ day = ("0" + date.getDate()).slice(-2);
+const debitDate = [date.getFullYear(), mnth, day].join("-");
+let payemntPayload = new FormData();
 
     const data = {
         key : process.env.payukey,
         command: "pre_debit_SI",
-        var1: { "authPayuId": mandateDetails?.authpayuid, "requestId": Date.now() + Math.random().toString(10).slice(2, 8),"debitDate": bill.billingDate, "invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount, "action":"retreive" }
-    };
-    data["hasg"] = generateHashForNotification(data);
+        var1:{"authPayuId": "403993715530126827", "requestId": "1695635280578668151" ,"debitDate": "2023-09-09", "invoiceDisplayNumber": "12edc7uhlkmfd23456","amount": "470.82","action":"retrieve"}
+        // `{"authPayuId": ${mandateDetails?.mihpayid}, "requestId": ${randomId} ,"debitDate": ${debitDate}, "invoiceDisplayNumber": ${bill.invoiceNumber},"amount": ${bill.invoiceAmount}, "action":"retreive"}`
+    }; 
+     payemntPayload = {
+        key : process.env.payukey,
+        command: "pre_debit_SI",
+        var1: `{"authPayuId": "403993715530126827", "requestId": "1695635280578668151" ,"debitDate": "2023-09-09", "invoiceDisplayNumber": "12edc7uhlkmfd23456","amount": 470.82, "action":"retreive"}`
+
+        // {"authPayuId": mandateDetails?.mihpayid, "requestId": randomId ,"debitDate": debitDate, "invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount, "action":"retreive"}
+
+    }
+    payemntPayload["hash"] = generateHashForNotification(payemntPayload);
     const config ={
 
-        url: process.env.DEBUG ? "https://test.payu.in/merchant/" : "https://info.payu.in/merchant/",
+        url: process.env.DEBUG ? "https://test.payu.in/merchant/postservice.php?form=2" : "https://info.payu.in/merchant/",
         headers: {
             "accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded"
         },
         method: "POST",
-        data: JSON.stringify(data)
+        // data: qs.stringify(payemntPayload)
+        data : payemntPayload
+
     };
-    console.log(data, config);
+    console.log(payemntPayload, config);
     return axios(config).then(res => {
+        console.log(res , "response of ")
         return res;
     }).catch(err => {
 
@@ -512,13 +533,13 @@ export const handleBillingDetails = async(req, res) => {
 export const changeMonthlyCycle = async() => {
     
     const date = new Date(), y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-    if(d != 1){
+    if(d != 21){
         return 0;
     }
     const firstday = new Date(y, m, 0);
     const query = {
         status: "ACTIVE",
-        issue_date: {$lt:firstday}
+        issue_date: {$lt: new Date()}
     }
 
     console.log(query);
