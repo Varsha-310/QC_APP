@@ -53,13 +53,10 @@ export const orderDeleted = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const ordercreateEvent = async (shop,order,res) => {
+export const ordercreateEvent = async (shop,order,res) => {
 
   try {
-    // const { shop, order } = input;
-     // checking Existing Session.
-    
-    // const shopName = shop;
+   
     console.log("Shop Name", shop, order.id);
      const logQuery = {
       store: shop,

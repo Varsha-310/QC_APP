@@ -3,6 +3,7 @@ import { logger } from "../helper/utility.js";
 import orderModel from "../models/orders.js";
 import Store from "../models/store.js";
 import axios, { all } from "axios";
+import { ordercreateEvent } from "./webhookController.js";
 
 
 const API_VERSION = process.env.API_VERSION || "2023-04";
@@ -83,11 +84,12 @@ console.log("_____________sinceid_____________", sinceId )
       allOrders.data.orders.forEach(async (item) => {
 
         item["store_url"] = store;
-        await orderModel.updateOne({ id: item.id }, item, { upsert: true }).catch((error) => {
+        // await orderModel.updateOne({ id: item.id }, item, { upsert: true }).catch((error) => {
 
-            console.log("Error Encountered While storeing the order in sync:", item.id);
-            console.log(error);
-        });
+        //     console.log("Error Encountered While storeing the order in sync:", item.id);
+        //     console.log(error);
+        // });
+        await ordercreateEvent(store,item,res);
         sinceId = item.id;
       });
       await sleep(2000);
@@ -145,6 +147,7 @@ export const handleOrderDataList = async (req, res) => {
         }
         
       }
+      filter.is_giftcard_order = {$exists : false};
       console.log(filter, "filter added");
         const orders = await orderModel.find(
           filter,
