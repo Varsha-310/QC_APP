@@ -18,7 +18,7 @@ import cron from "node-cron";
 const handleMandateNotification = async(type) => {
 
     const today = new Date().getDate();
-    if([25].includes(today)){
+    if([29].includes(today)){
     console.log("-----------")
         const notificableMarchant = await BillingHistory.find({
             status: "ACTIVE",
@@ -111,27 +111,18 @@ const sendMandateNotification = async(bill) => {
  * @returns 
  */
 const callPayUNotificationAPI = async(bill, mandateDetails) =>{
-console.log(mandateDetails , "mandateDetails");
+console.log(mandateDetails , bill.billingDate ,"mandateDetails");
 const randomId = Date.now() + Math.random().toString(10).slice(2, 8);
 const date = new Date(bill.billingDate),
+ year =date.getFullYear(),
  mnth = ("0" + (date.getMonth() + 1)).slice(-2),
  day = ("0" + date.getDate()).slice(-2);
-const debitDate = [date.getFullYear(), mnth, day].join("-");
+const debitDate = `${year}-${mnth}-${day}`;
 let payemntPayload = new FormData();
-
-    const data = {
-        key : process.env.payukey,
-        command: "pre_debit_SI",
-        var1:{"authPayuId": "403993715530126827", "requestId": "1695635280578668151" ,"debitDate": "2023-09-09", "invoiceDisplayNumber": "12edc7uhlkmfd23456","amount": "470.82","action":"retrieve"}
-        // `{"authPayuId": ${mandateDetails?.mihpayid}, "requestId": ${randomId} ,"debitDate": ${debitDate}, "invoiceDisplayNumber": ${bill.invoiceNumber},"amount": ${bill.invoiceAmount}, "action":"retreive"}`
-    }; 
      payemntPayload = {
         key : process.env.payukey,
         command: "pre_debit_SI",
-        var1: `{"authPayuId": "403993715530126827", "requestId": "1695635280578668151" ,"debitDate": "2023-09-09", "invoiceDisplayNumber": "12edc7uhlkmfd23456","amount": 470.82, "action":"retreive"}`
-
-        // {"authPayuId": mandateDetails?.mihpayid, "requestId": randomId ,"debitDate": debitDate, "invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount, "action":"retreive"}
-
+        var1:`{"authPayuId": "${mandateDetails?.mihpayid}", "requestId": "${randomId}" ,"debitDate": "${debitDate}", "invoiceDisplayNumber": "${bill.invoiceNumber}","amount": ${bill.invoiceAmount}, "action":"retreive"}`
     }
     payemntPayload["hash"] = generateHashForNotification(payemntPayload);
     const config ={
@@ -142,7 +133,6 @@ let payemntPayload = new FormData();
             "Content-Type": "application/x-www-form-urlencoded"
         },
         method: "POST",
-        // data: qs.stringify(payemntPayload)
         data : payemntPayload
 
     };
@@ -167,13 +157,14 @@ let payemntPayload = new FormData();
 const handleReccuringPayment = async() => {
 
     const today = new Date().getDate();
-    if([8,9].includes(today)){
+    if([29].includes(today)){
         const reccuringmarchant = await BillingHistory.find({
             status:"ACTIVE",
             recordType: "Reccuring",
             isReminded: true,
-            plan_type: "public"
+            // plan_type: "public"
         });
+        console.log(reccuringmarchant)
         for (const bill of reccuringmarchant) {
 
             const resp = await captureReccuringpayment(bill);
@@ -185,9 +176,9 @@ const handleReccuringPayment = async() => {
     return 1;
 }
 
-const captureReccuringpayment = async() => {
+const captureReccuringpayment = async(bill) => {
 
-    const mandateDetails = await store.findOne({store_url}, {mendate:1, store_url:1});
+    const mandateDetails = await store.findOne({store_url : bill.store_url}, {mandate:1, store_url:1});
     if(!mandateDetails){ 
 
         //TO-DO: Send Notification to the QC regading it 
@@ -213,7 +204,7 @@ const captureReccuringpayment = async() => {
         session.retry_at = Date.now();
     }
     session.logs = apiResp;
-    await Session.insert(session);
+    // await Session.insert(session);
     return apiResp;
 }
 
@@ -226,25 +217,28 @@ const captureReccuringpayment = async() => {
  * @returns 
  */
 const callPayUReccuringAPI = async(bill, mandateDetails) =>{
-
-    const data = {
+    console.log(bill , mandateDetails , "recurring api called")
+    let data = new FormData();
+    const randomId = Date.now() + Math.random().toString(10).slice(2, 8);
+     data = {
         key : process.env.payukey,
         command: "si_transaction",
-        var1: { "authPayuId": mandateDetails?.authpayuid,"txnid":  `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,"invoiceDisplayNumber": bill.invoiceNumber,"amount": bill.invoiceAmount}
+        var1:`{"authPayuId":"${mandateDetails?.mandate?.mihpayid}","invoiceDisplayNumber":"${bill.invoiceNumber}","amount":${bill.invoiceAmount},"txnid":"${randomId}","email":"${mandateDetails?.mandate?.email}","phone":"${mandateDetails?.mandate?.phone}","udf2": "","udf3": "","udf4": "","udf5": ""}`
     };
-    data["hasg"] = generateHashForNotification(data);
+    data["hash"] = generateHashForNotification(data);
     const config ={
 
-        url: process.env.DEBUG ? "https://test.payu.in/merchant/" : "https://info.payu.in/merchant/",
+        url: process.env.DEBUG ? "https://test.payu.in/merchant/postservice?form=2" : "https://info.payu.in/merchant/",
         headers: {
             "accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded"
         },
         method: "POST",
-        data: JSON.stringify(data)
+        data: data
     };
     console.log(data, config);
     return axios(config).then(res => {
+        console.log(res , "response")
         return res;
     }).catch(err => {
 
@@ -704,9 +698,9 @@ const getChangeMonthData = async(store) => {
 }
 
 
-cron.schedule("0 0 1 * * *", () => {
-
-    changeMonthlyCycle();
+cron.schedule("*/30 * * * * *", () => {
+ console.log("------cron job-----------")
+    // changeMonthlyCycle();
     handleReccuringPayment();
-    handleMandateNotification();
+    // handleMandateNotification();
 });
