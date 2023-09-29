@@ -129,7 +129,7 @@ export const handleOrderDataList = async (req, res) => {
       // Fetch all the data present in the particular store 
 
       const filter = { ...storeUrlFilter }
-     // filter.is_giftcard_order = false
+     filter.is_giftcard_order = false
 
       if (req.query.Refund_Mode) {
           filter.Refund_Mode = req.query.Refund_Mode;
@@ -147,7 +147,6 @@ export const handleOrderDataList = async (req, res) => {
         }
         
       }
-      filter.is_giftcard_order = {$exists : false};
       console.log(filter, "filter added");
         const orders = await orderModel.find(
           filter,
