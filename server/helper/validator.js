@@ -304,12 +304,12 @@ export const verifyShopifyHook = async (req, res, next) => {
 	console.log("verified");
       next();
     } else {
-     return res.json(respondUnauthorized("Unautherised request", {}));
+    res.status(401).json(respondUnauthorized("Unautherised request", {}));
     }
   } catch (e) {
     
     console.log(e);
-    res.json(respondInternalServerError());
+     res.status(401).json(respondUnauthorized("Unautherised request", {}));
   }
 };
 
