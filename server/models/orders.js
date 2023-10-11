@@ -7,6 +7,7 @@ const orderSchema = new Schema({
     id: { type: Number, required: true },
     is_email_sent : {type : Boolean , default : false},
     is_giftcard_order: {type : Boolean , default : false},
+    remarks:{type:String},
     app_id: { type: Number },
     browser_ip: { type: String },
     cancel_reason: { type: String },

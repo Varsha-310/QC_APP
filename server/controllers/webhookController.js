@@ -12,6 +12,8 @@ import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import cron from "node-cron";
 import axios from "axios";
+import { updateShopifyGiftcard } from "./giftcard.js";
+import wallet from "../models/wallet.js";
 
 /**
  * To handle order creation webhook
@@ -118,7 +120,12 @@ export const ordercreateEvent = async (shop,order,res) => {
             { id: newOrder.id },
             { is_giftcard_order: true, remarks: "Gift Card Is used for buy the Gift Card" }
           );
-          // done();
+          const walletExists = await wallet.findOne({shopify_customer_id : newOrder.customer.id});
+          if(walletExists){
+            let checkAmount = await giftCardAmount(shop, newOrder.id);
+             await orderCancel(newOrder.id,shop);
+             await updateShopifyGiftcard(shop,settings.access_token,walletExists.shopify_giftcard_id,checkAmount.amount);
+          }  
           return 1;
         }
 

@@ -698,9 +698,9 @@ const getChangeMonthData = async(store) => {
 }
 
 
-cron.schedule("*/30 * * * * *", () => {
- console.log("------cron job-----------")
-    // changeMonthlyCycle();
-    handleReccuringPayment();
+// cron.schedule("*/30 * * * * *", () => {
+//  console.log("------cron job-----------")
+//     // changeMonthlyCycle();
+//     handleReccuringPayment();
     // handleMandateNotification();
-});
+// });

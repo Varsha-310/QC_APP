@@ -804,7 +804,7 @@ const getShopifyGiftcard = async (store, token, id) => {
  * @param {*} amount
  * @returns
  */
-const updateShopifyGiftcard = async (store, token, id, amount) => {
+export const updateShopifyGiftcard = async (store, token, id, amount) => {
   try {
     console.log("----------------amount--------------------", amount);
     let data = JSON.stringify({
