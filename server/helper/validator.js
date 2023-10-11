@@ -291,7 +291,7 @@ export const validateRefund = async (req, res, next) => {
 export const verifyShopifyHook = async (req, res, next) => {
 
   try {
-    
+    console.log(req.headers, "headers");
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
     const body = req.rawBody;
     const digest = crypto
@@ -299,10 +299,12 @@ export const verifyShopifyHook = async (req, res, next) => {
       .update(body)
       .digest("base64"); 
     const providedHmac = req.headers["x-shopify-hmac-sha256"]?.toString();
+   console.log(digest , providedHmac);
     if (digest == providedHmac) {
+	console.log("verified");
       next();
     } else {
-      res.json(respondUnauthorized("Unautherised request", {}));
+     return res.json(respondUnauthorized("Unautherised request", {}));
     }
   } catch (e) {
     

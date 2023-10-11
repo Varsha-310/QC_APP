@@ -121,7 +121,7 @@ export const payuPayment = async (req, res) => {
   if (reqData.status == "success") {
     await updateBillingHistory(reqData);
   }
-  return res.redirect(`${process.env.CLIENT_URL}kyc-status`);
+  return res.redirect(`${process.env.CLIENT_URL}/kyc-status`);
 };
 
 /**

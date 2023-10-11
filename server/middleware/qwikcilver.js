@@ -109,6 +109,7 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
     return logs;
   }
   catch (err) {
+	console.log(err, "error");
     if(err?.code == "ECONNABORTED"){
       logs["error"] = err?.code
     return logs;
