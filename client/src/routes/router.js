@@ -139,10 +139,7 @@ const router = createBrowserRouter([
         path: "/terms-and-conditions",
         element: <TermsConditions />,
       },
-      {
-        path: "/privacy-policy",
-        element: <PrivacyPolicy />,
-      },
+
       {
         path: "/faqs",
         element: <FaqPage />,
@@ -158,6 +155,10 @@ const router = createBrowserRouter([
         element: <LoggedOut />,
       },
     ],
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
   },
   { path: "/select-plan", element: <PlanSelection /> },
   { path: "/submission_success", element: <ConfirmationPage /> },

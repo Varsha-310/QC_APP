@@ -5,11 +5,10 @@ const TermsConditions = () => {
   useScrollTop();
   return (
     <div className="component">
+      <div className="section-box-container">
+        <div className="section-box-title">TERMS AND CONDITIONS</div>
+      </div>
       <div className="agreement-component">
-        <div className="section-box-container">
-          <div className="section-box-title">TERMS AND CONDITIONS</div>
-        </div>
-
         <h2>A. General</h2>
         <p>
           <a href="https://www.qwikcilver.com">www.qwikcilver.com</a> is an
