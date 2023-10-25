@@ -69,13 +69,14 @@ export const ordercreateEvent = async (shop,order,res) => {
     console.log("Shop Name", shop , order.id);
 
     // Store Order
-    await orders.updateOne({
+   const orderSaved = await orders.updateOne({
       store_url: shop,
       id: order.id,
     },
       order,
       { upsert: true }
     );
+	console.log(orderSaved)
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
     if (settings) {
@@ -118,7 +119,7 @@ export const ordercreateEvent = async (shop,order,res) => {
 
           await orders.updateOne(
             { id: newOrder.id },
-            { is_giftcard_order: true, remarks: "Gift Card Is used for buy the Gift Card" }
+            { is_giftcard_order: true, remarks: "Gift Card Is used for buy the Gift Card" }, {upsert:true}
           );
           const walletExists = await wallet.findOne({shopify_customer_id : newOrder.customer.id});
           if(walletExists){
