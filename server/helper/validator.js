@@ -293,7 +293,8 @@ export const verifyShopifyHook = async (req, res, next) => {
   try {
     console.log(req.headers, "headers");
     const api_secret = process.env.SHOPIFY_API_SECRET ?? "";
-    const body = req.rawBody;
+   console.log(api_secret , "apisecret");
+	 const body = req.rawBody;
     const digest = crypto
       .createHmac("sha256", api_secret)
       .update(body)

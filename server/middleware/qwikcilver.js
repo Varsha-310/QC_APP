@@ -63,10 +63,10 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
         },
       ],
       Purchaser: {
-        FirstName: customer?.first_name || "varsha",
-        LastName: customer?.last_name || "One",
-        Mobile: customer?.email || "+8095379504",
-        Email: customer?.phone || "testinguser@gmail.com",
+        FirstName: customer?.first_name || "First Name",
+        LastName: customer?.last_name || "Last Name",
+        Mobile: customer?.phone || "1111111111",
+        Email: customer?.email || "testinguser@qwikcilver.com",
       },
     };
     logs["req"] = data;
@@ -134,7 +134,8 @@ export const fetchBalance = async (store, walletData) => {
   try {
     // console.log(walletData);
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log("------------------store qc credeentials-------------------------", setting.password, setting.unique_transaction_id);
+
+    console.log("------------------store qc credeentials-------------------------", setting);
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
@@ -154,8 +155,8 @@ export const fetchBalance = async (store, walletData) => {
     };
 
     let config = {
-      method: "post",
 
+      method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         "Content-Type": "application/json;charset=UTF-8 ",
@@ -165,9 +166,9 @@ export const fetchBalance = async (store, walletData) => {
       },
       data: data
     };
-
+	console.log("----fetch balance config----------", config);
     let walletDetails = await axios(config);
-    console.log(walletDetails);
+    console.log("Check Balance", walletDetails.data);
     
    if (
       walletDetails.status == "200" &&
@@ -185,9 +186,7 @@ export const fetchBalance = async (store, walletData) => {
 
       await authToken(store);
     }
-    res.json(
-      respondInternalServerError()
-    );
+    throw new Error("Internal Server Error");
   }
 };
 
