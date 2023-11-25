@@ -21,6 +21,7 @@ import Jwt from "jsonwebtoken";
  */
 export const install = async (req, res) => {
   try {
+	console.log(req.headers, "headers");
     const shop = req.query.shop;
     if (shop) {
       const scopes = process.env.SCOPES;

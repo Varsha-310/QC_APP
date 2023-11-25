@@ -63,10 +63,10 @@ export const createGiftcard = async (store, amount, order_id, validity, type, cu
         },
       ],
       Purchaser: {
-        FirstName: customer?.first_name || "varsha",
-        LastName: customer?.last_name || "One",
-        Mobile: customer?.email || "+8095379504",
-        Email: customer?.phone || "testinguser@gmail.com",
+        FirstName: customer?.first_name || "First Name",
+        LastName: customer?.last_name || "Last Name",
+        Mobile: customer?.phone || "1111111111",
+        Email: customer?.email || "testinguser@qwikcilver.com",
       },
     };
     logs["req"] = data;

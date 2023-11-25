@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://backend.qwikcilver.com",
+  baseURL: "https://uatdashboard.qwikcilver.com",
   timeout: 8000,
 });
 

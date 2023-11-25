@@ -40,10 +40,19 @@ export const createGiftcardProducts = async (req, res) => {
     let tags = "qc_giftcard";
     console.log("createGiftcardProducts shopify call start");
     console.log("Body shopify");
+   
 
+    for(let i=0; i<variants.length; i++){
+      variants[i]['taxable'] = false
+      variants[i]['inventory_policy'] = "deny";
+      variants[i]['inventory_management'] = null;
+     variants[i]['requires_shipping'] = false;
+
+    };	
     let newProduct = await shopify.product.create({
       // Create a product in Shopify with the details sent in API
       title: title,
+      template_suffix: "gift-card",	
       body_html: description,
       terms,
       product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later

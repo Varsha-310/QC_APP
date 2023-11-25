@@ -29,6 +29,8 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH");
   res.setHeader("Access-Control-Allow-Headers","*");
   res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.removeHeader("X-Powered-By");
   next();
 });
 
