@@ -161,23 +161,28 @@ const getRefundType = async(refund_type, payment_gateway_names, store_url) => {
  */
 const getGCRefundAmount = (refundableAmount, transactions) => {
 
+     console.log("Get GC Refund AMOUNT");
     //refund with gc
     let gc_rf_amount = 0;
     const gc_trans = transactions.find(item => item.gateway == "gift_card");
     if(!gc_trans) return refundableAmount;
+ 
+    console.log("Gift Card Transaction", gc_trans);
+    if(parseFloat(gc_trans.maximum_refundable) >  parseFloat(refundableAmount)){
 
-    if(gc_trans.maximum_refundable > refundableAmount){
-
+	console.log("Inside Full refundable");
         gc_rf_amount = refundableAmount;
         gc_trans.amount = refundableAmount;
         refundableAmount = 0;
     }
     else{
         
+	console.log("Inside Partial Refundable");
         gc_rf_amount = gc_trans.maximum_refundable;
         refundableAmount = refundableAmount - gc_rf_amount;
         gc_trans.amount = gc_rf_amount;
     }
+    console.log("GC refundavle AMount", gc_rf_amount);
     return {gc_trans, refundableAmount, gc_rf_amount};
 }
 
@@ -339,7 +344,7 @@ export const handleRefundAction = async (req, res) => {
             amount: amount
         }
         const gcRfDetails = await getGCRefundAmount(amount, transactions);
-        const trans = [];
+	const trans = [];
         console.log("GC Refund Details:", refund_type, gcRfDetails);
         
         //process gc reverse transaction
