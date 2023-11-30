@@ -195,6 +195,8 @@ const getGCRefundAmount = (refundableAmount, transactions) => {
  */
 const updateRefundLogs = async(query, logs) => {
 
+    console.log("------------------------ Refund Logs ----------------------------");
+    console.log("Id: ", logs?.id);
     if(query["logs.id"] == undefined){
         
         delete query["logs.id"];
