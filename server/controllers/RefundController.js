@@ -388,7 +388,7 @@ export const handleRefundAction = async (req, res) => {
                 ...logs
             });
             sessionQuery["logs.id"] = refundSession.id;
-
+            console.log(" --- logs Back To sourc --- ", sessionQuery);
         }else if(amount && refund_type == "Store-credit"){
 
             console.log("------------------------ Store Credit Process Started -------------------");
@@ -405,7 +405,7 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
-	            console.log("---------------logs create gc------------------");
+	            console.log(" --- logs createGC --- ", sessionQuery);
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
                 giftCardDetails = logsGC.resp.Cards[0];
             }
@@ -419,6 +419,7 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
+                console.log(" ---logs wallet --- ", sessionQuery);
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
             }
             const _trans = transactions.find(item => item.gateway != "gift_card");
@@ -438,7 +439,7 @@ export const handleRefundAction = async (req, res) => {
                 return { line_item_id: item.id, quantity: item.qty, location_id: refSetting.location_id, restock_type:refSetting.restock_type };
             })
             const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
-            console.log(refundedResp.data);
+            console.log(refundedResp.data, " Query : ", sessionQuery);
             refundSession = await updateRefundLogs(sessionQuery, {
                 refund_created_at: new Date(),
                 status: "completed"
