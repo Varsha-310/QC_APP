@@ -341,7 +341,7 @@ export const addToWallet = async (
     };
 
     let cardAdded = await axios(config);
-    console.log(cardAdded);
+    //console.log(cardAdded);
     logs["resp"] = cardAdded?.data;
     if (cardAdded.status == "200" && cardAdded.data.ResponseCode == "0")
       logs["status"] = true;

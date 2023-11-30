@@ -301,12 +301,12 @@ export const addGiftcardtoWallet = async (
   logs = {}
  
 ) => {
+ 
   logs["status"] = false;
   try {
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
     });
-    console.log(cardAlredyAdded , "cardAlredyAdded")
     if (cardAlredyAdded) {
       return { status: 403 };
     } else {
@@ -317,14 +317,14 @@ export const addGiftcardtoWallet = async (
 
       logs["activate"] = activatedCardLog;
       if (!activatedCardLog?.status) return logs;
-            let activatedCard = activatedCardLog.resp.Cards[0];
 
-        const setting = await Store.findOne({ store_url: store });
-        let walletExists = await Wallet.findOne({
-        shopify_customer_id: customer_id,
+      let activatedCard = activatedCardLog.resp.Cards[0];
+      const setting = await Store.findOne({ store_url: store });
+      let walletExists = await Wallet.findOne({
+          shopify_customer_id: customer_id,
       });
-      console.log(walletExists, "-------***********------");
       if (walletExists) {
+        
         let wallet_id = walletExists.wallet_id;
         const shopify_gc_id = walletExists.shopify_giftcard_id;
         const newAmount = walletExists.balance + amount;
@@ -381,7 +381,7 @@ export const addGiftcardtoWallet = async (
           store,
           customer_id,
           order_id,
-	 logs?.createW
+	      logs?.createW
         );
         logs["createW"] = walletCreatedLog;
         if (!walletCreatedLog?.status) return logs;
@@ -819,6 +819,7 @@ const getShopifyGiftcard = async (store, token, id) => {
  */
 export const updateShopifyGiftcard = async (store, token, id, amount) => {
   try {
+    
     console.log("----------------amount--------------------", amount);
     let data = JSON.stringify({
       adjustment: {
@@ -836,12 +837,9 @@ export const updateShopifyGiftcard = async (store, token, id, amount) => {
       data: data,
     };
     const shopifyGc = await axios(config);
-    console.log(
-      shopifyGc.data,
-      "--------------------shopify giftcard data-----------"
-    );
     return shopifyGc.data.adjustment;
   } catch (err) {
+
     console.log(err);
     throw new Error("Shopify GC adjustment Error");
   }

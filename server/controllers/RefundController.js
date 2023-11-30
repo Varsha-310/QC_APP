@@ -435,7 +435,6 @@ export const handleRefundAction = async (req, res) => {
             const refund_line_items = line_items.map(item => {
                 return { line_item_id: item.id, quantity: item.qty, location_id: refSetting.location_id, restock_type:refSetting.restock_type };
             })
-            
             const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
             console.log(refundedResp.data);
             refundSession = await updateRefundLogs(sessionQuery, {
@@ -452,7 +451,7 @@ export const handleRefundAction = async (req, res) => {
         //     const refundedResp = await updateOrderNotes(orderId,store_url,accessToken,refundSession.id, refundAmount.refund.currency, );
         //     console.log(refundedResp.data);
         //     ordersData.Refund_Status = "";
-        // }
+        // 
         ordersData.Refund_Mode = refund_type;
         ordersData.save();
         const msg = refSetting.cod_con == "cod_woth_gc"  ? "Refund has been initiated only for the gift card amount." : "Refund has been initiated";
