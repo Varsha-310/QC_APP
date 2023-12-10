@@ -216,6 +216,7 @@ const updateRefundLogs = async(query, logs) => {
                 data[`logs.$.${key}`] = logs[key];   
             }
         }
+	 logs["id"] = query["logs.id"];
         console.log("Push: ", query, logs, data);
         await RefundSession.updateOne(query, data).then(res => console.log(res));
     }
@@ -419,6 +420,7 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
+		console.log("Refund Logs", refundSession);
                 console.log(" ---logs wallet --- ", sessionQuery);
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
             }
