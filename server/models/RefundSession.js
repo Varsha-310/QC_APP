@@ -20,8 +20,8 @@ const RefundsLogs =   mongoose.Schema({
     refund_created_at: Date,
     status: {
       type: String,
-      enum: ["pending","completed"],
-      default: "pending"
+      enum: ["in-process","completed"],
+      default: "in-process"
     }
   }]
 },{ timestmps: true});

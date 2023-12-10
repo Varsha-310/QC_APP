@@ -1,6 +1,6 @@
 import { respondInternalServerError, respondWithData,respondNotFound, respondError, respondSuccess, respondValidationError } from "../helper/response.js";
 import { logger } from "../helper/utility.js";
-import axios from "axios";
+import axios from "../helper/axios.js";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
 import store from "../models/store.js";
@@ -84,13 +84,12 @@ export const handleCalculateRefundAmount = async(req, res, next) => {
         }
         const storeData = await store.findOne({ store_url });
         const shipping = ordersData?.total_shipping_price_set?.shop_money || {currency: "INR"};
+        
+        // Fetch Refundable Amount From Shopify
         const refundAmount = await callShopifyApiToCalculateRefund(orderId, shipping, line_items, store_url, storeData.access_token);
-        console.log(refundAmount.data);
         return res.json(respondWithData("Calculated Refund Amount", refundAmount.data));
     } catch (error) {
 
-        logger.info("Error Encountered while Calculating Logs");
-        logger.info(error);
         console.log(error);
         return res.json(respondInternalServerError());
     }
@@ -216,7 +215,7 @@ const updateRefundLogs = async(query, logs) => {
                 data[`logs.$.${key}`] = logs[key];   
             }
         }
-	 logs["id"] = query["logs.id"];
+	    logs["id"] = query["logs.id"];
         console.log("Push: ", query, logs, data);
         await RefundSession.updateOne(query, data).then(res => console.log(res));
     }
@@ -249,10 +248,10 @@ const checkRefundSession = async(orderId, store_url, refund_type, refundableAmou
             refundedAmount: 0
         };
     }
-    const logs = refundSession.logs.find(log => log.status == "pending" && log.refund_type == refund_type);
+    const logs = refundSession.logs.find(log => log.status == "in-process" && log.refund_type == refund_type);
     const amount =  refundSession.logs.reduce((prev, item) => {
 
-        if(item.refund_type == "Store-credit" && item.status != "pending"){
+        if(item.refund_type == "Store-credit" && ["in-process", "completed"].includes(item.status)){
 
             return prev + parseFloat(item.amount);
         }
@@ -292,11 +291,7 @@ export const handleRefundAction = async (req, res) => {
 
             return res.json(respondError("Order Not Found", 422));
         }
-        //check taxes
-        // const orderQty = ordersData.line_items.reduce((qty,item) => qty+ parseInt(item.quantity),0);
-        // const tax = (parseFloat(ordersData.current_total_tax)/ orderQty).toFixed(2); 
-        // const refundableQty = line_items.reduce((qty, item) => qty + item.qty, 0);
-        // console.log(orderQty, tax, refundableQty);
+        
         let totalTaxRefunded = parseFloat(ordersData.current_total_tax);
 
         const shipping = ordersData?.total_shipping_price_set?.shop_money || {currency: "INR"};
@@ -420,7 +415,7 @@ export const handleRefundAction = async (req, res) => {
                     ...logs
                 });
                 sessionQuery["logs.id"] = refundSession.id;
-		console.log("Refund Logs", refundSession);
+		        console.log("Refund Logs", refundSession);
                 console.log(" ---logs wallet --- ", sessionQuery);
                 if(!logsGC.status) throw new Error("Error: Create Gift Card");
             }
@@ -432,7 +427,6 @@ export const handleRefundAction = async (req, res) => {
                 "amount":0
             });
         }
-
         // Findal process of the refunds
         if(!refundSession?.refund_created_at){
 
@@ -598,5 +592,9 @@ export const getConfigapi = async (req, res) => {
     }
 };
   
-  
-  
+
+
+export const getRefundLogs = (req, res) => {
+
+
+}
