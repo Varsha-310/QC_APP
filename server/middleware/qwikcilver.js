@@ -818,7 +818,7 @@ export const authToken = async (store) => {
 
     const authData = await axios(config);
     console.log(authData.data);
-    if ((authData.status == "200", authData.data.ResponseCode == "0")) {
+    if (authData.data.ResponseCode == "0") {
       await qcCredentials.updateOne(
         { store_url: store },
         { token: authData.data.AuthToken },

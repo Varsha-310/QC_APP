@@ -31,12 +31,13 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use((resp) => resp, async (err) => {
 
     // Extract data from error
-    const { config, response, checkAuth } = err;
+    const { config, response } = err;
     const { retry } = config;
 
     // handle auth token expiry 
     if (response?.status == "401" && response?.data?.ResponseCode == "10744") {
 
+        const checkAuth = config
         const {store, n } = checkAuth;
         const token = await authToken(store);
         if(token && n){
