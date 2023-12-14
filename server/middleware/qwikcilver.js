@@ -4,9 +4,10 @@ import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
 import { updateBilling } from "../controllers/BillingController.js";
-import wallet from "../models/wallet.js";
+import Wallet from "../models/wallet.js";
 import orders from "../models/orders.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
+import wallet from "../models/wallet.js";
 
 /**
  * method to create giftcard on QC
@@ -77,19 +78,17 @@ export const createGiftcard = async (
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
 
     const gcCreation = await axios(config);
     console.log(" Response Code : ", gcCreation.data.ResponseCode);
     logs["resp"] = gcCreation.data;
-    if (gcCreation.status == "200" && gcCreation.data.ResponseCode == "0") {
+    if (gcCreation.status == "200") {
       if (!logs?.updateBillingAt) {
 
         await updateBilling(amount, store);
@@ -116,18 +115,71 @@ export const createGiftcard = async (
   } catch (err) {
     
     console.log(" --- Error While Creating Giftcard ---", err);
-    if (err?.code == "ECONNABORTED") {
-     
-      logs["error"] = err?.code;
-      return logs;
-    }
-    if (
-      err?.response?.status == "401" &&
-      err?.response?.data?.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
-    logs["error"] = err?.response?.data;
+    logs["error"] = err?.response?.data || err?.code;
+    return logs;
+  }
+};
+
+/**
+ * method to cancle created & issued giftcard on QC
+ * @param {*} store
+ * @param {*} amount
+ * @param {*} order_id
+ * @param {*} validity
+ * @param {*} type
+ * @returns
+ */
+export const cancelCreateNdIssueGiftcard = async (
+  store,
+  cardResp,
+  logs = {}
+) => {
+
+  logs["status"] = false;
+  try {
+
+    console.log( "------------------ Create Giftcard Process Started -------------------");
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+
+    let data = {
+        "InputType": 1,
+        "Cards": [
+            {
+                "CardNumber": cardResp.Cards[0].CardNumber,
+                "CurrencyCode": cardResp.Cards[0].CurrencyCode,
+                "Amount": cardResp.Cards[0].Balance,
+                "OriginalRequest": {
+                    "OriginalBatchNumber": cardResp.CurrentBatchNumber,
+                    "OriginalTransactionId": cardResp.TransactionId,
+                    "OriginalApprovalCode": cardResp.Cards[0].ApprovalCode
+                }
+            }
+        ]
+    };
+    logs["req"] = data;
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XNP/api/v3/transactions/cancel`,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
+      data: data,
+      checkAuth: {store, n:1}
+    };
+
+    const resp = await axios(config);
+    logs["resp"] = resp.data;
+    logs["status"] = true;
+    return logs;
+  } catch (err) {
+    
+    logs["status"] = true;
+    logs["error"] = err?.response?.data || err?.code;
     return logs;
   }
 };
@@ -169,12 +221,11 @@ export const fetchBalance = async (store, walletData) => {
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
+      checkAuth: {store, n:1}
     };
     console.log("----fetch balance config----------", config);
     let walletDetails = await axios(config);
@@ -189,16 +240,185 @@ export const fetchBalance = async (store, walletData) => {
       return balance;
     }
   } catch (err) {
-    console.log(err);
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      console.log("----------balance-------------------");
 
-      await authToken(store);
-    }
+    console.log(err);
     throw new Error("Internal Server Error");
+  }
+};
+
+/**
+ * To check wallet against customerid
+ * @param {*} req
+ * @param {*} res
+ */
+export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
+  
+  logs["status"] = false;
+  try {
+
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; 
+    setting.unique_transaction_id = transactionId + 1;
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+
+    let data = logs?.req
+      ? logs.req
+      : {
+        "TransactionTypeId": 3501,
+        "Quantity": 1,
+        "Wallets": [
+            {
+                "ExternalWalletId": customer_id
+            }
+        ]
+    };
+    logs["req"] = data;
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
+      data: data,
+      checkAuth: {store, n:1}
+    };
+    let walletCreation = await axios(config);
+    logs["resp"] = walletCreation?.data;
+    if (walletDetails.data.ResponseCode == "0") {
+      logs["status"] = true;
+    }
+    return logs;
+  } catch (err) {
+
+    logs["error"] = err.response.data;
+    return logs;
+  }
+};
+
+/**
+ * Load wallet api to activate and add card to wallet
+ * @param {*} req
+ * @param {*} res
+ */
+export const loadWalletAPI = async (store, amount, order_id, customerId, logs = {}) => {
+  
+  logs["status"] = false;
+  try {
+
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; 
+    setting.unique_transaction_id = transactionId + 1;
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+
+    let idempotency_key = generateIdempotencyKey();
+
+    const validity = process.env.QC_GC_VALIDITY || 180;
+    let myDate = new Date();
+    myDate.setDate(myDate.getDate() + parseInt(validity));
+    const expirydate = myDate.toISOString().slice(0, 10);
+
+    const wallet = Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
+    let data = logs?.req
+      ? logs.req
+      : {
+        "TransactionTypeId": 3508,
+        "IdempotencyKey": idempotency_key,
+        "TransactionModeId": 0,
+        "InvoiceNumber": `ORD-${order_id}`,
+        "ExecutionMode": 0,
+        "Cards": [
+            {
+                "CardNumber":  wallet.wallet,
+                "CurrencyCode": "INR",
+                "PaymentInstruments": [
+                    {
+                        "InstrumentProgram": setting.refund_cpgn,
+                        "Amount": amount,
+                        "Expiry": expirydate
+                    }
+                ]
+            }
+        ]
+    };
+    logs["req"] = data;
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
+      data: data,
+      checkAuth: {store, n:1}
+    };
+    let walletCreation = await axios(config);
+    logs["resp"] = walletCreation?.data;
+    if (walletDetails.data.ResponseCode == "0") {
+      logs["status"] = true;
+    }
+    return logs;
+  } catch (err) {
+
+    logs["error"] = err.response.data;
+    return logs;
+  }
+};
+
+/**
+ * cancel Load wallet api to deactivate and remove card from wallet
+ * @param {*} req
+ * @param {*} res
+ */
+export const cancelLoadWalletAPI = async (store, cardResp, customerId, logs = {}) => {
+  
+  logs["status"] = false;
+  try {
+
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transactionId = setting.unique_transaction_id; 
+    setting.unique_transaction_id = transactionId + 1;
+    setting.markModified("unique_transaction_id");
+    await setting.save();
+
+    const idempotency_key = generateIdempotencyKey();
+
+    const wallet = await Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
+    logs["req"] = {
+      "TransactionTypeId": 3508,
+      "InputType": 1,
+      "IdempotencyKey": idempotency_key,
+      "Cards": [
+          {
+              "CardNumber": wallet.wallet,
+              "OriginalRequest": {
+                  "OriginalBatchNumber": cardResp.CurrentBatchNumber,
+                  "OriginalTransactionId": cardResp.TransactionId
+              }
+          }
+      ]
+  };
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/cancel`,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
+      data: req,
+      checkAuth: {store, n:1}
+    };
+    let walletCreation = await axios(config);
+    logs["resp"] = walletCreation?.data;
+    logs["status"] = true;
+    return logs;
+  } catch (err) {
+
+    logs["status"] = true;
+    logs["error"] = err.response.data;
+    return logs;
   }
 };
 
@@ -208,16 +428,16 @@ export const fetchBalance = async (store, walletData) => {
  * @param {*} res
  */
 export const createWallet = async (store, customer_id, order_id, logs = {}) => {
+
   logs["status"] = false;
   try {
+
     let setting = await qcCredentials.findOne({ store_url: store });
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
     await setting.save();
-    let myDate = new Date();
-    const date = myDate.toISOString().slice(0, 22);
 
     let data = logs?.req
       ? logs.req
@@ -241,43 +461,22 @@ export const createWallet = async (store, customer_id, order_id, logs = {}) => {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/wallets`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
-    console.log("Wallet data", walletCreation.status, walletCreation.data);
-    if (
-      walletCreation.status == "200" &&
-      walletCreation.data.ResponseCode == "0"
-    ) {
+    if ( walletCreation.data.ResponseCode == "0") {
       logs["status"] = true;
-      // return walletCreation.data.Wallets[0];
     }
-    // else {
-    //   console.log("Wallet Error", walletCreation);
-    // }
     return logs;
   } catch (err) {
-    if (err?.code == "ECONNABORTED") {
-      logs["error"] = err?.code;
-      return logs;
-    }
-    logs["error"] = err.response.data;
-    console.log(err);
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
+  
+    logs["error"] = err.response.data || err?.code;
     return logs;
-    //throw Error("Internal Server Error");
   }
 };
 
@@ -295,19 +494,14 @@ export const addToWallet = async (
 ) => {
   logs["status"] = false;
   try {
+
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log(
-      store,
-      setting,
-      "---------------add to wallet----------------------------------------"
-    );
+    console.log("---------------add to wallet----------------------------------------");
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
     await setting.save();
-    let myDate = new Date();
-    const date = myDate.toISOString().slice(0, 22);
     let data = logs?.req
       ? logs.req
       : {
@@ -331,35 +525,24 @@ export const addToWallet = async (
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
 
     let cardAdded = await axios(config);
     //console.log(cardAdded);
     logs["resp"] = cardAdded?.data;
-    if (cardAdded.status == "200" && cardAdded.data.ResponseCode == "0")
+    if (cardAdded.data.ResponseCode == "0")
       logs["status"] = true;
 
     return logs;
   } catch (err) {
-    if (err?.code == "ECONNABORTED") {
-      logs["error"] = err?.code;
-      return logs;
-    }
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
+    
     console.log(err);
-    logs["error"] = err.response.data;
+    logs["error"] = err.response.data || err?.code;
     return logs;
   }
 };
@@ -370,13 +553,11 @@ export const addToWallet = async (
  * @returns
  */
 export const activateCard = async (store, gc_pin, logs = {}) => {
+
   logs["status"] = false;
   try {
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log(
-      "------------------store qc credeentials-------------------------",
-      setting
-    );
+    console.log("------------------store qc credeentials-------------------------");
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
@@ -393,40 +574,28 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
           IdempotencyKey: idempotency_key,
           Cards: [{ CardPin: gc_pin }],
         };
-    logs["req"] = data;
 
+    logs["req"] = data;
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
 
     let activation = await axios(config);
     logs["resp"] = activation?.data;
-    if (activation.status == "200" && activation.data.ResponseCode == "0") {
+    if (activation.data.ResponseCode == "0") {
       logs["status"] = true;
     }
     return logs;
   } catch (err) {
-    if (err?.code == "ECONNABORTED") {
-      logs["error"] = err?.code;
-      return logs;
-    }
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
-    console.log(err);
-    logs["error"] = err.response.data;
+    
+    logs["error"] = err.response.data || err?.code;
     return logs;
   }
 };
@@ -448,11 +617,7 @@ export const redeemWallet = async (
   logs["status"] = false;
   try {
     let setting = await qcCredentials.findOne({ store_url: store });
-    console.log(
-      "------------------store qc credeentials-------------------------",
-      setting.password,
-      setting.unique_transaction_id
-    );
+    console.log("------------------store qc credeentials-------------------------");
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
@@ -484,25 +649,19 @@ export const redeemWallet = async (
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
       headers: {
-        "Content-Type": "application/json;charset=UTF-8 ",
-        DateAtClient: date,
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
 
     let walletRedemption = await axios(config);
     logs["resp"] = walletRedemption?.data;
-    if (
-      (walletRedemption.status == "200",
-      walletRedemption.data.ResponseCode == "0")
-    ) {
-      console.log("redeem successfull");
+    if (walletRedemption.data.ResponseCode == "0") {
 
+      console.log("redeem successfull");
       logs["status"] = true;
-      console.log(walletRedemption.data.Wallets);
       await wallet_history.updateOne(
         { wallet_id: wallet_id },
         {
@@ -520,24 +679,11 @@ export const redeemWallet = async (
         { id: id },
         { redeem_txn_id: walletRedemption?.data.TransactionId }
       );
-      // return walletRedemption.data.Wallets;
-      // return {wallet : walletRedemption.data.Wallets, id :transactionId};
     }
     return logs;
   } catch (err) {
-    if (err?.code == "ECONNABORTED") {
-      logs["error"] = err?.code;
-      return logs;
-    }
 
-    logs["error"] = err.response.data;
-    console.log(err);
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
+    logs["error"] = err.response.data || err?.code;
     return logs;
   }
 };
@@ -610,7 +756,7 @@ export const cancelRedeemWallet = async (
           Authorization: `Bearer ${setting.token}`,
         },
         data: data,
-        timeout: 17000,
+        checkAuth: {store, n:1}
       };
 
       const walletRedemption = await axios(config);
@@ -639,20 +785,8 @@ export const cancelRedeemWallet = async (
       return logs;
     }
   } catch (err) {
-
-    console.log("---- Error While Canceling Redeem ----", err);
-    if (err?.code == "ECONNABORTED") {
-      logs["error"] = err?.code;
-      return logs;
-    }
     
-    logs["error"] = err.response.data;
-    if (
-      err.response.status == "401" &&
-      err.response.data.ResponseCode == "10744"
-    ) {
-      await authToken(store);
-    }
+    logs["error"] = err.response.data || err?.code;
     return logs;
   }
 };
@@ -663,29 +797,23 @@ export const cancelRedeemWallet = async (
  * @returns
  */
 export const authToken = async (store) => {
+
   try {
+    
     console.log("--------------in creating token-----------------------");
     const storeData = await qcCredentials.findOne({ store_url: store });
     const myDate = new Date();
     const date = myDate.toISOString().slice(0, 22);
-
-    console.log(storeData);
-
     let data = {
       TerminalId: storeData.terminal_id,
       UserName: storeData.username,
       Password: storeData.password,
     };
-
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/authorize`,
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        DateAtClient: date,
-      },
       data: data,
-      timeout: 17000,
+      checkAuth: {store, n:1}
     };
 
     const authData = await axios(config);
@@ -696,7 +824,7 @@ export const authToken = async (store) => {
         { token: authData.data.AuthToken },
         { upsert: true }
       );
-      return true;
+      return authData.data.AuthToken;
     }
   } catch (err) {
     console.log(err);
