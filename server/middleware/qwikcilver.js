@@ -689,7 +689,7 @@ export const redeemWallet = async (
 };
 
 /**
- *Handle reverse redeem action
+ *Handle cancel redeem action
  *
  * @param {*} store
  * @param {*} wallet_id

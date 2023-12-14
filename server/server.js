@@ -93,15 +93,15 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule("*/3 * * * *", () => {
+cron.schedule("* * * * *", () => {
   // cronToCheckWebhooks();
-  // console.log("checking webhooks!");
+  console.log("checking failed sessions");
   failedOrders();
 });
 
 // Database and Port connection
 mongoose
-   .connect(process.env.DB_URL)
+   .connect(process.env.mongoUrl)
   .then(() => {
 
     app.listen(process.env.PORT);
