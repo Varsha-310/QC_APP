@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authToken } from "../middleware/qwikcilver.js";
 
 // set default timeout 17 sec
 axios.defaults.timeout = 17500;
@@ -7,43 +8,65 @@ axios.defaults.timeout = 17500;
 axios.interceptors.request.use(config => {
 
     const { url, retry } = config;
+    if(!url.includes("/admin/api")){
+
+        config.headers = {
+            ...config.headers, 
+            "Content-Type": "application/json;charset=UTF-8",
+            "DateAtClient": new Date().toISOString().slice(0, 22)
+        }; 
+        //return config;
+    }
     if(retry?.retries >= 0) return config;
-    if(!url.includes("/admin/api")) return config;
-    return {...config, retry: {
-        retries: 1,
-        retryDelay: 2000
-    }};
+    return {
+        ...config, 
+        retry: {
+            retries: 1,
+            retryDelay: 2000
+        }
+    };
 })
 
 // Check api reponse and process it.
 axios.interceptors.response.use((resp) => resp, async (err) => {
 
-    // Check timeout error
-    if (err.code === 'ECONNABORTED' && err.message.includes('timeout')) {
-
-        console.log('Request timed out');
-        return Promise.reject(err);
-    }
     // Extract data from error
-    const { config, response} = err;
+    const { config, response, checkAuth } = err;
     const { retry } = config;
 
+    // handle auth token expiry 
+    if (response?.status == "401" && response?.data?.ResponseCode == "10744") {
+
+        const {store, n } = checkAuth;
+        const token = await authToken(store);
+        if(token && n){
+
+            config.checkAuth.n -= 1;
+            config.headers.Authorization = `Bearer ${token}`
+            return axios(config);
+        }
+        return err;
+    }
+    
     // Check if retry mechanism exists;
     if(!retry || !retry.retries) return Promise.reject(err);
 
-    // Abort auto retried while its not a server error
-    if(response.status !== 500)  return Promise.reject(err);
+    // Abort auto retried while its not a server error or Timeout error
+    if((response.status >= 500) || (err.code === 'ECONNABORTED')) {
 
-    //Retry while Server Error Recieved.
+        config.retry.retries -= 1;
+        //Retry while Server Error Recieved.
+        await new Promise((resolve) => {
+            setTimeout(() => {
 
-    await new Promise((resolve) => {
-        setTimeout(() => {
-
-            console.log("Retry Request for: ", config.url);
-            resolve();
-        }, retry.retryDelay || 1000);
-    })
-    return axios(config);
+                console.log("Retry Request for: ", config.url);
+                resolve();
+            },  retry.retryDelay || 1000);
+        })
+        return axios(config);
+    }else{
+        return Promise.reject(err);
+    }
 });
 
 export default axios;
