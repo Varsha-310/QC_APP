@@ -561,9 +561,6 @@ export const getQcCredentials = async (req, res) => {
  */
 export const failedOrders = async () => {
   console.log("checking for failed orders");
-  const currentTime = Date.now();
-  let timeDifference;
-
   const failedOrders = await OrderCreateEventLog.find({
     status: "retry",
   });
@@ -571,7 +568,9 @@ export const failedOrders = async () => {
 
   for (const iterator of failedOrders) {
     if (iterator.numberOfRetried > 3 && iterator.action == "redeem") {
+
       await orderCancel(iterator.orderId, iterator.store);
+      await OrderCreateEventLog.findOneAndUpdate({orderId :iterator.orderId}, {status: "done"});
     }
     else{
       if (iterator.numberOfRetried == 1) {
