@@ -476,23 +476,41 @@ export const getWalletBalance = async (req, res) => {
       let walletExists = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
-      console.log("-----------------", walletExists);
       if (walletExists) {
-        let balanceFetched = await fetchBalance(store, walletExists.wallet_id);
+        let qcBalance = await fetchBalance(store, walletExists.wallet_id);
         let shopifybalance = await getShopifyGiftcard(
           store,
           storeExists.access_token,
           walletExists.shopify_giftcard_id
         );
         console.log(shopifybalance, "shopify giftcard balance");
-        console.log(balanceFetched);
-        res.json({
-          ...respondWithData("balance fetched"),
-          data: {
-            balance: balanceFetched,
-            gc_id: walletExists.shopify_giftcard_pin,
-          },
-        });
+        console.log(qcBalance , "qc wallet balance");
+        if(qcBalance > shopifybalance){
+          res.json({
+            ...respondWithData("balance fetched"),
+            data: {
+              balance: shopifybalance,
+              gc_id: walletExists.shopify_giftcard_pin,
+            },
+          });
+
+        }
+        else{
+          let updateShopifyGc = await updateShopifyGiftcard(
+            store,
+            storeExists.access_token,
+            walletExists.shopify_giftcard_id,
+            qcBalance
+          );
+          console.log("updated shopify giftcard",updateShopifyGc);
+          res.json({
+            ...respondWithData("balance fetched"),
+            data: {
+              balance: qcBalance,
+              gc_id: walletExists.shopify_giftcard_pin,
+            },
+          });
+        }
       } else {
         res.json(respondNotFound("wallet does not exists"));
       }
