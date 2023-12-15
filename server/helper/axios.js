@@ -15,11 +15,11 @@ axios.interceptors.request.use(config => {
             "Content-Type": "application/json;charset=UTF-8",
             "DateAtClient": new Date().toISOString().slice(0, 22)
         }; 
-        //return config;
     }
+    console.log("Config", config);
     if(retry?.retries >= 0) return config;
     return {
-        ...config, 
+        ...config,
         retry: {
             retries: 1,
             retryDelay: 2000
@@ -31,9 +31,10 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use((resp) => resp, async (err) => {
 
     // Extract data from error
-    const { config, response, checkAuth } = err;
-    const { retry } = config;
+    const { config, response } = err;
+    const { retry, checkAuth } = config;
 
+    console.log("Response Config:", config);
     // handle auth token expiry 
     if (response?.status == "401" && response?.data?.ResponseCode == "10744") {
 

@@ -751,7 +751,8 @@ export const giftCardAmount = async (store, id) => {
  * @param {*} amount
  * @returns
  */
-const createShopifyGiftcard = async (store, token, amount) => {
+export const createShopifyGiftcard = async (store, token, amount) => {
+
   try {
     let data = JSON.stringify({
       gift_card: {
@@ -773,8 +774,8 @@ const createShopifyGiftcard = async (store, token, amount) => {
     console.log(shopifyGc.data.gift_card);
     return shopifyGc.data.gift_card;
   } catch (err) {
-    console.log(err);
-    //return false;
+    
+    console.log(JSON.stringify(err));
     throw new Error("Shopify GC Creation Error");
   }
 };
