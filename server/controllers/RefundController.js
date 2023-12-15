@@ -327,36 +327,36 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 shopify_customer_id:  ordersData.customer.id,
             });
 
-            // Check and create giftcard wallet on shopify
-            // if(!walletDetails.shopify_giftcard_id){
+            //Check and create giftcard wallet on shopify
+            if(!walletDetails.shopify_giftcard_id){
 
-            //     const createShopifyGC = await createShopifyGiftcard(store, accessToken, amount);
-            //     await Wallet.updateOne({
-            //             store_url: store,
-            //             shopify_customer_id: customer_id,
-            //         },{
-            //           store_url: store,
-            //           shopify_customer_id: customer_id,
-            //           shopify_giftcard_id: createShopifyGC.id,
-            //           shopify_giftcard_pin: createShopifyGC.code,
-            //           balance: parseFloat(walletDetails.balance) + parseFloat(amount)
-            //         },{
-            //             upsert:true
-            //         }
-            //     );
-            // }else{
+                const createShopifyGC = await createShopifyGiftcard(store, accessToken, amount);
+                await Wallet.updateOne({
+                        store_url: store,
+                        shopify_customer_id: customer_id,
+                    },{
+                      store_url: store,
+                      shopify_customer_id: customer_id,
+                      shopify_giftcard_id: createShopifyGC.id,
+                      shopify_giftcard_pin: createShopifyGC.code,
+                      balance: parseFloat(walletDetails.balance) + parseFloat(amount)
+                    },{
+                        upsert:true
+                    }
+                );
+            }else{
 
-            //     await updateShopifyGiftcard(store, accessToken,walletDetails?.shopify_giftcard_id, amount);
-            //     await Wallet.updateOne({
-            //             store_url: store,
-            //             shopify_customer_id: customer_id
-            //         },{ 
-            //             balance: parseFloat(walletDetails.balance) + parseFloat(amount)
-            //         },{
-            //             upsert: true
-            //         }
-            //     );
-            // }  
+                await updateShopifyGiftcard(store, accessToken,walletDetails?.shopify_giftcard_id, amount);
+                await Wallet.updateOne({
+                        store_url: store,
+                        shopify_customer_id: customer_id
+                    },{ 
+                        balance: parseFloat(walletDetails.balance) + parseFloat(amount)
+                    },{
+                        upsert: true
+                    }
+                );
+            }  
             logs["shopifyGC"] = {
                 status: true,
                 time: new Date().toISOString()
