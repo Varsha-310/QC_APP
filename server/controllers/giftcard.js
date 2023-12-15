@@ -46,7 +46,6 @@ export const createGiftcardProducts = async (req, res) => {
       variants[i]['inventory_policy'] = "deny";
       variants[i]['inventory_management'] = null;
       variants[i]['requires_shipping'] = false;
-
     }
     let newProduct = await shopify.product.create({
       // Create a product in Shopify with the details sent in API
@@ -263,23 +262,7 @@ export const addGiftcard = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    for(let i =0; i< 3; i++){
-      await sleep(180000);    
-      gcToWallet = await addGiftcardtoWallet(
-        store,
-        customer_id,
-        gc_pin,
-        validPin.balance,
-        type,
-        validPin.order_id,
-        logs
-      );
-      if(gcToWallet.staus){
-        break;
-      }
-      logs = gcToWallet;
-    }
+    
     res.json(respondInternalServerError());
   }
 };
@@ -447,7 +430,7 @@ export const addGiftcardtoWallet = async (
           );
           // return transaction.data;
         }
-        //weiuisadhf
+        
       }
     }
     return logs;

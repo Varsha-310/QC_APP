@@ -568,7 +568,7 @@ export const failedOrders = async () => {
 
   for (const iterator of failedOrders) {
     if (iterator.numberOfRetried > 3 && iterator.action == "redeem") {
-
+      
       await orderCancel(iterator.orderId, iterator.store);
       await OrderCreateEventLog.findOneAndUpdate({orderId :iterator.orderId}, {status: "done"});
     }
@@ -582,6 +582,7 @@ export const failedOrders = async () => {
     }
   }
 };
+
 /**
  * processing failed order session
  * @param {*} threshold
