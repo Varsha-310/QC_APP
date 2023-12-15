@@ -193,7 +193,7 @@ export const handleOrderDetails = async (req, res) => {
         
         result["refund"] = await RefundSession.findOne({
             order_id: orderId, store_url: store_url
-        }, {});
+        }, {_id:0, __v: 0, "logs._id": 0, "logs.storeCredit":0});
       }
       return res.json(respondWithData("Success",result))
   } catch (err) {

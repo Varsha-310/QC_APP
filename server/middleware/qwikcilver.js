@@ -1,5 +1,5 @@
 import { respondInternalServerError } from "../helper/response.js";
-import axios from "axios";
+import axios from "../helper/axios.js";
 import qcCredentials from "../models/qcCredentials.js";
 import qc_gc from "../models/qc_gc.js";
 import wallet_history from "../models/wallet_history.js";
@@ -253,7 +253,7 @@ export const fetchBalance = async (store, walletData) => {
  */
 export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
   
-  logs["status"] = false;
+  logs["status"] = 0;
   try {
 
     let setting = await qcCredentials.findOne({ store_url: store });
@@ -262,9 +262,7 @@ export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
     setting.markModified("unique_transaction_id");
     await setting.save();
 
-    let data = logs?.req
-      ? logs.req
-      : {
+    let data = {
         "TransactionTypeId": 3501,
         "Quantity": 1,
         "Wallets": [
@@ -281,18 +279,19 @@ export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
         TransactionId: transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
-      data: data,
+      data: JSON.stringify(data),
       checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
+    //console.log("Response: ", JSON.stringify( walletCreation?.data));
     logs["resp"] = walletCreation?.data;
-    if (walletDetails.data.ResponseCode == "0") {
-      logs["status"] = true;
-    }
+    logs["status"] = walletCreation.data.ResponseCode == "0" ? 200 : 404;
     return logs;
   } catch (err) {
 
-    logs["error"] = err.response.data;
+    //console.log("Error : ----- ", JSON.stringify(err.response?.data));
+    logs["error"] = err.response?.data;
+    logs["status"] = 1;
     return logs;
   }
 };
@@ -314,13 +313,8 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     await setting.save();
 
     let idempotency_key = generateIdempotencyKey();
-
-    const validity = process.env.QC_GC_VALIDITY || 180;
-    let myDate = new Date();
-    myDate.setDate(myDate.getDate() + parseInt(validity));
-    const expirydate = myDate.toISOString().slice(0, 10);
-
-    const wallet = Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
+    const wallet = await Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
+    console.log("Walllet: ", wallet);
     let data = logs?.req
       ? logs.req
       : {
@@ -331,13 +325,12 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
         "ExecutionMode": 0,
         "Cards": [
             {
-                "CardNumber":  wallet.wallet,
+                "CardNumber":  wallet.wallet_id,
                 "CurrencyCode": "INR",
                 "PaymentInstruments": [
                     {
                         "InstrumentProgram": setting.refund_cpgn,
-                        "Amount": amount,
-                        "Expiry": expirydate
+                        "Amount": amount
                     }
                 ]
             }
@@ -356,21 +349,26 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
-    if (walletDetails.data.ResponseCode == "0") {
+    if (walletCreation.data.ResponseCode == "0") {
       logs["status"] = true;
     }
     return logs;
   } catch (err) {
 
-    logs["error"] = err.response.data;
+    console.log("Error: Load Wallet API - ", JSON.stringify(err));
+    logs["error"] = err?.response?.data || err?.code;
     return logs;
   }
 };
 
 /**
  * cancel Load wallet api to deactivate and remove card from wallet
- * @param {*} req
- * @param {*} res
+ * 
+ * @param {*} store 
+ * @param {*} cardResp 
+ * @param {*} customerId 
+ * @param {*} logs 
+ * @returns 
  */
 export const cancelLoadWalletAPI = async (store, cardResp, customerId, logs = {}) => {
   
@@ -386,20 +384,22 @@ export const cancelLoadWalletAPI = async (store, cardResp, customerId, logs = {}
     const idempotency_key = generateIdempotencyKey();
 
     const wallet = await Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
-    logs["req"] = {
+    
+    const req = {
       "TransactionTypeId": 3508,
       "InputType": 1,
       "IdempotencyKey": idempotency_key,
       "Cards": [
-          {
-              "CardNumber": wallet.wallet,
-              "OriginalRequest": {
-                  "OriginalBatchNumber": cardResp.CurrentBatchNumber,
-                  "OriginalTransactionId": cardResp.TransactionId
-              }
+        {
+          "CardNumber": wallet.wallet,
+          "OriginalRequest": {
+              "OriginalBatchNumber": cardResp.CurrentBatchNumber,
+              "OriginalTransactionId": cardResp.TransactionId
           }
+        }
       ]
-  };
+    };
+    logs["req"] = req; 
     let config = {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/cancel`,
