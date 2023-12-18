@@ -82,7 +82,7 @@ export const createGiftcard = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     const gcCreation = await axios(config);
@@ -169,7 +169,7 @@ export const cancelCreateNdIssueGiftcard = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     const resp = await axios(config);
@@ -225,7 +225,7 @@ export const fetchBalance = async (store, walletData) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
     console.log("----fetch balance config----------", config);
     let walletDetails = await axios(config);
@@ -280,15 +280,15 @@ export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: JSON.stringify(data),
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
-    //console.log("Response: ", JSON.stringify( walletCreation?.data));
+    console.log("Response: ",  walletCreation);
     logs["resp"] = walletCreation?.data;
     logs["status"] = walletCreation.data.ResponseCode == "0" ? 200 : 404;
     return logs;
   } catch (err) {
-
+    console.log(err, "error in qc wallet")
     //console.log("Error : ----- ", JSON.stringify(err.response?.data));
     logs["error"] = err.response?.data;
     logs["status"] = 1;
@@ -345,7 +345,7 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
@@ -408,7 +408,7 @@ export const cancelLoadWalletAPI = async (store, cardResp, customerId, logs = {}
         Authorization: `Bearer ${setting.token}`,
       },
       data: req,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
@@ -465,7 +465,7 @@ export const createWallet = async (store, customer_id, order_id, logs = {}) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
@@ -529,7 +529,7 @@ export const addToWallet = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     let cardAdded = await axios(config);
@@ -584,7 +584,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     let activation = await axios(config);
@@ -653,7 +653,7 @@ export const redeemWallet = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     let walletRedemption = await axios(config);
@@ -756,7 +756,7 @@ export const cancelRedeemWallet = async (
           Authorization: `Bearer ${setting.token}`,
         },
         data: data,
-        checkAuth: {store, n:1}
+        // checkAuth: {store, n:1}
       };
 
       const walletRedemption = await axios(config);
@@ -855,7 +855,7 @@ export const cancelRedeemWallet = async (
           Authorization: `Bearer ${setting.token}`,
         },
         data: data,
-        checkAuth: {store, n:1}
+        // checkAuth: {store, n:1}
       };
 
       const walletRedemption = await axios(config);
@@ -913,7 +913,7 @@ export const authToken = async (store) => {
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/authorize`,
       data: data,
-      checkAuth: {store, n:1}
+      // checkAuth: {store, n:1}
     };
 
     const authData = await axios(config);
