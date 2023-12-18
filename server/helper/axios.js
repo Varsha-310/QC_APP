@@ -71,4 +71,4 @@ axios.interceptors.response.use((resp) => resp, async (err) => {
     }
 });
 
-export default ;
+export default  axios;
