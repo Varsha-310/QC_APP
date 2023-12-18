@@ -21,6 +21,7 @@ import wallet_history from "../models/wallet_history.js";
  * @returns 
  */
 const callShopifyApiToCalculateRefund = async(orderId, shipping,line_items, storeUrl, accessToken) => {
+    try{
 
     let data = ({
         "refund": {
@@ -39,6 +40,10 @@ const callShopifyApiToCalculateRefund = async(orderId, shipping,line_items, stor
         "data": JSON.stringify(data)
     };
     return axios(options);
+}
+catch(err){
+    return false;
+}
 }
 
 
@@ -230,7 +235,7 @@ const updateRefundLogs = async(query, logs) => {
  * @param {*} refund_type 
  * @returns 
  */
-const checkRefundSession = async(orderId, store_url, refund_id, refundableAmount) => {
+const checkRefundSession = async(orderId, store_url, refundableAmount ,refund_id ) => {
 
     const refundSession = await RefundSession.findOne({ order_id: orderId, store_url: store_url });
     console.log('isRefundSessionExists', refundSession);
@@ -305,18 +310,10 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
             logs["checkWallet"]["status"] = 200;
         }
 
-        //Create Gift Card
-        if(!logs?.createCard?.status) {
-            const logsGC = await createGiftcard(store, amount, ordersData.id, 180, type,ordersData.customer, logs?.createGC);
-            logs["createGC"] = logsGC;
-            if(!logsGC.status) throw new Error("Error: Create Gift Card");
-        }
-        const giftCardDetails =  logs["createGC"].resp.Cards[0];
-
-        // Activate and add card to wallet using load wallet api.
+        // Create , Activate and add card to wallet using load wallet api.
         if(!logs?.loadGC?.status){
 
-            const loadGC = await loadWalletAPI(store, giftCardDetails.Balance, ordersData.id, ordersData?.customer.id, logs?.loadGC);
+            const loadGC = await loadWalletAPI(store, amount, ordersData.id, ordersData?.customer.id, logs?.loadGC);
             logs["loadWallet"] = loadGC;
             if(!loadGC.status) throw new Error("Error: Load Wallet API");
         }
@@ -349,7 +346,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 await updateShopifyGiftcard(store, accessToken,walletDetails?.shopify_giftcard_id, amount);
                 await Wallet.updateOne({
                         store_url: store,
-                        shopify_customer_id: customer_id
+                        shopify_customer_id: ordersData.customer.id
                     },{ 
                         balance: parseFloat(walletDetails.balance) + parseFloat(amount)
                     },{
@@ -367,7 +364,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                     transactions: {
                       transaction_type: "credit",
                       amount: amount,
-                      expires_at: giftCardDetails.ExpiryDate,
+                      expires_at: 365,
                       transaction_date: Date.now(),
                       type: type,
                     },
@@ -398,7 +395,7 @@ export const handleRefundAction = async (req, res) => {
         
         console.log("=================== Refund Process Started ===================");
         // return res.json(respondSuccess("Refund has been initiated"));
-        let { orderId, line_items, amount, refund_type, retry_id } = req.body;
+        let { orderId, line_items, amount, refund_type } = req.body;
 
         const {store_url} = req.token;
         const flag = await checkActivePlanUses(amount, store_url);
@@ -446,10 +443,10 @@ export const handleRefundAction = async (req, res) => {
         console.log("Refund Type: ", refund_type);
         //console.log(`Refundable Amout: ${refundableAmount}, Total Tax Refunded: ${totalTaxRefunded}`);
 
-        let refundSession = await checkRefundSession(orderId, store_url, retry_id, refundableAmount);
+        let refundSession = await checkRefundSession(orderId, store_url,refundableAmount, req.body?.retry_id, );
         const refundedAmount = refundSession.refundedAmount;
         refundSession = refundSession.logs;
-        if( retry_id && Object.keys(refundSession).length == 0){
+        if( req.body?.retry_id && Object.keys(refundSession).length == 0){
 
             return res.json(respondValidationError("No active session found on the given retry Id"));
         }
@@ -523,8 +520,8 @@ export const handleRefundAction = async (req, res) => {
             if(!logs1.status && ((logs.retries + 2))>= 3){
 
                 const scLogs = logs1;
-                const voidGC = scLogs?.voidGC && await cancelCreateNdIssueGiftcard(store_url, scLogs?.createGC?.resp, scLogs?.voidGC);
-                scLogs["voidGC"] = voidGC;
+                // const voidGC = scLogs?.voidGC && await cancelCreateNdIssueGiftcard(store_url, scLogs?.createGC?.resp, scLogs?.voidGC);
+                // scLogs["voidGC"] = voidGC;
                 const voidLoadWallet = scLogs?.voidLW && await cancelLoadWalletAPI(store_url, scLogs?.loadWallet?.resp, scLogs?.voidLW);
                 scLogs["voidLW"] = voidLoadWallet;
                 refundSession = await updateRefundLogs(sessionQuery, {  
