@@ -4,7 +4,7 @@ import Queue from "better-queue";
 import store from "../models/store.js";
 import product from "../models/product.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
-import { createGiftcard, redeemWallet } from "../middleware/qwikcilver.js";
+import { createGiftcard, redeemWallet , reverseRedeemWallet } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 import { checkActivePlanUses } from "./BillingController.js";
@@ -562,23 +562,32 @@ export const getQcCredentials = async (req, res) => {
 export const failedOrders = async () => {
   console.log("checking for failed orders");
   const failedOrders = await OrderCreateEventLog.find({
-    status: "retry",
+    status: "retry"
   });
   console.log(failedOrders, "failed order list");
 
   for (const iterator of failedOrders) {
-    if (iterator.numberOfRetried > 3 && iterator.action == "redeem") {
-      
-      await orderCancel(iterator.orderId, iterator.store);
+    if (iterator.numberOfRetried > 3) {
+      if(iterator.action == "redeem"){
+        await reverseRedeemWallet(iterator.store,iterator.orderId,iterator.redeem.req.billAmount,iterator.redeem.req.cards[0].CardNumber,iterator.redeem.req.cards[0].Amount);
+        await orderCancel(iterator.orderId, iterator.store);
       await OrderCreateEventLog.findOneAndUpdate({orderId :iterator.orderId}, {status: "done"});
+      }
+      else{
+        const orderData = await orders.findOne({id: iterator.orderId, store_url: iterator.store});
+        await ordercreateEvent(orderData.store_url,orderData)
+      }
+      
     }
     else{
+      if(iterator.action == "redeem"){
       if (iterator.numberOfRetried == 1) {
         await processOrder(iterator, 60);
       }
       if (iterator.numberOfRetried == 2) {
         await processOrder(iterator, 180);
       }
+    }
     }
   }
 };

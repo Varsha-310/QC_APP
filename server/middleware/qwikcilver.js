@@ -791,6 +791,106 @@ export const cancelRedeemWallet = async (
   }
 };
 
+
+/**
+ *Handle reverse redeem action
+ *
+ * @param {*} store
+ * @param {*} wallet_id
+ * @param {*} amount
+ * @returns
+ */
+ export const reverseRedeemWallet = async (
+  store,
+  order_id,
+  bill_amount,
+  wallet_id,
+  amount,
+  logs = {}
+) => {
+
+  console.log("---------------------  Redeem Balance Process Started -----------------------");
+  logs["status"] = false;
+  try {
+
+    console.log(store, gc_id, amount, order_id );
+    const string_id = gc_id.toString();
+    const giftcardExists = await wallet.findOne({
+      shopify_giftcard_id: string_id,
+    });
+    if (giftcardExists) {
+
+      const redeemData = await OrderCreateEventLog.findOne({
+        store: store,
+        orderId: order_id,
+      });
+      const setting = await qcCredentials.findOne({ store_url: store });
+      let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+      const idempotency_key = generateIdempotencyKey();
+      const myDate = new Date();
+      const date = myDate.toISOString().slice(0, 22);
+      const data = logs?.req ? logs.req : {
+        TransactionTypeId: 3504,
+        IdempotencyKey: idempotency_key,
+        BillAmount: bill_amount,
+        Cards: [
+          {
+            CardNumber: wallet_id,
+            CurrencyCode: "INR",
+            Amount: amount,
+          },
+        ],
+      };
+
+      logs["req"] = data;
+      const config = {
+        method: "post",
+        url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8 ",
+          DateAtClient: date,
+          TransactionId: transactionId,
+          Authorization: `Bearer ${setting.token}`,
+        },
+        data: data,
+        checkAuth: {store, n:1}
+      };
+
+      const walletRedemption = await axios(config);
+      console.log("QC - Response Code - ", walletRedemption.data.ResponseCode);
+      logs["resp"] = walletRedemption?.data;
+      if (walletRedemption.status == "200" && walletRedemption.data.ResponseCode == "0") {
+        
+        logs["status"] = true;
+        await wallet_history.updateOne(
+          { wallet_id: giftcardExists.wallet_id },
+          {
+            $push: {
+              transactions: {
+                transaction_type: "credit",
+                amount: amount,
+                type: "refund",
+                transaction_date: Date.now(),
+              },
+            },
+          },
+          { upsert: true }
+        );
+        //return walletRedemption.data;
+      }
+      await setting.save();
+      return logs;
+    }
+  } catch (err) {
+    
+    logs["error"] = err.response.data || err?.code;
+    return logs;
+  }
+};
+
+
 /**
  * method to get auth token
  * @param {*} store
