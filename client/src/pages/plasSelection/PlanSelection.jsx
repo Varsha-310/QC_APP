@@ -238,15 +238,14 @@ const PlanSelection = () => {
       </div>
       {/* plans */}
       <div className="package-detail">
-        <RectBtn
+        Select a package
+        {/* <RectBtn
           border=" "
           width="100%"
           height="45px"
           weight="400"
           active={true}
-        >
-          Select a package
-        </RectBtn>
+        ></RectBtn> */}
       </div>
       <div className="plans">
         {plans?.data?.plans.map((plan, index) => {
@@ -922,7 +921,8 @@ const TermsPopUp = ({ setTerms }) => {
       <p>Terms and Conditions of Gift Card</p>
       <ol>
         <li>
-          E Gift Card is valid for a period of 12 months from its date of issue.
+          E-Gift Card is valid for a period of 6 months or 12 months (as
+          applicable) from the date of its issue
         </li>
         <li>
           This Gift Card shall be subject to applicable laws or any new law,

@@ -27,11 +27,13 @@ const RefundPage = () => {
   const [refundAmount, setRefundAmount] = useState();
   const [calcData, setCaclData] = useState(null);
   const [isCalcLoading, setIsCalcLoading] = useState(false);
-  const [refundData, setRefundData] = useState([]);
   const [refundOption, setRefundOption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState(false);
   const [taxPercent, setTaxPercent] = useState(0);
+  const [refundData, setRefundData] = useState([]);
+
+  console.log({ refundData });
 
   const navigate = useNavigate();
 
@@ -61,22 +63,24 @@ const RefundPage = () => {
     };
     const body = {
       orderId: id.toString(),
+      refund: true,
     };
 
     try {
       const res = await instance.post(url, body, { headers });
-      const resData = await res.data;
+      const resJson = await res.data;
+      const resData = resJson?.data.orders;
 
-      // setData("************", resData.data);
-      const totalPrice = parseFloat(resData?.data?.total_price);
-      const totalTax = parseFloat(resData?.data?.total_tax);
+      const totalPrice = parseFloat(resData?.total_price);
+      const totalTax = parseFloat(resData?.total_tax);
       const taxPercentage = (totalTax * 100) / (totalPrice - totalTax);
 
+      setRefundData(resJson?.data?.refund || []);
       setTaxPercent(taxPercentage);
 
       // to calculate refund quantity
       const tempData = [];
-      const refundLines = resData.data?.refunds;
+      const refundLines = resData?.refunds;
 
       if (refundLines?.length !== 0) {
         if (refundLines?.length !== 0) {
@@ -99,7 +103,7 @@ const RefundPage = () => {
         }
       }
 
-      const calculatedData = resData.data.line_items.map((prod) => {
+      const calculatedData = resData.line_items.map((prod) => {
         const proditem = tempData.find((item) => item.id === prod.id);
 
         return proditem
@@ -110,7 +114,7 @@ const RefundPage = () => {
       setData(calculatedData);
 
       // for empty array
-      const emptyInputArray = resData.data.line_items.map((prod) => ({
+      const emptyInputArray = resData.line_items.map((prod) => ({
         id: prod.id,
         qty: 0,
         totalPrice: 0,
@@ -157,6 +161,7 @@ const RefundPage = () => {
       const resData = res.data;
 
       if (resData?.success === true) {
+        setIsLoading(false);
         navigate("/refund_success", { replace: true });
       }
 
@@ -231,6 +236,42 @@ const RefundPage = () => {
     }
   }, [data]);
 
+  const handleRetryRefund = async (rfItem) => {
+    setIsLoading(true);
+
+    const lineData = rfItem?.line_items.map((item) => ({
+      id: item.id,
+      qty: item.qty !== "" ? item.qty : 0,
+    }));
+
+    const url = "/refund/initiate";
+    const headers = {
+      Authorization: getUserToken(),
+    };
+
+    const body = {
+      orderId: refundData.order_id?.toString(),
+      line_items: lineData,
+      amount: rfItem.total?.toString(),
+      refund_type: rfItem?.refund_type,
+    };
+
+    try {
+      const res = await instance.post(url, body, { headers });
+      const resData = res.data;
+
+      if (resData?.success === true) {
+        setIsLoading(false);
+        navigate("/refund_success", { replace: true });
+      }
+
+      alert(resData.message);
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="refund-page__component component">
       {isLoading &&
@@ -250,57 +291,116 @@ const RefundPage = () => {
 
       <div className="section-box-container main-component">
         <div className="refund-page__refund-item-data">
-          {/* refund items */}
-          <div className="refund-page__details">
-            {data?.map((product, index) => {
-              return (
-                <div className="refund-page__product-detail" key={index}>
-                  <div className="refund-page__product-data">
-                    <LuImage className="gc-table-icons" />
-                    <div>
-                      <div className="refund-page__product-title">
-                        {product?.title}
-                      </div>
-                      <div className="refund-page__product-price">
-                        ₹ {product?.price}
+          <div>
+            {/* refund items */}
+            <div className="refund-page__details">
+              {data?.map((product, index) => {
+                return (
+                  <div className="refund-page__product-detail" key={index}>
+                    <div className="refund-page__product-data">
+                      <LuImage className="gc-table-icons" />
+                      <div>
+                        <div className="refund-page__product-title">
+                          {product?.title}
+                        </div>
+                        <div className="refund-page__product-price">
+                          ₹ {product?.price}
+                        </div>
                       </div>
                     </div>
+                    <div className="refund-page__product-count">
+                      <input
+                        type="number"
+                        name="qty"
+                        id={product.id}
+                        // value={inputData[index]?.qty ? inputData[index]?.qty : ""}
+                        value={
+                          inputData.find((item) => item.id === product.id)?.qty
+                        }
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            product?.id,
+                            e.target.value,
+                            product?.quantity,
+                            product?.price,
+                            product?.tax_lines
+                          )
+                        }
+                      />
+                      / {product?.quantity}
+                    </div>
+                    <div className="refund-page__product-refund-total">
+                      ₹
+                      {inputData.find((item) => item.id === product.id)?.qty
+                        ? parseFloat(
+                            inputData.find((item) => item.id === product.id)
+                              ?.qty * product?.price
+                          ).toFixed(2)
+                        : "00.00"}
+                    </div>
                   </div>
-                  <div className="refund-page__product-count">
-                    <input
-                      type="number"
-                      name="qty"
-                      id={product.id}
-                      // value={inputData[index]?.qty ? inputData[index]?.qty : ""}
-                      value={
-                        inputData.find((item) => item.id === product.id)?.qty
-                      }
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          product?.id,
-                          e.target.value,
-                          product?.quantity,
-                          product?.price,
-                          product?.tax_lines
-                        )
-                      }
-                    />
-                    / {product?.quantity}
-                  </div>
-                  <div className="refund-page__product-refund-total">
-                    ₹
-                    {inputData.find((item) => item.id === product.id)?.qty
-                      ? parseFloat(
-                          inputData.find((item) => item.id === product.id)
-                            ?.qty * product?.price
-                        ).toFixed(2)
-                      : "00.00"}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
+            {/* refund history */}
+            {refundData?.logs && (
+              <div className="refund-history-container">
+                <div className="refund-page__title">Refund History</div>
+                <table>
+                  <tr>
+                    <th>Trasaction Id</th>
+                    <th>Date</th>
+
+                    <th>Amount</th>
+                    <th>Refund Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  {refundData?.logs?.map((rfItem, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>
+                          <abbr
+                            title={rfItem?.id}
+                            style={{ textDecoration: "underline" }}
+                          >
+                            XXX{rfItem?.id.slice(-5)}
+                          </abbr>
+                        </td>
+                        <td>
+                          {rfItem?.refund_created_at
+                            ? new Date(
+                                rfItem?.refund_created_at
+                              ).toLocaleString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              })
+                            : "N/A"}
+                        </td>
+                        <td>{rfItem?.total || "NA"}</td>
+                        <td>{rfItem?.refund_type}</td>
+                        <td>{rfItem?.status}</td>
+                        <td>
+                          {rfItem?.status !== "completed" ? (
+                            <div
+                              onClick={() => handleRetryRefund(rfItem)}
+                              className="retry-btn"
+                            >
+                              Retry
+                            </div>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
+              </div>
+            )}
+          </div>
           {/* refund summary */}
           {isCalcLoading ? (
             <div>Loading...</div>
@@ -367,7 +467,7 @@ const RefundPage = () => {
                     }
                     className="refund-page__shipping-rate-input"
                   />
-                  <div className="refund-page__refund-amount">
+                  {/* <div className="refund-page__refund-amount">
                     Rs.{" "}
                     {calcData?.refund?.transactions
                       ?.reduce((acc, curr) => {
@@ -376,7 +476,7 @@ const RefundPage = () => {
                       }, 0)
                       .toFixed(2) || 0}{" "}
                     Available for refund
-                  </div>
+                  </div> */}
                   <div style={{ margin: "10px 0px" }}>
                     <CustomDropdown
                       options={[

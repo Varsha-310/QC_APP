@@ -23,6 +23,7 @@ const RefundList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState(null); // Add this state
   const [filteredOrders, setFilteredOrders] = useState(null);
+  const [serachPage, setSearchPage] = useState(1);
   console.log(filteredOrders);
 
   const Heading = [
@@ -87,7 +88,7 @@ const RefundList = () => {
   const handleSearch = async () => {
     setIsLoading(true);
 
-    let url = `/order/list?page=1&pageSize=1`;
+    let url = `/order/list?page=${serachPage}&pageSize=10`;
 
     if (searchTerm) {
       url += `&orderNo=${searchTerm}`;
@@ -178,8 +179,8 @@ const RefundList = () => {
                 <Pagination
                   total={filteredOrders?.totalOrders}
                   perPage={PER_PAGE_ITEM}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
+                  currentPage={serachPage}
+                  setCurrentPage={setSearchPage}
                 />
               </>
             ) : (
