@@ -330,7 +330,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 const createShopifyGC = await createShopifyGiftcard(store, accessToken, amount);
                 await Wallet.updateOne({
                         store_url: store,
-                        shopify_customer_id: customer_id,
+                        shopify_customer_id: ordersData.customer.id,
                     },{
                       store_url: store,
                       shopify_customer_id: customer_id,
