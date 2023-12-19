@@ -572,7 +572,7 @@ export const handleRefundAction = async (req, res) => {
             const existingNote = ordersData.note_attributes || [];
             existingNote.push({
                 "name": `QC-Store-Credit: ${refundSession.id}`,
-                "value": `${refundAmount.refund.currency} ${amount}`
+                "value": `${refundAmount.refund.currency} ${storeCredit}`
             })
             await updateOrderNotes(orderId,store_url,accessToken,existingNote);
             refundSession = await updateRefundLogs(sessionQuery, {

@@ -9,7 +9,7 @@ import {
   respondForbidden,
 } from "../helper/response.js";
 import Store from "../models/store.js";
-import axios from "axios";
+import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
 import {
   fetchBalance,
