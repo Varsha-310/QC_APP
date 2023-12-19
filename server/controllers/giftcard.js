@@ -458,36 +458,39 @@ export const getWalletBalance = async (req, res) => {
         shopify_customer_id: customer_id,
       });
       if (walletExists) {
+        console.log("wallet exists")
         let qcBalance = await fetchBalance(store, walletExists.wallet_id);
         let shopifybalance = await getShopifyGiftcard(
           store,
           storeExists.access_token,
           walletExists.shopify_giftcard_id
         );
-        console.log(shopifybalance, "shopify giftcard balance");
-        console.log(qcBalance , "qc wallet balance");
-        if(qcBalance > shopifybalance){
+        console.log(`qc:${qcBalance} , shopify :${shopifybalance.balance}`);
+        if(qcBalance < shopifybalance.balance){
+          console.log("qc wallet balance is less" ,);
+          let updateShopifyGc = await updateShopifyGiftcard(
+              store,
+              storeExists.access_token,
+              walletExists.shopify_giftcard_id,
+              -qcBalance
+            );
+            console.log("updated shopify giftcard",updateShopifyGc);
           res.json({
             ...respondWithData("balance fetched"),
             data: {
-              balance: shopifybalance,
+              balance: qcBalance,
               gc_id: walletExists.shopify_giftcard_pin,
             },
           });
 
         }
         else{
-          let updateShopifyGc = await updateShopifyGiftcard(
-            store,
-            storeExists.access_token,
-            walletExists.shopify_giftcard_id,
-            qcBalance
-          );
-          console.log("updated shopify giftcard",updateShopifyGc);
+          
+          console.log("shopify balance is same or less than qc" , qcBalance, shopifybalance.balance)
           res.json({
             ...respondWithData("balance fetched"),
             data: {
-              balance: qcBalance,
+              balance: parseFloat(shopifybalance.balance),
               gc_id: walletExists.shopify_giftcard_pin,
             },
           });
