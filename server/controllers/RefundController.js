@@ -288,7 +288,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
         if([0,1].includes(checkWallet?.status)){
 
             checkWallet =  await checkWalletOnQC(store, ordersData.customer.id, logs?.checkWallet);
-            console.log(JSON.stringify(checkWallet));
+            console.log(" checking wallet on qc",checkWallet);
             logs["checkWallet"] = checkWallet;
             if(checkWallet.status === 1) throw Error("Error: Check Wallet");
         }
@@ -308,6 +308,18 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
             },{upsert: true});
             if(!createWalletOnQc.status) throw Error("Error: Creating Wallet On WC");
             logs["checkWallet"]["status"] = 200;
+        }
+        if(checkWallet.status == 200){
+            await Wallet.updateOne({
+                store_url: store,
+                shopify_customer_id:ordersData.customer.id
+            },{
+                shopify_customer_id: ordersData.customer.id,
+                store_url: store,
+                wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
+                WalletPin: checkWallet.resp.Wallets[0]["WalletPin"]
+            },{upsert: true});
+
         }
 
         // Create , Activate and add card to wallet using load wallet api.
