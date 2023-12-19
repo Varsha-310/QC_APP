@@ -467,12 +467,14 @@ export const getWalletBalance = async (req, res) => {
         );
         console.log(`qc:${qcBalance} , shopify :${shopifybalance.balance}`);
         if(qcBalance < shopifybalance.balance){
+          let diffAmount = shopifybalance.balance - qcBalance;
+          console.log(diffAmount , "diff amount")
           console.log("qc wallet balance is less" ,);
           let updateShopifyGc = await updateShopifyGiftcard(
               store,
               storeExists.access_token,
               walletExists.shopify_giftcard_id,
-              -qcBalance
+              -diffAmount
             );
             console.log("updated shopify giftcard",updateShopifyGc);
           res.json({
