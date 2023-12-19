@@ -236,8 +236,7 @@ const updateRefundLogs = async(query, logs) => {
  * @returns 
  */
 const checkRefundSession = async(orderId, store_url, refundableAmount ,refund_id ) => {
-
-    const refundSession = await RefundSession.findOne({ order_id: orderId, store_url: store_url });
+    const refundSession = await RefundSession.findOne({"logs.id": refund_id});
     console.log('isRefundSessionExists', refundSession);
     if(!refundSession){
 
@@ -407,7 +406,7 @@ export const handleRefundAction = async (req, res) => {
         
         console.log("=================== Refund Process Started ===================");
         // return res.json(respondSuccess("Refund has been initiated"));
-        let { orderId, line_items, amount, refund_type } = req.body;
+        let { orderId, line_items, amount, refund_type , retry_id } = req.body;
 
         const {store_url} = req.token;
         const flag = await checkActivePlanUses(amount, store_url);
@@ -476,7 +475,7 @@ export const handleRefundAction = async (req, res) => {
             refund_type: refund_type,
             total: amount,
             line_items: line_items,
-            retries: parseInt(refundSession?.retrie || 0)
+            retries: parseInt(refundSession?.retries || 0)
         }
         
 	    const trans = [];
@@ -486,6 +485,8 @@ export const handleRefundAction = async (req, res) => {
 
             const gcRfDetails = await getGCRefundAmount(amount, transactions);
             console.log("GC Refund Details:", gcRfDetails);
+
+            // check amount for other paymeny gateways
             if(gcRfDetails.refundableAmount){
 
                 console.log("------------ Back To sourc Process Started ------------");
@@ -497,6 +498,8 @@ export const handleRefundAction = async (req, res) => {
                     "amount": gcRfDetails.refundableAmount
                 });
             }
+
+            // shopify 
             if(gcRfDetails.gc_rf_amount){
 
                 const gc_transaciton = transactions.find(item => item.gateway == "gift_card");
@@ -539,12 +542,14 @@ export const handleRefundAction = async (req, res) => {
                 refundSession = await updateRefundLogs(sessionQuery, {  
                     storeCredit: scLogs,
                     status: "Failed",
+                    retries: parseInt(refundSession?.retries || 0) + 2,
                     ...logs
                 });
                 return res.json(respondSuccess("Server Is not responding properly, Try After Some time"));
             }
             refundSession = await updateRefundLogs(sessionQuery, {  
                 storeCredit: logs1,
+                retries: logs.retries + 2,
                 ...logs
             });
             sessionQuery["logs.id"] = refundSession.id;
@@ -562,6 +567,7 @@ export const handleRefundAction = async (req, res) => {
             console.log(refundedResp.data, " Query : ", sessionQuery);
             refundSession = await updateRefundLogs(sessionQuery, {
                 refund_created_at: new Date(),
+                retries: logs.retries + 2,
                 status: "completed"
             });
             ordersData.refund_status = (parseFloat(amount)+ parseFloat(refundedAmount)) >= refundableAmount ? "Refunded" : "Partially refunded";
