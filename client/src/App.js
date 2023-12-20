@@ -1,14 +1,14 @@
-import { Outlet } from "react-router";
 import "./App.css";
-import DashboardMenu from "./components/DashboardMenu";
+import Navbar from "./layouts/Navbar";
+import Footer from "./layouts/Footer";
+import AppRoot from "./AppRoot";
 
 function App() {
   return (
     <div className="App">
-      <div className="dashboard-container container_padding">
-        <DashboardMenu />
-        <Outlet />
-      </div>
+      <Navbar />
+      <AppRoot />
+      <Footer />
     </div>
   );
 }

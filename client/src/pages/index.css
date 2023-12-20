@@ -1,0 +1,18 @@
+.error-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+.error-icon {
+  color: var(--frame-color);
+  height: 100px;
+  width: 100px;
+}
+.error-page__msg{
+    color: var(--frame-color);
+    font-weight: 500;
+    font-size: 20px;
+    margin: 30px 0px;
+}

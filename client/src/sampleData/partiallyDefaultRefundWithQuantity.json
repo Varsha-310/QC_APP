@@ -1,0 +1,453 @@
+{
+  "current_subtotal_price_set": {
+    "shop_money": {
+      "amount": "200.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "200.00",
+      "currency_code": "INR"
+    }
+  },
+  "current_total_discounts_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    }
+  },
+  "current_total_price_set": {
+    "shop_money": {
+      "amount": "218.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "218.00",
+      "currency_code": "INR"
+    }
+  },
+  "current_total_tax_set": {
+    "shop_money": {
+      "amount": "18.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "18.00",
+      "currency_code": "INR"
+    }
+  },
+  "subtotal_price_set": {
+    "shop_money": {
+      "amount": "300.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "300.00",
+      "currency_code": "INR"
+    }
+  },
+  "total_discounts_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    }
+  },
+  "total_line_items_price_set": {
+    "shop_money": {
+      "amount": "300.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "300.00",
+      "currency_code": "INR"
+    }
+  },
+  "total_price_set": {
+    "shop_money": {
+      "amount": "327.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "327.00",
+      "currency_code": "INR"
+    }
+  },
+  "total_shipping_price_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "INR"
+    }
+  },
+  "total_tax_set": {
+    "shop_money": {
+      "amount": "27.00",
+      "currency_code": "INR"
+    },
+    "presentment_money": {
+      "amount": "27.00",
+      "currency_code": "INR"
+    }
+  },
+  "customer": {
+    "id": 7304147960110,
+    "email": "batakrushna@marmeto.com",
+    "accepts_marketing": false,
+    "created_at": "2023-08-03T10:16:23.000Z",
+    "updated_at": "2023-08-03T10:20:22.000Z",
+    "first_name": "john",
+    "last_name": "snow",
+    "state": "enabled",
+    "note": null,
+    "verified_email": true,
+    "phone": null,
+    "currency": "INR"
+  },
+  "_id": "64cb7f69c509844792f82470",
+  "id": 5395732234542,
+  "store_url": "qc-plus-store.myshopify.com",
+  "Refund_Mode": "Store-Credit",
+  "__v": 0,
+  "app_id": 580111,
+  "browser_ip": "163.116.195.121",
+  "cancel_reason": null,
+  "cancelled_at": null,
+  "cart_token": "c1-062054576235b65415cee009096d0461",
+  "checkout_id": 36825378554158,
+  "checkout_token": "65ad3c33c84e5449f9f38b7c9833b78b",
+  "closed_at": null,
+  "company": null,
+  "confirmed": true,
+  "contact_email": "batakrushna@marmeto.com",
+  "created_at": "2023-08-03T10:20:22.000Z",
+  "currency": "INR",
+  "current_subtotal_price": "200.00",
+  "current_total_discounts": "0.00",
+  "current_total_duties_set": null,
+  "current_total_price": "218.00",
+  "current_total_tax": "18.00",
+  "customer_locale": "en-IN",
+  "device_id": null,
+  "discount_codes": [],
+  "email": "batakrushna@marmeto.com",
+  "estimated_taxes": false,
+  "financial_status": "paid",
+  "fulfillment_status": null,
+  "is_email_sent": false,
+  "is_giftcard_order": false,
+  "line_items": [
+    {
+      "id": 13971051774254,
+      "admin_graphql_api_id": "gid://shopify/LineItem/13971051774254",
+      "fulfillable_quantity": 2,
+      "fulfillment_service": "manual",
+      "fulfillment_status": null,
+      "gift_card": false,
+      "grams": 0,
+      "name": "QC testing Gift card - 100",
+      "price": "100.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "100.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "100.00",
+          "currency_code": "INR"
+        }
+      },
+      "product_exists": true,
+      "product_id": 8525446054190,
+      "properties": [],
+      "quantity": 3,
+      "requires_shipping": true,
+      "sku": "",
+      "taxable": true,
+      "title": "QC testing Gift card",
+      "total_discount": "0.00",
+      "total_discount_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        }
+      },
+      "variant_id": 46093557465390,
+      "variant_inventory_management": null,
+      "variant_title": "100",
+      "vendor": "QC Plus Store ",
+      "tax_lines": [
+        {
+          "channel_liable": false,
+          "price": "27.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "27.00",
+              "currency_code": "INR"
+            },
+            "presentment_money": {
+              "amount": "27.00",
+              "currency_code": "INR"
+            }
+          },
+          "rate": 0.09,
+          "title": "SGST"
+        }
+      ],
+      "duties": [],
+      "discount_allocations": [],
+      "_id": "64cb800f60265d1ed55fe874"
+    }
+  ],
+  "location_id": null,
+  "name": "#1171",
+  "note": null,
+  "note_attributes": [],
+  "number": 171,
+  "order_number": 1171,
+  "order_status_url": "https://qc-plus-store.myshopify.com/79822356782/orders/840a08000de300b9ae9a3da643352f1c/authenticate?key=a5836f47179955bcea5a44d5587adc5a",
+  "original_total_duties_set": null,
+  "payment_gateway_names": ["bogus"],
+  "payment_terms": null,
+  "phone": null,
+  "presentment_currency": "INR",
+  "processed_at": "2023-08-03T10:20:20.000Z",
+  "reference": "56b9898a709428302beeb76a2b8fe662",
+  "referring_site": "",
+  "refund_status": "Refunded",
+  "refunds": [
+    {
+      "id": 946418680110,
+      "admin_graphql_api_id": "gid://shopify/Refund/946418680110",
+      "created_at": "2023-08-03T15:53:08+05:30",
+      "note": null,
+      "order_id": 5395732234542,
+      "processed_at": "2023-08-03T15:53:08+05:30",
+      "restock": false,
+      "total_duties_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        }
+      },
+      "user_id": null,
+      "order_adjustments": [
+        {
+          "id": 279854252334,
+          "amount": "109.00",
+          "amount_set": {
+            "shop_money": {
+              "amount": "109.00",
+              "currency_code": "INR"
+            },
+            "presentment_money": {
+              "amount": "109.00",
+              "currency_code": "INR"
+            }
+          },
+          "kind": "refund_discrepancy",
+          "order_id": 5395732234542,
+          "reason": "Refund discrepancy",
+          "refund_id": 946418680110,
+          "tax_amount": "0.00",
+          "tax_amount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "INR"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "INR"
+            }
+          }
+        }
+      ],
+      "transactions": [],
+      "refund_line_items": [
+        {
+          "id": 558111031598,
+          "line_item_id": 13971051774254,
+          "location_id": null,
+          "quantity": 1,
+          "restock_type": "no_restock",
+          "subtotal": 100,
+          "subtotal_set": {
+            "shop_money": {
+              "amount": "100.00",
+              "currency_code": "INR"
+            },
+            "presentment_money": {
+              "amount": "100.00",
+              "currency_code": "INR"
+            }
+          },
+          "total_tax": 9,
+          "total_tax_set": {
+            "shop_money": {
+              "amount": "9.00",
+              "currency_code": "INR"
+            },
+            "presentment_money": {
+              "amount": "9.00",
+              "currency_code": "INR"
+            }
+          },
+          "line_item": {
+            "id": 13971051774254,
+            "admin_graphql_api_id": "gid://shopify/LineItem/13971051774254",
+            "attributed_staffs": [],
+            "fulfillable_quantity": 2,
+            "fulfillment_service": "manual",
+            "fulfillment_status": null,
+            "gift_card": false,
+            "grams": 0,
+            "name": "QC testing Gift card - 100",
+            "price": "100.00",
+            "price_set": {
+              "shop_money": {
+                "amount": "100.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "100.00",
+                "currency_code": "INR"
+              }
+            },
+            "product_exists": true,
+            "product_id": 8525446054190,
+            "properties": [],
+            "quantity": 3,
+            "requires_shipping": true,
+            "sku": "",
+            "taxable": true,
+            "title": "QC testing Gift card",
+            "total_discount": "0.00",
+            "total_discount_set": {
+              "shop_money": {
+                "amount": "0.00",
+                "currency_code": "INR"
+              },
+              "presentment_money": {
+                "amount": "0.00",
+                "currency_code": "INR"
+              }
+            },
+            "variant_id": 46093557465390,
+            "variant_inventory_management": null,
+            "variant_title": "100",
+            "vendor": "QC Plus Store ",
+            "tax_lines": [
+              {
+                "channel_liable": false,
+                "price": "27.00",
+                "price_set": {
+                  "shop_money": {
+                    "amount": "27.00",
+                    "currency_code": "INR"
+                  },
+                  "presentment_money": {
+                    "amount": "27.00",
+                    "currency_code": "INR"
+                  }
+                },
+                "rate": 0.09,
+                "title": "SGST"
+              }
+            ],
+            "duties": [],
+            "discount_allocations": []
+          }
+        }
+      ],
+      "duties": []
+    }
+  ],
+  "shipping_lines": [
+    {
+      "id": 4388719427886,
+      "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+      "code": "Standard",
+      "discounted_price": "0.00",
+      "discounted_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        }
+      },
+      "phone": null,
+      "price": "0.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "INR"
+        }
+      },
+      "requested_fulfillment_service_id": null,
+      "source": "shopify",
+      "title": "Standard",
+      "tax_lines": [],
+      "discount_allocations": []
+    }
+  ],
+  "source_identifier": "56b9898a709428302beeb76a2b8fe662",
+  "source_name": "web",
+  "source_url": null,
+  "status": "In Progress",
+  "subtotal_price": "300.00",
+  "tags": "",
+  "tax_lines": [
+    {
+      "price": "27.00",
+      "rate": 0.09,
+      "title": "SGST",
+      "price_set": {
+        "shop_money": {
+          "amount": "27.00",
+          "currency_code": "INR"
+        },
+        "presentment_money": {
+          "amount": "27.00",
+          "currency_code": "INR"
+        }
+      },
+      "channel_liable": false
+    }
+  ],
+  "taxes_included": false,
+  "test": true,
+  "token": "840a08000de300b9ae9a3da643352f1c",
+  "total_discounts": "0.00",
+  "total_line_items_price": "300.00",
+  "total_outstanding": "0.00",
+  "total_price": "327.00",
+  "total_tax": "27.00",
+  "total_tip_received": "0.00",
+  "total_weight": 0,
+  "updated_at": "2023-08-03T10:23:08.000Z",
+  "user_id": null
+}

@@ -8,7 +8,8 @@ var walletSchema = mongoose.Schema({
   shopify_giftcard_id: { type: String },
   shopify_giftcard_pin: { type: String },
   wallet_id: {type:String},
-  balance: { type: Number }
+  balance: { type: Number },
+  WalletPin: String
 });
 
 export default mongoose.model("Wallet", walletSchema);

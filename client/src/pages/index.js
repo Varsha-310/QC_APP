@@ -12,7 +12,13 @@ import CreateGiftCard from "./issuance/CreateGiftCard";
 import RefundList from "./refund/RefundList";
 import GiftCardsList from "./issuance/GiftCardsList";
 import ResendGiftCard from "./issuance/ResendGiftCard";
+import PrivacyPolicy from "./agreements/PrivacyPolicy";
+import TermsConditions from "./agreements/TermsConditions";
+import FaqPage from "./others/FaqPage";
 import ErrorPage from "./ErrorPage";
+import Issues from "./others/Issues";
+import PaymentFailed from "./others/PaymentFailed";
+import LoggedOut from "./others/LoggedOut";
 
 export {
   DashboardHome,
@@ -30,4 +36,10 @@ export {
   RefundList,
   GiftCardsList,
   ResendGiftCard,
+  PrivacyPolicy,
+  TermsConditions,
+  FaqPage,
+  Issues,
+  PaymentFailed,
+  LoggedOut
 };

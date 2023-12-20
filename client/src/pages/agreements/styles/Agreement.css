@@ -1,0 +1,39 @@
+.agreement-component {
+  padding: 10px 30px;
+  /* margin: 15px; */
+  /* box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3); */
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+.agreement-component p {
+  margin: 10px 0px;
+  line-height: 170%;
+}
+.agreement-component li {
+  list-style: inherit;
+  text-align: justify;
+  margin-left: 40px;
+  list-style-type: square;
+}
+.agreement-component :is(h1, h2, h3) {
+  text-align: left;
+  margin: 10px 0px;
+  color: var(--frame-color);
+  font-weight: 500;
+}
+.agreement-component h1 {
+  text-align: center;
+  font-size: 24px;
+}
+.agreement-component h2 {
+  font-size: 18px;
+}
+
+.agreement-component table {
+  border-collapse: collapse;
+}
+.agreement-component table :is(th, td) {
+  border: 1px solid black;
+  text-align: left;
+  padding: 5px;
+}

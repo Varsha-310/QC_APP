@@ -1,0 +1,24 @@
+.refund-list__container {
+  width: 80%;
+}
+.refund-list__container-table {
+  width: 100%;
+  overflow-x: scroll;
+}
+.refund-list__container-table::-webkit-scrollbar {
+  height: 5px;
+}
+.refund-list__container-table::-webkit-scrollbar-thumb {
+  background-color: #b8b8b8;
+  border-radius: 10px;
+}
+
+@media only screen and (max-width: 900px) {
+  .refund-list__container {
+    width: 100%;
+  }
+  .refund-list__container-table {
+    width: 100%;
+    overflow-x: scroll;
+  }
+}

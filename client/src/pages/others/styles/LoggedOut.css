@@ -1,0 +1,15 @@
+.logout-page {
+  background-color: #ffffff;
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0px;
+}
+.logout-page__msg {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--frame-color);
+}

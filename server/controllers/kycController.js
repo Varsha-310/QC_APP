@@ -2,14 +2,16 @@ import axios from "axios";
 import {
   respondInternalServerError,
   respondWithData,
+  respondSuccess,
 } from "../helper/response.js";
 import CryptoJS from "crypto-js";
 import { logger } from "../helper/utility.js";
 import kycs from "../models/kyc.js";
 import store from "../models/store.js";
-import { parse } from "json2csv";
-import fs from "fs"
-import orders from "../models/orders.js";
+import NodeMailer from "nodemailer";
+import kyc from "../models/kyc.js";
+import { sendEmail } from "../middleware/sendEmail.js";
+import qcCredentials from "../models/qcCredentials.js";
 
 /**
  * Method to initiate kyc
@@ -48,7 +50,7 @@ export const initiatieKyc = async (req, res) => {
         secondPartyDetails: {
           name: storeData.name,
           email: storeData.email,
-          phone: storeData.phone || "null" 
+          phone: storeData.phone || "null",
         },
       }),
     };
@@ -62,7 +64,11 @@ export const initiatieKyc = async (req, res) => {
       const formUrl = docFillUrls[dynamicKey];
       console.log(formUrl);
 
-      let formresult = await fillForm(formUrl, storeData);
+      let formresult = await fillForm(
+        formUrl,
+        storeData,
+        req.headers.authorization
+      );
       if (formresult.status == 200 && formresult.data.status == "SUCCESS") {
         let dispatchResponse = await dispatchTransaction(txnId);
         console.log(dispatchResponse);
@@ -72,9 +78,12 @@ export const initiatieKyc = async (req, res) => {
         ) {
           let storeDetails = await store.updateOne(
             { store_url: storeUrl },
-            { status: "kYC initiated" },
+            { status: "kYC initiated" , shopify_id : storeData.shopify_id },
             { upsert: true }
           );
+          const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
+         // await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
+
           res.json({
             ...respondWithData("KYC URL"),
             data: dispatchResponse.data.signURL,
@@ -94,7 +103,7 @@ export const initiatieKyc = async (req, res) => {
  * @param {*} data
  * @param {*} res
  */
-export const fillForm = async (formUrl, shop) => {
+export const fillForm = async (formUrl, shop, token) => {
   try {
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
@@ -116,9 +125,9 @@ export const fillForm = async (formUrl, shop) => {
       data: JSON.stringify({
         shopifyID: shop.shopify_id,
         firstName: shop.name,
-        lastName: "qwertyu",
+        email: shop.email,
         mobile: shop.phone,
-        queryParam: "asdfghjkl",
+        queryParam: token,
       }),
     };
     let result = await axios(formData);
@@ -127,7 +136,7 @@ export const fillForm = async (formUrl, shop) => {
     console.log(err);
     logger.info(err);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -169,9 +178,15 @@ export const dispatchTransaction = async (txnId) => {
     logger.info(err);
   }
 };
+/**
+ * to check merchant kyc status
+ * @param {*} req 
+ * @param {*} res 
+ */
 
 export const statusKyc = async (req, res) => {
   try {
+    console.log("---------kyc---------------", req.body);
     let stores = req.token.store_url;
     console.log(stores);
     const checkStatus = await store.findOne({ store_url: stores });
@@ -182,9 +197,10 @@ export const statusKyc = async (req, res) => {
         kyc: checkStatus.is_kyc_done,
         plan: checkStatus.is_plan_done,
         payment: checkStatus.is_payment_done,
-        email:checkStatus.email,
-        name: checkStatus.name
-      }
+        email: checkStatus.email,
+        name: checkStatus.name,
+        dashboard_activated: checkStatus.dashboard_activated
+      },
     });
   } catch (err) {
     console.log(err);
@@ -192,19 +208,147 @@ export const statusKyc = async (req, res) => {
   }
 };
 
+/**
+ * to process data received over webhook from manch
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const kycDetails = async (req, res) => {
+  logger.info("----------------kyc webhook----------------", req.body);
 
-export const kycDetails = async(req,res) => {
-  console.log(req.body);
-  logger.info(req.body , "kyc webhook for merchant details");
-  const selectedFields = ['merchant_data'];
+  console.log("----------------kyc webhook----------------", req.body);
+  const data = req.body.data;
+  logger.info(req.body, "kyc webhook for merchant details");
+  console.log("------------------------------------------------", data.formFillData.pan)
 
-  const documentsCursor = await kycs.find();
-  console.log(documentsCursor)
-    // Convert documents to CSV
-    const csvData = parse(documentsCursor , { fields: selectedFields });
-    console.log(csvData)
+  const kycData = await kycs.updateOne({shopify_id :data.formFillData.shopifyID}, {$set:{
+        "merchant_name": data.formFillData.gstinName,
+        "merchant_created_at": "",
+        "outlet": data.formFillData.outlet ,
+        "gstin": data.formFillData.gstin,
+        "address_line1":data.formFillData.address_line1,
+        "address_line2":data.formFillData.address_line2,
+        "area" :data.formFillData.area,
+        "city":data.formFillData.city,
+        "state":data.formFillData.state,
+        "pincode":data.formFillData.pincode,
+        "contact_first_name": data.formFillData.first_name,
+        "contact_last_name":data.formFillData.last_name,
+        "email":data.formFillData.email,
+        "phone":data.formFillData.phone,
+        "PAN":data.formFillData.pan,
+        "panName": data.formFillData.panName,
+        "type_of_organization" : data.formFillData.typeofOrganization,
+        "category":data.formFillData.category,
+        "cin_number": data.formFillData.cinNo,
+        "cin_name":data.formFillData.cinllpName,
+        "gstin_name": data.formFillData.gstinName,
+        
+      },
+  }, {upsert: true}
+  );
+  await store.updateOne({shopify_id :data.formFillData.shopifyID}, {is_kyc_done : true});
 
-    // Write CSV data to a file
-    fs.writeFileSync('mongodb_data.csv', csvData, 'utf8');  
+  res.json(respondSuccess("webhook received"));
+};
 
-}
+/**
+ * to genearte csv of merchant Data
+ */
+export const generateCSV = async (store) => {
+  const kycData = await kycs.findOne({store_url: store});
+  console.log(kycData);
+  const {
+    shopify_id,
+    transaction_id,
+    merhchant_created_at,
+    merchant_name,
+    gstin,
+    address_line1,
+    address_line2,
+    area,
+    city,
+    state,
+    pincode,
+    contact_first_name,
+    contact_last_name,
+    email,
+    phone,
+    PAN,
+    package_details,
+    subscription_payment,
+    cin_number,
+    payu_txn_id,
+    payu_mihpayid,
+    billing_id
+   
+  } = kycData;
+console.log(kycData.gstin)
+  const headers = [
+    "shopify_id",
+    "transaction_id",
+    "merhchant_created_at",
+    "merchant_name",
+    "gstin",
+    "address_line1",
+    "address_line2",
+    "area",
+    "city",
+    "state",
+    "pincode",
+    "contact_first_name",
+    "contact_last_name",
+    "email",
+    "phone",
+    "PAN",
+    "package_details",
+    "subscription_payment",
+    "cin_number",
+    "payu_txn_id",
+    "payu_mihpayid",
+    "billing_id"
+   
+  ];
+  const values = [
+    shopify_id,
+    transaction_id,
+    merhchant_created_at,
+    merchant_name,
+    gstin,
+    address_line1,
+    address_line2,
+    area,
+    city,
+    state,
+    pincode,
+    contact_first_name,
+    contact_last_name,
+    email,
+    phone,
+    PAN,
+    package_details,
+    subscription_payment,
+    cin_number,
+    payu_txn_id,
+    payu_mihpayid,
+    billing_id
+  ];
+
+  const csv = headers.join(", ") + "\n" + values.join(",");
+ console.log(csv)
+  const options = {
+    from: "ShopifyKYC@qwikcilver.com",
+   to: "qc.serviceautomation_testing@qwikcilver.com",
+   
+    subject: "KYC details of Merchant",
+    attachments: [
+      {
+        filename: `KYC-${store}.csv`,
+        content: csv, // attaching csv in the content
+      },
+    ],
+  };
+   console.log(options);
+   await sendEmail(options);
+   return true;
+};

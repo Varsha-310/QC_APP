@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {
+import { 
   getUserDetails,
   deleteStoreData,
-  deleteUserData,
+  deleteUserData
 } from "../controllers/gdprController.js";
 import { verifyShopifyHook } from "../helper/validator.js";
 

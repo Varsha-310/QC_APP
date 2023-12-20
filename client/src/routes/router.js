@@ -16,11 +16,18 @@ import {
   RefundList,
   GiftCardsList,
   ResendGiftCard,
+  TermsConditions,
+  PrivacyPolicy,
+  FaqPage,
+  Issues,
+  PaymentFailed,
+  LoggedOut,
 } from "../pages";
 import GiftCardDetail from "../pages/issuance/GiftCardDetail";
 import EditGiftCard from "../pages/issuance/EditGiftCard";
 import ProtectedRoute from "../components/ProtectedRoutes/ProtectedRoute";
 import { isUserAuthenticated } from "../utils/userAuthenticate";
+// import { checkAuthLoader } from "../utils/auth";
 
 const router = createBrowserRouter([
   {
@@ -98,29 +105,63 @@ const router = createBrowserRouter([
       },
       {
         path: "/resend-gift-card",
-        element: <ResendGiftCard />,
-      },
-      {
-        path: "/issue-store-credits",
-        element: "",
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <ResendGiftCard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/refunds",
-        element: <RefundList />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundList />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/refunds/:id",
-        element: <RefundPage />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/configuration",
-        element: <RefundSetting />,
+        element: (
+          <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+            <RefundSetting />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsConditions />,
+      },
+
+      {
+        path: "/faqs",
+        element: <FaqPage />,
+      },
+      {
+        path: "/issues",
+        element: <Issues />,
+      },
+      { path: "/refund_success", element: <RefundConfirmation /> },
+      { path: "/payment-unsuccessful", element: <PaymentFailed /> },
+      {
+        path: "/log-out",
+        element: <LoggedOut />,
       },
     ],
   },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
+  },
   { path: "/select-plan", element: <PlanSelection /> },
   { path: "/submission_success", element: <ConfirmationPage /> },
-  { path: "/refund_success", element: <RefundConfirmation /> },
 ]);
 
 export default router;

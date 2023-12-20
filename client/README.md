@@ -68,3 +68,105 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+bkmahapatra
+// fetch card data
+// const updateData = async () => {
+// console.log("HIttttttttttttttttttttttttt");
+// const url = `/giftcard/products/list?limit=10&page=${currentPage}`;
+// const headers = {
+// Authorization: getUserToken(),
+// };
+
+// try {
+// const res = await instance.post(url, {}, { headers });
+// const resData = await res.data;
+// return resData;
+// } catch (error) {
+// // console.log(error);
+// throw new Error(error);
+// }
+// };
+
+// const queryClient = useQueryClient;
+
+// const { isLoading, data, error } = useQuery({
+// queryKey: ["giftcards"],
+// queryFn: updateData,
+// cacheTime: 20,
+// });
+
+// const itemIndex = inputData.findIndex((item) => item.id === itemId);
+// if (newQty === "" || (newQty > 0 && newQty <= totalQty)) {
+
+    //   if (itemIndex !== -1) {
+    //     if (newQty === "") {
+    //       const updatedInputData = inputData.filter(
+    //         (item) => item.id !== itemId
+    //       );
+    //       setInputData(updatedInputData);
+    //     } else {
+    //       const updatedInputData = [...inputData];
+    //       updatedInputData[itemIndex].qty = newQty;
+    //       setInputData(updatedInputData);
+    //     }
+    //   } else {
+    //     const newItem = { id: itemId, qty: newQty };
+    //     setInputData((prev) => [...prev, newItem]);
+    //   }
+    // }
+
+    // setTimeout(() => {
+    //   calcRefund();
+    // }, 2000);
+
+code:"ERR_NETWORK"
+
+<!-- plan selection  -->
+ <div className="plan-selection__plan-type">
+        <div className="plan-selection__plan-annually">Annually</div>
+        <div className="plan-selection__plan-monthly">Monthly</div>
+      </div>
+
+<!--  -->
+
+    try {
+      const res = await instance.post(url, {}, { headers });
+
+      if (res?.status === 200) {
+        const resData = res.data;
+        console.log(resData);
+        // for invalid or unauthorized token
+        if (resData?.code === 401) {
+          throw new Error(
+            "Authentication Failed: Unable to authenticate. Please log in again."
+          );
+        }
+        if (resData?.code === 403) {
+          throw new Error(
+            "Session Expired: Your Session has expired. Please log in again."
+          );
+        }
+
+        // for any other error
+        if (resData?.code !== 200) {
+          throw new Error("Network response was not OK.");
+        }
+
+        console.log(resData);
+        setKycData(resData.data);
+      }
+
+      // else {
+      //   throw new Error("Network response was not OK.");
+      // }
+    } catch (error) {
+      if (!navigator.onLine) {
+        console.log("No internet connection!");
+      } else {
+        // console.log(error);
+        setIsError(error.message);
+      }
+    }
+
+test push by bk27

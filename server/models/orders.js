@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
+/*Scheme for storing orders */
 const orderSchema = new Schema({
     store_url: { type: String },
     id: { type: Number, required: true },
     is_email_sent : {type : Boolean , default : false},
     is_giftcard_order: {type : Boolean , default : false},
+    remarks:{type:String},
     app_id: { type: Number },
     browser_ip: { type: String },
     cancel_reason: { type: String },
@@ -182,39 +184,47 @@ const orderSchema = new Schema({
     },
     line_items: [
         {
-        id: { type: Number },
-        admin_graphql_api_id: { type: String },
-        fulfillable_quantity: { type: Number },
-        fulfillment_service: { type: String },
-        fulfillment_status: { type: String },
-        gift_card: { type: Boolean },
-        grams: { type: Number },
-        name: { type: String },
-        price: { type: String },
-        price_set: { type: Object },
-        product_exists: { type: Boolean },
-        product_id: { type: Number },
-        properties: { type: Array },
-        quantity: { type: Number },
-        requires_shipping: { type: Boolean },
-        sku: { type: String },
-        taxable: { type: Boolean },
-        title: { type: String },
-        total_discount: { type: String },
-        total_discount_set: { type: Object },
-        variant_id: { type: Number },
-        variant_inventory_management: { type: String },
-        variant_title: { type: String },
-        vendor: { type: String },
-        tax_lines: { type: Array },
-        duties: { type: Array },
-        discount_allocations: { type: Array }
-    }],
+            id: { type: Number },
+            admin_graphql_api_id: { type: String },
+            fulfillable_quantity: { type: Number },
+            fulfillment_service: { type: String },
+            fulfillment_status: { type: String },
+            gift_card: { type: Boolean },
+            grams: { type: Number },
+            name: { type: String },
+            price: { type: String },
+            price_set: { type: Object },
+            product_exists: { type: Boolean },
+            product_id: { type: Number },
+            properties: { type: Array },
+            quantity: { type: Number },
+            requires_shipping: { type: Boolean },
+            sku: { type: String },
+            taxable: { type: Boolean },
+            title: { type: String },
+            total_discount: { type: String },
+            total_discount_set: { type: Object },
+            variant_id: { type: Number },
+            variant_inventory_management: { type: String },
+            variant_title: { type: String },
+            vendor: { type: String },
+            tax_lines: { type: Array },
+            duties: { type: Array },
+            discount_allocations: { type: Array }
+        }
+    ],
     payment_terms: { type: String },
     refunds: { type: Array },
+    refund_status: { type: String, default: 'N/A' },
     Refund_Mode: { type: String, default: 'N/A' },
-    Initiate_Refund: { type: String, default: "N/A" },
-    shipping_lines: { type: Array }
+    refund_status: { type: String, default: "N/A" },
+    shipping_lines: { type: Array },
+    qc_gc_created: {
+        type: String,
+        enum: ["N/A", "NO", "YES"],
+        default: "N/A"
+    },
+    redeem_txn_id: {type: String},
 
 });
 

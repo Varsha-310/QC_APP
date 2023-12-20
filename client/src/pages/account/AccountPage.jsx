@@ -49,21 +49,26 @@ const AccountPage = () => {
 
   return (
     <div className="account_page-container" style={{ width: "100%" }}>
-      <div className="section-box-container">
-        <div className="section-box-title">My Plan</div>
-      </div>
+      <div className="component-primary-heading">My Plan</div>
 
       <CustomContainer margin="30px 0px" align="center">
-        {planData?.data?.plans && (
-          <PlanCard
-            plan={planData?.data?.plans.find(
-              (item) =>
-                item.plan_name.toUpperCase() === planData.data.selectedPlan
-            )}
-            active={false}
-            // popular={}
-            btnText={""}
-          />
+        {planData?.data?.plans ? (
+          planData.data.selectedPlan !== "" ? (
+            <PlanCard
+              plan={planData?.data?.plans.find(
+                (item) =>
+                  item.plan_name.toLowerCase() ===
+                  planData.data.selectedPlan.toLowerCase()
+              )}
+              active={false}
+              // popular={}
+              btnText={""}
+            />
+          ) : (
+            "No Active Plan"
+          )
+        ) : (
+          ""
         )}
       </CustomContainer>
 
@@ -72,10 +77,7 @@ const AccountPage = () => {
           <PrimaryBtn $primary>Upgrade Plan</PrimaryBtn>
         </Link>
       </CustomContainer>
-
-      <div className="section-box-container">
-        <div className="section-box-title">Store Contact</div>
-      </div>
+      <div className="component-primary-heading">Linked Store Contact</div>
 
       <div className="section-box-container">
         <div className="contact-input">

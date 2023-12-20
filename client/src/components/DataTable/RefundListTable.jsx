@@ -16,25 +16,37 @@ const RefundListTable = ({ headings, data }) => {
       <tbody>
         {data?.map((row, index) => (
           <tr key={index}>
-            <td>#{row.id}</td>
-            <td>{row.updated_at?.slice(0, 10)}</td>
-            <td>{row.customer?.first_name}</td>
-            <td>₹ {row.total_price}</td>
-            <td>{row.status}</td>
-            <td>{row.payment_gateway_names[0]}</td>
-            <td>{row.Refund_Mode}</td>
+            <td>#{row?.order_number}</td>
+            <td>{row?.updated_at?.slice(0, 10)}</td>
+            <td>{row?.customer?.first_name}</td>
+            <td>₹ {row?.total_price}</td>
+            <td>{row?.financial_status.split("_").join(" ")}</td>
+            <td>{row?.payment_gateway_names[0]}</td>
             <td>
-              <Link
-                className={
-                  row.Initiate_Refund !== "N/A"
-                    ? "refund-success"
-                    : "refund-unsuccess"
-                }
-                to={`/refunds/${row.id}`}
-              >
-                {row.Initiate_Refund}
-              </Link>
+              {row?.fulfillment_status === null ? "Unfulfilled" : "Fulfilled"}
             </td>
+            <td>
+              {row?.refund_status?.toLowerCase() !== "refunded" ? (
+                <Link className={"refund-success"} to={`/refunds/${row.id}`}>
+                  Proceed
+                </Link>
+              ) : (
+                <span className="refund-list__completed">Completed</span>
+              )}
+
+              {/* {row?.financial_status === "paid" ||
+              row?.financial_status === "partially_refunded" ? (
+                <Link className={"refund-success"} to={`/refunds/${row.id}`}>
+                  Proceed
+                </Link>
+              ) : row?.financial_status === "refunded" ? (
+                <span className="refund-list__completed">Completed</span>
+              ) : (
+                row?.financial_status
+              )} */}
+            </td>
+            <td>{row?.Refund_Mode}</td>
+            <td>{row?.refund_status}</td>
           </tr>
         ))}
       </tbody>

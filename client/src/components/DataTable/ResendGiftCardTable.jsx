@@ -18,13 +18,14 @@ const ResendGiftCard = ({ data, resendMail }) => {
       <tbody>
         {data.map((row, index) => (
           <tr key={index}>
-            <td>#{row?.id}</td>
+            <td>#{row?.order_number}</td>
             <td>{row?.created_at?.slice(0, 10)}</td>
             <td>{row?.customer?.first_name}</td>
             {/* <?td>₹ {row?.total}</?td> */}
             <td className="gc-table__actions">
               <MdOutgoingMail
                 className="gc-table-icons"
+                style={{ height: "23px", width: "23px" }}
                 onClick={() => resendMail(row?.id)}
               />
             </td>

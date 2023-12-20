@@ -12,7 +12,7 @@ const TEXT_BOLD_COLOR = "#182560";
 const RATING_COLOR = "#fec600";
 
 const PrimaryBtn = styled.button`
-  font-family: "Poppins", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 14px;
   line-height: 21px;
   width: ${(props) => props?.width || "180px"};
@@ -40,7 +40,7 @@ const CustomBtn = styled.div`
   justify-content: center;
   margin: 0px auto;
   border-radius: 8px;
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   height: ${(props) => props?.height || "30px"};
   width: ${(props) => props?.width || "85px"};
   font-weight: ${(props) => props?.weight || "600"};
@@ -54,7 +54,7 @@ const CustomBtn = styled.div`
 `;
 
 const RectBtn = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,19 +76,21 @@ const RectBtn = styled.div`
 `;
 
 const TabBox = styled(Link)`
-  font-family: "Poppins", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
   line-height: 22px;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 0.5fr 3fr;
+  justify-content: left;
   align-items: center;
-  min-height: 35px;
+  // min-height: 30px;
   width: 100%;
   color: ${TEXT_DARK_COLOR};
-  background-color: #ffffff;
-  margin: 15px 0px;
+  // background-color: #ffffff;
+  margin: 2px 0px;
+  padding: 2px 2px;
   cursor: pointer;
   text-decoration: none;
   box-shadow: ${(props) =>
@@ -97,29 +99,30 @@ const TabBox = styled(Link)`
 
 const SubTabBox = styled(Link)`
   display: grid;
-  grid-template-columns: ${(props) =>
-    props?.dropdown ? "1fr 3fr 1fr" : "1fr 4fr"};
+  grid-template-columns: ${(props) => (props?.dropdown ? "3fr 1fr" : "1fr")};
   width: 100%;
-  margin: 5px 0px;
-  padding: 5px 0px 5px 15px;
+  margin: 0px 0px;
+  padding: 2px 0px 2px 30px;
   align-items: center;
   // justify-items: center;
   cursor: pointer;
   text-decoration: none;
+  background-color: ${(props) =>
+    props?.active ? "rgba(202, 201, 201, 0.3)" : ""};
 `;
 
 const TabItemLable = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 18px;
   display: flex;
   align-items: center;
   color: ${TEXT_DARK_COLOR};
 `;
 const TabSubItemLable = styled(Link)`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -134,17 +137,14 @@ const NestedTabBox = styled(Link)`
   width: 100%;
   text-decoration: none;
   position: relative;
-  // margin: 10px 0px;
-  // padding: 10px 0px;
   display: grid;
-  grid-template-columns: 1fr 4fr;
-  padding: 0px 0px 0px 15px;
+  grid-template-columns: 0.5fr 4fr;
+  padding: 0px 0px 0px 25px;
   align-items: center;
-  // justify-content: space-between;
 `;
 
 const SectionHeading1 = styled.div`
-  font-family: "Epilogue";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   width: 100%;
   font-weight: ${(props) => props?.weight};
@@ -157,7 +157,7 @@ const SectionHeading1 = styled.div`
   justify-content: ${(props) => props?.align || "left"};
 `;
 const SectionTitle = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   width: 100%;
   font-weight: ${(props) => props?.weight};
@@ -167,7 +167,7 @@ const SectionTitle = styled.div`
   color: ${TEXT_BOLD_COLOR};
 `;
 const SectionPara = styled.p`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -185,7 +185,7 @@ const Dot = styled.div`
   border-radius: 50px;
   background-color: ${(props) => (props?.fill ? FRAME_COLOR : "#FFFFFF")};
   border: 1px solid ${FRAME_COLOR};
-  margin: 10px;
+  margin: 8px 10px 8px 10px;
   z-index: 20;
 `;
 
@@ -198,7 +198,7 @@ const CustomContainer = styled.div`
 `;
 
 const TextRegular = styled.div`
-  font-family: "Poppins";
+  font-family: "Noto Sans", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

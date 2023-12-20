@@ -3,11 +3,15 @@ import store from "../models/store.js";
 import {
   respondInternalServerError,
   respondNotAcceptable,
+  respondSuccess,
 } from "../helper/response.js";
 import cookie from "cookie";
 import crypto from "crypto";
-import { checkWebhooks } from "../config/custom.js";
+import { checkWebhooks } from "../helper/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
+import refundSetting from "../models/refundSetting.js";
+import Jwt from "jsonwebtoken";
+
 
 /**
  * Method for installation method
@@ -17,8 +21,8 @@ import { createJwt } from "../helper/jwtHelper.js";
  */
 export const install = async (req, res) => {
   try {
+	console.log(req.headers, "headers");
     const shop = req.query.shop;
-    console.log(req);
     if (shop) {
       const scopes = process.env.SCOPES;
       const apiKey = process.env.SHOPIFY_API_KEY;
@@ -26,7 +30,7 @@ export const install = async (req, res) => {
       const state = Date.now();
       const redirectUri = `${APP_URL}/shopify/callback`;
       const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&state=${state}&redirect_uri=${redirectUri}`;
-      res.cookie("state", state);
+      res.cookie("state", state); // cookie: 'state=1686118763459',
       return res.redirect(installUrl);
     } else {
       res.json(respondNotAcceptable("Something went wrong try after sometime"));
@@ -34,7 +38,7 @@ export const install = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -75,26 +79,32 @@ export const installCallback = async (req, res) => {
 
       if (!hashEquals) {
       }
-
+      const storeStatus = await store.findOne({ store_url: shop });
+      let token = await createJwt(shop);
       let accessToken = await getAccessToken(shop, code, res);
 
-      if (accessToken) {
-        console.log(accessToken, "accessToken");
-        let storeData = await getShopifyStoreData(shop, accessToken);
+      if (storeStatus && storeStatus.is_installed == true) {
+
+        await store.updateOne({store_url : shop} , {auth_token : token, access_token: accessToken});
+        return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
+      } else {
+      
+        // console.log(accessToken, "accessToken");
+        let storeData = await getShopifyStoreData(shop, accessToken, res);
         if (storeData) {
-          let response = await saveStoreData(storeData, shop, accessToken);
+          let response = await saveStoreData(storeData, shop, accessToken, token);
+          // console.log(response ,"response of store data");
           await checkWebhooks(shop, accessToken);
-          let token = await createJwt(shop);
-          return res.redirect(`${CLIENT_URL}?${shop}?${token}`);
+          return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
         }
       }
     } else {
-      res.json(respondNotAcceptable("Required parameters are missing"));
+      res.json(respondNotAcceptable());
     }
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -106,8 +116,9 @@ export const installCallback = async (req, res) => {
  * @param {*} accessToken
  * @returns
  */
-export const saveStoreData = async (shopData, shop, accessToken) => {
+export const saveStoreData = async (shopData, shop, accessToken, token) => {
   try {
+  
     const data = {
       shopify_id: shopData.shop.id,
       name: shopData.shop.name,
@@ -117,6 +128,10 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       access_token: accessToken,
       status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
+      is_installed: true,
+      auth_token : token,
+      currency: shopData.shop.currency,
+      myshopify_domain: shopData.shop.myshopify_domain
     };
     console.log(data);
     let storeDetails = await store.updateOne(
@@ -124,13 +139,13 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
       { $set: data },
       { upsert: true }
     );
-
-    console.log(storeDetails,"---------------------saved to db------------------");
+    await refundSetting.updateOne({store_url: shop.toString()},{store_url: shop.toString()}, {upsert:true});
+    console.log( storeDetails, "---------------------saved to db------------------");
     return true;
   } catch (error) {
     console.log(error);
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -141,12 +156,12 @@ export const saveStoreData = async (shopData, shop, accessToken) => {
  * @param {*} accessToken
  * @returns
  */
-export const getShopifyStoreData = async (shop, accessToken) => {
+export const getShopifyStoreData = async (shop, accessToken, res) => {
   try {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
       method: "GET",
-      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code`,
+      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code,myshopify_domain`,
       headers: {
         "X-Shopify-Access-Token": accessToken,
       },
@@ -154,14 +169,13 @@ export const getShopifyStoreData = async (shop, accessToken) => {
     let shopData = await axios(shopOption);
     console.log(shopData.data, "shopData");
 
-    shopData =
-      shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
+    shopData = shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
     console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {
-    res.json(
-      respondInternalServerError("Something went wrong try after sometime")
-    );
+	console.log(error);
+	return error;
+    //res.json(respondInternalServerError());
   }
 };
 
@@ -198,7 +212,7 @@ export const getAccessToken = async (shop, code, res) => {
     return accessToken;
   } catch (error) {
     res.json(
-      respondInternalServerError("Something went wrong try after sometime")
+      respondInternalServerError()
     );
   }
 };
@@ -214,3 +228,23 @@ export const appUninstalled = async (req, res) => {
   await store.findOneAndUpdate({ store_url: domain }, { isInstalled: false });
   res.json(respondSuccess("webhook received"));
 };
+
+/**
+ * Logout method
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const logoutSession = async (req, res)=>{
+
+  try {
+    
+    await store.updateOne({store_url : req.token.store_url} , {auth_token : ""});
+    return res.json(respondSuccess("Successfully Logout"));
+  } catch (error) {
+    
+    console.log("Logout Error,",error);
+    return res.json(respondInternalServerError());
+  }
+}

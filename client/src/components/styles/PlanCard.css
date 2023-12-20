@@ -10,7 +10,7 @@
 .popular-banner {
   position: absolute;
   left: -5px;
-  top:-5px;
+  top: -5px;
 }
 .popular-banner img {
   width: 80px;
@@ -43,12 +43,20 @@
   font-size: 30px;
   line-height: 45px;
   color: #181c2d;
-  margin: 10px 0 20px 0;
+  padding: 10px 0 20px 0;
 }
 .plan-card-price span {
   color: #b62028;
 }
-
+.plan-card-gst {
+  color: #75859d;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  text-align: right;
+  position: relative;
+  right: 20px;
+}
 .plan-card .bar {
   height: 0.5px;
   width: 100%;
@@ -60,8 +68,8 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  margin: 14px 0px;
-  color: #75859d;
+  margin: 14px 0px 5px 0px;
+  color: #4a5566;
 }
 .plan-card-subtitle-2 {
   font-weight: 500;
@@ -72,16 +80,32 @@
 }
 .plan-card-value {
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 17px;
-  margin: 20px 0px;
+  font-weight: 600;
+
+  margin: 5px 0px 20px 0px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 
-  color: #181c2d;
+  color: var(--frame-color);
+}
+.plan-card-value img {
+  margin: 0px 5px;
+}
+.plan-card-maxlimit {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  margin: 14px 0px;
+  color: #75859d;
 }
 
 .plan-card-btn {
   margin: 20px 0px;
+}
+
+.custom-spacer {
+  height: 52px;
 }

@@ -12,15 +12,19 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
     return Math.ceil(total / perPage);
   }, [total, perPage]);
 
-  const [currentPagesIndex, setCurrentPagesIndex] = useState(1);
+  console.log(totalPages);
+
   // total page 20
   // pages to show 5
 
   const pagesIndexSize = 5;
+  const [currentPagesIndex, setCurrentPagesIndex] = useState(
+    Math.ceil(currentPage / pagesIndexSize)
+  );
 
   const startPagesIndex = useMemo(() => {
     return (currentPagesIndex - 1) * pagesIndexSize;
-  }, []);
+  }, [currentPagesIndex]);
 
   const endPagesIndex = startPagesIndex + pagesIndexSize;
 
@@ -51,7 +55,7 @@ const Pagination = ({ total, perPage, currentPage, setCurrentPage }) => {
             <div
               key={index}
               className={`pagination__page-btn ${
-                currentPage == page ? "activePage" : ""
+                currentPage === page ? "activePage" : ""
               }`}
               onClick={() => setCurrentPage(page)}
             >

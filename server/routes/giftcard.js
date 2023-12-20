@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { addGiftcard, giftCardAmount ,createGiftcardProducts, deleteGiftcardProducts, getSelectedGc , getGiftcardProducts , updateGiftcardProduct, resendEmail, giftCardOrders , walletTransaction, addGiftcardtoWallets} from "../controllers/giftcard.js";
+import { addGiftcard, giftCardAmount ,createGiftcardProducts, deleteGiftcardProducts, getSelectedGc , getGiftcardProducts , updateGiftcardProduct, resendEmail, giftCardOrders , walletTransaction} from "../controllers/giftcard.js";
 import { verifyJwt } from "../helper/jwtHelper.js";
 import {  validateGetBalance , verifySendEmail ,validateAddToWallet,validateUpdateGiftcard , validatecreateGiftcard } from "../helper/validator.js";
 import { getWalletBalance } from "../controllers/giftcard.js";
+import {getEmails} from "../helper/emailParse.js"
 
 const giftcardRoute = Router();
 
@@ -34,9 +35,14 @@ giftcardRoute.post("/email" , verifyJwt , verifySendEmail ,resendEmail );
 giftcardRoute.post("/orders" ,  verifyJwt, giftCardOrders );
 
 // cards history within a wallet
-giftcardRoute.post("/wallet/transaction" , validateAddToWallet , walletTransaction );
+giftcardRoute.post("/wallet/transaction"  , walletTransaction );
 
 // to reedem qc giftcard
 giftcardRoute.post("/redeem" ,   giftCardAmount);
+
+giftcardRoute.post("/mail" , getEmails  );
+
+
+
 
 export default giftcardRoute;

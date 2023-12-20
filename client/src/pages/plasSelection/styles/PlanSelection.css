@@ -1,7 +1,6 @@
 .plan-selection-container {
   background-color: var(--background-color);
 }
-
 /* terms and checkbox */
 .terms-check {
   display: flex;
@@ -30,7 +29,7 @@ input[type="checkbox"] {
   max-width: 500px;
   height: 100%;
   text-align: center;
-  padding: 15px 5px 30px 5px;
+  padding: 15px 10px 30px 10px;
   margin: 50px auto;
   border-radius: 10px;
   background-color: var(--background-light-color);
@@ -102,8 +101,19 @@ input[type="checkbox"] {
 }
 
 .package-detail {
+  width: 50%;
+  height: 45px;
+  margin: 30px auto;
   display: flex;
-  background-color: var(--background-light-color);
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-color);
+  background-color: var(--frame-color);
+  box-shadow: 0px 5px 10px 3px rgba(0, 0, 0, 0.25);
 }
 
 .plan-box-title {
@@ -136,9 +146,113 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
+/* terms popup  */
+.terms-pop__container {
+  position: fixed;
+  inset: 0;
+  padding: 50px;
+  margin: 20px;
+  box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3);
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow-y: auto;
+  z-index: 20;
+}
+.terms-pop__container li {
+  list-style: inherit;
+  text-align: justify;
+  margin-left: 20px;
+}
+.terms-pop__container h2,
+.terms-pop__container h3 {
+  text-align: center;
+  margin: 10px;
+}
+.terms-pop__container table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.terms-pop__container table th,
+.terms-pop__container table td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 5px;
+}
+/* payment popup */
+.payment-confirm-popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  /* background-color: #ffffff;
+  width: 20%;
+  height: 10%; */
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.payment-form {
+  display: flex;
+  background-color: #ffffff;
+  width: 60%;
+  height: 40%;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 30px;
+  padding: 30px;
+  text-align: center;
+}
+.payment-confirm-btns {
+  display: flex;
+  column-gap: 50px;
+}
+.payment-btn {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  height: 30px;
+  background-color: var(--frame-color);
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.subscription-note {
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-dark-color);
+}
+
+.plan-check {
+  color: rgb(0, 139, 0);
+  font-size: 30px;
+  width: 100%;
+  margin: 0px auto;
+}
+.plan-cross {
+  width: 100%;
+  color: rgb(218, 1, 1);
+  font-size: 22px;
+  margin: 0px auto;
+}
+.inline-table-text {
+  font-weight: 400;
+}
+.plan-table__note {
+  margin: 20px 0px;
+}
 @media only screen and (max-width: 900px) {
   .plans {
     flex-wrap: wrap;
-    row-gap: 20px;
+    row-gap: 40px;
+    column-gap: 20px;
+  }
+  .payment-form {
+    height: 20%;
+    width: 60%;
   }
 }

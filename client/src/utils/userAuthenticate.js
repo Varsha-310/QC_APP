@@ -3,7 +3,7 @@
  * @param {string} token
  */
 const setUserToken = (token) => {
-  localStorage.setItem("qcUserToken", token);
+  sessionStorage.setItem("qcUserToken", token);
 };
 
 /**
@@ -11,8 +11,7 @@ const setUserToken = (token) => {
  * @returns {string}
  */
 const getUserToken = () => {
-  const token = localStorage.getItem("qcUserToken");
-
+  const token = sessionStorage.getItem("qcUserToken");
   return token ? token : null;
 };
 
@@ -20,7 +19,7 @@ const getUserToken = () => {
  * To set merchant active status
  */
 const setUserStatus = () => {
-  localStorage.setItem("qcUserStatus", true);
+  sessionStorage.setItem("qcUserStatus", true);
 };
 
 /**
@@ -28,9 +27,9 @@ const setUserStatus = () => {
  * @returns {boolean}
  */
 const getUserStatus = () => {
-  const status = localStorage.getItem("qcUserStatus");
+  const status = sessionStorage.getItem("qcUserStatus");
 
-  return status ? true : false;
+  return status?.toString() === "true" ? true : false;
 };
 
 /**
@@ -41,7 +40,7 @@ const isUserAuthenticated = () => {
   const token = getUserToken();
   const status = getUserStatus();
 
-  if (token && status) {
+  if (!!token && status) {
     return true;
   } else {
     return false;

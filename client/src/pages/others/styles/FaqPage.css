@@ -1,0 +1,82 @@
+.faq-component {
+  /* margin: 15px; */
+  /* box-shadow: 1px 1px 20px 30px rgba(0, 0, 0, 0.3); */
+  /* border-radius: 5px; */
+}
+.faq-sections {
+  margin: 10px 0px;
+  background-color: #ffffff;
+}
+.faq-component p {
+  margin: 10px 0px;
+  font-size: 14px;
+  line-height: 140%;
+}
+.faq-component p b {
+  font-weight: 600;
+}
+.faq-component li {
+  list-style: inherit;
+  text-align: justify;
+  margin-left: 20px;
+  font-size: 14px;
+}
+.faq-component li p:first-child {
+  font-weight: 600;
+}
+.faq-section__title {
+  color: var(--frame-color);
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.faq-sections > :is(ol, ul) {
+  padding: 10px 20px;
+}
+.faq-component :is(h2, h3) {
+  text-align: left;
+  /* margin: 20px 0px; */
+  color: var(--frame-color);
+  font-weight: 500;
+  font-size: 16px;
+}
+.faq-section__icon {
+  color: #000000;
+  font-size: 20px;
+  transition: all 0.3s;
+}
+.icon_up {
+  transform: rotate(180deg);
+}
+
+.faq-sections > .tableBody {
+  padding: 20px;
+}
+.tableBody :is(table, th, td) {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+.tableBody > table > tr {
+  display: grid;
+  grid-template-columns: 0.7fr 3fr 2fr 4fr;
+}
+.tableBody > table tr th {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 5px;
+}
+.tableBody > table td {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 10px 5px;
+}
+.tableBody > table td b {
+  font-weight: 500;
+}

@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  MyPlanIcon,
-  StoreCredit,
-  DownArrowIcon,
-  MyGiftCardsIcon,
-  ConfigIcon,
-  GiftCardIcon,
-  KycIcon,
-  ResendMail,
-} from "../assets/icons/svgs";
+import { DownArrowIcon } from "../assets/icons/svgs";
 import "./styles/DashboardMenu.css";
 import {
   Dot,
@@ -22,18 +13,23 @@ import {
 import {
   AiOutlineUser,
   AiOutlineSetting,
-  AiOutlineRollback,
+  AiOutlineQuestionCircle,
 } from "react-icons/ai";
+import { GoHome } from "react-icons/go";
 import {
   HiOutlineIdentification,
   HiOutlineWallet,
   HiOutlineReceiptRefund,
+  HiOutlineDocumentMagnifyingGlass,
 } from "react-icons/hi2";
-import {PiKeyReturn} from "react-icons/pi"
-// import { PiKeyReturn } from "react-icons/";
+import { MdOutlineContactSupport } from "react-icons/md";
+import { PiKeyReturn } from "react-icons/pi";
 import { BsPostcard } from "react-icons/bs";
+import { useLocation } from "react-router";
 
 const DashboardMenu = () => {
+  const location = useLocation();
+  console.log(location.pathname);
   const [activeTab, setActiveTab] = useState({});
 
   const [activeDropDown, setActiveDropDown] = useState({
@@ -60,13 +56,15 @@ const DashboardMenu = () => {
         <ul className="dashboard__menu-items">
           <li id="home" className="parent" onClick={handleTab}>
             <TabBox to={"/home"} active={`${activeTab?.home}`}>
-              HOME
+              <GoHome className="menu-icons" />
+              Home
             </TabBox>
           </li>
 
           <li id="account" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.account}`} to={"/my-account"}>
-              MY ACCOUNT
+              <AiOutlineUser className="menu-icons" />
+              My Account
             </TabBox>
 
             <ul>
@@ -76,10 +74,13 @@ const DashboardMenu = () => {
                   id="myplan"
                   onClick={handleDropDown}
                   to={"/my-account"}
+                  active={[
+                    "/my-account",
+                    "/my-invoices",
+                    "/current-usage",
+                  ].includes(location.pathname)}
                 >
-                  <AiOutlineUser className="menu-icons" />
-                  {/* <MyPlanIcon className="menu-icons" /> */}
-
+                  {/* <AiOutlineUser className="menu-icons" /> */}
                   <TabItemLable>My Plan</TabItemLable>
                   <DownArrowIcon />
                 </SubTabBox>
@@ -107,10 +108,12 @@ const DashboardMenu = () => {
               )}
 
               <li>
-                <SubTabBox to={"/kyc-status"}>
-                  {/* <KycIcon className="menu-icons" /> */}
-                  <HiOutlineIdentification className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                <SubTabBox
+                  to={"/kyc-status"}
+                  active={"/kyc-status" === location.pathname}
+                >
+                  {/* <HiOutlineIdentification className="menu-icons" /> */}
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -118,31 +121,42 @@ const DashboardMenu = () => {
 
           <li id="giftcard" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.giftcard}`} to={"create-giftcard"}>
-              GIFT CARD
+              <BsPostcard className="menu-icons" style={{ width: "20px" }} />
+              Gift Card
             </TabBox>
 
             <ul>
               <li>
-                <SubTabBox to={"/create-giftcard"}>
-                  <BsPostcard className="menu-icons" style={{width:"20px"}} />
-                  {/* <GiftCardIcon className="menu-icons" /> */}
-                  <TabItemLable>Create Gift Card</TabItemLable>
+                <SubTabBox
+                  to={"/create-giftcard"}
+                  active={"/create-giftcard" === location.pathname}
+                >
+                  {/* <BsPostcard
+                    className="menu-icons"
+                    style={{ width: "20px" }}
+                  /> */}
+
+                  <TabItemLable>Publish Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
-                <SubTabBox to={"/my-gift-card"}>
-                  {/* <MyGiftCardsIcon className="menu-icons" /> */}
-                  <HiOutlineWallet className="menu-icons" />
-                  <TabItemLable>My Gift Cards</TabItemLable>
+                <SubTabBox
+                  to={"/my-gift-card"}
+                  active={"/my-gift-card" === location.pathname}
+                >
+                  {/* <HiOutlineWallet className="menu-icons" /> */}
+                  <TabItemLable>Gift Card SKU’s</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
-                <SubTabBox to={"resend-gift-card"}>
-                  <PiKeyReturn className="menu-icons" />
+                <SubTabBox
+                  to={"/resend-gift-card"}
+                  active={"/resend-gift-card" === location.pathname}
+                >
                   {/* <PiKeyReturn className="menu-icons" /> */}
-                  <TabItemLable>Re-send Gift Card</TabItemLable>
+                  <TabItemLable>Gift Card Orders</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -150,21 +164,50 @@ const DashboardMenu = () => {
 
           <li id="storecredit" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
-              STORE CREDIT
+              <HiOutlineReceiptRefund className="menu-icons" />
+              Store Credit
             </TabBox>
             <ul>
               <li>
-                <SubTabBox to={"/refunds"}>
-                  {/* <StoreCredit className="menu-icons" /> */}
-                  <HiOutlineReceiptRefund className="menu-icons" />
-                  <TabItemLable>Issue Store Credits</TabItemLable>
+                <SubTabBox
+                  to={"/refunds"}
+                  active={"/refunds" === location.pathname}
+                >
+                  {/* <HiOutlineReceiptRefund className="menu-icons" /> */}
+                  <TabItemLable>Store-Credits & Refunds</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
-                <SubTabBox to={"/configuration"}>
-                  {/* <ConfigIcon className="menu-icons" /> */}
-                  <AiOutlineSetting className="menu-icons" />
+                <SubTabBox
+                  to={"/configuration"}
+                  active={"/configuration" === location.pathname}
+                >
+                  {/* <AiOutlineSetting className="menu-icons" /> */}
                   <TabItemLable>Preferences</TabItemLable>
+                </SubTabBox>
+              </li>
+            </ul>
+          </li>
+
+          <li id="storecredit" className="parent" onClick={handleTab}>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+              Support
+            </TabBox>
+            <ul>
+              <li>
+                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
+                  {/* <HiOutlineDocumentMagnifyingGlass className="menu-icons" /> */}
+                  <TabItemLable>FAQ's</TabItemLable>
+                </SubTabBox>
+              </li>
+              <li>
+                <SubTabBox
+                  to={"/issues"}
+                  active={"/issues" === location.pathname}
+                >
+                  {/* <AiOutlineQuestionCircle className="menu-icons" /> */}
+                  <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -177,13 +220,15 @@ const DashboardMenu = () => {
         <ul className="dashboard__menu-items">
           <li id="home" className="parent" onClick={handleTab}>
             <TabBox to={"/home"} active={`${activeTab?.home}`}>
-              HOME
+              <GoHome className="menu-icons" />
+              Home
             </TabBox>
           </li>
 
           <li id="account" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.account}`} to={"/my-account"}>
-              ACCOUNT SECTION
+              <AiOutlineUser className="menu-icons" />
+              My Account
             </TabBox>
 
             <ul>
@@ -193,9 +238,13 @@ const DashboardMenu = () => {
                   id="myplan"
                   onClick={handleDropDown}
                   to={"/my-account"}
+                  active={[
+                    "/my-account",
+                    "/my-invoices",
+                    "/current-usage",
+                  ].includes(location.pathname)}
                 >
-                  <MyPlanIcon className="menu-icons" />
-
+                  {/* <AiOutlineUser className="menu-icons" /> */}
                   <TabItemLable>My Plan</TabItemLable>
                   <DownArrowIcon />
                 </SubTabBox>
@@ -223,9 +272,12 @@ const DashboardMenu = () => {
               )}
 
               <li>
-                <SubTabBox to={"/kyc-status"}>
-                  <KycIcon className="menu-icons" />
-                  <TabItemLable>KYC Status</TabItemLable>
+                <SubTabBox
+                  to={"/kyc-status"}
+                  active={"/kyc-status" === location.pathname}
+                >
+                  {/* <HiOutlineIdentification className="menu-icons" /> */}
+                  <TabItemLable>Registration Status</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -233,28 +285,42 @@ const DashboardMenu = () => {
 
           <li id="giftcard" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.giftcard}`} to={"create-giftcard"}>
-              GIFT CARD
+              <BsPostcard className="menu-icons" style={{ width: "20px" }} />
+              Gift Card
             </TabBox>
 
             <ul>
               <li>
-                <SubTabBox to={"/create-giftcard"}>
-                  <GiftCardIcon className="menu-icons" />
-                  <TabItemLable>Create Gift Card</TabItemLable>
+                <SubTabBox
+                  to={"/create-giftcard"}
+                  active={"/create-giftcard" === location.pathname}
+                >
+                  {/* <BsPostcard
+                    className="menu-icons"
+                    style={{ width: "20px" }}
+                  /> */}
+
+                  <TabItemLable>Publish Gift Card</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
-                <SubTabBox to={"/my-gift-card"}>
-                  <MyGiftCardsIcon className="menu-icons" />
-                  <TabItemLable>My Gift Cards</TabItemLable>
+                <SubTabBox
+                  to={"/my-gift-card"}
+                  active={"/my-gift-card" === location.pathname}
+                >
+                  {/* <HiOutlineWallet className="menu-icons" /> */}
+                  <TabItemLable>Gift Card SKU’s</TabItemLable>
                 </SubTabBox>
               </li>
 
               <li>
-                <SubTabBox to={"resend-gift-card"}>
-                  <ResendMail className="menu-icons" />
-                  <TabItemLable>Re-send Gift Card</TabItemLable>
+                <SubTabBox
+                  to={"/resend-gift-card"}
+                  active={"/resend-gift-card" === location.pathname}
+                >
+                  {/* <PiKeyReturn className="menu-icons" /> */}
+                  <TabItemLable>Gift Card Orders</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>
@@ -262,19 +328,50 @@ const DashboardMenu = () => {
 
           <li id="storecredit" className="parent" onClick={handleTab}>
             <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
-              STORE CREDIT
+              <HiOutlineReceiptRefund className="menu-icons" />
+              Store Credit
             </TabBox>
             <ul>
               <li>
-                <SubTabBox to={"/refunds"}>
-                  <StoreCredit className="menu-icons" />
-                  <TabItemLable>Issue Store Credits</TabItemLable>
+                <SubTabBox
+                  to={"/refunds"}
+                  active={"/refunds" === location.pathname}
+                >
+                  {/* <HiOutlineReceiptRefund className="menu-icons" /> */}
+                  <TabItemLable>Store-Credits & Refunds</TabItemLable>
                 </SubTabBox>
               </li>
               <li>
-                <SubTabBox to={"/configuration"}>
-                  <ConfigIcon className="menu-icons" />
+                <SubTabBox
+                  to={"/configuration"}
+                  active={"/configuration" === location.pathname}
+                >
+                  {/* <AiOutlineSetting className="menu-icons" /> */}
                   <TabItemLable>Preferences</TabItemLable>
+                </SubTabBox>
+              </li>
+            </ul>
+          </li>
+
+          <li id="storecredit" className="parent" onClick={handleTab}>
+            <TabBox active={`${activeTab?.storecredit}`} to={"/refunds"}>
+              <HiOutlineDocumentMagnifyingGlass className="menu-icons" />
+              Support
+            </TabBox>
+            <ul>
+              <li>
+                <SubTabBox to={"/faqs"} active={"/faqs" === location.pathname}>
+                  {/* <HiOutlineDocumentMagnifyingGlass className="menu-icons" /> */}
+                  <TabItemLable>FAQ's</TabItemLable>
+                </SubTabBox>
+              </li>
+              <li>
+                <SubTabBox
+                  to={"/issues"}
+                  active={"/issues" === location.pathname}
+                >
+                  {/* <AiOutlineQuestionCircle className="menu-icons" /> */}
+                  <TabItemLable>Issues</TabItemLable>
                 </SubTabBox>
               </li>
             </ul>

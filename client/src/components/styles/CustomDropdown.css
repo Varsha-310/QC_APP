@@ -1,12 +1,15 @@
 .dropdown {
   /* margin: 0 auto; */
-  z-index: 100;
+  /* z-index: 100; */
   width: 100%;
   position: relative;
 }
-.dropdown,
+/* .dropdown,
 .dropdown * {
   z-index: 10;
+} */
+.dropdown{
+  /* z-index: 10; */
 }
 .dropdown .dropdown-btn {
   cursor: pointer;
@@ -33,6 +36,7 @@
   width: 100%;
   border: 1.5px solid rgba(182, 32, 40, 0.2);
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }
 .dropdown-content .item {
   padding: 5px 10px;
@@ -46,9 +50,9 @@
   background: var(--frame-color);
 }
 
-button {
+/* button {
   z-index: -1;
   display: block;
   width: 100%;
   margin: 0 auto;
-}
+} */
