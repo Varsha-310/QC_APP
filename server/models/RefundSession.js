@@ -9,6 +9,7 @@ const RefundsLogs =   mongoose.Schema({
   logs: [{
     
     retries: Number,
+    created_at: Date,
     id: String,
     total : Number,
     refund_type: String,
