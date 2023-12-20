@@ -254,6 +254,7 @@ const RefundPage = () => {
       line_items: lineData,
       amount: rfItem.total?.toString(),
       refund_type: rfItem?.refund_type,
+      retry_id: rfItem?.id,
     };
 
     try {
