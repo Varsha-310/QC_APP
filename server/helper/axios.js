@@ -15,11 +15,11 @@ axios.interceptors.request.use(config => {
             "Content-Type": "application/json;charset=UTF-8",
             "DateAtClient": new Date().toISOString().slice(0, 22)
         }; 
-        //return config;
     }
+    console.log("Config", config);
     if(retry?.retries >= 0) return config;
     return {
-        ...config, 
+        ...config,
         retry: {
             retries: 1,
             retryDelay: 2000
@@ -31,12 +31,14 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use((resp) => resp, async (err) => {
 
     // Extract data from error
-    const { config, response, checkAuth } = err;
+    const { config, response } = err;
     const { retry } = config;
 
+    console.log("Response Config:", config);
     // handle auth token expiry 
     if (response?.status == "401" && response?.data?.ResponseCode == "10744") {
 
+        const checkAuth = config
         const {store, n } = checkAuth;
         const token = await authToken(store);
         if(token && n){
@@ -52,7 +54,7 @@ axios.interceptors.response.use((resp) => resp, async (err) => {
     if(!retry || !retry.retries) return Promise.reject(err);
 
     // Abort auto retried while its not a server error or Timeout error
-    if((response.status >= 500) || (err.code === 'ECONNABORTED')) {
+    if((response.status >= 400) || (err.code === 'ECONNABORTED')) {
 
         config.retry.retries -= 1;
         //Retry while Server Error Recieved.
@@ -69,4 +71,4 @@ axios.interceptors.response.use((resp) => resp, async (err) => {
     }
 });
 
-export default axios;
+export default  axios;
