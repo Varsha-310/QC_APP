@@ -63,12 +63,6 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get("/", async(req, res) => {
-
-  const token = await createJwt("qc-test-store-2.myshopify.com");
-  return res.json(token);
-})
-
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
 
