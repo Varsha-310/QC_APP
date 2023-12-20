@@ -23,6 +23,6 @@ const OCELog = mongoose.Schema({
     enum: ["retry", "done", "error"],
     default: "retry"
   }
-},{ timestmps: true});
+},{ timestamps: true});
 
 export default mongoose.model("OrderCreateEventLog", OCELog);
