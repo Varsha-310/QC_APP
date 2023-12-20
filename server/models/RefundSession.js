@@ -17,6 +17,7 @@ const RefundsLogs =   mongoose.Schema({
     amount: Number,
     order_updated_at: Date,
     refund_created_at: Date,
+    line_items: Object,
     status: {
       type: String,
       enum: ["in-process","completed", "Failed"],

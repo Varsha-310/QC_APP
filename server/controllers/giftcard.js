@@ -9,7 +9,7 @@ import {
   respondForbidden,
 } from "../helper/response.js";
 import Store from "../models/store.js";
-import axios from "axios";
+import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
 import {
   fetchBalance,
@@ -46,7 +46,6 @@ export const createGiftcardProducts = async (req, res) => {
       variants[i]['inventory_policy'] = "deny";
       variants[i]['inventory_management'] = null;
       variants[i]['requires_shipping'] = false;
-
     }
     let newProduct = await shopify.product.create({
       // Create a product in Shopify with the details sent in API
@@ -263,23 +262,7 @@ export const addGiftcard = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    for(let i =0; i< 3; i++){
-      await sleep(180000);    
-      gcToWallet = await addGiftcardtoWallet(
-        store,
-        customer_id,
-        gc_pin,
-        validPin.balance,
-        type,
-        validPin.order_id,
-        logs
-      );
-      if(gcToWallet.staus){
-        break;
-      }
-      logs = gcToWallet;
-    }
+    
     res.json(respondInternalServerError());
   }
 };
@@ -447,7 +430,7 @@ export const addGiftcardtoWallet = async (
           );
           // return transaction.data;
         }
-        //weiuisadhf
+        
       }
     }
     return logs;
@@ -474,23 +457,46 @@ export const getWalletBalance = async (req, res) => {
       let walletExists = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
-      console.log("-----------------", walletExists);
       if (walletExists) {
-        let balanceFetched = await fetchBalance(store, walletExists.wallet_id);
+        console.log("wallet exists")
+        let qcBalance = await fetchBalance(store, walletExists.wallet_id);
         let shopifybalance = await getShopifyGiftcard(
           store,
           storeExists.access_token,
           walletExists.shopify_giftcard_id
         );
-        console.log(shopifybalance, "shopify giftcard balance");
-        console.log(balanceFetched);
-        res.json({
-          ...respondWithData("balance fetched"),
-          data: {
-            balance: balanceFetched,
-            gc_id: walletExists.shopify_giftcard_pin,
-          },
-        });
+        console.log(`qc:${qcBalance} , shopify :${shopifybalance.balance}`);
+        if(qcBalance < shopifybalance.balance){
+          let diffAmount = shopifybalance.balance - qcBalance;
+          console.log(diffAmount , "diff amount")
+          console.log("qc wallet balance is less" ,);
+          let updateShopifyGc = await updateShopifyGiftcard(
+              store,
+              storeExists.access_token,
+              walletExists.shopify_giftcard_id,
+              -diffAmount
+            );
+            console.log("updated shopify giftcard",updateShopifyGc);
+          res.json({
+            ...respondWithData("balance fetched"),
+            data: {
+              balance: qcBalance,
+              gc_id: walletExists.shopify_giftcard_pin,
+            },
+          });
+
+        }
+        else{
+          
+          console.log("shopify balance is same or less than qc" , qcBalance, shopifybalance.balance)
+          res.json({
+            ...respondWithData("balance fetched"),
+            data: {
+              balance: parseFloat(shopifybalance.balance),
+              gc_id: walletExists.shopify_giftcard_pin,
+            },
+          });
+        }
       } else {
         res.json(respondNotFound("wallet does not exists"));
       }
@@ -751,7 +757,8 @@ export const giftCardAmount = async (store, id) => {
  * @param {*} amount
  * @returns
  */
-const createShopifyGiftcard = async (store, token, amount) => {
+export const createShopifyGiftcard = async (store, token, amount) => {
+
   try {
     let data = JSON.stringify({
       gift_card: {
@@ -773,8 +780,8 @@ const createShopifyGiftcard = async (store, token, amount) => {
     console.log(shopifyGc.data.gift_card);
     return shopifyGc.data.gift_card;
   } catch (err) {
-    console.log(err);
-    //return false;
+    
+    console.log(JSON.stringify(err));
     throw new Error("Shopify GC Creation Error");
   }
 };
