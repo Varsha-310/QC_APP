@@ -813,12 +813,13 @@ export const cancelRedeemWallet = async (
   logs["status"] = false;
   try {
 
-    console.log(store, gc_id, amount, order_id );
-    const string_id = gc_id.toString();
+    console.log(store, wallet_id, amount, order_id );
+    const string_id = wallet_id.toString();
+    console.log(string_id)
     const giftcardExists = await wallet.findOne({
-      shopify_giftcard_id: string_id,
+      wallet_id: wallet_id
     });
-    if (giftcardExists) {
+    
 
       const redeemData = await OrderCreateEventLog.findOne({
         store: store,
@@ -859,6 +860,7 @@ export const cancelRedeemWallet = async (
       };
 
       const walletRedemption = await axios(config);
+      console.log(config)
       console.log("QC - Response Code - ", walletRedemption.data.ResponseCode);
       logs["resp"] = walletRedemption?.data;
       if (walletRedemption.status == "200" && walletRedemption.data.ResponseCode == "0") {
@@ -882,8 +884,9 @@ export const cancelRedeemWallet = async (
       }
       await setting.save();
       return logs;
-    }
+    
   } catch (err) {
+    console.log(err ,"error")
     
     logs["error"] = err.response.data || err?.code;
     return logs;

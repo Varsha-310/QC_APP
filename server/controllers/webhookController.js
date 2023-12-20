@@ -338,7 +338,7 @@ export const ordercreateEvent = async (shop, order, res) => {
             // OrderSession["redeem"] = redeemed;
             await OrderCreateEventLog.updateOne(
               logQuery,
-              { redeem: redeemed },
+              { redeem: redeemed , numberOfRetried},
               { upsert: true }
             );
             if (!redeemed.status) throw new Error("Error: Redeem Gift Card");
