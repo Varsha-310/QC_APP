@@ -21,6 +21,7 @@ import Jwt from "jsonwebtoken";
  */
 export const install = async (req, res) => {
   try {
+	console.log(req.headers, "headers");
     const shop = req.query.shop;
     if (shop) {
       const scopes = process.env.SCOPES;
@@ -128,7 +129,9 @@ export const saveStoreData = async (shopData, shop, accessToken, token) => {
       status: "installed",
       country_code: shopData.shop?.country_code.toLowerCase(),
       is_installed: true,
-      auth_token : token
+      auth_token : token,
+      currency: shopData.shop.currency,
+      myshopify_domain: shopData.shop.myshopify_domain
     };
     console.log(data);
     let storeDetails = await store.updateOne(
@@ -158,7 +161,7 @@ export const getShopifyStoreData = async (shop, accessToken, res) => {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
       method: "GET",
-      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code`,
+      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code,myshopify_domain`,
       headers: {
         "X-Shopify-Access-Token": accessToken,
       },
@@ -166,8 +169,7 @@ export const getShopifyStoreData = async (shop, accessToken, res) => {
     let shopData = await axios(shopOption);
     console.log(shopData.data, "shopData");
 
-    shopData =
-      shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
+    shopData = shopData.status == 200 || shopData.status == 201 ? shopData.data : false;
     console.log("----------------------------", shopData);
     return shopData;
   } catch (error) {

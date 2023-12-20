@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
+// import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
@@ -22,6 +23,8 @@ import { failedOrders } from "./controllers/webhookController.js";
 
 export const app = express();
 
+// 
+// app.use(helmet());
 //CORS Configuration
 app.use(function (req, res, next) {
 
@@ -29,6 +32,8 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH");
   res.setHeader("Access-Control-Allow-Headers","*");
   res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.removeHeader("X-Powered-By");
   next();
 });
 
@@ -88,15 +93,15 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule("*/3 * * * *", () => {
+cron.schedule("* * * * *", () => {
   // cronToCheckWebhooks();
-  // console.log("checking webhooks!");
+  console.log("checking failed sessions");
   failedOrders();
 });
 
 // Database and Port connection
 mongoose
-   .connect(process.env.DB_URL)
+   .connect(process.env.mongoUrl)
   .then(() => {
 
     app.listen(process.env.PORT);
