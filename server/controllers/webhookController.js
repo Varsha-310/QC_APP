@@ -580,11 +580,11 @@ export const failedOrders = async () => {
       console.log("ready for order retry");
       if(iterator.action == "redeem"){
         console.log("ready for order retry for redeeeeeeeeeeeeeeeeeeeeeeeem");
-        if (iterator.numberOfRetried == 0) {
+        if (iterator.numberOfRetried == 1) {
           console.log("ready for order retry for redeeeeeeeeeeeeeeeeeeeeeeeem");
           await processOrder(iterator, 60 , 180);
         }
-        if (iterator.numberOfRetried == 1) {
+        if (iterator.numberOfRetried == 2) {
           await processOrder(iterator, 180 ,300);
         }
       }
