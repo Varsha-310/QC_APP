@@ -316,10 +316,8 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     const wallet = await Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
     console.log("Walllet: ", wallet);
 
-    let myDate = new Date().toISOString().slice(0, 22);
-    console.log("mydate", myDate, 365);
+    let myDate = new Date()
     myDate.setDate(myDate.getDate() + parseInt(365));
-    const expirydate = myDate.toISOString().slice(0, 10);
 
     let data = logs?.req
       ? logs.req
@@ -337,7 +335,7 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
                     {
                         "InstrumentProgram": setting.refund_cpgn,
                         "Amount": amount,
-                        "Expiry": expirydate
+                        "Expiry": myDate.toISOString().slice(0, 10)
                     }
                 ]
             }
@@ -356,7 +354,8 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
-    if (walletCreation.data.ResponseCode == "0") {
+    console.log(walletCreation?.data);
+    if (walletCreation?.data?.ResponseCode == "0") {
       logs["status"] = true;
     }
     return logs;
