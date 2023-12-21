@@ -684,6 +684,7 @@ export const redeemWallet = async (
       );
       logs["status"] = true;
     }
+    logs["status"] = "NonZero";
     return logs;
   } catch (err) {
 
