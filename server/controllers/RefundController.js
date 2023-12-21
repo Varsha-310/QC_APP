@@ -366,13 +366,15 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 status: true,
                 time: new Date().toISOString()
             };
+            let myDate = new Date()
+            myDate.setDate(myDate.getDate() + parseInt(365));
             await wallet_history.updateOne({ wallet_id: walletDetails.wallet_id, customer_id: ordersData?.customer.id },
                 {
                   $push: {
                     transactions: {
                       transaction_type: "credit",
                       amount: amount,
-                      expires_at: 365,
+                      expires_at: myDate.toISOString().slice(0, 10),
                       transaction_date: Date.now(),
                       type: type,
                     },
