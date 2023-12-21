@@ -382,6 +382,12 @@ export const cancelLoadWalletAPI = async (store, cardResp, customerId, logs = {}
   logs["status"] = false;
   try {
 
+    if(cardResp == undefined){
+      console.log("Load Balance Response Found");
+      logs["status"] = true;
+      return logs;
+    }
+
     console.log("Cancel Load Wallet API called", store, cardResp, customerId);
     let setting = await qcCredentials.findOne({ store_url: store });
     let transactionId = setting.unique_transaction_id; 

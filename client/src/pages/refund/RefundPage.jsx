@@ -384,13 +384,14 @@ const RefundPage = () => {
                         <td>{rfItem?.refund_type}</td>
                         <td>{rfItem?.status}</td>
                         <td>
-                          {rfItem?.status !== "completed" ? (
-                            <div
-                              onClick={() => handleRetryRefund(rfItem)}
-                              className="retry-btn"
-                            >
-                              Retry
-                            </div>
+                          {rfItem?.status === "in-process" ?
+                           ( ""
+                            // <div
+                            //   onClick={() => handleRetryRefund(rfItem)}
+                            //   className="retry-btn"
+                            // >
+                            //   Retry
+                            // </div>
                           ) : (
                             "-"
                           )}
