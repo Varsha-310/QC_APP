@@ -729,16 +729,16 @@ export const giftCardAmount = async (store, id) => {
   try {
     let shopify = await getShopifyObject(store);
     let fetchTransaction = await shopify.transaction.list(id);
-    console.log(fetchTransaction, "transaction");
+   // console.log(fetchTransaction, "transaction");
     fetchTransaction.gateway = "gift_card";
     if (fetchTransaction.gateway == "gift_card") {
       const giftcardExists = await wallet.findOne({
         shopify_giftcard_id: fetchTransaction[0].receipt.gift_card_id,
       });
-      console.log(giftcardExists);
+      //console.log(giftcardExists);
       if (giftcardExists) {
         const redeemAmount = fetchTransaction[0].amount;
-        console.log("shopify gc reedemded", fetchTransaction[0].id);
+        //console.log("shopify gc reedemded", fetchTransaction[0].id);
         return { amount: redeemAmount, id: giftcardExists.wallet_id };
       } else {
         return false;

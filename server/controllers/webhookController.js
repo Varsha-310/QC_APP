@@ -564,20 +564,22 @@ export const getQcCredentials = async (req, res) => {
  * Shedule Cron for Retry the Failed Error
  */
 export const failedOrders = async () => {
-  console.log("checking for failed orders");
+
+  console.log(" --- Retry Process Started ---- ");
   const failedOrders = await OrderCreateEventLog.find({
     status: "retry",
     numberOfRetried: { $lte: 3}
   });
-  console.log(failedOrders, "failed order list");
+  console.log("Total Failed Orders: ", failedOrders.length);
   for (const iterator of failedOrders) {
 
+    console.log(`No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`);
     if (iterator.numberOfRetried >= 3) {
+     
       console.log("order retry greater than three");
       if (iterator.action == "redeem") {
 
-        console.log("order retry greater than three for redeem");
-        
+        console.log("Redeem Action");
         await reverseRedeemWallet(
           iterator.store,
           iterator.orderId,
@@ -592,18 +594,15 @@ export const failedOrders = async () => {
         );
       }
     } else {
-      console.log("ready for order retry");
-      if (iterator.action == "redeem") {
-        console.log("ready for order retry for redeeeeeeeeeeeeeeeeeeeeeeeem");
-        if (iterator.numberOfRetried == 1) {
-          console.log("ready for order retry for redeeeeeeeeeeeeeeeeeeeeeeeem");
-          await processOrder(iterator, 60, 180);
-        }
-        if (iterator.numberOfRetried == 2) {
-          await processOrder(iterator, 180, 300);
-        }
-      } else {
-        console.log("giftcard");
+
+      const currentTime = Date.now();
+      const timeDifference = Math.floor(Math.abs((iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000));
+      const diff = iterator.numberOfRetried == 1 ? 60 : 180;
+      console.log(`Current Time: ${currentTime}, Last Retied: ${iterator?.retriedAt || iterator.updatedAt}`);
+      console.log(`Time Diffrence: ${timeDifference} -  Diff: ${diff}`);
+
+      if (timeDifference > diff) {
+
         const orderData = await orders.findOne({
           id: iterator.orderId,
           store_url: iterator.store,
@@ -619,20 +618,16 @@ export const failedOrders = async () => {
  * @param {*} threshold
  */
 async function processOrder(iterator, threshold, max) {
+
   try {
-    const currentTime = Date.now();
+
+    
     console.log(iterator, "iterator");
-    const timeDifference = Math.floor(
-      Math.abs((iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000)
-    );
+   
     console.log(timeDifference, threshold, max, "time");
     if (max > timeDifference < threshold) {
       console.log(timeDifference, threshold, "available for retry");
-      const orderData = await orders.findOne({
-        id: iterator.orderId,
-        store_url: iterator.store,
-      });
-      await ordercreateEvent(orderData.store_url, orderData);
+     
     }
   } catch (err) {
     console.log("error in processing", err);
