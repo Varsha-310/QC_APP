@@ -315,6 +315,12 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     let idempotency_key = generateIdempotencyKey();
     const wallet = await Wallet.findOne({shopify_customer_id: customerId, store_url: store}, {wallet_id: 1});
     console.log("Walllet: ", wallet);
+
+    let myDate = new Date().toISOString().slice(0, 22);
+    console.log("mydate", myDate, 365);
+    myDate.setDate(myDate.getDate() + parseInt(365));
+    const expirydate = myDate.toISOString().slice(0, 10);
+
     let data = logs?.req
       ? logs.req
       : {
@@ -330,7 +336,8 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
                 "PaymentInstruments": [
                     {
                         "InstrumentProgram": setting.refund_cpgn,
-                        "Amount": amount
+                        "Amount": amount,
+                        "Expiry": expirydate
                     }
                 ]
             }
@@ -621,6 +628,7 @@ export const redeemWallet = async (
 ) => {
   logs["status"] = false;
   try {
+
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------");
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
@@ -658,7 +666,11 @@ export const redeemWallet = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1}
+      checkAuth: {store, n:1},
+      retry: {
+          retries: 0,
+          retryDelay: 2000
+      }
     };
 
     let walletRedemption = await axios(config);
@@ -825,11 +837,6 @@ export const cancelRedeemWallet = async (
       wallet_id: wallet_id
     });
     
-
-      const redeemData = await OrderCreateEventLog.findOne({
-        store: store,
-        orderId: order_id,
-      });
       const setting = await qcCredentials.findOne({ store_url: store });
       let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
@@ -885,7 +892,6 @@ export const cancelRedeemWallet = async (
           },
           { upsert: true }
         );
-        //return walletRedemption.data;
       }
       await setting.save();
       return logs;
