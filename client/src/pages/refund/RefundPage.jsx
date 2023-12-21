@@ -254,6 +254,7 @@ const RefundPage = () => {
       line_items: lineData,
       amount: rfItem.total?.toString(),
       refund_type: rfItem?.refund_type,
+      retry_id: rfItem?.id,
     };
 
     try {
@@ -383,13 +384,14 @@ const RefundPage = () => {
                         <td>{rfItem?.refund_type}</td>
                         <td>{rfItem?.status}</td>
                         <td>
-                          {rfItem?.status !== "completed" ? (
-                            <div
-                              onClick={() => handleRetryRefund(rfItem)}
-                              className="retry-btn"
-                            >
-                              Retry
-                            </div>
+                          {rfItem?.status === "in-process" ?
+                           ( ""
+                            // <div
+                            //   onClick={() => handleRetryRefund(rfItem)}
+                            //   className="retry-btn"
+                            // >
+                            //   Retry
+                            // </div>
                           ) : (
                             "-"
                           )}

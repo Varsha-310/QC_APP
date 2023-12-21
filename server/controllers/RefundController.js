@@ -4,8 +4,8 @@ import axios from "../helper/axios.js";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
 import Store from "../models/store.js";
-import { createGiftcard, cancelRedeemWallet, checkWalletOnQC, createWallet, loadWalletAPI, cancelCreateNdIssueGiftcard, cancelLoadWalletAPI } from "../middleware/qwikcilver.js";
-import { addGiftcardtoWallet, createShopifyGiftcard, giftCardAmount, updateShopifyGiftcard } from "./giftcard.js";
+import { checkWalletOnQC, createWallet, loadWalletAPI, cancelLoadWalletAPI } from "../middleware/qwikcilver.js";
+import { createShopifyGiftcard, updateShopifyGiftcard } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
 import { checkActivePlanUses } from "./BillingController.js";
 import Wallet from "../models/wallet.js";
@@ -236,7 +236,7 @@ const updateRefundLogs = async(query, logs) => {
  * @returns 
  */
 const checkRefundSession = async(orderId, store_url, refundableAmount ,refund_id ) => {
-    const refundSession = await RefundSession.findOne({"logs.id": refund_id});
+    const refundSession = await RefundSession.findOne({"order_id": orderId, store_url});
     console.log('isRefundSessionExists', refundSession);
     if(!refundSession){
 
@@ -279,7 +279,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
     try {
         
         logs["status"] = false;
-        console.log("------------------------ Store Credit Process Started -------------------");
+        console.log("------------------------ Store Credit Process Started -------------------", store);
         const  type = "refund";
      
         // Check And Create Wallet;
@@ -289,26 +289,6 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
             checkWallet =  await checkWalletOnQC(store, ordersData.customer.id, logs?.checkWallet);
             console.log(" checking wallet on qc",checkWallet);
             logs["checkWallet"] = checkWallet;
-            if(checkWallet.status === 1) throw Error("Error: Check Wallet");
-        }
-        if(checkWallet.status == 404){
-
-            const createWalletOnQc = await createWallet(store, ordersData.customer.id, ordersData.id, logs?.createWallet);
-            console.log(JSON.stringify(createWalletOnQc));
-            logs["createWallet"] = createWalletOnQc;
-            await Wallet.updateOne({
-                store_url: store,
-                shopify_customer_id:ordersData.customer.id
-            },{
-                shopify_customer_id: ordersData.customer.id,
-                store_url: store,
-                wallet_id: createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
-                WalletPin: createWalletOnQc["resp"].Wallets[0]["WalletPin"]
-            },{upsert: true});
-            if(!createWalletOnQc.status) throw Error("Error: Creating Wallet On WC");
-            logs["checkWallet"]["status"] = 200;
-        }
-        if(checkWallet.status == 200){
             await Wallet.updateOne({
                 store_url: store,
                 shopify_customer_id:ordersData.customer.id
@@ -318,7 +298,24 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
                 WalletPin: checkWallet.resp.Wallets[0]["WalletPin"]
             },{upsert: true});
+            if(checkWallet.status === 1) throw Error("Error: Check Wallet");
+        }
+        if(checkWallet.status == 404){
 
+            const createWalletOnQc = await createWallet(store, ordersData.customer.id, ordersData.id, logs?.createWallet);
+            console.log(JSON.stringify(createWalletOnQc));
+            logs["createWallet"] = createWalletOnQc;
+            if(!createWalletOnQc.status) throw Error("Error: Creating Wallet On WC");
+            await Wallet.updateOne({
+                store_url: store,
+                shopify_customer_id: ordersData.customer.id
+            },{
+                shopify_customer_id: ordersData.customer.id,
+                store_url: store,
+                wallet_id: createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
+                WalletPin: createWalletOnQc["resp"].Wallets[0]["WalletPin"]
+            },{upsert: true});
+            logs["checkWallet"]["status"] = 200;
         }
 
         // Create , Activate and add card to wallet using load wallet api.
@@ -347,7 +344,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                       shopify_customer_id: ordersData.customer.id,
                       shopify_giftcard_id: createShopifyGC.id,
                       shopify_giftcard_pin: createShopifyGC.code,
-                    //   balance: parseFloat(walletDetails?.balance) + parseFloat(amount)
+                      balance: parseFloat(walletDetails?.balance || 0) + parseFloat(amount)
                     },{
                         upsert:true
                     }
@@ -359,7 +356,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                         store_url: store,
                         shopify_customer_id: ordersData.customer.id
                     },{ 
-                        balance: parseFloat(walletDetails.balance) + parseFloat(amount)
+                        balance: parseFloat(walletDetails.balance || 0) + parseFloat(amount)
                     },{
                         upsert: true
                     }
@@ -475,7 +472,7 @@ export const handleRefundAction = async (req, res) => {
             refund_type: refund_type,
             total: amount,
             line_items: line_items,
-            retries: parseInt(refundSession?.retries || 0)
+            retries: parseInt(refundSession?.retries || 0) + 2
         }
         
 	    const trans = [];
@@ -532,17 +529,18 @@ export const handleRefundAction = async (req, res) => {
         if(storeCredit && !refundSession?.storeCredit?.status){
 
             const logs1 = await refundAsStoreCredit(store_url, accessToken, ordersData, storeCredit, refundSession?.storeCredit);
-            if(!logs1.status && ((logs.retries + 2))>= 3){
+            if(!logs1.status && (logs.retries >= 2)){
 
-                const scLogs = logs1;
-                // const voidGC = scLogs?.voidGC && await cancelCreateNdIssueGiftcard(store_url, scLogs?.createGC?.resp, scLogs?.voidGC);
-                // scLogs["voidGC"] = voidGC;
-                const voidLoadWallet = scLogs?.voidLW && await cancelLoadWalletAPI(store_url, scLogs?.loadWallet?.resp, scLogs?.voidLW);
+                console.log("------------- Cancel Load Wallet API Called -----------");
+                const scLogs = logs1;;
+                let voidLoadWallet = {};
+                if(!scLogs?.voidLW?.status){
+                    voidLoadWallet = await cancelLoadWalletAPI(store_url, scLogs?.loadWallet?.resp, ordersData.customer.id, scLogs?.voidLW);
+                }
                 scLogs["voidLW"] = voidLoadWallet;
                 refundSession = await updateRefundLogs(sessionQuery, {  
                     storeCredit: scLogs,
                     status: "Failed",
-                    retries: parseInt(refundSession?.retries || 0) + 2,
                     ...logs
                 });
                 return res.json(respondSuccess("Server Is not responding properly, Try After Some time"));
@@ -567,7 +565,6 @@ export const handleRefundAction = async (req, res) => {
             console.log(refundedResp.data, " Query : ", sessionQuery);
             refundSession = await updateRefundLogs(sessionQuery, {
                 refund_created_at: new Date(),
-                retries: logs.retries + 2,
                 status: "completed"
             });
             ordersData.refund_status = (parseFloat(amount)+ parseFloat(refundedAmount)) >= refundableAmount ? "Refunded" : "Partially refunded";

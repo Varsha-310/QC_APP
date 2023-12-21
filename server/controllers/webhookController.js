@@ -4,7 +4,11 @@ import Queue from "better-queue";
 import store from "../models/store.js";
 import product from "../models/product.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
-import { createGiftcard, redeemWallet , reverseRedeemWallet } from "../middleware/qwikcilver.js";
+import {
+  createGiftcard,
+  redeemWallet,
+  reverseRedeemWallet,
+} from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
 import { checkActivePlanUses } from "./BillingController.js";
@@ -74,7 +78,7 @@ export const ordercreateEvent = async (shop, order, res) => {
       order,
       { upsert: true }
     );
-    console.log(orderSaved);
+    //console.log(orderSaved);
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
     if (settings) {
@@ -83,14 +87,14 @@ export const ordercreateEvent = async (shop, order, res) => {
 
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
-        console.log(line_item.product_id);
+        //console.log(line_item.product_id);
         gift_card_product = await product
           .findOne({
             id: line_item.product_id,
           })
           .lean(); //Get the product from DB
 
-        console.log("Giftcard Products: ", gift_card_product);
+       // console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
           line_item["validity"] = gift_card_product.validity;
@@ -103,7 +107,7 @@ export const ordercreateEvent = async (shop, order, res) => {
         store: shop,
         orderId: order.id,
       });
-      console.log(OrderSession, "ordersession");
+     // console.log(OrderSession, "ordersession");
       if (OrderSession?.status == "done") {
         // done(null, true);
         return; // skip if already processed.
@@ -112,7 +116,7 @@ export const ordercreateEvent = async (shop, order, res) => {
       const numberOfRetried = OrderSession?.numberOfRetried
         ? parseInt(OrderSession?.numberOfRetried) + 1
         : 1;
-      console.log(OrderSession, "ordersession");
+      // console.log(OrderSession, "ordersession");
 
       //check gc in the order & process
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
@@ -172,10 +176,10 @@ export const ordercreateEvent = async (shop, order, res) => {
               // done();
               return 1;
             }
-            console.log(
-              "____________QC giftcard created______________",
-              qwikcilver_gift_card
-            );
+            // console.log(
+            //   "____________QC giftcard created______________",
+            //   qwikcilver_gift_card
+            // );
             let email = null;
             let message = "";
             let receiver = "";
@@ -308,7 +312,7 @@ export const ordercreateEvent = async (shop, order, res) => {
                   OrderSession?.self?.wallet
                 );
                 // OrderSession["self"]["wallet"] = logs;
-                console.log(logs, "logs of wallet");
+                //console.log(logs, "logs of wallet");
                 await OrderCreateEventLog.updateOne(
                   { store: shop, orderId: order.id },
                   { "self.wallet": logs }
@@ -321,6 +325,7 @@ export const ordercreateEvent = async (shop, order, res) => {
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
         }
       } else if (newOrder.payment_gateway_names.includes("gift_card")) {
+        
         console.log("giftcard redeemed");
         let checkAmount = await giftCardAmount(shop, newOrder.id);
         console.log("--------redeemed amount--------------", checkAmount);
@@ -338,7 +343,7 @@ export const ordercreateEvent = async (shop, order, res) => {
             // OrderSession["redeem"] = redeemed;
             await OrderCreateEventLog.updateOne(
               logQuery,
-              { redeem: redeemed },
+              { redeem: redeemed, numberOfRetried },
               { upsert: true }
             );
             if (!redeemed.status) throw new Error("Error: Redeem Gift Card");
@@ -510,6 +515,7 @@ function processPrd(updatedProduct, store) {
  * @param {*} res
  */
 export const getQcCredentials = async (req, res) => {
+
   console.log("--------------------webhook from QC------------------");
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------", req.body);
@@ -525,17 +531,6 @@ export const getQcCredentials = async (req, res) => {
     username,
     wpgn,
   } = req.body;
-  console.log(
-    giftcard_cpgn,
-    oracle_id,
-    password,
-    refund_cpgn,
-    shopify_id,
-    support_url,
-    terminal_id,
-    username,
-    wpgn
-  );
   const log = await qcCredentials.updateOne(
     { shopify_id: shopify_id },
     {
@@ -560,34 +555,51 @@ export const getQcCredentials = async (req, res) => {
  * Shedule Cron for Retry the Failed Error
  */
 export const failedOrders = async () => {
-  console.log("checking for failed orders");
-  const failedOrders = await OrderCreateEventLog.find({
-    status: "retry"
-  });
-  console.log(failedOrders, "failed order list");
 
+  console.log(" --- Retry Process Started ---- ");
+  const failedOrders = await OrderCreateEventLog.find({
+    status: "retry",
+    numberOfRetried: { $lte: 3}
+  });
+  console.log("Total Failed Orders: ", failedOrders.length);
   for (const iterator of failedOrders) {
-    if (iterator.numberOfRetried > 3) {
-      if(iterator.action == "redeem"){
-        await reverseRedeemWallet(iterator.store,iterator.orderId,iterator.redeem.req.billAmount,iterator.redeem.req.cards[0].CardNumber,iterator.redeem.req.cards[0].Amount);
+
+    console.log(`No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`);
+    if (iterator.numberOfRetried >= 3) {
+     
+      console.log("order retry greater than three");
+      if (iterator.action == "redeem") {
+
+        console.log("Redeem Action");
+        await reverseRedeemWallet(
+          iterator.store,
+          iterator.orderId,
+          iterator.redeem.req.billAmount,
+          iterator.redeem.req.Cards[0].CardNumber,
+          iterator.redeem.req.Cards[0].Amount
+        );
         await orderCancel(iterator.orderId, iterator.store);
-      await OrderCreateEventLog.findOneAndUpdate({orderId :iterator.orderId}, {status: "done"});
       }
-      else{
-        const orderData = await orders.findOne({id: iterator.orderId, store_url: iterator.store});
-        await ordercreateEvent(orderData.store_url,orderData)
+      await OrderCreateEventLog.findOneAndUpdate(
+        { orderId: iterator.orderId },
+        { status: "done", numberOfRetried: parseInt(iterator.numberOfRetried) + 1 }
+      );
+    } else {
+
+      const currentTime = Date.now();
+      const timeDifference = Math.floor(Math.abs((iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000));
+      const diff = iterator.numberOfRetried == 1 ? 60 : 120;
+      console.log(`Current Time: ${currentTime}, Last Retied: ${iterator?.retriedAt || iterator.updatedAt}`);
+      console.log(`Time Diffrence: ${timeDifference} -  Diff: ${diff}`);
+
+      if (timeDifference > diff) {
+
+        const orderData = await orders.findOne({
+          id: iterator.orderId,
+          store_url: iterator.store,
+        });
+        await ordercreateEvent(orderData.store_url, orderData);
       }
-      
-    }
-    else{
-      if(iterator.action == "redeem"){
-      if (iterator.numberOfRetried == 1) {
-        await processOrder(iterator, 60);
-      }
-      if (iterator.numberOfRetried == 2) {
-        await processOrder(iterator, 180);
-      }
-    }
     }
   }
 };
@@ -596,18 +608,15 @@ export const failedOrders = async () => {
  * processing failed order session
  * @param {*} threshold
  */
-async function processOrder(iterator, threshold) {
+async function processOrder(iterator, threshold, max) {
+
   try {
-    const currentTime = Date.now();
-    const timeDifference = Math.floor(
-      Math.abs((iterator.retriedAt - currentTime) / 1000)
-    );
-    if (timeDifference < threshold) {
-      const orderData = await orders.findOne({
-        id: iterator.orderId,
-        store_url: iterator.store,
-      });
-      await ordercreateEvent(orderData.store_url, orderData);
+ 
+    console.log(iterator, "iterator");
+    console.log(timeDifference, threshold, max, "time");
+    if (max > timeDifference < threshold) {
+
+      console.log(timeDifference, threshold, "available for retry");
     }
   } catch (err) {
     console.log("error in processing", err);
