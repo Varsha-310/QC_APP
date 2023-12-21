@@ -671,11 +671,7 @@ export const redeemWallet = async (
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
-      checkAuth: {store, n:1},
-      retry: {
-          retries: 0,
-          retryDelay: 2000
-      }
+      checkAuth: {store, n:1}
     };
 
     let walletRedemption = await axios(config);
@@ -683,7 +679,6 @@ export const redeemWallet = async (
     if (walletRedemption.data.ResponseCode == "0") {
 
       console.log("redeem successfull");
-      logs["status"] = true;
       await wallet_history.updateOne(
         { wallet_id: wallet_id },
         {
@@ -701,6 +696,7 @@ export const redeemWallet = async (
         { id: id },
         { redeem_txn_id: walletRedemption?.data.TransactionId }
       );
+      logs["status"] = true;
     }
     return logs;
   } catch (err) {

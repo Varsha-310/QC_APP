@@ -597,7 +597,7 @@ export const failedOrders = async () => {
 
       const currentTime = Date.now();
       const timeDifference = Math.floor(Math.abs((iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000));
-      const diff = iterator.numberOfRetried == 1 ? 60 : 180;
+      const diff = iterator.numberOfRetried == 1 ? 60 : 120;
       console.log(`Current Time: ${currentTime}, Last Retied: ${iterator?.retriedAt || iterator.updatedAt}`);
       console.log(`Time Diffrence: ${timeDifference} -  Diff: ${diff}`);
 
