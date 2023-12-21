@@ -194,17 +194,10 @@ export const fetchBalance = async (store, walletData) => {
   try {
     // console.log(walletData);
     let setting = await qcCredentials.findOne({ store_url: store });
-
-    console.log(
-      "------------------store qc credeentials-------------------------",
-      setting
-    );
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     await setting.save();
-    let myDate = new Date();
-    const date = myDate.toISOString().slice(0, 22);
 
     let data = {
       TransactionTypeId: 3503,
@@ -229,15 +222,9 @@ export const fetchBalance = async (store, walletData) => {
     };
     console.log("----fetch balance config----------", config);
     let walletDetails = await axios(config);
-    console.log("Check Balance", walletDetails.data);
+    if (walletDetails.data.ResponseCode == "0") {
 
-    if (
-      walletDetails.status == "200" &&
-      walletDetails.data.ResponseCode == "0"
-    ) {
-      let balance = walletDetails.data.Cards[0].Balance;
-      console.log(balance, "----------balance-------------------");
-      return balance;
+      return walletDetails.data.Cards[0].Balance;
     }
   } catch (err) {
 
@@ -354,7 +341,7 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
     };
     let walletCreation = await axios(config);
     logs["resp"] = walletCreation?.data;
-    console.log(walletCreation?.data);
+    // console.log(walletCreation?.data);
     if (walletCreation?.data?.ResponseCode == "0") {
       logs["status"] = true;
     }
@@ -641,8 +628,7 @@ export const redeemWallet = async (
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
     await setting.save();
-    let myDate = new Date();
-    const date = myDate.toISOString().slice(0, 22);
+
     let data = logs?.req
       ? logs.req
       : {

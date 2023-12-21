@@ -78,7 +78,7 @@ export const ordercreateEvent = async (shop, order, res) => {
       order,
       { upsert: true }
     );
-    console.log(orderSaved);
+    //console.log(orderSaved);
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
     if (settings) {
@@ -87,14 +87,14 @@ export const ordercreateEvent = async (shop, order, res) => {
 
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
-        console.log(line_item.product_id);
+        //console.log(line_item.product_id);
         gift_card_product = await product
           .findOne({
             id: line_item.product_id,
           })
           .lean(); //Get the product from DB
 
-        console.log("Giftcard Products: ", gift_card_product);
+       // console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
           line_item["validity"] = gift_card_product.validity;
@@ -107,7 +107,7 @@ export const ordercreateEvent = async (shop, order, res) => {
         store: shop,
         orderId: order.id,
       });
-      console.log(OrderSession, "ordersession");
+     // console.log(OrderSession, "ordersession");
       if (OrderSession?.status == "done") {
         // done(null, true);
         return; // skip if already processed.
@@ -116,7 +116,7 @@ export const ordercreateEvent = async (shop, order, res) => {
       const numberOfRetried = OrderSession?.numberOfRetried
         ? parseInt(OrderSession?.numberOfRetried) + 1
         : 1;
-      console.log(OrderSession, "ordersession");
+      // console.log(OrderSession, "ordersession");
 
       //check gc in the order & process
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
@@ -176,10 +176,10 @@ export const ordercreateEvent = async (shop, order, res) => {
               // done();
               return 1;
             }
-            console.log(
-              "____________QC giftcard created______________",
-              qwikcilver_gift_card
-            );
+            // console.log(
+            //   "____________QC giftcard created______________",
+            //   qwikcilver_gift_card
+            // );
             let email = null;
             let message = "";
             let receiver = "";
@@ -312,7 +312,7 @@ export const ordercreateEvent = async (shop, order, res) => {
                   OrderSession?.self?.wallet
                 );
                 // OrderSession["self"]["wallet"] = logs;
-                console.log(logs, "logs of wallet");
+                //console.log(logs, "logs of wallet");
                 await OrderCreateEventLog.updateOne(
                   { store: shop, orderId: order.id },
                   { "self.wallet": logs }
@@ -325,6 +325,7 @@ export const ordercreateEvent = async (shop, order, res) => {
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
         }
       } else if (newOrder.payment_gateway_names.includes("gift_card")) {
+        
         console.log("giftcard redeemed");
         let checkAmount = await giftCardAmount(shop, newOrder.id);
         console.log("--------redeemed amount--------------", checkAmount);
@@ -514,6 +515,7 @@ function processPrd(updatedProduct, store) {
  * @param {*} res
  */
 export const getQcCredentials = async (req, res) => {
+
   console.log("--------------------webhook from QC------------------");
   logger.info("--------webhook data from QC---------------");
   logger.info("----------webhook from QC--------", req.body);
@@ -529,17 +531,6 @@ export const getQcCredentials = async (req, res) => {
     username,
     wpgn,
   } = req.body;
-  console.log(
-    giftcard_cpgn,
-    oracle_id,
-    password,
-    refund_cpgn,
-    shopify_id,
-    support_url,
-    terminal_id,
-    username,
-    wpgn
-  );
   const log = await qcCredentials.updateOne(
     { shopify_id: shopify_id },
     {
@@ -588,11 +579,11 @@ export const failedOrders = async () => {
           iterator.redeem.req.Cards[0].Amount
         );
         await orderCancel(iterator.orderId, iterator.store);
-        await OrderCreateEventLog.findOneAndUpdate(
-          { orderId: iterator.orderId },
-          { status: "done" }
-        );
       }
+      await OrderCreateEventLog.findOneAndUpdate(
+        { orderId: iterator.orderId },
+        { status: "done", numberOfRetried: parseInt(iterator.numberOfRetried) + 1 }
+      );
     } else {
 
       const currentTime = Date.now();
@@ -620,14 +611,12 @@ export const failedOrders = async () => {
 async function processOrder(iterator, threshold, max) {
 
   try {
-
-    
+ 
     console.log(iterator, "iterator");
-   
     console.log(timeDifference, threshold, max, "time");
     if (max > timeDifference < threshold) {
+
       console.log(timeDifference, threshold, "available for retry");
-     
     }
   } catch (err) {
     console.log("error in processing", err);
