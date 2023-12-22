@@ -131,6 +131,7 @@ export const handleOrderDataList = async (req, res) => {
 
       const filter = { ...storeUrlFilter }
      filter.is_giftcard_order = false
+     filter.cancel_reason = null
 
       if (req.query.Refund_Mode) {
           filter.Refund_Mode = req.query.Refund_Mode;

@@ -813,6 +813,7 @@ export const cancelRedeemWallet = async (
   bill_amount,
   wallet_id,
   amount,
+  txn_id,
   logs = {}
 ) => {
 
@@ -854,7 +855,7 @@ export const cancelRedeemWallet = async (
         headers: {
           "Content-Type": "application/json;charset=UTF-8 ",
           DateAtClient: date,
-          TransactionId: transactionId,
+          TransactionId: txn_id,
           Authorization: `Bearer ${setting.token}`,
         },
         data: data,
@@ -868,20 +869,6 @@ export const cancelRedeemWallet = async (
       if (walletRedemption.status == "200" && walletRedemption.data.ResponseCode == "0") {
         
         logs["status"] = true;
-        await wallet_history.updateOne(
-          { wallet_id: giftcardExists.wallet_id },
-          {
-            $push: {
-              transactions: {
-                transaction_type: "credit",
-                amount: amount,
-                type: "refund",
-                transaction_date: Date.now(),
-              },
-            },
-          },
-          { upsert: true }
-        );
       }
       await setting.save();
       return logs;
@@ -889,7 +876,7 @@ export const cancelRedeemWallet = async (
   } catch (err) {
     console.log(err ,"error")
     
-    logs["error"] = err.response.data || err?.code;
+    logs["error"] = err.response.data || err?.code == 'ECONNABORTED';
     return logs;
   }
 };
