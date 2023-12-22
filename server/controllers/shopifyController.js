@@ -83,6 +83,7 @@ export const installCallback = async (req, res) => {
       let token = await createJwt(shop);
       let accessToken = await getAccessToken(shop, code, res);
 
+      checkWebhooks(shop, accessToken);
       if (storeStatus && storeStatus.is_installed == true) {
 
         await store.updateOne({store_url : shop} , {auth_token : token, access_token: accessToken});
@@ -92,12 +93,11 @@ export const installCallback = async (req, res) => {
         // console.log(accessToken, "accessToken");
         let storeData = await getShopifyStoreData(shop, accessToken, res);
         if (storeData) {
-          let response = await saveStoreData(storeData, shop, accessToken, token);
-          // console.log(response ,"response of store data");
-          await checkWebhooks(shop, accessToken);
+          await saveStoreData(storeData, shop, accessToken, token);
           return res.redirect(`${CLIENT_URL}?store=${shop}&token=${token}`);
         }
       }
+
     } else {
       res.json(respondNotAcceptable());
     }

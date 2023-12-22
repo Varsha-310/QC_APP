@@ -346,12 +346,12 @@ export const ordercreateEvent = async (shop, order, res) => {
               { redeem: redeemed, numberOfRetried },
               { upsert: true }
             );
-            if(redeemed["status"] == "NonZero"){
+            // if(redeemed["status"] == "NonZero"){
               
-              console.log("Cancelling the API on validation error from QC");
-              await orderCancel(order.id, shop);
-            }
-            if (redeemed.status == false) throw new Error("Error: Redeem Gift Card");
+            //   console.log("Cancelling the API on validation error from QC");
+            //   await orderCancel(order.id, shop);
+            // }
+            if (!redeemed.status) throw new Error("Error: Redeem Gift Card");
           }
         }
       }
