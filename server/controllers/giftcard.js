@@ -720,7 +720,7 @@ export const walletTransaction = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-export const giftCardAmount = async (store, id) => {
+export const giftCardAmount = async (store, id , customer_id) => {
   try {
     let shopify = await getShopifyObject(store);
     let fetchTransaction = await shopify.transaction.list(id);
@@ -729,6 +729,7 @@ export const giftCardAmount = async (store, id) => {
     if (fetchTransaction.gateway == "gift_card") {
       const giftcardExists = await wallet.findOne({
         shopify_giftcard_id: fetchTransaction[0].receipt.gift_card_id,
+        shopify_customer_id:customer_id
       });
       //console.log(giftcardExists);
       if (giftcardExists) {
