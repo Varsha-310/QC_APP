@@ -28,7 +28,10 @@ axios.interceptors.request.use(config => {
 })
 
 // Check api reponse and process it.
-axios.interceptors.response.use((resp) => resp, async (err) => {
+axios.interceptors.response.use((resp) => {
+    console.log("Response:", JSON.stringify(resp?.data));
+    return resp;
+}, async (err) => {
 
     // Extract data from error
     const { config, response } = err;
