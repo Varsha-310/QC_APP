@@ -60,7 +60,7 @@ axios.interceptors.response.use((resp) => {
     if(!retry || !retry.retries) return Promise.reject(err);
 
     // Abort auto retried while its not a server error or Timeout error
-    if((response?.status >= 400) || (err.code == 'ECONNABORTED')) {
+    if((err.code == 'ECONNABORTED')) {
 
         console.log("Retrying In case of Timeout -- ");
         config.retry.retries -= 1;

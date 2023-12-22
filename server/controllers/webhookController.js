@@ -576,12 +576,14 @@ export const failedOrders = async () => {
       if (iterator.action == "redeem") {
 
         console.log("Redeem Action");
+        const orderData = await orders.findOne({id:iterator.orderId});
         await reverseRedeemWallet(
           iterator.store,
           iterator.orderId,
           iterator.redeem.req.billAmount,
           iterator.redeem.req.Cards[0].CardNumber,
-          iterator.redeem.req.Cards[0].Amount
+          iterator.redeem.req.Cards[0].Amount,
+          orderData.redeem_txn_id
         );
         await orderCancel(iterator.orderId, iterator.store);
       }
