@@ -327,7 +327,7 @@ export const ordercreateEvent = async (shop, order, res) => {
       } else if (newOrder.payment_gateway_names.includes("gift_card")) {
         
         console.log("giftcard redeemed");
-        let checkAmount = await giftCardAmount(shop, newOrder.id);
+        let checkAmount = await giftCardAmount(shop, newOrder.id ,newOrder.customer.id);
         console.log("--------redeemed amount--------------", checkAmount);
 
         if (checkAmount != false) {
@@ -353,6 +353,9 @@ export const ordercreateEvent = async (shop, order, res) => {
             // }
             if (!redeemed.status) throw new Error("Error: Redeem Gift Card");
           }
+        }
+        else{
+          await orderCancel(newOrder.id, shop);
         }
       }
     }
@@ -583,7 +586,7 @@ export const failedOrders = async () => {
           iterator.redeem.req.billAmount,
           iterator.redeem.req.Cards[0].CardNumber,
           iterator.redeem.req.Cards[0].Amount,
-          orderData.redeem_txn_id
+          iterator.redeem.resp.TransactionId
         );
         await orderCancel(iterator.orderId, iterator.store);
       }
