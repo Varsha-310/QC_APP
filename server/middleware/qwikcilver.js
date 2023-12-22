@@ -664,7 +664,7 @@ export const redeemWallet = async (
     logs["resp"] = walletRedemption?.data;
     await orders.updateOne(
       { id: id },
-      { redeem_txn_id: walletRedemption?.data.TransactionId }
+      { redeem_txn_id: transactionId }
     );
     if (walletRedemption.data.ResponseCode == "0") {
 
