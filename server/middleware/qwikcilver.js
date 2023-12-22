@@ -662,6 +662,10 @@ export const redeemWallet = async (
 
     let walletRedemption = await axios(config);
     logs["resp"] = walletRedemption?.data;
+    await orders.updateOne(
+      { id: id },
+      { redeem_txn_id: walletRedemption?.data.TransactionId }
+    );
     if (walletRedemption.data.ResponseCode == "0") {
 
       console.log("redeem successfull");
@@ -678,10 +682,7 @@ export const redeemWallet = async (
         },
         { upsert: true }
       );
-      await orders.updateOne(
-        { id: id },
-        { redeem_txn_id: walletRedemption?.data.TransactionId }
-      );
+      
       logs["status"] = true;
     }
     // else{
