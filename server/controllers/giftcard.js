@@ -21,8 +21,8 @@ import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import orders from "../models/orders.js";
 import qc_gc from "../models/qc_gc.js";
-import store from "../models/store.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
+import { getOrderTransactionDetails } from "./webhookController.js";
 
 /**
  * To create gifcard product
@@ -720,29 +720,29 @@ export const walletTransaction = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-export const giftCardAmount = async (store, id , customer_id) => {
+export const giftCardAmount = async (storeUrl, id , customer_id) => {
+  
   try {
-    let shopify = await getShopifyObject(store);
-    let fetchTransaction = await shopify.transaction.list(id);
-    // console.log(fetchTransaction, "transaction");
-    fetchTransaction.gateway = "gift_card";
-    if (fetchTransaction.gateway == "gift_card") {
-      const giftcardExists = await wallet.findOne({
-        shopify_giftcard_id: fetchTransaction[0].receipt.gift_card_id,
-        shopify_customer_id:customer_id
-      });
-      //console.log(giftcardExists);
-      if (giftcardExists) {
-        const redeemAmount = fetchTransaction[0].amount;
-        //console.log("shopify gc reedemded", fetchTransaction[0].id);
-        return { amount: redeemAmount, id: giftcardExists.wallet_id };
-      } else {
-        return false;
-      }
+
+    const storeData = await Store.findOne({ store_url: storeUrl});
+    let transactions = await getOrderTransactionDetails(id, storeUrl, storeData.access_token);
+    let fetchTransaction = transactions.data.transactions.find(trans => trans.gateway == "gift_card");
+    console.log(JSON.stringify(fetchTransaction));
+    const giftcardExists = await wallet.findOne({
+      shopify_giftcard_id: fetchTransaction.receipt.gift_card_id,
+      shopify_customer_id: customer_id
+    });
+    if (giftcardExists) {
+
+      const redeemAmount = fetchTransaction.amount;
+      return {error: false,  amount: redeemAmount, id: giftcardExists.wallet_id };
+    } else {
+      return {error: true, msg: "Wallet Not Found"};
     }
+   
   } catch (err) {
     console.log(err);
-    return false;
+    return {error: true, msg: err?.message};
   }
 };
 
