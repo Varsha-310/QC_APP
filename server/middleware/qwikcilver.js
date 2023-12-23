@@ -623,7 +623,7 @@ export const redeemWallet = async (
 
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------");
-    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    let transactionId = logs?.resp?.TransactionId || setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
@@ -659,14 +659,9 @@ export const redeemWallet = async (
       data: data,
       checkAuth: {store, n:1}
     };
-
     let walletRedemption = await axios(config);
     logs["resp"] = walletRedemption?.data;
-    await orders.updateOne(
-      { id: id },
-      { redeem_txn_id: transactionId }
-    );
-    if (walletRedemption.data.ResponseCode == "0") {
+    if (walletRedemption?.data.ResponseCode == "0") {
 
       console.log("redeem successfull");
       await wallet_history.updateOne(
@@ -682,16 +677,27 @@ export const redeemWallet = async (
         },
         { upsert: true }
       );
-      
       logs["status"] = true;
+    }else if(walletRedemption?.data.ResponseCode == 10838 && walletRedemption.data?.Cards[0].ResponseCode == 10010){
+
+      logs["status"] = "insufficient";
+      logs["error"] = "Balance is insufficient.";
     }
-    // else{
-    //   logs["status"] = "NonZero";
-    // }
+    else if(walletRedemption?.data.ResponseCode == 10867){
+      logs["status"] = "timeout";
+    }else{
+      logs["status"] = "config";
+      logs["error"] = "Configuraiton Eroor";
+    }
     return logs;
   } catch (err) {
 
-    logs["error"] = err.response.data || err?.code;
+    logs["error"] = err?.response?.data;
+    if(err?.code == 'ECONNABORTED'){
+
+      logs["status"] = "timeout";
+      logs["error"] = "Timeout Error";
+    }
     return logs;
   }
 };
@@ -818,21 +824,13 @@ export const cancelRedeemWallet = async (
   logs = {}
 ) => {
 
-  console.log("---------------------  Redeem Balance Process Started -----------------------");
+  console.log("---------------------Reverse  Redeem Balance Process Started -----------------------");
   logs["status"] = false;
   try {
 
     console.log(store, wallet_id, amount, order_id );
-    const string_id = wallet_id.toString();
-    console.log(string_id)
-    const giftcardExists = await wallet.findOne({
-      wallet_id: wallet_id
-    });
-    
+
       const setting = await qcCredentials.findOne({ store_url: store });
-      let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
-      setting.unique_transaction_id = transactionId + 1; // Append it by 1
-      setting.markModified("unique_transaction_id");
       const idempotency_key = generateIdempotencyKey();
       const myDate = new Date();
       const date = myDate.toISOString().slice(0, 22);
@@ -848,7 +846,6 @@ export const cancelRedeemWallet = async (
           },
         ],
       };
-
       logs["req"] = data;
       const config = {
         method: "post",
@@ -862,18 +859,15 @@ export const cancelRedeemWallet = async (
         data: data,
         checkAuth: {store, n:1}
       };
-
       const walletRedemption = await axios(config);
-      console.log(config)
       console.log("QC - Response Code - ", walletRedemption.data.ResponseCode);
       logs["resp"] = walletRedemption?.data;
-      if (walletRedemption.status == "200" && walletRedemption.data.ResponseCode == "0") {
+      if(walletRedemption.data.ResponseCode == "0") {
         
         logs["status"] = true;
       }
       await setting.save();
       return logs;
-    
   } catch (err) {
     console.log(err ,"error")
     
