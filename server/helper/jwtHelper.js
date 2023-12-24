@@ -15,9 +15,7 @@ export const createJwt = async (shop) => {
     let secretKey = process.env.JWT_SECRET;
     let payload = { store_url: shop };
     console.log("----payload--------", payload);
-    let jwtToken = await Jwt.sign(payload, secretKey, {expiresIn: "1d"});
-    console.log("JWT Token Test");
-    return jwtToken;
+    return Jwt.sign(payload, secretKey, {expiresIn: "1d"});
   } catch (err) {
 
     console.log(err)

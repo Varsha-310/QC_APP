@@ -551,7 +551,7 @@ export const handleRefundAction = async (req, res) => {
                     status: "Failed",
                     ...logs
                 });
-                return res.json(respondSuccess("Server Is not responding properly, Try After Some time"));
+                return res.json(respondValidationError("Server Is not responding properly, Try After Some time"));
             }
             refundSession = await updateRefundLogs(sessionQuery, {  
                 storeCredit: logs1,
