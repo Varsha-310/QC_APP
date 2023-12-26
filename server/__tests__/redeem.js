@@ -17,16 +17,16 @@ describe("Test Order Cancel With Refund", () => {
     test("Call Shopify API to Test Refund", async () => {
 
         // const res = await request(app).get("/");
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy1wbHVzLXN0b3JlLTMubXlzaG9waWZ5LmNvbSIsImlhdCI6MTcwMzQwMjA4MiwiZXhwIjoxNzAzNDg4NDgyfQ.4pW-Rj5OrUfNZV1pGromnW5SAu66G79hwuk5yzIolGw";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdG9yZV91cmwiOiJxYy10ZXN0LXN0b3JlLTEyLm15c2hvcGlmeS5jb20iLCJpYXQiOjE3MDM1NjkyOTQsImV4cCI6MTcwMzY1NTY5NH0.N9yZHTj-xg5KbbgRnkqXXALoadjbFe-oJDUumNO8FwY";
         console.log(token);
         const payload = {
-          orderId: "5677952532797", 
+          orderId: "5530600243359", 
           line_items:[{
-            id: "14599827423549",
+            id: "13151508103327",
             qty: 0
           }], 
-          amount:"50",
-          refund_type: "Store-credit",
+          amount:"200",
+          refund_type: "Back-to-Source",
         };
         const resp  = await request(app)
             .post("/refund/initiate")
