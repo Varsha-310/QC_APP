@@ -19,6 +19,7 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
+import { createJwt } from "./helper/jwtHelper.js";
 
 
 
@@ -61,6 +62,12 @@ const apiLimiter = rateLimit({
   max: 60, // Limit each IP to 60requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+app.get("/", async (req, res) => {
+
+  const token = await createJwt("qc-test-store-12.myshopify.com");
+  return res.json({"token": token});
 });
 
 //a shopify routes
