@@ -288,7 +288,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
         if([0,1].includes(checkWallet?.status)){
 
             checkWallet =  await checkWalletOnQC(store, ordersData.customer.id, logs?.checkWallet);
-            console.log(" checking wallet on qc",checkWallet);
+           // console.log(" checking wallet on qc",checkWallet);
             logs["checkWallet"] = checkWallet;
             await Wallet.updateOne({
                 store_url: store,
@@ -512,7 +512,7 @@ export const handleRefundAction = async (req, res) => {
                     "kind":"refund",
                     "gateway": gc_transaciton.gateway,
                     "parent_id": gc_transaciton.parent_id,
-                    "amount": gcRfDetails.gc_rf_amount
+                    "amount": 0
                 }); 
                 storeCredit =  gcRfDetails.gc_rf_amount;
             }     
