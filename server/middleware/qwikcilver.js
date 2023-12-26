@@ -321,8 +321,7 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
                 "PaymentInstruments": [
                     {
                         "InstrumentProgram": setting.refund_cpgn,
-                        "Amount": amount,
-                        "Expiry": myDate.toISOString().slice(0, 10)
+                        "Amount": amount
                     }
                 ]
             }

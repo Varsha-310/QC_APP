@@ -375,7 +375,7 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                     transactions: {
                       transaction_type: "credit",
                       amount: amount,
-                      expires_at: myDate.toISOString().slice(0, 10),
+                      expires_at: logs["loadWallet"]["resp"]["Cards"][0]["PaymentInstruments"][0]["ExpiryDate"],
                       transaction_date: Date.now(),
                       type: type,
                     },

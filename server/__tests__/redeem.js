@@ -25,7 +25,7 @@ describe("Test Order Cancel With Refund", () => {
             id: "13151508103327",
             qty: 0
           }], 
-          amount:"200",
+          amount:"50",
           refund_type: "Back-to-Source",
         };
         const resp  = await request(app)
