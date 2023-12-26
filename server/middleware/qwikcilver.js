@@ -686,7 +686,7 @@ export const redeemWallet = async (
       logs["status"] = "timeout";
     }else{
       logs["status"] = "config";
-      logs["error"] = "Configuraiton Eroor";
+      logs["error"] = "Configuraiton Error";
     }
     return logs;
   } catch (err) {

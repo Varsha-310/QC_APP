@@ -484,7 +484,8 @@ export const handleRefundAction = async (req, res) => {
             refund_type: refund_type,
             total: amount,
             line_items: line_items,
-            retries: parseInt(refundSession?.retries || 0) + 2
+            retries: parseInt(refundSession?.retries || 0) + 2,
+            created_at: new Date(),
         }
         
 	    const trans = [];
