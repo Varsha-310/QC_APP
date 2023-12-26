@@ -275,7 +275,7 @@ const checkRefundSession = async(orderId, store_url, refundableAmount ,refund_id
  * @param {*} logs 
  * @returns 
  */
-const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs = {}) => {
+const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs = {}, refund_type) => {
 
     try {
         
@@ -333,36 +333,40 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
                 shopify_customer_id:  ordersData.customer.id,
             });
 
-            //Check and create giftcard wallet on shopify
-            if(!walletDetails.shopify_giftcard_id){
+            if(refund_type == "Store-credit"){
 
-                const createShopifyGC = await createShopifyGiftcard(store, accessToken, amount);
-                await Wallet.updateOne({
+                 //Check and create giftcard wallet on shopify
+                if(!walletDetails.shopify_giftcard_id){
+
+                    const createShopifyGC = await createShopifyGiftcard(store, accessToken, amount);
+                    await Wallet.updateOne({
+                            store_url: store,
+                            shopify_customer_id: ordersData.customer.id,
+                        },{
                         store_url: store,
                         shopify_customer_id: ordersData.customer.id,
-                    },{
-                      store_url: store,
-                      shopify_customer_id: ordersData.customer.id,
-                      shopify_giftcard_id: createShopifyGC.id,
-                      shopify_giftcard_pin: createShopifyGC.code,
-                      balance: parseFloat(walletDetails?.balance || 0) + parseFloat(amount)
-                    },{
-                        upsert:true
-                    }
-                );
-            }else{
+                        shopify_giftcard_id: createShopifyGC.id,
+                        shopify_giftcard_pin: createShopifyGC.code,
+                        balance: parseFloat(walletDetails?.balance || 0) + parseFloat(amount)
+                        },{
+                            upsert:true
+                        }
+                    );
+                }else{
 
-                await updateShopifyGiftcard(store, accessToken,walletDetails?.shopify_giftcard_id, amount);
-                await Wallet.updateOne({
-                        store_url: store,
-                        shopify_customer_id: ordersData.customer.id
-                    },{ 
-                        balance: parseFloat(walletDetails.balance || 0) + parseFloat(amount)
-                    },{
-                        upsert: true
-                    }
-                );
-            }  
+                    await updateShopifyGiftcard(store, accessToken,walletDetails?.shopify_giftcard_id, amount);
+                    await Wallet.updateOne({
+                            store_url: store,
+                            shopify_customer_id: ordersData.customer.id
+                        },{ 
+                            balance: parseFloat(walletDetails.balance || 0) + parseFloat(amount)
+                        },{
+                            upsert: true
+                        }
+                    );
+                }  
+            }
+           
             logs["shopifyGC"] = {
                 status: true,
                 time: new Date().toISOString()
@@ -512,7 +516,7 @@ export const handleRefundAction = async (req, res) => {
                     "kind":"refund",
                     "gateway": gc_transaciton.gateway,
                     "parent_id": gc_transaciton.parent_id,
-                    "amount": 0
+                    "amount": gcRfDetails.gc_rf_amount
                 }); 
                 storeCredit =  gcRfDetails.gc_rf_amount;
             }     
@@ -536,7 +540,7 @@ export const handleRefundAction = async (req, res) => {
         // Process Store Credit As Refund
         if(storeCredit && !refundSession?.storeCredit?.status){
 
-            const logs1 = await refundAsStoreCredit(store_url, accessToken, ordersData, storeCredit, refundSession?.storeCredit);
+            const logs1 = await refundAsStoreCredit(store_url, accessToken, ordersData, storeCredit, refundSession?.storeCredit, refund_type);
             if(!logs1.status && (logs.retries >= 2)){
 
                 console.log("------------- Cancel Load Wallet API Called -----------");
