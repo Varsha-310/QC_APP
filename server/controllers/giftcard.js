@@ -466,24 +466,24 @@ export const getWalletBalance = async ({ query }, res) => {
     );
 
     if (shopifybalance.disabled_at) {
-      return res.json(respondUnauthorized("Shopify card has been deactivated"));
+      return res.json(respondNotFound("Shopify card has been deactivated"));
     }
 
     let qcBalance = await fetchBalance(store, walletExists.wallet_id);
     console.log(
       "balance from qwikcilver giftcard",
-      qcBalance.data.Cards[0].ResponseCode
+      qcBalance.data.Cards[0]
     );
 
     if (qcBalance.data.Cards[0].ResponseCode === 10551) {
-      return res.json(respondUnauthorized("QC wallet has been deactivated"));
+      return res.json(respondNotFound("QC wallet has been deactivated"));
     }
 
     if (qcBalance.data.Cards[0].ResponseCode === 0) {
-      console.log(`qc:${qcBalance} , shopify :${shopifybalance.balance}`);
+      console.log(`qc balance:${qcBalance.data.Cards[0]} , shopify balance :${shopifybalance.balance}`);
 
-      if (qcBalance < shopifybalance.balance) {
-        let diffAmount = shopifybalance.balance - qcBalance;
+      if (qcBalance.data.Cards[0].Balance < shopifybalance.balance) {
+        let diffAmount = shopifybalance.balance - qcBalance.data.Cards[0].Balance;
         console.log(diffAmount, "diff amount");
         console.log("qc wallet balance is less");
 
@@ -498,14 +498,14 @@ export const getWalletBalance = async ({ query }, res) => {
         res.json({
           ...respondWithData("Balance fetched"),
           data: {
-            balance: qcBalance,
+            balance: qcBalance.data.Cards[0].Balance,
             gc_id: walletExists.shopify_giftcard_pin,
           },
         });
       } else {
         console.log(
           "Shopify balance is same or less than QC",
-          qcBalance,
+          qcBalance.data.Cards[0].Balance,
           shopifybalance.balance
         );
         res.json({
