@@ -466,7 +466,7 @@ export const getWalletBalance = async ({ query }, res) => {
     );
 
     if (shopifybalance.disabled_at) {
-      return res.json(respondNotFound("Shopify card has been deactivated"));
+      return res.json(respondNotFound("card is deactivated"));
     }
 
     let qcBalance = await fetchBalance(store, walletExists.wallet_id);
@@ -476,7 +476,7 @@ export const getWalletBalance = async ({ query }, res) => {
     );
 
     if (qcBalance.data.Cards[0].ResponseCode === 10551) {
-      return res.json(respondNotFound("QC wallet has been deactivated"));
+      return res.json(respondNotFound("card is deactivated"));
     }
 
     if (qcBalance.data.Cards[0].ResponseCode === 0) {
