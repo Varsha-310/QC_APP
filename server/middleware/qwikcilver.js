@@ -222,10 +222,7 @@ export const fetchBalance = async (store, walletData) => {
     };
     console.log("----fetch balance config----------", config);
     let walletDetails = await axios(config);
-    if (walletDetails.data.ResponseCode == "0") {
-
-      return walletDetails.data.Cards[0].Balance;
-    }
+    return walletDetails
   } catch (err) {
 
     console.log(err);
