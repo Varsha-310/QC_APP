@@ -10,7 +10,6 @@ import crypto from "crypto";
 import { checkWebhooks } from "../helper/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
 import refundSetting from "../models/refundSetting.js";
-import Jwt from "jsonwebtoken";
 
 
 /**

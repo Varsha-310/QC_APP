@@ -19,7 +19,6 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
-import { createJwt } from "./helper/jwtHelper.js";
 
 
 
@@ -64,11 +63,11 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get("/", async (req, res) => {
+// app.get("/", async (req, res) => {
 
-  const token = await createJwt("qc-test-store-12.myshopify.com");
-  return res.json({"token": token});
-});
+//   const token = await createJwt("qc-test-store-12.myshopify.com");
+//   return res.json({"token": token});
+// });
 
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
