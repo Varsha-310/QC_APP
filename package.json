@@ -9,6 +9,7 @@
   "main": "server/server.js",
   "scripts": {
     "test": "jest",
+    "watch": "node --watch server/server.js",
     "start": "nodemon --experimental-specifier-resolution=node server/server.js"
   },
   "author": "varsha",
