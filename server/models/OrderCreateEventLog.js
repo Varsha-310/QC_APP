@@ -13,6 +13,7 @@ const OCELog = mongoose.Schema({
   redeem: Object,
   self: Object,
   gift: Object,
+  reverse: Object,
   retriedAt: Date,
   numberOfRetried: {
     type:Number,
@@ -23,6 +24,6 @@ const OCELog = mongoose.Schema({
     enum: ["retry", "done", "error"],
     default: "retry"
   }
-},{ timestmps: true});
+},{ timestamps: true});
 
 export default mongoose.model("OrderCreateEventLog", OCELog);

@@ -19,6 +19,8 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
+import { createJwt } from "./helper/jwtHelper.js";
+
 
 
 export const app = express();
@@ -62,6 +64,12 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+app.get("/", async (req, res) => {
+
+  const token = await createJwt("qc-test-store-12.myshopify.com");
+  return res.json({"token": token});
+});
+
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
 
@@ -93,9 +101,9 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule("* * * * *", () => {
-  // cronToCheckWebhooks();
-  console.log("checking failed sessions");
+cron.schedule("*/10 * * * * *", () => {
+  
+  console.log("checking failed sessions in every 10 sec");
   failedOrders();
 });
 

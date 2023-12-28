@@ -16,7 +16,7 @@ axios.interceptors.request.use(config => {
             "DateAtClient": new Date().toISOString().slice(0, 22)
         }; 
     }
-    console.log("Config", config);
+    console.log("Config", JSON.stringify(config));
     if(retry?.retries >= 0) return config;
     return {
         ...config,
@@ -28,19 +28,25 @@ axios.interceptors.request.use(config => {
 })
 
 // Check api reponse and process it.
-axios.interceptors.response.use((resp) => resp, async (err) => {
+axios.interceptors.response.use((resp) => {
+    console.log("Response:", JSON.stringify(resp?.data));
+    return resp;
+}, async (err) => {
 
     // Extract data from error
     const { config, response } = err;
     const { retry } = config;
 
-    console.log("Response Config:", config);
+   // console.log("Response Config: \n\n", JSON.stringify(config));
+   // console.log("Error: \n\n", response);
     // handle auth token expiry 
     if (response?.status == "401" && response?.data?.ResponseCode == "10744") {
 
-        const checkAuth = config
+        const { checkAuth } = config
         const {store, n } = checkAuth;
+        console.log("Check Auth: ", store, n);
         const token = await authToken(store);
+        console.log("Autherisation\n\n", token)
         if(token && n){
 
             config.checkAuth.n -= 1;
@@ -54,8 +60,9 @@ axios.interceptors.response.use((resp) => resp, async (err) => {
     if(!retry || !retry.retries) return Promise.reject(err);
 
     // Abort auto retried while its not a server error or Timeout error
-    if((response.status >= 400) || (err.code === 'ECONNABORTED')) {
+    if((err.code == 'ECONNABORTED')) {
 
+        console.log("Retrying In case of Timeout -- ");
         config.retry.retries -= 1;
         //Retry while Server Error Recieved.
         await new Promise((resolve) => {
