@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
+// import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
@@ -18,10 +19,14 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
+import { createJwt } from "./helper/jwtHelper.js";
+
 
 
 export const app = express();
 
+// 
+// app.use(helmet());
 //CORS Configuration
 app.use(function (req, res, next) {
 
@@ -29,6 +34,8 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH");
   res.setHeader("Access-Control-Allow-Headers","*");
   res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.removeHeader("X-Powered-By");
   next();
 });
 
@@ -55,6 +62,12 @@ const apiLimiter = rateLimit({
   max: 60, // Limit each IP to 60requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+app.get("/", async (req, res) => {
+
+  const token = await createJwt("qc-test-store-12.myshopify.com");
+  return res.json({"token": token});
 });
 
 //a shopify routes
@@ -88,9 +101,9 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule("*/3 * * * *", () => {
-  // cronToCheckWebhooks();
-  // console.log("checking webhooks!");
+cron.schedule("*/10 * * * * *", () => {
+  
+  console.log("checking failed sessions in every 10 sec");
   failedOrders();
 });
 

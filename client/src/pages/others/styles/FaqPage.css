@@ -34,6 +34,7 @@
   align-items: center;
   justify-content: space-between;
 }
+
 .faq-sections > :is(ol, ul) {
   padding: 10px 20px;
 }
@@ -51,4 +52,31 @@
 }
 .icon_up {
   transform: rotate(180deg);
+}
+
+.faq-sections > .tableBody {
+  padding: 20px;
+}
+.tableBody :is(table, th, td) {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+.tableBody > table > tr {
+  display: grid;
+  grid-template-columns: 0.7fr 3fr 2fr 4fr;
+}
+.tableBody > table tr th {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 5px;
+}
+.tableBody > table td {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 10px 5px;
+}
+.tableBody > table td b {
+  font-weight: 500;
 }

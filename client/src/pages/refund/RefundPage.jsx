@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./styles/RefundPage.css";
 import { useParams, useNavigate } from "react-router";
 import { PrimaryBtn } from "../../components/BasicComponents";
@@ -22,23 +22,26 @@ const countTotal = (obj, key) => {
   return res;
 };
 const RefundPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  useScrollTop();
+
   const [data, setData] = useState(null);
   const [inputData, setInputData] = useState([]);
   const [refundAmount, setRefundAmount] = useState();
-  const [calcData, setCaclData] = useState(null);
-  const [isCalcLoading, setIsCalcLoading] = useState(false);
-  const [refundData, setRefundData] = useState([]);
-  const [refundOption, setRefundOption] = useState(null);
+  const [refundOption, setRefundOption] = useState({
+    refund_type: "Store-credit",
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [setting, setSetting] = useState(false);
   const [taxPercent, setTaxPercent] = useState(0);
+  const [refundData, setRefundData] = useState([]);
+  const [setting, setSetting] = useState(false);
 
-  const navigate = useNavigate();
-
-  const { id } = useParams();
+  // const [isCalcLoading, setIsCalcLoading] = useState(false);
+  // const [calcData, setCaclData] = useState(null);
 
   // getsetting
-  const getConfig = async () => {
+  const getConfig = useMemo(async () => {
     setIsLoading(true);
     const url = "/refund/getSetting";
     const headers = {
@@ -47,36 +50,40 @@ const RefundPage = () => {
     try {
       const res = await instance.get(url, { headers });
       const resData = res?.data;
+      return resData;
     } catch (error) {
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // fetch item data
-  const fetchData = async (id) => {
+  const fetchData = useCallback(async (id) => {
     const url = "/order/details";
     const headers = {
       Authorization: getUserToken(),
     };
     const body = {
       orderId: id.toString(),
+      refund: true,
     };
 
     try {
       const res = await instance.post(url, body, { headers });
-      const resData = await res.data;
+      const resJson = await res.data;
+      const resData = resJson?.data.orders;
 
-      // setData("************", resData.data);
-      const totalPrice = parseFloat(resData?.data?.total_price);
-      const totalTax = parseFloat(resData?.data?.total_tax);
+      const totalPrice = parseFloat(resData?.total_price);
+      const totalTax = parseFloat(resData?.total_tax);
       const taxPercentage = (totalTax * 100) / (totalPrice - totalTax);
 
+      setRefundData(resJson?.data?.refund || []);
       setTaxPercent(taxPercentage);
 
       // to calculate refund quantity
       const tempData = [];
-      const refundLines = resData.data?.refunds;
+      const refundLines = resData?.refunds;
 
       if (refundLines?.length !== 0) {
         if (refundLines?.length !== 0) {
@@ -99,7 +106,7 @@ const RefundPage = () => {
         }
       }
 
-      const calculatedData = resData.data.line_items.map((prod) => {
+      const calculatedData = resData.line_items.map((prod) => {
         const proditem = tempData.find((item) => item.id === prod.id);
 
         return proditem
@@ -110,26 +117,17 @@ const RefundPage = () => {
       setData(calculatedData);
 
       // for empty array
-      const emptyInputArray = resData.data.line_items.map((prod) => ({
+      const emptyInputArray = resData.line_items.map((prod) => ({
         id: prod.id,
         qty: 0,
         totalPrice: 0,
         totalTax: 0,
       }));
       setInputData(emptyInputArray);
-
-      // transactions
-      // const transactions = resData?.data?.refunds;
-      // let totalRefunded = 0;
-      // transactions?.forEach((trans) => {
-      //   if (trans?.length > 1) {
-      //     trans.forEach((transItem) => {
-      //       totalRefunded += transItem.price;
-      //     });
-      //   }
-      // });
-    } catch (error) {}
-  };
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   // to initiate refund
   const handleInitiate = async () => {
@@ -157,10 +155,16 @@ const RefundPage = () => {
       const resData = res.data;
 
       if (resData?.success === true) {
+        setIsLoading(false);
         navigate("/refund_success", { replace: true });
       }
 
-      alert(resData.message);
+      if (typeof resData.message == "object") {
+        let msg = resData.message?.errors.amount[0];
+        alert(msg);
+      } else {
+        alert(resData.message);
+      }
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -168,27 +172,27 @@ const RefundPage = () => {
   };
 
   // to fetch  max refundable amount
-  const calcRefund = async (oid, data) => {
-    setIsCalcLoading(true);
-    const url = "/refund/calculate";
-    const headers = {
-      Authorization: getUserToken(),
-    };
+  // const calcRefund = async (oid, data) => {
+  //   setIsCalcLoading(true);
+  //   const url = "/refund/calculate";
+  //   const headers = {
+  //     Authorization: getUserToken(),
+  //   };
 
-    const body = {
-      orderId: oid,
-      line_items: data,
-    };
+  //   const body = {
+  //     orderId: oid,
+  //     line_items: data,
+  //   };
 
-    try {
-      const res = await instance.post(url, body, { headers });
-      const resData = res.data;
-      setCaclData(resData.data);
-    } catch (error) {
-    } finally {
-      setIsCalcLoading(false);
-    }
-  };
+  //   try {
+  //     const res = await instance.post(url, body, { headers });
+  //     const resData = res.data;
+  //     setCaclData(resData.data);
+  //   } catch (error) {
+  //   } finally {
+  //     setIsCalcLoading(false);
+  //   }
+  // };
 
   // to handle quantity change
   const handleQuantityChange = (itemId, newQty, totalQty, price, taxlines) => {
@@ -217,19 +221,63 @@ const RefundPage = () => {
     }
   };
 
-  useScrollTop();
-
   useEffect(() => {
     fetchData(id);
-
-    getConfig();
   }, [id]);
 
-  useEffect(() => {
-    if (data) {
-      calcRefund(id, [{ id: data[0]?.id, qty: data[0]?.quantity }]);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     calcRefund(id, [{ id: data[0]?.id, qty: data[0]?.quantity }]);
+  //   }
+  // }, [id, data]);
+
+  const refundHistoryTable = useMemo(() => {
+    return (
+      <div className="refund-history-container">
+        <div className="refund-page__title">Refund History</div>
+        <table>
+          <tr>
+            <th>Trasaction Id</th>
+            <th>Date</th>
+
+            <th>Amount</th>
+            <th>Refund Type</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          {refundData?.logs?.map((rfItem, index) => {
+            return (
+              <tr key={index}>
+                <td>
+                  <abbr
+                    title={rfItem?.id}
+                    style={{ textDecoration: "underline" }}
+                  >
+                    XXX{rfItem?.id.slice(-5)}
+                  </abbr>
+                </td>
+                <td>
+                  {rfItem?.created_at
+                    ? new Date(rfItem?.created_at).toLocaleString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })
+                    : "N/A"}
+                </td>
+                <td>{rfItem?.total || "NA"}</td>
+                <td>{rfItem?.refund_type}</td>
+                <td>{rfItem?.status}</td>
+                <td>
+                  {rfItem?.status !== "completed" ? "Re-initiate Refund" : "-"}
+                </td>
+              </tr>
+            );
+          })}
+        </table>
+      </div>
+    );
+  }, [refundData]);
 
   return (
     <div className="refund-page__component component">
@@ -250,124 +298,115 @@ const RefundPage = () => {
 
       <div className="section-box-container main-component">
         <div className="refund-page__refund-item-data">
-          {/* refund items */}
-          <div className="refund-page__details">
-            {data?.map((product, index) => {
-              return (
-                <div className="refund-page__product-detail" key={index}>
-                  <div className="refund-page__product-data">
-                    <LuImage className="gc-table-icons" />
-                    <div>
-                      <div className="refund-page__product-title">
-                        {product?.title}
-                      </div>
-                      <div className="refund-page__product-price">
-                        ₹ {product?.price}
+          <div>
+            {/* refund items */}
+            <div className="refund-page__details">
+              {data?.map((product, index) => {
+                return (
+                  <div className="refund-page__product-detail" key={index}>
+                    <div className="refund-page__product-data">
+                      <LuImage className="gc-table-icons" />
+                      <div>
+                        <div className="refund-page__product-title">
+                          {product?.title}
+                        </div>
+                        <div className="refund-page__product-price">
+                          ₹ {product?.price}
+                        </div>
                       </div>
                     </div>
+                    <div className="refund-page__product-count">
+                      <input
+                        type="number"
+                        name="qty"
+                        id={product.id}
+                        // value={inputData[index]?.qty ? inputData[index]?.qty : ""}
+                        value={
+                          inputData.find((item) => item.id === product.id)?.qty
+                        }
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            product?.id,
+                            e.target.value,
+                            product?.quantity,
+                            product?.price,
+                            product?.tax_lines
+                          )
+                        }
+                      />
+                      / {product?.quantity}
+                    </div>
+                    <div className="refund-page__product-refund-total">
+                      ₹
+                      {inputData.find((item) => item.id === product.id)?.qty
+                        ? parseFloat(
+                            inputData.find((item) => item.id === product.id)
+                              ?.qty * product?.price
+                          ).toFixed(2)
+                        : "00.00"}
+                    </div>
                   </div>
-                  <div className="refund-page__product-count">
-                    <input
-                      type="number"
-                      name="qty"
-                      id={product.id}
-                      // value={inputData[index]?.qty ? inputData[index]?.qty : ""}
-                      value={
-                        inputData.find((item) => item.id === product.id)?.qty
-                      }
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          product?.id,
-                          e.target.value,
-                          product?.quantity,
-                          product?.price,
-                          product?.tax_lines
-                        )
-                      }
-                    />
-                    / {product?.quantity}
-                  </div>
-                  <div className="refund-page__product-refund-total">
-                    ₹
-                    {inputData.find((item) => item.id === product.id)?.qty
-                      ? parseFloat(
-                          inputData.find((item) => item.id === product.id)
-                            ?.qty * product?.price
-                        ).toFixed(2)
-                      : "00.00"}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+
+            {/* refund history */}
+            {refundData?.logs && refundHistoryTable}
           </div>
-
           {/* refund summary */}
-          {isCalcLoading ? (
+          {/* {isCalcLoading ? (
             <div>Loading...</div>
-          ) : (
-            <div className="refund-page__summary">
-              <div className="refund-page__refund-process">
-                <div className="refund-page__title">Summary</div>
+          ) : (  )} */}
+          <div className="refund-page__summary">
+            <div className="refund-page__refund-process">
+              <div className="refund-page__title">Summary</div>
 
-                {/* total price estimation */}
+              {/* total price estimation */}
 
-                <table className="refund-page__price-summary-table">
-                  <tr>
-                    <td>Item Subtotal</td>
-                    <td>₹ {countTotal(inputData, "totalPrice")}</td>
-                  </tr>
-                  <tr>
-                    <td>{inputData?.length} Items</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Tax</td>
-                    <td>₹ {countTotal(inputData, "totalTax")}</td>
-                  </tr>
+              <table className="refund-page__price-summary-table">
+                <tr>
+                  <td>Item Subtotal</td>
+                  <td>₹ {countTotal(inputData, "totalPrice")}</td>
+                </tr>
+                <tr>
+                  <td>{inputData?.length} Items</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Tax</td>
+                  <td>₹ {countTotal(inputData, "totalTax")}</td>
+                </tr>
 
-                  <tr id="total-refund">
-                    <td>Refund Total</td>
-                    <td>
-                      ₹{" "}
-                      {(
-                        parseFloat(countTotal(inputData, "totalPrice")) +
-                        parseFloat(countTotal(inputData, "totalTax"))
-                      ).toFixed(2)}
-                    </td>
-                  </tr>
-                </table>
+                <tr id="total-refund">
+                  <td>Refund Total</td>
+                  <td>
+                    ₹{" "}
+                    {(
+                      parseFloat(countTotal(inputData, "totalPrice")) +
+                      parseFloat(countTotal(inputData, "totalTax"))
+                    ).toFixed(2)}
+                  </td>
+                </tr>
+              </table>
 
-                <div className="horinzontal-bar"></div>
-              </div>
+              <div className="horinzontal-bar"></div>
+            </div>
 
-              <div className="refund-page__refund-shipping">
-                <div className="refund-page__shipping-rate">
-                  <div className="refund-page__title">
-                    Refund Product Amount
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Enter Amount"
-                    value={refundAmount}
-                    onWheel={(e) => e.target.blur()}
-                    onChange={
-                      (e) => {
-                        const val = e.target.value;
-                        if (/^\d*\.?\d*$/.test(val)) setRefundAmount(val);
-                      }
-
-                      // calcData?.refund
-                      //   ? countTotal(
-                      //       calcData?.refund?.transactions,
-                      //       "maximum_refundable"
-                      //     ) <= e.target.value
-                      //     ? setRefundAmount(e.target.value)
-                      //     : ""
-                      //   : ""
-                    }
-                    className="refund-page__shipping-rate-input"
-                  />
-                  <div className="refund-page__refund-amount">
+            <div className="refund-page__refund-shipping">
+              <div className="refund-page__shipping-rate">
+                <div className="refund-page__title">Refund Product Amount</div>
+                <input
+                  type="text"
+                  placeholder="Enter Amount"
+                  value={refundAmount}
+                  onWheel={(e) => e.target.blur()}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d*\.?\d*$/.test(val)) setRefundAmount(val);
+                  }}
+                  className="refund-page__shipping-rate-input"
+                />
+                {/* <div className="refund-page__refund-amount">
                     Rs.{" "}
                     {calcData?.refund?.transactions
                       ?.reduce((acc, curr) => {
@@ -376,36 +415,35 @@ const RefundPage = () => {
                       }, 0)
                       .toFixed(2) || 0}{" "}
                     Available for refund
-                  </div>
-                  <div style={{ margin: "10px 0px" }}>
-                    <CustomDropdown
-                      options={[
-                        {
-                          title: "Refund to  Store Credit",
-                          value: "Store-credit",
-                        },
-                        {
-                          title: "Refund Back-to-Source",
-                          value: "Back-to-Source",
-                        },
-                      ]}
-                      emptyText={"Select Refund Mode"}
-                      keyField="refund_type"
-                      value={refundOption?.refund_type || "NA"}
-                      setvalue={setRefundOption}
-                    />
-                  </div>
-                  <PrimaryBtn $primary width="100%" onClick={handleInitiate}>
-                    {refundOption?.refund_type
-                      ? refundOption?.refund_type === "Store-credit"
-                        ? "Refund to Store-Credit"
-                        : "Refund Back to Source"
-                      : "Refund"}
-                  </PrimaryBtn>
+                  </div> */}
+                <div style={{ margin: "10px 0px" }}>
+                  <CustomDropdown
+                    options={[
+                      {
+                        title: "Refund to  Store Credit",
+                        value: "Store-credit",
+                      },
+                      {
+                        title: "Refund Back-to-Source",
+                        value: "Back-to-Source",
+                      },
+                    ]}
+                    emptyText={"Select Refund Mode"}
+                    keyField="refund_type"
+                    value={refundOption?.refund_type || "NA"}
+                    setvalue={setRefundOption}
+                  />
                 </div>
+                <PrimaryBtn $primary width="100%" onClick={handleInitiate}>
+                  {refundOption?.refund_type
+                    ? refundOption?.refund_type === "Store-credit"
+                      ? "Refund to Store-Credit"
+                      : "Refund Back to Source"
+                    : "Refund"}
+                </PrimaryBtn>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

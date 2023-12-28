@@ -2,8 +2,9 @@ import { respondWithData, respondInternalServerError, respondSuccess } from "../
 import { logger } from "../helper/utility.js";
 import orderModel from "../models/orders.js";
 import Store from "../models/store.js";
-import axios, { all } from "axios";
+import axios from "../helper/axios.js";
 import { ordercreateEvent } from "./webhookController.js";
+import RefundSession from "../models/RefundSession.js";
 
 
 const API_VERSION = process.env.API_VERSION || "2023-04";
@@ -130,6 +131,7 @@ export const handleOrderDataList = async (req, res) => {
 
       const filter = { ...storeUrlFilter }
      filter.is_giftcard_order = false
+     filter.cancel_reason = null
 
       if (req.query.Refund_Mode) {
           filter.Refund_Mode = req.query.Refund_Mode;
@@ -180,13 +182,21 @@ export const handleOrderDetails = async (req, res) => {
 
   try {
      
-      const { orderId } = req.body;
+      const { orderId, refund } = req.body;
       const {store_url } = req.token;
-      const orders = await orderModel.findOne({
+      const result = {};
+      result["orders"] = await orderModel.findOne({
         store_url,
         id : orderId
       });
-      return res.json(respondWithData("Success",orders))
+
+      if (refund) {
+        
+        result["refund"] = await RefundSession.findOne({
+            order_id: orderId, store_url: store_url
+        }, {_id:0, __v: 0, "logs._id": 0, "logs.storeCredit":0});
+      }
+      return res.json(respondWithData("Success",result))
   } catch (err) {
 
       logger.info(err);

@@ -131,7 +131,7 @@
   padding: 5px 10px;
   justify-content: center;
 }
-.refund-page__product-count input{
+.refund-page__product-count input {
   font-family: var(--font-family-main);
 }
 .refund-page__product-count input {
@@ -144,5 +144,34 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.refund-page__product-refund-total {
+
+.refund-history-container {
+  margin-top: 2em;
+}
+.refund-history-container table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid black;
+  margin: 5px 0px;
+}
+.refund-history-container table tr {
+  display: flex;
+}
+
+.refund-history-container table tr :is(th, td) {
+  font-size: 0.8em;
+  flex: 1;
+  padding: 5px 2px;
+  text-align: center;
+  border: 1px solid black;
+  overflow-wrap: anywhere;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.refund-history-container table tr td .retry-btn {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--frame-color);
 }
