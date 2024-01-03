@@ -93,7 +93,7 @@ export const initiatieKyc = async (req, res) => {
     }
   } catch (err) {
     logger.info(err);
-    console.log(err);
+    console.log(err.response);
     res.json(respondInternalServerError());
   }
 };
