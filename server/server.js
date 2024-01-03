@@ -2,7 +2,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-// import helmet from "helmet";
+import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
@@ -22,11 +22,9 @@ import { failedOrders } from "./controllers/webhookController.js";
 import { createJwt } from "./helper/jwtHelper.js";
 
 
-
 export const app = express();
 
-// 
-// app.use(helmet());
+app.use(helmet());
 //CORS Configuration
 app.use(function (req, res, next) {
 
@@ -64,11 +62,11 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get("/", async (req, res) => {
-
-  const token = await createJwt("qc-test-store-12.myshopify.com");
-  return res.json({"token": token});
-});
+//app.get("/", async (req, res) => {
+//
+//  const token = await createJwt("qc-test-store-12.myshopify.com");
+//  return res.json({"token": token});
+//});
 
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
