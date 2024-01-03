@@ -182,8 +182,8 @@ let email_template = `
                                                     <ol style="margin:0;padding:0">
 
                                                         <li>Visit
-                                                            <a href="__store__/pages/add-gift-card"
-                                                                target="_blank">__store__/pages/add-gift-card</a>
+                                                            <a href="__store__/account"
+                                                                target="_blank">__store__/account</a>
                                                         </li>
                                                         <li>Enter the Gift Card Code</li>
                                                         <li>Click on Add top Balance</li>
