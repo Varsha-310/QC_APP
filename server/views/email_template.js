@@ -186,7 +186,7 @@ let email_template = `
                                                                 target="_blank">__store__/account</a>
                                                         </li>
                                                         <li>Enter the Gift Card Code</li>
-                                                        <li>Click on Add top Balance</li>
+                                                        <li>Click on Add to Balance</li>
                                                     </ol>
                                                 </td>
                                             </tr>
