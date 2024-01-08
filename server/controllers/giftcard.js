@@ -493,7 +493,6 @@ export const getWalletBalance = async ({ query }, res) => {
           walletExists.shopify_giftcard_id,
           -diffAmount
         );
-<<<<<<< HEAD
         console.log(shopifybalance, "shopify giftcard balance");
         console.log(qcBalance , "qc wallet balance");
         if(qcBalance > shopifybalance){
@@ -522,17 +521,6 @@ export const getWalletBalance = async ({ query }, res) => {
             },
           });
         }
-=======
-        console.log("updated shopify giftcard", updateShopifyGc);
-
-        res.json({
-          ...respondWithData("Balance fetched"),
-          data: {
-            balance: qcBalance.data.Cards[0].Balance,
-            gc_id: walletExists.shopify_giftcard_pin,
-          },
-        });
->>>>>>> c0015d0f874009187d9dec5c008109d80989273d
       } else {
         console.log(
           "Shopify balance is same or less than QC",
