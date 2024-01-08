@@ -206,98 +206,90 @@ const FaqPage = () => {
         </div>
 
         <div className="faq-sections">
-          <div onClick={handleActive} id="sku" className="faq-section__title">
-            CREATING GIFT CARD SKU
+          <div
+            onClick={handleActive}
+            id="configuration"
+            className="faq-section__title"
+          >
+            MERCHANT CONFIGURATIONS{" "}
             <BiChevronDown
               className={`faq-section__icon ${
-                activeSection?.sku ? "icon_up" : ""
+                activeSection?.configuration ? "icon_up" : ""
               }`}
             />
           </div>
-          {activeSection?.sku && (
-            <ol>
-              <li>
-                <p>
-                  How can I create gift cards SKU’s for listing on my online
-                  store?
-                </p>
 
-                <p>
-                  By virtue of the Qwikcilver app’s integration with the Shopify
-                  Platform, the gift card SKU’s created on the Qwikcilver
-                  dashboard, will appear as a product SKU in the merchant’s
-                  Shopify dashboard.
-                </p>
+          {activeSection?.configuration && (
+            <div className="tableBody">
+              <table>
+                <tr>
+                  <th>Steps</th>
+                  <th>Configuring the Qwikcilver App</th>
+                  <th>Configuration Location</th>
+                  <th>Spcial Remarks</th>
+                </tr>
+                <tr>
+                  <td>Step 1</td>
+                  <td>Configure Currency & Markets </td>
+                  <td>Shopify Admin Settings</td>
+                  <td>
+                    <b>
+                      Important: These currency & market settings are must for
+                      the Qwikcilver App
+                    </b>
 
-                <p>
-                  <b>Step 1:</b> Please ensure the Gift Card SKU status is set
-                  as “Active”, in your Shopify dashboard; to ensure visibility
-                  on the online store.
-                </p>
-
-                <p>
-                  <b>Step 2: </b>Under Publishing, and in Manage Sales Channels,
-                  Select Online Store.
-                </p>
-
-                <p>
-                  <b>Step 3: </b>Under Online Store – Theme Template, Change to
-                  Gift Card template.
-                </p>
-              </li>
-              <li>
-                <p>
-                  How can I publish the gift cards SKU’s created via the
-                  Qwikcilver App, on to my online store?
-                </p>
-                <p>
-                  By virtue of the Qwikcilver app’s integration with the Shopify
-                  Platform, the gift card SKU’s created on the Qwikcilver
-                  dashboard will appear as a product SKU in the merchant’s
-                  Shopify dashboard. Please ensure the Gift Card SKU status is
-                  set as “Active”, in your Shopify dashboard, to ensure
-                  visibility on the online store.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Are gift cards a taxable product in India? What is the tax
-                  rate I should set for gift card as a product / SKU on my
-                  online store?
-                </p>
-                <p>
-                  In India, gift cards and gift vouchers are not considered as
-                  goods or services, and no GST is levied when they are sold by
-                  a merchant.
-                </p>
-                <p>
-                  If you are operating in India, you should set the tax rate for
-                  gift cards sold on your online store to 0%. However, as a
-                  responsible merchant, please ensure to update this tax rate in
-                  line with the latest government regulations. Please also
-                  consult your taxation advisor for further clarity on this
-                  aspect. Qwikcilver will not be responsible for any tax
-                  complications &amp; liabilities arising from your non-
-                  compliance with government regulations on gift cards.
-                </p>
-              </li>
-              <li>
-                <p>
-                  How can I set-up a tax override for my gift card SKU on my
-                  online store?
-                </p>
-                <p>
-                  To set-up a tax override from your Shopify admin dashboard, go
-                  to Settings &gt; Taxes and duties. Please also go through the
-                  Shopify’s help &amp; instructions to set-up this tax override
-                  (
-                  <a href="https://help.shopify.com/en/manual/taxes/tax-overrides#">
-                    https://help.shopify.com/en/manual/taxes/tax-overrides#
-                  </a>
-                  )
-                </p>
-              </li>
-            </ol>
+                    <ol>
+                      <li>Store currency has to be INR</li>
+                      <li>
+                        Market has to be India. In the current version, the App
+                        supports only one market at a time.
+                      </li>
+                      <li>
+                        Disable all other markets other than India (In
+                        Settingss=&gt Markets)
+                      </li>
+                      <li>
+                        Disable Other Country Customers paying in Local Currency
+                        (in Settings=&gt; Markets =&gt; Preferences =&gt;Pricing
+                        =&gt; Local Currencies)
+                      </li>
+                      <li>
+                        Timezone has to be GMT+5:30 (Chennai, Kolkata, Mumbai,
+                        New Delhi)
+                      </li>
+                    </ol>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Step 2</td>
+                  <td>Create & Apply Gift Card SKU Template</td>
+                  <td>
+                    In Shopify UI Customiser & In Qwikcilver App Dashboard
+                  </td>
+                  <td>
+                    Please ensure you have an image with ratio (width x height)
+                    600x250 px to create the gift card SKU
+                  </td>
+                </tr>
+                <tr>
+                  <td>Step 3</td>
+                  <td>Add-to-Wallet & Wallet Transaction Screens</td>
+                  <td>In Shopify UI Customiser</td>
+                  <td>
+                    Please ensure you have a test account for your website
+                    store-front
+                  </td>
+                </tr>
+                <tr>
+                  <td>Step 4</td>
+                  <td>Add Checkout Extension</td>
+                  <td>In Shopify UI Customiser</td>
+                  <td>
+                    This feature is available only for Shopify Plus Merchants
+                  </td>
+                </tr>
+              </table>
+            </div>
           )}
         </div>
 
@@ -577,21 +569,14 @@ const FaqPage = () => {
                 <p>How does my subscription plan work?</p>
                 <p>
                   Qwikcilver has a very transparent pricing plan that allows
-                  merchants to issue gift cards &amp; store-credits for their
+                  merchants to issue gift cards & store-credits for their
                   customers:
                 </p>
-                <ul>
-                  <li>
-                    Each subscription plan (for example: Basic Plan of Rs. 399)
-                    allows the merchant to issue gift cards up-to a certain
-                    limit (for example: Rs. 20,000).
-                  </li>
-                  <li>
-                    Gift Card and Store-credit issuances beyond the Subscription
-                    limit are charged separately, at a fixed Usage rate (For
-                    example: This usage rate for the Basic Plan is at 2.5%).
-                  </li>
-                </ul>
+                <p>
+                  Each subscription plan (for example: Basic Plan of Rs.
+                  399+GST) allows the merchant to issue gift cards up-to a
+                  certain limit (for example: Rs. 20,000).
+                </p>
               </li>
               <li>
                 <p>
@@ -624,9 +609,9 @@ const FaqPage = () => {
               <li>
                 <p>How can I cancel my subscription plan?</p>
                 <p>
-                  In the event where a merchant wants to discontinue using the
-                  Qwikcilver App, the merchant can cancel the subscription from
-                  the Qwikcilver App dashboard.
+                  [To be finalised] In the event where a merchant wants to
+                  discontinue using the Qwikcilver App, the merchant can cancel
+                  the subscription from the Qwikcilver App dashboard.
                 </p>
               </li>
               <li>
@@ -644,11 +629,6 @@ const FaqPage = () => {
                 <p>
                   Uninstalling the Qwikcilver app will prevent your legitimate
                   customers from redeeming their gift card on your online store.
-                  Please note that customers can initiate litigation proceedings
-                  in case the store credits and gift cards issued to them are
-                  not honored by the merchant.
-                </p>
-                <p>
                   In case you want to discontinue using the Qwikcilver app, you
                   can cancel the subscription plan from the app dashboard.
                 </p>

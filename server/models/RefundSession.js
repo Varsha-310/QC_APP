@@ -7,20 +7,21 @@ const RefundsLogs =   mongoose.Schema({
   order_id: Number,
   refundable_amount: Number,
   logs: [{
+    
+    retries: Number,
+    created_at: Date,
     id: String,
-    amount : Number,
+    total : Number,
     refund_type: String,
-    gc_rf_amount: Number,
-    gc_refunded: Object,
-    qc_gc_created: Object,
-    qc_gc_amount: Number,
-    other_rf_amount:{type:Number},
-    other_rf_at: Date,
+    gc_amount: Number,
+    storeCredit: Object,
+    amount: Number,
     order_updated_at: Date,
     refund_created_at: Date,
+    line_items: Object,
     status: {
       type: String,
-      enum: ["in-process","completed"],
+      enum: ["in-process","completed", "Failed"],
       default: "in-process"
     }
   }]

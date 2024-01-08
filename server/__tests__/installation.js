@@ -9,7 +9,7 @@ describe("Project Setup testing, api: /", () => {
   });
 });
 
-// app running status test
+// //app running status test
 // describe("Project Setup testing, api: /", () => {
 //   it("It will check project running status", async () => {
 //     const res = await request(app).get("/");
