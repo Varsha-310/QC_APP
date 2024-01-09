@@ -872,6 +872,13 @@ export const cancelRedeemWallet = async (
   }
 };
 
+/**
+ * api to deactivate a card
+ * @param {*} store 
+ * @param {*} gc_pin 
+ * @param {*} transactionId 
+ * @returns 
+ */
 export const cancelActivateGiftcard = async(store, gc_pin, transactionId) => {
   try{
     let setting = await qcCredentials.findOne({ store_url: store });
@@ -898,6 +905,51 @@ export const cancelActivateGiftcard = async(store, gc_pin, transactionId) => {
 
   let deactivation = await axios(config);
   console.log("logs of deactivation", deactivation);
+
+  }
+  catch(err){
+    console.log(err);
+    return false;
+  }
+}
+
+/**
+ * cancel add card to wallt
+ * @param {*} store 
+ * @param {*} gc_pin 
+ * @param {*} transactionId 
+ * @returns 
+ */
+export const cancelAddCardToWallet = async(store, wallet_number, batch_number ,transactionId) => {
+  try{
+    let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------");
+    console.log(gc_pin);
+    const data = {  
+      "TransactionTypeId":3508,
+         "InputType":"1",
+         "Cards":[{  
+              CardNumber: wallet_number,
+              OriginalRequest: {
+                OriginalBatchNumber: batch_number,
+                OriginalTransactionId: transactionId		
+                }		
+         }],
+      "Notes":"cancel add card to wallet"
+   }
+   let config = {
+    method: "post",
+    url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
+    headers: {
+      TransactionId: transactionId,
+      Authorization: `Bearer ${setting.token}`,
+    },
+    data: data,
+    checkAuth: {store, n:1}
+  };
+
+  let cancelCardAdd = await axios(config);
+  console.log("logs of cancel card addition", cancelCardAdd);
 
   }
   catch(err){
