@@ -9,6 +9,8 @@ import {
   redeemWallet,
   reverseRedeemWallet,
   cancelActivateGiftcard,
+  checkWalletOnQC,
+  cancelAddCardToWallet
 } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
@@ -16,6 +18,7 @@ import { checkActivePlanUses } from "./BillingController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import axios from "../helper/axios.js";
+import Wallet from "../models/wallet.js";
 
 /**
  * To handle order creation webhook
@@ -103,20 +106,21 @@ export const ordercreateEvent = async (shop, order) => {
     //console.log(orderSaved);
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
+    console.log(settings)
     if (settings) {
       let newOrder = order;
       let qwikcilver_gift_cards = [];
 
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
-        //console.log(line_item.product_id);
+        console.log(line_item.product_id);
         gift_card_product = await product
           .findOne({
             id: line_item.product_id,
           })
           .lean(); //Get the product from DB
 
-        // console.log("Giftcard Products: ", gift_card_product);
+        console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
           line_item["validity"] = gift_card_product.validity;
@@ -241,10 +245,12 @@ export const ordercreateEvent = async (shop, order) => {
                 }
 
                 let giftCardDetails = {};
-                if (OrderSession?.other?.createGC?.status == true) {
+                console.log(OrderSession?.gift?.createGC , "createGc status")
+                if (OrderSession?.gift?.createGC?.status == true) {
                   giftCardDetails =
-                    OrderSession?.other?.createGC?.resp.Cards[0];
-                } else {
+                    OrderSession?.gift?.createGC?.resp.Cards[0];
+                } 
+                else {
                   const logs = await createGiftcard(
                     shop,
                     parseFloat(qwikcilver_gift_card.price),
@@ -297,20 +303,24 @@ export const ordercreateEvent = async (shop, order) => {
               );
 
               let giftCardDetails = {};
-              let walletNumber;
               if (OrderSession?.self?.checkwallet?.status == 200) {
                 walletNumber =
                   OrderSession.self.checkWallet.resp.Wallets[0]["WalletNumber"];
               } else {
-                let checkWallet = logs?.checkWallet || { status: 0 };
+                let checkWallet = OrderSession.self?.checkWallet || { status: 0 };
                 if ([0, 1].includes(checkWallet?.status)) {
                   checkWallet = await checkWalletOnQC(
                     shop,
                     newOrder.customer.id,
-                    logs?.checkWallet
+                    OrderSession.self?.checkWallet
                   );
-                  // console.log(" checking wallet on qc",checkWallet);
-                  logs["checkWallet"] = checkWallet;
+                  console.log(" checking wallet on qc",checkWallet);
+                  // OrderSession.self["checkWallet"] = checkWallet;
+                  await OrderCreateEventLog.updateOne(
+                    logQuery,
+                    { "self.checkWallet": checkWallet },
+                    { upsert: true }
+                  );
                   await Wallet.updateOne(
                     {
                       store_url: shop,
@@ -332,10 +342,15 @@ export const ordercreateEvent = async (shop, order) => {
                     shop,
                     newOrder.customer.id,
                     newOrder.id,
-                    logs?.createWallet
+                    OrderSession.self?.createWallet
                   );
                   console.log(JSON.stringify(createWalletOnQc));
-                  logs["createWallet"] = createWalletOnQc;
+                  // OrderSession.self["createWallet"] = createWalletOnQc;
+                  await OrderCreateEventLog.updateOne(
+                    logQuery,
+                    { "self.checkWallet": createWalletOnQc },
+                    { upsert: true }
+                  );
                   if (!createWalletOnQc.status)
                     throw Error("Error: Creating Wallet On WC");
                   await Wallet.updateOne(
@@ -353,7 +368,7 @@ export const ordercreateEvent = async (shop, order) => {
                     },
                     { upsert: true }
                   );
-                  logs["checkWallet"]["status"] = 200;
+                  OrderSession.self["checkWallet"]["status"] = 200;
                 }
               }
               if (OrderSession?.self?.createGC?.status == true) {
@@ -683,7 +698,26 @@ export const failedOrders = async () => {
         );
       }
       if(iterator.action == "self"){
-        
+        if(iterator.self.craeteGC.status != true ||iterator.self.wallet.actiavte.status ){
+          await cancelActivateGiftcard(
+            iterator.store,
+            iterator.gift.createGC.resp.Cards[0].CardNumber,
+            iterator.gift.createGC.resp.TransactionId
+          );
+        }
+        else{
+          await cancelActivateGiftcard(
+            iterator.store,
+            iterator.self.createGC.resp.Cards[0].CardNumber,
+            iterator.self.createGC.resp.TransactionId
+          );
+          await cancelAddCardToWallet(
+            iterator.store,
+            iterator.self.wallet.updateW.resp.Cards[0].CardNumber,
+            iterator.self.wallet.updateW.resp.Cards[0].CurrentBatchNumber,
+            iterator.self.wallet.updateW.resp.TransactionId
+          )
+        }
       }
 
       await orderCancel(
