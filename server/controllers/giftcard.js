@@ -16,6 +16,7 @@ import {
   addToWallet,
   createWallet,
   activateCard,
+  checkWalletOnQC
 } from "../middleware/qwikcilver.js";
 import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
@@ -23,6 +24,7 @@ import orders from "../models/orders.js";
 import qc_gc from "../models/qc_gc.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 import { getOrderTransactionDetails } from "./webhookController.js";
+import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 
 /**
  * To create gifcard product
@@ -297,15 +299,61 @@ export const addGiftcardtoWallet = async (
       if (!activatedCardLog?.status) return logs;
 
       let activatedCard = activatedCardLog.resp.Cards[0];
-      const setting = await Store.findOne({ store_url: store });
-      let walletExists = await Wallet.findOne({
+      let walletDetails = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
-      if (walletExists) {
-        let wallet_id = walletExists.wallet_id;
-        const shopify_gc_id = walletExists.shopify_giftcard_id;
-        const newAmount = walletExists.balance + amount;
-        console.log(newAmount);
+      // if (walletExists) {
+      let checkWallet = logs?.checkWallet || { status: 0 };
+      if ([0, 1].includes(checkWallet?.status)) {
+        checkWallet = await checkWalletOnQC(
+          store,
+          customer.id,
+          logs?.checkWallet
+        );
+        // console.log(" checking wallet on qc",checkWallet);
+        logs["checkWallet"] = checkWallet;
+        await Wallet.updateOne(
+          {
+            store_url: store,
+            shopify_customer_id: customer.id,
+          },
+          {
+            shopify_customer_id: customer.id,
+            store_url: store,
+            wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
+            WalletPin: checkWallet.resp.Wallets[0]["WalletPin"],
+          },
+          { upsert: true }
+        );
+        if (checkWallet.status === 1) throw Error("Error: Check Wallet");
+      }
+      if (checkWallet.status == 404) {
+        const createWalletOnQc = await createWallet(
+          store,
+          customer.id,
+          order_id,
+          logs?.createWallet
+        );
+        console.log(JSON.stringify(createWalletOnQc));
+        logs["createWallet"] = createWalletOnQc;
+        if (!createWalletOnQc.status)
+          throw Error("Error: Creating Wallet On WC");
+        await Wallet.updateOne(
+          {
+            store_url: store,
+            shopify_customer_id: customer.id,
+          },
+          {
+            shopify_customer_id: customer.id,
+            store_url: store,
+            wallet_id: createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
+            WalletPin: createWalletOnQc["resp"].Wallets[0]["WalletPin"],
+          },
+          { upsert: true }
+        );
+        logs["checkWallet"]["status"] = 200;
+      }
+      if (!logs?.updateW?.status) {
         let transactionLog = logs?.updateW?.status
           ? logs?.updateW
           : await addToWallet(
@@ -316,117 +364,82 @@ export const addGiftcardtoWallet = async (
               logs?.updateW
             );
         logs["updateW"] = transactionLog;
-        if (!transactionLog?.status) return logs;
-        else {
-          if (!logs?.wallet?.shopifyGCUpdateAt) {
-            let updateShopifyGc = await updateShopifyGiftcard(
-              store,
-              setting.access_token,
-              shopify_gc_id,
-              amount
-            );
-            console.log(updateShopifyGc);
-            logs["shopifyGCUpdateAt"] = new Date().toISOString();
-          }
 
-          await wallet_history.updateOne(
-            { wallet_id: wallet_id, customer_id: customer_id },
-            {
-              $push: {
-                transactions: {
-                  transaction_type: "credit",
-                  amount: amount,
-                  gc_pin: gc_pin,
-                  expires_at: activatedCard.ExpiryDate,
-                  transaction_date: Date.now(),
-                  type: type,
-                },
-              },
-            },
-            { upsert: true }
-          );
-          walletExists.balance =
-            parseFloat(walletExists.balance) + parseFloat(amount);
-          logs["status"] = true;
-          //return transaction.data;
-        }
-      } else {
-        console.log("wallet doesnt exists");
-
-        let walletCreatedLog = await createWallet(
-          store,
-          customer_id,
-          order_id,
-          logs?.createW
-        );
-        logs["createW"] = walletCreatedLog;
-        if (!walletCreatedLog?.status) return logs;
-
-        let walletCreated = walletCreatedLog.resp.Wallets[0];
-        console.log("activated card balance", activatedCard);
-        let gift_card = {};
-        //if (logs?.shopifyGCCreatedAt) {
-        gift_card = await createShopifyGiftcard(
-          store,
-          setting.access_token,
-          activatedCard.Balance
-        );
-        console.log("Shopify Gift Card Generated - ", gift_card);
-        logs["shopifyGCCreatedAt"] = new Date().toISOString();
-        //}
-
-        console.log(walletCreated, "walletcreated");
-        await wallet.updateOne(
-          {
-            wallet_id: walletCreated.WalletNumber,
-            shopify_customer_id: customer_id,
-          },
-          {
-            wallet_id: walletCreated.WalletNumber,
-            shopify_customer_id: customer_id,
-            shopify_giftcard_id: gift_card.id,
-            shopify_giftcard_pin: gift_card.code,
-          },
-          { upsert: true }
-        );
-
-        let transactionLog = logs?.updateW?.status
-          ? logs?.updateW
-          : await addToWallet(
-              store,
-              walletCreated.WalletNumber,
-              gc_pin,
-              activatedCard.CardNumber,
-              logs?.updateW
-            );
-        logs["updateW"] = transactionLog;
-        if (!transactionLog?.status) return logs;
-        else {
-          logs["status"] = true;
-          await wallet.updateOne(
-            { shopify_customer_id: customer_id },
-            { $inc: { balance: activatedCard.Balance } },
-            { upsert: true }
-          );
-          await wallet_history.updateOne(
-            { wallet_id: walletCreated.WalletNumber, customer_id: customer_id },
-            {
-              $push: {
-                transactions: {
-                  transaction_type: "credit",
-                  amount: amount,
-                  transaction_date: Date.now(),
-                  expires_at: activatedCard.ExpiryDate,
-                  type: type,
-                },
-              },
-            },
-            { upsert: true }
-          );
-          // return transaction.data;
-        }
+        if (!updateW.status) throw new Error("Error: add card to wallet API");
       }
+      if (!walletDetails.shopify_giftcard_id) {
+        const createShopifyGC = await createShopifyGiftcard(
+          store,
+          accessToken,
+          amount
+        );
+        await Wallet.updateOne(
+          {
+            store_url: store,
+            shopify_customer_id: ordersData.customer.id,
+          },
+          {
+            store_url: store,
+            shopify_customer_id: ordersData.customer.id,
+            shopify_giftcard_id: createShopifyGC.id,
+            shopify_giftcard_pin: createShopifyGC.code,
+            balance:
+              parseFloat(walletDetails?.balance || 0) + parseFloat(amount),
+          },
+          {
+            upsert: true,
+          }
+        );
+      } else {
+        await updateShopifyGiftcard(
+          store,
+          accessToken,
+          walletDetails?.shopify_giftcard_id,
+          amount
+        );
+        await Wallet.updateOne(
+          {
+            store_url: store,
+            shopify_customer_id: ordersData.customer.id,
+          },
+          {
+            balance:
+              parseFloat(walletDetails.balance || 0) + parseFloat(amount),
+          },
+          {
+            upsert: true,
+          }
+        );
+      }
+      logs["shopifyGC"] = {
+        status: true,
+        time: new Date().toISOString(),
+      };
+      let myDate = new Date();
+      myDate.setDate(myDate.getDate() + parseInt(365));
+      await wallet_history.updateOne(
+        {
+          wallet_id: walletDetails.wallet_id,
+          customer_id: ordersData?.customer.id,
+        },
+        {
+          $push: {
+            transactions: {
+              transaction_type: "credit",
+              amount: amount,
+              expires_at:
+                logs["loadWallet"]["resp"]["Cards"][0]["PaymentInstruments"][0][
+                  "ExpiryDate"
+                ],
+              transaction_date: Date.now(),
+              type: type,
+            },
+          },
+        },
+        { upsert: true }
+      );
     }
+    logs["status"] = true;
     return logs;
   } catch (err) {
     logs["error"] = err;
@@ -470,20 +483,20 @@ export const getWalletBalance = async ({ query }, res) => {
     }
 
     let qcBalance = await fetchBalance(store, walletExists.wallet_id);
-    console.log(
-      "balance from qwikcilver giftcard",
-      qcBalance.data.Cards[0]
-    );
+    console.log("balance from qwikcilver giftcard", qcBalance.data.Cards[0]);
 
     if (qcBalance.data.Cards[0].ResponseCode === 10551) {
       return res.json(respondNotFound("Wallet is deactivated"));
     }
 
     if (qcBalance.data.Cards[0].ResponseCode === 0) {
-      console.log(`qc balance:${qcBalance.data.Cards[0]} , shopify balance :${shopifybalance.balance}`);
+      console.log(
+        `qc balance:${qcBalance.data.Cards[0]} , shopify balance :${shopifybalance.balance}`
+      );
 
       if (qcBalance.data.Cards[0].Balance < shopifybalance.balance) {
-        let diffAmount = shopifybalance.balance - qcBalance.data.Cards[0].Balance;
+        let diffAmount =
+          shopifybalance.balance - qcBalance.data.Cards[0].Balance;
         console.log(diffAmount, "diff amount");
         console.log("qc wallet balance is less");
 
@@ -494,8 +507,8 @@ export const getWalletBalance = async ({ query }, res) => {
           -diffAmount
         );
         console.log(shopifybalance, "shopify giftcard balance");
-        console.log(qcBalance , "qc wallet balance");
-        if(qcBalance > shopifybalance){
+        console.log(qcBalance, "qc wallet balance");
+        if (qcBalance > shopifybalance) {
           res.json({
             ...respondWithData("balance fetched"),
             data: {
@@ -503,16 +516,14 @@ export const getWalletBalance = async ({ query }, res) => {
               gc_id: walletExists.shopify_giftcard_pin,
             },
           });
-
-        }
-        else{
+        } else {
           let updateShopifyGc = await updateShopifyGiftcard(
             store,
             storeExists.access_token,
             walletExists.shopify_giftcard_id,
             qcBalance
           );
-          console.log("updated shopify giftcard",updateShopifyGc);
+          console.log("updated shopify giftcard", updateShopifyGc);
           res.json({
             ...respondWithData("balance fetched"),
             data: {
@@ -558,49 +569,66 @@ export const resendEmail = async (req, res) => {
     if (orderExists) {
       console.log("-------------", orderExists);
       const giftCard = await qc_gc.findOne({ order_id: req.query.order_id });
-      const giftCardDetails = {
-        CardNumber: giftCard.gc_number,
-        CardPin: giftCard.gc_pin,
-        Balance: giftCard.balance,
-        ExpiryDate: giftCard.expiry_date,
-      };
+
       console.log(giftCard, "---------------------------");
-
-      let email = null;
-      let message = "";
-      let receiver = "";
-      let image_url = "";
-      const qwikcilver_gift_card = orderExists.line_items[0].properties;
-      console.log(
-        qwikcilver_gift_card,
-        "----------------founf-----------------"
-      );
-      for (let i = 0; i < qwikcilver_gift_card.length; i++) {
-        console.log(qwikcilver_gift_card[i].value, "--------------", i);
-        if (qwikcilver_gift_card[i].name === "_Qc_img_url") {
-          image_url = qwikcilver_gift_card[i].value;
-        }
-        if (qwikcilver_gift_card[i].name === "_Qc_recipient_email") {
-          email = qwikcilver_gift_card[i].value;
-        }
-        if (qwikcilver_gift_card[i].name === "_Qc_recipient_message") {
-          message = qwikcilver_gift_card[i].value;
-        }
-
-        if (qwikcilver_gift_card[i].name === "_Qc_recipient_name") {
-          receiver = qwikcilver_gift_card[i].value;
-        }
-      }
-      await sendEmailViaSendGrid(
+      const resetCardPin = await resetCardPin(
         req.token.store_url,
-        giftCardDetails,
-        receiver,
-        email,
-        message,
-        image_url
+        giftCard.gc_number
       );
+      if (resetCardPin != false) {
+        await qc_gc.findOneAndUpdate({
+          order_id: req.query.order_id,
+          gc_pin: resetCardPin,
+        });
+        await OrderCreateEventLog.findOne({
+          orderId: req.query.order_id,
+          "gift.createGC.resp.Cards[0].CardPin": resetCardPin,
+        });
+        const giftCardDetails = {
+          CardNumber: giftCard.gc_number,
+          CardPin: resetCardPin,
+          Balance: giftCard.balance,
+          ExpiryDate: giftCard.expiry_date,
+        };
 
-      res.json(respondSuccess("email sent successfully"));
+        let email = null;
+        let message = "";
+        let receiver = "";
+        let image_url = "";
+        const qwikcilver_gift_card = orderExists.line_items[0].properties;
+        console.log(
+          qwikcilver_gift_card,
+          "----------------founf-----------------"
+        );
+        for (let i = 0; i < qwikcilver_gift_card.length; i++) {
+          console.log(qwikcilver_gift_card[i].value, "--------------", i);
+          if (qwikcilver_gift_card[i].name === "_Qc_img_url") {
+            image_url = qwikcilver_gift_card[i].value;
+          }
+          if (qwikcilver_gift_card[i].name === "_Qc_recipient_email") {
+            email = qwikcilver_gift_card[i].value;
+          }
+          if (qwikcilver_gift_card[i].name === "_Qc_recipient_message") {
+            message = qwikcilver_gift_card[i].value;
+          }
+
+          if (qwikcilver_gift_card[i].name === "_Qc_recipient_name") {
+            receiver = qwikcilver_gift_card[i].value;
+          }
+        }
+        await sendEmailViaSendGrid(
+          req.token.store_url,
+          giftCardDetails,
+          receiver,
+          email,
+          message,
+          image_url
+        );
+
+        res.json(respondSuccess("email sent successfully"));
+      } else {
+        res.json(respondInternalServerError());
+      }
     } else {
       res.json(respondNotFound("order does not exists"));
     }
@@ -918,6 +946,7 @@ export const refundAsStoreCredit = async (
       let walletExists = await Wallet.findOne({
         shopify_customer_id: customer_id,
       });
+      const shopify_gc_id = walletExists.shopify_giftcard_id;
       if (walletExists) {
         let wallet_id = walletExists.wallet_id;
         const shopify_gc_id = walletExists.shopify_giftcard_id;

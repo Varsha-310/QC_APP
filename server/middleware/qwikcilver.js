@@ -872,7 +872,81 @@ export const cancelRedeemWallet = async (
   }
 };
 
+export const cancelActivateGiftcard = async(store, gc_pin, transactionId) => {
+  try{
+    let setting = await qcCredentials.findOne({ store_url: store });
+    console.log("------------------store qc credeentials-------------------------");
+    console.log(gc_pin);
+    const data = {  
+      "TransactionTypeId":322,
+         "InputType":"1",
+         "Cards":[{  
+            "CardPin":gc_pin
+         }],
+      "Notes":"Deactivate Only"
+   }
+   let config = {
+    method: "post",
+    url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
+    headers: {
+      TransactionId: transactionId,
+      Authorization: `Bearer ${setting.token}`,
+    },
+    data: data,
+    checkAuth: {store, n:1}
+  };
 
+  let deactivation = await axios(config);
+  console.log("logs of deactivation", deactivation);
+
+  }
+  catch(err){
+    console.log(err);
+    return false;
+  }
+}
+
+/**
+ * api to reset pin for a card
+ * @param {*} store 
+ * @param {*} cardNumber 
+ * @returns 
+ */
+export const resetCardPin = async(store,cardNumber) =>{
+  try{
+    console.log("--------------in creating token-----------------------", store);
+    const storeData = await qcCredentials.findOne({ store_url: store });
+    const myDate = new Date();
+    const date = myDate.toISOString().slice(0, 22);
+    let data = {  TransactionTypeId:3030,
+         InputType:1,
+         Cards:[{  
+            CardNumber: cardNumber
+         }]
+   };
+   
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
+      data: data,
+      checkAuth: {store, n:1}
+    };
+
+    const resetPinData = await axios(config);
+    if(resetPinData.data.ResponseCode == "0"){
+      return resetPinData.data.Cards[0].CardPin
+    }
+    else{
+      return false
+    }
+
+
+  }
+  catch(err){
+    console.log(err);
+    return false
+  }
+}
 /**
  * method to get auth token
  * @param {*} store
