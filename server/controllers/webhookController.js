@@ -715,8 +715,8 @@ export const failedOrders = async () => {
         ) {
           await cancelActivateGiftcard(
             iterator.store,
-            iterator.gift.createGC.resp.Cards[0].CardNumber,
-            iterator.gift.createGC.resp.TransactionId
+            iterator.self.createGC.resp.Cards[0].CardNumber,
+            iterator.self.createGC.resp.TransactionId
           );
         } else {
           await cancelActivateGiftcard(
