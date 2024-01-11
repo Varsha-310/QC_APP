@@ -716,11 +716,12 @@ export const failedOrders = async () => {
           iterator.self.createGC.status != true ||
           iterator.self.wallet.activate.status
         ) {
-          await cancelActivateGiftcard(
+          reverseCreateGiftcard(
             iterator.store,
-            iterator.self.createGC.resp.Cards[0].CardNumber,
-            iterator.self.createGC.resp.TransactionId
+            iterator.gift.createGC.req,
+            iterator.gift.createGC.resp.TransactionId
           );
+          console.log(reversing)
         } else {
           await cancelActivateGiftcard(
             iterator.store,
