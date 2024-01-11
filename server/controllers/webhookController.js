@@ -12,6 +12,7 @@ import {
   checkWalletOnQC,
   cancelAddCardToWallet,
   createWallet,
+  reverseCreateGiftcard
 } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
@@ -702,11 +703,13 @@ export const failedOrders = async () => {
         );
       }
       if (iterator.action == "gift") {
-        await cancelActivateGiftcard(
+        console.log("reverse giftcard")
+       const reversing = await reverseCreateGiftcard(
           iterator.store,
-          iterator.gift.createGC.resp.Cards[0].CardNumber,
+          iterator.gift.createGC.req,
           iterator.gift.createGC.resp.TransactionId
         );
+        console.log(reversing)
       }
       if (iterator.action == "self") {
         if (
@@ -738,14 +741,14 @@ export const failedOrders = async () => {
         iterator.store,
         "Unable to Redeem On QC after all Reties."
       );
-      await OrderCreateEventLog.findOneAndUpdate(
-        { orderId: iterator.orderId },
-        {
-          status: "done",
-          reverse,
-          numberOfRetried: parseInt(iterator.numberOfRetried) + 1,
-        }
-      );
+      // await OrderCreateEventLog.findOneAndUpdate(
+      //   { orderId: iterator.orderId },
+      //   {
+      //     status: "done",
+      //     reverse,
+      //     numberOfRetried: parseInt(iterator.numberOfRetried) + 1,
+      //   }
+      // );
     } else {
       console.log("eligilble for retry");
       const currentTime = Date.now();

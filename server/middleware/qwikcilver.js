@@ -913,6 +913,8 @@ export const cancelActivateGiftcard = async(store, gc_pin, transactionId) => {
   }
 }
 
+
+
 /**
  * cancel add card to wallt
  * @param {*} store 
@@ -964,10 +966,61 @@ export const cancelAddCardToWallet = async(store, wallet_number, batch_number ,t
  * @param {*} cardNumber 
  * @returns 
  */
+export const reverseCreateGiftcard = async(store,body, transactionId) =>{
+  try{
+    console.log("-------------------------------reversing gc------", store);
+    const setting = await qcCredentials.findOne({ store_url: store });
+    console.log(setting , "setting")
+      let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
+    const myDate = new Date();
+    const date = myDate.toISOString().slice(0, 22);
+    let data = body
+   
+    let config = {
+      method: "post",
+      url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions/reverse`,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
+      data: data,
+      checkAuth: {store, n:1}
+    };
+
+    const resetPinData = await axios(config);
+    console.log("response of reverse create giftcard", reverseCreateGiftcard);
+    if(resetPinData.data.ResponseCode == "0"){
+      return resetPinData.data.Cards[0].CardPin
+    }
+    else{
+      return false
+    }
+
+
+  }
+  catch(err){
+    console.log(err);
+    return false
+  }
+}
+
+
+/**
+ * api to reset pin for a card
+ * @param {*} store 
+ * @param {*} cardNumber 
+ * @returns 
+ */
 export const resetCardPin = async(store,cardNumber) =>{
   try{
     console.log("--------------in creating token-----------------------", store);
-    const storeData = await qcCredentials.findOne({ store_url: store });
+    const setting = await qcCredentials.findOne({ store_url: store });
+    console.log(setting , "setting")
+      let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      setting.unique_transaction_id = transactionId + 1; // Append it by 1
+      setting.markModified("unique_transaction_id");
     const myDate = new Date();
     const date = myDate.toISOString().slice(0, 22);
     let data = {  TransactionTypeId:3030,
@@ -981,6 +1034,10 @@ export const resetCardPin = async(store,cardNumber) =>{
       method: "post",
       url: `${process.env.QC_API_URL}/XnP/api/v3/gc/transactions`,
       data: data,
+      headers: {
+        TransactionId: transactionId,
+        Authorization: `Bearer ${setting.token}`,
+      },
       checkAuth: {store, n:1}
     };
 
