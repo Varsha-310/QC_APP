@@ -31,10 +31,10 @@ export const createGiftcard = async (
   logs["status"] = false;
   try {
 
-    console.log( "------------------ Create Giftcard Process Started -------------------");
+    console.log( "------------------ Create Giftcard Process Started -------------------", logs?.resp?.TransactionId);
     let setting = await qcCredentials.findOne({ store_url: store });
     let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
-    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    let transactionId = logs?.resp?.TransactionId || setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     await setting.save();
@@ -78,7 +78,7 @@ export const createGiftcard = async (
       method: "post",
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
-        TransactionId: transactionId,
+        TransactionId: logs?.resp?.TransactionId || transactionId,
         Authorization: `Bearer ${setting.token}`,
       },
       data: data,
@@ -138,7 +138,7 @@ export const cancelCreateNdIssueGiftcard = async (
   logs["status"] = false;
   try {
 
-    console.log( "------------------ Create Giftcard Process Started -------------------");
+    console.log( "------------------ Create Giftcard Process Started -------------------",logs);
     let setting = await qcCredentials.findOne({ store_url: store });
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
@@ -879,37 +879,51 @@ export const cancelRedeemWallet = async (
  * @param {*} transactionId 
  * @returns 
  */
-export const cancelActivateGiftcard = async(store, gc_pin, transactionId) => {
+export const cancelActivateGiftcard = async(store, card,amount,batch_number, transactionId, approvalCode, logs ={}) => {
   try{
-    let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------");
-    console.log(gc_pin);
+    let setting = await qcCredentials.findOne({ store_url: store });
+    let transaction_id = setting.unique_transaction_id; //Store the unique ID to a variable
+    setting.unique_transaction_id = transactionId + 1; // Append it by 1
+    setting.markModified("unique_transaction_id");
+    await setting.save();
     const data = {  
-      "TransactionTypeId":322,
          "InputType":"1",
          "Cards":[{  
-            "CardPin":gc_pin
+            "CardNumber":card,
+            "CurrencyCode": "INR",
+            "Amount":amount,
+            OriginalRequest: {
+              OriginalBatchNumber: batch_number,
+              OriginalTransactionId: transactionId,
+              OriginalApprovalCode: approvalCode		
+              }		
+
          }],
       "Notes":"Deactivate Only"
    }
    let config = {
     method: "post",
-    url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
+    url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions/cancel`,
     headers: {
-      TransactionId: transactionId,
+      TransactionId: transaction_id,
       Authorization: `Bearer ${setting.token}`,
     },
     data: data,
     checkAuth: {store, n:1}
   };
-
+  logs["req"] = data
   let deactivation = await axios(config);
   console.log("logs of deactivation", deactivation);
+  logs["resp"]= deactivation.data
+  return logs
 
   }
   catch(err){
     console.log(err);
-    return false;
+    logs["error"] = err.response.data || err?.code == 'ECONNABORTED';
+
+    return logs;
   }
 }
 
@@ -966,12 +980,12 @@ export const cancelAddCardToWallet = async(store, wallet_number, batch_number ,t
  * @param {*} cardNumber 
  * @returns 
  */
-export const reverseCreateGiftcard = async(store,body, transactionId) =>{
+export const reverseCreateGiftcard = async(store,body, transactionId , logs = {}) =>{
   try{
-    console.log("-------------------------------reversing gc------", store);
+    console.log("-------------------------------reversing gc------", store , logs);
     const setting = await qcCredentials.findOne({ store_url: store });
     console.log(setting , "setting")
-      let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+      // let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
     const myDate = new Date();
@@ -988,20 +1002,17 @@ export const reverseCreateGiftcard = async(store,body, transactionId) =>{
       data: data,
       checkAuth: {store, n:1}
     };
-
-    const resetPinData = await axios(config);
-    console.log("response of reverse create giftcard", reverseCreateGiftcard);
-    if(resetPinData.data.ResponseCode == "0"){
-      return resetPinData.data.Cards[0].CardPin
-    }
-    else{
-      return false
-    }
-
+    logs["req"] = data;
+    const reversingCard = await axios(config);
+    console.log("response of reverse create giftcard", reversingCard);
+      logs["resp"] = reversingCard.data;
+      return logs
+    
 
   }
   catch(err){
     console.log(err);
+    logs["error"] = err.response.data || err?.code == 'ECONNABORTED';
     return false
   }
 }

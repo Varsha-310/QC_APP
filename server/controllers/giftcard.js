@@ -16,7 +16,7 @@ import {
   addToWallet,
   createWallet,
   activateCard,
-  checkWalletOnQC
+  checkWalletOnQC,resetCardPin
 } from "../middleware/qwikcilver.js";
 import wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
@@ -588,7 +588,7 @@ export const resendEmail = async (req, res) => {
       const giftCard = await qc_gc.findOne({ order_id: req.query.order_id });
 
       console.log(giftCard, "---------------------------");
-      const resetCardPin = await resetCardPin(
+       await resetCardPin(
         req.token.store_url,
         giftCard.gc_number
       );

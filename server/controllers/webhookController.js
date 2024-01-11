@@ -686,7 +686,7 @@ export const failedOrders = async () => {
     console.log(
       `No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`
     );
-    if (iterator.numberOfRetried > 3) {
+    if (iterator.numberOfRetried > 2) {
       const orderData = await orders.findOne({ id: iterator.orderId });
 
       console.log("order retry greater than three");
@@ -704,36 +704,30 @@ export const failedOrders = async () => {
       }
       if (iterator.action == "gift") {
         console.log("reverse giftcard")
-       const reversing = await reverseCreateGiftcard(
+        reverse = await reverseCreateGiftcard(
           iterator.store,
           iterator.gift.createGC.req,
           iterator.gift.createGC.resp.TransactionId
         );
-        console.log(reversing)
       }
       if (iterator.action == "self") {
         if (
-          iterator.self.createGC.status != true ||
-          iterator.self.wallet.activate.status
-        ) {
-          reverseCreateGiftcard(
+          iterator.self.createGC.status == false) {
+            reverse = await reverseCreateGiftcard(
             iterator.store,
-            iterator.gift.createGC.req,
-            iterator.gift.createGC.resp.TransactionId
-          );
-          console.log(reversing)
-        } else {
-          await cancelActivateGiftcard(
-            iterator.store,
-            iterator.self.createGC.resp.Cards[0].CardNumber,
+            iterator.self.createGC.req,
             iterator.self.createGC.resp.TransactionId
           );
-          await cancelAddCardToWallet(
+        } else {
+          reverse = await cancelActivateGiftcard(
             iterator.store,
-            iterator.self.wallet.updateW.resp.Cards[0].CardNumber,
-            iterator.self.wallet.updateW.resp.Cards[0].CurrentBatchNumber,
-            iterator.self.wallet.updateW.resp.TransactionId
+            iterator.self.createGC.resp.Cards[0].CardNumber,
+            iterator.self.createGC.req.Cards[0].Amount,
+            iterator.self.createGC.resp.CurrentBatchNumber,
+            iterator.self.createGC.resp.TransactionId,
+            iterator.self.createGC.resp.ApprovalCode
           );
+         
         }
       }
 
