@@ -686,11 +686,12 @@ export const failedOrders = async () => {
       `No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`
     );
     if (iterator.numberOfRetried > 3) {
+      const orderData = await orders.findOne({ id: iterator.orderId });
+
       console.log("order retry greater than three");
       let reverse = {};
       if (iterator.action == "redeem") {
         console.log("Redeem Action");
-        const orderData = await orders.findOne({ id: iterator.orderId });
         reverse = await reverseRedeemWallet(
           iterator.store,
           iterator.orderId,
@@ -709,7 +710,7 @@ export const failedOrders = async () => {
       }
       if (iterator.action == "self") {
         if (
-          iterator.self.craeteGC.status != true ||
+          iterator.self.createGC.status != true ||
           iterator.self.wallet.activate.status
         ) {
           await cancelActivateGiftcard(
