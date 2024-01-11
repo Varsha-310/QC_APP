@@ -742,14 +742,14 @@ export const failedOrders = async () => {
         iterator.store,
         "Unable to Redeem On QC after all Reties."
       );
-      // await OrderCreateEventLog.findOneAndUpdate(
-      //   { orderId: iterator.orderId },
-      //   {
-      //     status: "done",
-      //     reverse,
-      //     numberOfRetried: parseInt(iterator.numberOfRetried) + 1,
-      //   }
-      // );
+      await OrderCreateEventLog.findOneAndUpdate(
+        { orderId: iterator.orderId },
+        {
+          status: "done",
+          reverse,
+          numberOfRetried: parseInt(iterator.numberOfRetried) + 1,
+        }
+      );
     } else {
       console.log("eligilble for retry");
       const currentTime = Date.now();
