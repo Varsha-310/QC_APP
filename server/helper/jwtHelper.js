@@ -1,6 +1,50 @@
 import Jwt from "jsonwebtoken";
 import Store from "../models/store.js";
-import { respondInternalServerError, respondUnauthorized } from "./response.js";
+import { errorMsg, respondError, respondInternalServerError, respondUnauthorized } from "./response.js";
+
+/**
+ * Verify Refund API
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+export const verifyRefundAPI = async(req, res, next) => {
+
+  try {
+
+    console.log(" ----- Verification Request Started -----");
+    //check for basic auth header
+    if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
+      return res.status(401).json(respondError("Missing Authorization Header", 401));
+    }
+
+    console.log("Request Headers: ", req.headers.authorization);
+    // verify auth credentials
+    const base64Credentials =  req.headers.authorization.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [username, password] = credentials.split(':');
+
+    console.log("Credentials:", username, password );
+    const storeExists = await Store.findOne({
+      store_url: username,
+      api_auth: password
+    });
+    if (storeExists) {
+
+      req.token ={ store_url: username };
+      return next();
+    }else {
+
+      return res.status(401).json(respondError("Invalid Authentication Credentials", 401));
+    }
+  } catch (err) {
+
+    console.log("Error While Validating Ext Refund API", err);
+    return res.status(500).json(respondInternalServerError());
+  }
+}
 
 /**
  * Create jwt token for api authorization
@@ -23,6 +67,7 @@ export const createJwt = async (shop) => {
     return false;
   }
 };
+
 /**
  * Verify jwt token for api authorization
  * @param {*} req

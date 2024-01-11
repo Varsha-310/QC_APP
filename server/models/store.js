@@ -38,7 +38,8 @@ let storeSchema = mongoose.Schema({
   auth_token: {type:String},
   currency: String,
   myshopify_domain: String,
-  domain: String
+  domain: String,
+  api_auth: String
 });
 
 export default mongoose.model("Store", storeSchema);

@@ -1,5 +1,5 @@
 import  Validator from "validatorjs";
-import { respondInternalServerError, respondUnauthorized, respondValidationError } from "./response.js";
+import { errorMsg, respondInternalServerError, respondUnauthorized, respondValidationError } from "./response.js";
 import crypto from "crypto";
 import store from "../models/store.js";
 
@@ -280,6 +280,42 @@ export const validateRefund = async (req, res, next) => {
   } catch (err) {
 
     return res.json(respondInternalServerError());
+  }
+};
+
+/**
+ * Validate Refund as store credit
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const validateRefundStoreCredit = async (req, res, next) => {
+
+  try {
+
+    console.log(req.body);
+    const validationRule = {
+      'order_id': "required|integer",
+      'line_items': "required|array",
+      'line_items.*.id': "required|integer",
+      'line_items.*.qty': "required|integer",
+      'transactions': "required|array",
+      'transactions.*.gateway': "required|string",
+      'transactions.*.parent_id': "required|integer",
+      'transactions.*.amount': "required|numeric",
+    };
+    await validator(req.body, validationRule, {}, (err, status) => {
+      if (!status) { 
+        return res.status(422).json(respondValidationError(err.errors));
+      } else {
+        next();
+      }
+    });
+  } catch (err) {
+
+    console.log("Error While Validating Refund Req:", err);
+    return res.status(500).json(respondInternalServerError());
   }
 };
 

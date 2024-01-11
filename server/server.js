@@ -99,11 +99,11 @@ app.use("/giftcard" ,apiLimiter, giftcardRoute);
 app.use("/payment",apiLimiter ,paymentRoute);
 
 // cron to check webhooks for every store
-cron.schedule("*/10 * * * * *", () => {
+// cron.schedule("*/10 * * * * *", () => {
   
-  console.log("checking failed sessions in every 10 sec");
-  failedOrders();
-});
+//   console.log("checking failed sessions in every 10 sec");
+//   failedOrders();
+// });
 
 // Database and Port connection
 mongoose
