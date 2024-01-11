@@ -324,7 +324,14 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
 
             const loadGC = await loadWalletAPI(store, amount, ordersData.id, ordersData?.customer.id, logs?.loadGC);
             logs["loadWallet"] = loadGC;
-            if(!loadGC.status) throw new Error("Error: Load Wallet API");
+            // if(!loadGC.status) throw new Error("Error: Load Wallet API");
+            if(loadGC.status){
+                    await updateBilling(amount, store);
+                    logs["updateBillingAt"] = new Date().toISOString();
+            }
+            else{
+                throw new Error("Error: Load Wallet API");
+            }
         }
 
         if(!logs?.shopifyGC?.status){
