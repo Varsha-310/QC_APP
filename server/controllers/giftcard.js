@@ -280,9 +280,11 @@ export const addGiftcardtoWallet = async (
   amount,
   type,
   order_id,
-  logs = {}
+  logs = {},
+  card_logs
 ) => {
   logs["status"] = false;
+  let customer_wallet_id;
   try {
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
@@ -290,6 +292,7 @@ export const addGiftcardtoWallet = async (
     if (cardAlredyAdded) {
       return { status: 403 };
     } else {
+      const getStoreDetails = await Store.findOne({store_url : store})
       // activate Giftcard
       let activatedCardLog = logs?.activate?.status
         ? logs?.activate
@@ -307,18 +310,19 @@ export const addGiftcardtoWallet = async (
       if ([0, 1].includes(checkWallet?.status)) {
         checkWallet = await checkWalletOnQC(
           store,
-          customer.id,
+          customer_id,
           logs?.checkWallet
         );
         // console.log(" checking wallet on qc",checkWallet);
         logs["checkWallet"] = checkWallet;
+        customer_wallet_id = checkWallet.resp.Wallets[0]["WalletNumber"]
         await Wallet.updateOne(
           {
             store_url: store,
-            shopify_customer_id: customer.id,
+            shopify_customer_id: customer_id,
           },
           {
-            shopify_customer_id: customer.id,
+            shopify_customer_id: customer_id,
             store_url: store,
             wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
             WalletPin: checkWallet.resp.Wallets[0]["WalletPin"],
@@ -330,7 +334,7 @@ export const addGiftcardtoWallet = async (
       if (checkWallet.status == 404) {
         const createWalletOnQc = await createWallet(
           store,
-          customer.id,
+          customer_id,
           order_id,
           logs?.createWallet
         );
@@ -338,13 +342,14 @@ export const addGiftcardtoWallet = async (
         logs["createWallet"] = createWalletOnQc;
         if (!createWalletOnQc.status)
           throw Error("Error: Creating Wallet On WC");
+        customer_wallet_id = createWalletOnQc["resp"].Wallets[0]["WalletNumber"]
         await Wallet.updateOne(
           {
             store_url: store,
-            shopify_customer_id: customer.id,
+            shopify_customer_id: customer_id,
           },
           {
-            shopify_customer_id: customer.id,
+            shopify_customer_id: customer_id,
             store_url: store,
             wallet_id: createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
             WalletPin: createWalletOnQc["resp"].Wallets[0]["WalletPin"],
@@ -354,33 +359,34 @@ export const addGiftcardtoWallet = async (
         logs["checkWallet"]["status"] = 200;
       }
       if (!logs?.updateW?.status) {
+        
         let transactionLog = logs?.updateW?.status
           ? logs?.updateW
           : await addToWallet(
               store,
-              wallet_id,
+              customer_wallet_id,
               gc_pin,
               activatedCard.CardNumber,
               logs?.updateW
             );
         logs["updateW"] = transactionLog;
 
-        if (!updateW.status) throw new Error("Error: add card to wallet API");
+        if (!transactionLog.status) throw new Error("Error: add card to wallet API");
       }
       if (!walletDetails.shopify_giftcard_id) {
         const createShopifyGC = await createShopifyGiftcard(
           store,
-          accessToken,
+          getStoreDetails.access_token,
           amount
         );
         await Wallet.updateOne(
           {
             store_url: store,
-            shopify_customer_id: ordersData.customer.id,
+            shopify_customer_id: customer_id,
           },
           {
             store_url: store,
-            shopify_customer_id: ordersData.customer.id,
+            shopify_customer_id: customer_id,
             shopify_giftcard_id: createShopifyGC.id,
             shopify_giftcard_pin: createShopifyGC.code,
             balance:
@@ -393,14 +399,14 @@ export const addGiftcardtoWallet = async (
       } else {
         await updateShopifyGiftcard(
           store,
-          accessToken,
+          getStoreDetails.access_token,
           walletDetails?.shopify_giftcard_id,
           amount
         );
         await Wallet.updateOne(
           {
             store_url: store,
-            shopify_customer_id: ordersData.customer.id,
+            shopify_customer_id: customer_id,
           },
           {
             balance:
@@ -417,10 +423,11 @@ export const addGiftcardtoWallet = async (
       };
       let myDate = new Date();
       myDate.setDate(myDate.getDate() + parseInt(365));
+      console.log( card_logs, "logs of order sesiion");
       await wallet_history.updateOne(
         {
           wallet_id: walletDetails.wallet_id,
-          customer_id: ordersData?.customer.id,
+          customer_id: customer_id,
         },
         {
           $push: {
@@ -428,9 +435,7 @@ export const addGiftcardtoWallet = async (
               transaction_type: "credit",
               amount: amount,
               expires_at:
-                logs["loadWallet"]["resp"]["Cards"][0]["PaymentInstruments"][0][
-                  "ExpiryDate"
-                ],
+              card_logs.ExpiryDate,
               transaction_date: Date.now(),
               type: type,
             },
@@ -506,6 +511,18 @@ export const getWalletBalance = async ({ query }, res) => {
           walletExists.shopify_giftcard_id,
           -diffAmount
         );
+        await wallet_history.updateOne(
+          { wallet_id: walletExists.wallet_id },
+          {
+            $push: {
+              transactions: {
+                transaction_type: "debit",
+                amount: diffAmount,
+                transaction_date: Date.now(),
+              },
+            },
+          },
+          { upsert: true });
         console.log(shopifybalance, "shopify giftcard balance");
         console.log(qcBalance, "qc wallet balance");
         if (qcBalance > shopifybalance) {
