@@ -710,7 +710,7 @@ export const failedOrders = async () => {
       if (iterator.action == "self") {
         if (
           iterator.self.craeteGC.status != true ||
-          iterator.self.wallet.actiavte.status
+          iterator.self.wallet.activate.status
         ) {
           await cancelActivateGiftcard(
             iterator.store,
