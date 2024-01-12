@@ -634,14 +634,14 @@ export const resendEmail = async (req, res) => {
             receiver = qwikcilver_gift_card[i].value;
           }
         }
-        // await sendEmailViaSendGrid(
-        //   req.token.store_url,
-        //   giftCardDetails,
-        //   receiver,
-        //   email,
-        //   message,
-        //   image_url
-        // );
+        await sendEmailViaSendGrid(
+          req.token.store_url,
+          giftCardDetails,
+          receiver,
+          email,
+          message,
+          image_url
+        );
 
         res.json(respondSuccess("email sent successfully"));
       } else {
