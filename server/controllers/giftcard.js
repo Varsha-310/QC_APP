@@ -588,25 +588,26 @@ export const resendEmail = async (req, res) => {
       const giftCard = await qc_gc.findOne({ order_id: req.query.order_id });
 
       console.log(giftCard, "---------------------------");
-       await resetCardPin(
+        const newPin = await resetCardPin(
         req.token.store_url,
         giftCard.gc_number
       );
-      if (resetCardPin != false) {
+      if (newPin != false) {
         await qc_gc.findOneAndUpdate({
           order_id: req.query.order_id,
-          gc_pin: resetCardPin,
+          gc_pin: newPin,
         });
         await OrderCreateEventLog.findOne({
           orderId: req.query.order_id,
-          "gift.createGC.resp.Cards[0].CardPin": resetCardPin,
+          "gift.createGC.resp.Cards[0].CardPin": newPin,
         });
         const giftCardDetails = {
           CardNumber: giftCard.gc_number,
-          CardPin: resetCardPin,
+          CardPin: newPin,
           Balance: giftCard.balance,
           ExpiryDate: giftCard.expiry_date,
         };
+        console.log(giftCardDetails , "----------details of card---------------")
 
         let email = null;
         let message = "";
@@ -633,14 +634,14 @@ export const resendEmail = async (req, res) => {
             receiver = qwikcilver_gift_card[i].value;
           }
         }
-        await sendEmailViaSendGrid(
-          req.token.store_url,
-          giftCardDetails,
-          receiver,
-          email,
-          message,
-          image_url
-        );
+        // await sendEmailViaSendGrid(
+        //   req.token.store_url,
+        //   giftCardDetails,
+        //   receiver,
+        //   email,
+        //   message,
+        //   image_url
+        // );
 
         res.json(respondSuccess("email sent successfully"));
       } else {

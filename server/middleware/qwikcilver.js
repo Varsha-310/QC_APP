@@ -1032,9 +1032,12 @@ export const resetCardPin = async(store,cardNumber) =>{
       let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
       setting.unique_transaction_id = transactionId + 1; // Append it by 1
       setting.markModified("unique_transaction_id");
+      await setting.save();
+
     const myDate = new Date();
     const date = myDate.toISOString().slice(0, 22);
-    let data = {  TransactionTypeId:3030,
+    let data = { 
+       TransactionTypeId:3030,
          InputType:1,
          Cards:[{  
             CardNumber: cardNumber
@@ -1053,6 +1056,7 @@ export const resetCardPin = async(store,cardNumber) =>{
     };
 
     const resetPinData = await axios(config);
+    console.log(resetPinData.data , "-----------reset pin resp-----------")
     if(resetPinData.data.ResponseCode == "0"){
       return resetPinData.data.Cards[0].CardPin
     }
