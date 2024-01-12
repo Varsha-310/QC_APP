@@ -594,8 +594,8 @@ export const resendEmail = async (req, res) => {
       );
       if (newPin != false) {
         await qc_gc.findOneAndUpdate({
-          order_id: req.query.order_id,
-          gc_pin: newPin,
+          order_id: req.query.order_id},
+          {gc_pin: newPin
         });
         await OrderCreateEventLog.findOne({
           orderId: req.query.order_id,
