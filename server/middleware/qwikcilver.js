@@ -502,7 +502,7 @@ export const addToWallet = async (
 
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("---------------add to wallet----------------------------------------");
-    let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
+    let transactionId =  logs?.resp?.TransactionId|| setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
     setting.markModified("unique_transaction_id");
     const idempotency_key = generateIdempotencyKey();
