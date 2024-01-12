@@ -60,10 +60,10 @@ export const createGiftcard = async (
       InvoiceNumber: `ORD-${order_id}`,
       NumberOfCards: "1",
       IdempotencyKey: idempotency_key,
-      Expiry: expirydate,
       Cards: [{
           CardProgramGroupName: cpgn,
           Amount: amount,
+          Expiry: expirydate,
           CurrencyCode: "INR",
       }],
       Purchaser: {
