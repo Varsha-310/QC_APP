@@ -640,7 +640,8 @@ export const resendEmail = async (req, res) => {
           receiver,
           email,
           message,
-          image_url
+          image_url,
+          orderExists.line_items[0].title
         );
 
         res.json(respondSuccess("email sent successfully"));
