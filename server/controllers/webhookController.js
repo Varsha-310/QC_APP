@@ -725,7 +725,7 @@ export const failedOrders = async () => {
             iterator.self.createGC.req.Cards[0].Amount,
             iterator.self.createGC.resp.CurrentBatchNumber,
             iterator.self.createGC.resp.TransactionId,
-            iterator.self.createGC.resp.ApprovalCode
+            iterator.self.createGC.resp.Cards[0].ApprovalCode
           );
          
         }

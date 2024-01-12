@@ -5,7 +5,7 @@ import template from "../views/email_template.js";
 function getReadableDate(dateObj) {
   var d = new Date(dateObj),
     month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
+    day = "" + (d.getDate()+1),
     year = d.getFullYear();
 
   if (month.length < 2) month = "0" + month;

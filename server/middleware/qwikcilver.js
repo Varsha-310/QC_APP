@@ -9,6 +9,11 @@ import orders from "../models/orders.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import wallet from "../models/wallet.js";
 
+
+const getTransactionId = () =>{
+
+  return Number(`${Date.now() + Math.random().toString(10).slice(2,7)}`); 
+}
 /**
  * method to create giftcard on QC
  * @param {*} store
@@ -883,10 +888,8 @@ export const cancelActivateGiftcard = async(store, card,amount,batch_number, tra
   try{
     console.log("------------------store qc credeentials-------------------------");
     let setting = await qcCredentials.findOne({ store_url: store });
-    let transaction_id = setting.unique_transaction_id; //Store the unique ID to a variable
-    setting.unique_transaction_id = transactionId + 1; // Append it by 1
-    setting.markModified("unique_transaction_id");
-    await setting.save();
+    let transaction_id = getTransactionId();
+   
     const data = {  
          "InputType":"1",
          "Cards":[{  
@@ -894,9 +897,9 @@ export const cancelActivateGiftcard = async(store, card,amount,batch_number, tra
             "CurrencyCode": "INR",
             "Amount":amount,
             OriginalRequest: {
-              OriginalBatchNumber: batch_number,
-              OriginalTransactionId: transactionId,
-              OriginalApprovalCode: approvalCode		
+              OriginalBatchNumber: batch_number.toString(),
+              OriginalTransactionId: transactionId.toString(),
+               OriginalApprovalCode: approvalCode.toString()	
               }		
 
          }],

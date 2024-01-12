@@ -714,6 +714,7 @@ export const giftCardOrders = async (req, res) => {
       gcOrders = await orders.find({
         store_url: req.token.store_url,
         order_number: req.query.orderNo,
+        cancel_reason:null
       });
       console.log(gcOrders);
     } else {
@@ -725,6 +726,7 @@ export const giftCardOrders = async (req, res) => {
             $and: [
               {
                 store_url: req.token.store_url,
+                cancel_reason:null,
                 created_at: {
                   $gte: new Date(req.query.startDate),
                   $lte: new Date(req.query.endDate),
@@ -735,7 +737,7 @@ export const giftCardOrders = async (req, res) => {
           .sort({ created_at: -1 });
       } else {
         gcOrders = await orders
-          .find({ store_url: req.token.store_url })
+          .find({ store_url: req.token.store_url,cancel_reason:null})
           .sort({ created_at: -1 });
       }
     }
