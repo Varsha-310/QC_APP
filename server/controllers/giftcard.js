@@ -437,6 +437,7 @@ export const addGiftcardtoWallet = async (
               expires_at:
               card_logs.ExpiryDate,
               transaction_date: Date.now(),
+              gc_pin :gc_pin,
               type: type,
             },
           },
