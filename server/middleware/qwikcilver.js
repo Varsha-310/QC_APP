@@ -589,7 +589,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
 
     let activation = await axios(config);
     logs["resp"] = activation?.data;
-    if (activation.data.ResponseCode == "0") {
+    if (activation.data.ResponseCode == "0" || "10838") {
       logs["status"] = true;
     }
     return logs;
@@ -1002,6 +1002,7 @@ export const reverseCreateGiftcard = async(store,body, transactionId , logs = {}
       data: data,
       checkAuth: {store, n:1}
     };
+    console.log("config for cancel activate", config);
     logs["req"] = data;
     const reversingCard = await axios(config);
     console.log("response of reverse create giftcard", reversingCard);
