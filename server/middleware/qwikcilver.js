@@ -511,7 +511,6 @@ export const addToWallet = async (
       ? logs.req
       : {
           TransactionTypeId: "3508",
-          IdempotencyKey: idempotency_key,
           Cards: [
             {
               CardNumber: wallet_id,
@@ -925,7 +924,6 @@ export const cancelActivateGiftcard = async(store, card,amount,batch_number, tra
   catch(err){
     console.log(err);
     logs["error"] = err.response.data || err?.code == 'ECONNABORTED';
-
     return logs;
   }
 }
