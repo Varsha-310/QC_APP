@@ -235,6 +235,7 @@ export const addGiftcard = async (req, res) => {
           validPin.balance,
           type,
           validPin.order_id,
+          validPin.expiry_date,
           logs
         );
 
@@ -280,12 +281,15 @@ export const addGiftcardtoWallet = async (
   amount,
   type,
   order_id,
+  expiry_date,
   logs = {},
-  card_logs
+  
 ) => {
   logs["status"] = false;
   let customer_wallet_id;
+ 
   try {
+    let walletDetails;
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
     });
@@ -302,9 +306,9 @@ export const addGiftcardtoWallet = async (
       if (!activatedCardLog?.status) return logs;
 
       let activatedCard = activatedCardLog.resp.Cards[0];
-      let walletDetails = await Wallet.findOne({
-        shopify_customer_id: customer_id,
-      });
+      // let walletDetails = await Wallet.findOne({
+      //   shopify_customer_id: customer_id,
+      // });
       // if (walletExists) {
       let checkWallet = logs?.checkWallet || { status: 0 };
       if ([0, 1].includes(checkWallet?.status)) {
@@ -316,7 +320,7 @@ export const addGiftcardtoWallet = async (
         // console.log(" checking wallet on qc",checkWallet);
         logs["checkWallet"] = checkWallet;
         customer_wallet_id = checkWallet.resp.Wallets[0]["WalletNumber"]
-        await Wallet.updateOne(
+        walletDetails =await Wallet.updateOne(
           {
             store_url: store,
             shopify_customer_id: customer_id,
@@ -343,7 +347,7 @@ export const addGiftcardtoWallet = async (
         if (!createWalletOnQc.status)
           throw Error("Error: Creating Wallet On WC");
         customer_wallet_id = createWalletOnQc["resp"].Wallets[0]["WalletNumber"]
-        await Wallet.updateOne(
+        walletDetails = await Wallet.updateOne(
           {
             store_url: store,
             shopify_customer_id: customer_id,
@@ -423,8 +427,8 @@ export const addGiftcardtoWallet = async (
       };
       let myDate = new Date();
       myDate.setDate(myDate.getDate() + parseInt(365));
-      console.log( card_logs, "logs of order sesiion");
-      await wallet_history.updateOne(
+      console.log(  "logs of order sesiion" , gc_pin);
+       const wallet_history_update = await wallet_history.updateOne(
         {
           wallet_id: walletDetails.wallet_id,
           customer_id: customer_id,
@@ -434,8 +438,7 @@ export const addGiftcardtoWallet = async (
             transactions: {
               transaction_type: "credit",
               amount: amount,
-              expires_at:
-              card_logs.ExpiryDate,
+              expires_at:expiry_date,
               transaction_date: Date.now(),
               gc_pin :gc_pin,
               type: type,
