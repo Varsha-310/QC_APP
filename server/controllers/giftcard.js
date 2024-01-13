@@ -289,7 +289,6 @@ export const addGiftcardtoWallet = async (
   let customer_wallet_id;
  
   try {
-    let walletDetails;
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
     });
@@ -306,10 +305,6 @@ export const addGiftcardtoWallet = async (
       if (!activatedCardLog?.status) return logs;
 
       let activatedCard = activatedCardLog.resp.Cards[0];
-      // let walletDetails = await Wallet.findOne({
-      //   shopify_customer_id: customer_id,
-      // });
-      // if (walletExists) {
       let checkWallet = logs?.checkWallet || { status: 0 };
       if ([0, 1].includes(checkWallet?.status)) {
         checkWallet = await checkWalletOnQC(
@@ -320,7 +315,7 @@ export const addGiftcardtoWallet = async (
         // console.log(" checking wallet on qc",checkWallet);
         logs["checkWallet"] = checkWallet;
         customer_wallet_id = checkWallet.resp.Wallets[0]["WalletNumber"]
-        walletDetails =await Wallet.updateOne(
+        await Wallet.updateOne(
           {
             store_url: store,
             shopify_customer_id: customer_id,
@@ -347,7 +342,7 @@ export const addGiftcardtoWallet = async (
         if (!createWalletOnQc.status)
           throw Error("Error: Creating Wallet On WC");
         customer_wallet_id = createWalletOnQc["resp"].Wallets[0]["WalletNumber"]
-        walletDetails = await Wallet.updateOne(
+        await Wallet.updateOne(
           {
             store_url: store,
             shopify_customer_id: customer_id,
@@ -377,6 +372,7 @@ export const addGiftcardtoWallet = async (
 
         if (!transactionLog.status) throw new Error("Error: add card to wallet API");
       }
+      const walletDetails = await Wallet({wallet_id :customer_wallet_id});
       if (!walletDetails.shopify_giftcard_id) {
         const createShopifyGC = await createShopifyGiftcard(
           store,
@@ -414,7 +410,7 @@ export const addGiftcardtoWallet = async (
           },
           {
             balance:
-              parseFloat(walletDetails.balance || 0) + parseFloat(amount),
+              parseFloat(walletDetails?.balance || 0) + parseFloat(amount),
           },
           {
             upsert: true,
