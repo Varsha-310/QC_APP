@@ -251,6 +251,9 @@ export const addGiftcard = async (req, res) => {
           res.json({
             ...respondWithData("card has been added to wallet"),
           });
+        }
+	  if (gcToWallet.updateW.resp.ResponseCode == "10551") {
+          res.json(respondForbidden("Wallet deactivated !"));
         } else {
           res.json(
             respondInternalServerError(
