@@ -323,8 +323,6 @@ export const ordercreateEvent = async (shop, order) => {
                       shopify_customer_id: newOrder.customer.id,
                     },
                     {
-                      shopify_customer_id: newOrder.customer.id,
-                      store_url: shop,
                       wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
                       WalletPin: checkWallet.resp.Wallets[0]["WalletPin"],
                     },
@@ -355,8 +353,6 @@ export const ordercreateEvent = async (shop, order) => {
                       shopify_customer_id: newOrder.customer.id,
                     },
                     {
-                      shopify_customer_id: newOrder.customer.id,
-                      store_url: store,
                       wallet_id:
                         createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
                       WalletPin:
@@ -398,8 +394,9 @@ export const ordercreateEvent = async (shop, order) => {
                   giftCardDetails.Balance,
                   type,
                   newOrder.id,
-                  OrderSession?.self?.wallet,
-                  giftCardDetails
+                  giftCardDetails.ExpiryDate,
+		  OrderSession?.self?.wallet,
+                 
                 );
                 // OrderSession["self"]["wallet"] = logs;
                 //console.log(logs, "logs of wallet");

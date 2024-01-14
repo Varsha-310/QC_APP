@@ -372,7 +372,7 @@ export const addGiftcardtoWallet = async (
 
         if (!transactionLog.status) throw new Error("Error: add card to wallet API");
       }
-      const walletDetails = await Wallet({wallet_id :customer_wallet_id});
+      const walletDetails = await Wallet.findOne({wallet_id :customer_wallet_id});
       if (!walletDetails.shopify_giftcard_id) {
         const createShopifyGC = await createShopifyGiftcard(
           store,
