@@ -298,7 +298,7 @@ const EditGiftCard = () => {
             </div>
 
             <div className="gift-card__validity">
-              {/* <CustomDropdown
+              <CustomDropdown
                 options={[
                   { title: "6 months", value: "180" },
                   { title: "12 months", value: "365" },
@@ -306,8 +306,8 @@ const EditGiftCard = () => {
                 keyField={"validity"}
                 value={cardData?.validity.toString() || "Select"}
                 setvalue={setCardData}
-              /> */}
-              <div className="gift-card__validity-show">6 Months</div>
+              />
+              {/* <div className="gift-card__validity-show">6 Months</div> */}
             </div>
           </div>
         </div>
