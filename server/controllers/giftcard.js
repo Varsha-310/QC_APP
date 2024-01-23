@@ -25,6 +25,7 @@ import qc_gc from "../models/qc_gc.js";
 import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 import { getOrderTransactionDetails } from "./webhookController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
+import addCard from "../models/addCard.js";
 
 /**
  * To create gifcard product
@@ -240,7 +241,7 @@ export const addGiftcard = async (req, res) => {
         );
 
         logs = gcToWallet;
-
+        await addCard.create({store :store, customerId : customer_id, logs:logs});
         console.log(JSON.stringify(logs));
         if (gcToWallet.status == "403") {
           return res.json(
