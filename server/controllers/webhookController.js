@@ -1,5 +1,4 @@
 import { respondSuccess } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
 import product from "../models/product.js";
@@ -541,7 +540,6 @@ export const handleOrderCreatewebhook = async (req, res) => {
     );
     console.log(data, "Webhook Complieted");
   } catch (err) {
-    logger.info(err);
     console.log(err);
     return res.json(respondInternalServerError());
   }
@@ -635,8 +633,6 @@ function processPrd(updatedProduct, store) {
  */
 export const getQcCredentials = async (req, res) => {
   console.log("--------------------webhook from QC------------------");
-  logger.info("--------webhook data from QC---------------");
-  logger.info("----------webhook from QC--------", req.body);
   res.send(respondSuccess("webhook received"));
   const {
     giftcard_cpgn,

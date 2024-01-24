@@ -3,7 +3,6 @@ import { createPayment, verifyPayuTranscation } from "../middleware/payU.js";
 import { calculateGST } from "./BillingController.js";
 import BillingHistory from "../models/BillingHistory.js";
 import plan from "../models/plan.js";
-import { logger } from "../helper/utility.js";
 import {
   respondWithData,
   respondInternalServerError,
@@ -103,7 +102,6 @@ export const create = async (req, res) => {
       data: { payload: paymentData, url: process.env.payupaymenturl, days : remainingDays },
     });
   } catch (err) {
-    logger.info(err);
     console.log(err);
     res.json(respondInternalServerError());
   }
@@ -121,7 +119,7 @@ export const payuPayment = async (req, res) => {
   if (reqData.status == "success") {
     await updateBillingHistory(reqData);
   }
-  return res.redirect(`${process.env.CLIENT_URL}/kyc-status`);
+  return res.redirect(`${process.env.CLIENT_URL}kyc-status`);
 };
 
 /**

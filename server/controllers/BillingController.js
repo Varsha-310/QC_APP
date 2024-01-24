@@ -1,6 +1,5 @@
 import axios from "axios";
 import { respondInternalServerError, respondSuccess, respondWithData } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
 import BillingHistory from "../models/BillingHistory.js";
 import store from "../models/store.js";
 import crypto from "crypto";
@@ -460,7 +459,6 @@ export const handleCallbackWebhook = (req, res) => {
         return res.json(respondSuccess())
     } catch (error) {
         
-        logger.error(error);
         console.log(error);
         return res.json(respondInternalServerError());
     }

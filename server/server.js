@@ -10,7 +10,6 @@ import planRoute from "./routes/plan.js";
 import shopifyRoute from "./routes/shopify.js";
 import { respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
-import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
@@ -115,7 +114,6 @@ mongoose
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
-    logger.info("Error occurred, server can't start", error);
   });
 
 // Global error handler
