@@ -6,6 +6,6 @@ const addCardSchema = mongoose.Schema({
     customerId: Number,
     logs: Object
     
-  },{ timestamps: true});
+  },{ timestamps:true});
 
 export default mongoose.model("addCard", addCardSchema);

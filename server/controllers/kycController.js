@@ -5,13 +5,10 @@ import {
   respondSuccess,
 } from "../helper/response.js";
 import CryptoJS from "crypto-js";
-import { logger } from "../helper/utility.js";
 import kycs from "../models/kyc.js";
 import store from "../models/store.js";
-import NodeMailer from "nodemailer";
 import kyc from "../models/kyc.js";
 import { sendEmail } from "../middleware/sendEmail.js";
-import qcCredentials from "../models/qcCredentials.js";
 
 /**
  * Method to initiate kyc
@@ -25,7 +22,6 @@ export const initiatieKyc = async (req, res) => {
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
     let securekey = process.env.MANCH_SECURE_KEY;
-    logger.info("kyc transaction requested for");
     const transactionData = {
       method: "POST",
       url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction`,
@@ -56,7 +52,14 @@ export const initiatieKyc = async (req, res) => {
     };
     console.log(transactionData);
     let result = await axios(transactionData);
+    await store.updateOne(
+      { store_url: storeUrl },
+      { status: "kYC initiated" , shopify_id : storeData.shopify_id },
+      { upsert: true }
+    );
     if (result.status == "200" && result.data.transactionId) {
+      await kyc.updateOne({store_url :storeUrl}, {transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
+
       let docFillUrls = result.data.docFillUrls;
       let txnId = result.data.transactionId;
       const keys = Object.keys(docFillUrls);
@@ -76,24 +79,29 @@ export const initiatieKyc = async (req, res) => {
           dispatchResponse.status == "200" &&
           dispatchResponse.data.status == "SUCCESS"
         ) {
-          let storeDetails = await store.updateOne(
-            { store_url: storeUrl },
-            { status: "kYC initiated" , shopify_id : storeData.shopify_id },
-            { upsert: true }
-          );
-          const updateKyc = await kyc.updateOne({store_url :storeUrl}, {status: "INITIATED" , transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
-         // await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
+          await kyc.updateOne({store_url :storeUrl}, {status : "done" , signUrl :dispatchResponse.data.signURL}, {upsert:true});
+          await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
 
           res.json({
             ...respondWithData("KYC URL"),
             data: dispatchResponse.data.signURL,
           });
         }
+        else{
+          await kyc.updateOne({store_url :storeUrl}, {err :dispatchResponse.data}, {upsert:true}); 
+        }
+      }
+      else{
+        await kyc.updateOne({store_url :storeUrl}, {err :formresult.data}, {upsert:true});
       }
     }
+    else{
+      await kyc.updateOne({store_url :storeUrl}, {err :result.data}, {upsert:true});
+
+    }
   } catch (err) {
-    logger.info(err);
     console.log(err);
+    await kyc.updateOne({store_url :storeUrl}, {err :err?.response?.data}, {upsert:true});
     res.json(respondInternalServerError());
   }
 };
@@ -108,7 +116,6 @@ export const fillForm = async (formUrl, shop, token) => {
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
     let securekey = process.env.MANCH_SECURE_KEY;
-    // logger.info("form fill api called for", transaction_id);
     const formData = {
       method: "PUT",
       url: formUrl,
@@ -134,10 +141,7 @@ export const fillForm = async (formUrl, shop, token) => {
     return result;
   } catch (err) {
     console.log(err);
-    logger.info(err);
-    res.json(
-      respondInternalServerError()
-    );
+    return err
   }
 };
 
@@ -152,7 +156,6 @@ export const dispatchTransaction = async (txnId) => {
     let orgId = process.env.KYC_ORG_KEY;
     let securekey = process.env.MANCH_SECURE_KEY;
 
-    logger.info("dispatch api called for", txnId);
     const dispatchData = {
       method: "PATCH",
       url: `${process.env.KYC_BASE_URL}/app/api/fill-data/transaction/${txnId}`,
@@ -175,7 +178,7 @@ export const dispatchTransaction = async (txnId) => {
     return result;
   } catch (err) {
     console.log(err);
-    logger.info(err);
+    return err
   }
 };
 /**
@@ -214,11 +217,9 @@ export const statusKyc = async (req, res) => {
  * @param {*} res 
  */
 export const kycDetails = async (req, res) => {
-  logger.info("----------------kyc webhook----------------", req.body);
 
   console.log("----------------kyc webhook----------------", req.body);
   const data = req.body.data;
-  logger.info(req.body, "kyc webhook for merchant details");
   console.log("------------------------------------------------", data.formFillData.pan)
 
   const kycData = await kycs.updateOne({shopify_id :data.formFillData.shopifyID}, {$set:{
