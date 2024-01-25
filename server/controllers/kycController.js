@@ -9,6 +9,7 @@ import kycs from "../models/kyc.js";
 import store from "../models/store.js";
 import kyc from "../models/kyc.js";
 import { sendEmail } from "../middleware/sendEmail.js";
+import qcCredentials from "../models/qcCredentials.js";
 
 /**
  * Method to initiate kyc
@@ -16,8 +17,8 @@ import { sendEmail } from "../middleware/sendEmail.js";
  * @param {*} res
  */
 export const initiatieKyc = async (req, res) => {
+  let storeUrl = req.token.store_url;
   try {
-    let storeUrl = req.token.store_url;
     let storeData = await store.findOne({ store_url: storeUrl });
     let time = Date.now().toString();
     let orgId = process.env.KYC_ORG_KEY;
@@ -58,7 +59,6 @@ export const initiatieKyc = async (req, res) => {
       { upsert: true }
     );
     if (result.status == "200" && result.data.transactionId) {
-      await kyc.updateOne({store_url :storeUrl}, {transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
 
       let docFillUrls = result.data.docFillUrls;
       let txnId = result.data.transactionId;
@@ -66,6 +66,8 @@ export const initiatieKyc = async (req, res) => {
       const dynamicKey = keys.find((key, index) => index === 0);
       const formUrl = docFillUrls[dynamicKey];
       console.log(formUrl);
+      await kyc.updateOne({store_url :storeUrl}, {transaction_id: txnId, shopify_id :storeData.shopify_id}, {upsert:true});
+
 
       let formresult = await fillForm(
         formUrl,
@@ -80,7 +82,7 @@ export const initiatieKyc = async (req, res) => {
           dispatchResponse.data.status == "SUCCESS"
         ) {
           await kyc.updateOne({store_url :storeUrl}, {status : "done" , signUrl :dispatchResponse.data.signURL}, {upsert:true});
-          await qcCredentials.updateOne({shopify_id :data.formFillData.shopifyID},{store_url :storeUrl}, {upsert: true});
+          await qcCredentials.updateOne({shopify_id :storeData.shopify_id},{store_url :storeUrl}, {upsert: true});
 
           res.json({
             ...respondWithData("KYC URL"),
