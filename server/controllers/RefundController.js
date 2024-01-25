@@ -6,10 +6,11 @@ import Store from "../models/store.js";
 import { checkWalletOnQC, createWallet, loadWalletAPI, cancelLoadWalletAPI } from "../middleware/qwikcilver.js";
 import { createShopifyGiftcard, updateShopifyGiftcard } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
-import { checkActivePlanUses } from "./BillingController.js";
+import { checkActivePlanUses ,updateBilling} from "./BillingController.js";
 import Wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
+
 
 /**
  * calculate shopify refund amount from shopify
