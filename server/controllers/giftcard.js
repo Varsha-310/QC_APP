@@ -416,7 +416,7 @@ export const addGiftcardtoWallet = async (
                   transaction_type: "credit",
                   amount: amount,
                   transaction_date: Date.now(),
-                  expires_at: activatedCard.ExpiryDate,
+                  expires_at: expiryCalculate,
                   type: type,
                 },
               },
@@ -719,16 +719,25 @@ export const walletTransaction = async (req, res) => {
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
     } else {
+      let transactions = history.transactions
+      for(let i=0;i<transactions.length; i++){
+        const convertedDate = new Date(transactions[i].expires_at);
+        console.log(convertedDate , "convert")
+        convertedDate.setUTCHours(convertedDate.getUTCHours() + 5, convertedDate.getUTCMinutes() + 30);
+        transactions[i].expires_at = convertedDate.toISOString();
+      }
+      
+      console.log(transactions , "transaction after conversion");
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
           balance: 0,
-          transactions: history.transactions.reverse(),
+          transactions: transactions.reverse(),
         },
       });
     }
   } catch (err) {
-    console.log("Error: ", JSON.stringify(err));
+    console.log("Error: ",err);
     res.json(respondInternalServerError());
   }
 };
