@@ -787,15 +787,24 @@ export const walletTransaction = async (req, res) => {
     const history = await wallet_history
       .findOne({ customer_id: customer_id })
       .select("-transactions.gc_pin");
-    console.log("History Length: ", history.length);
+    console.log("History Length: ", history);
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
     } else {
+let transactions = history.transactions
+      for(let i=0;i<transactions.length; i++){
+	if(transactions[i].expires_at){
+        const convertedDate = new Date(transactions[i].expires_at);
+        console.log(convertedDate , "convert")
+        convertedDate.setUTCHours(convertedDate.getUTCHours() + 5, convertedDate.getUTCMinutes() + 30);
+        transactions[i].expires_at = convertedDate.toISOString();
+      }
+	}
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
           balance: 0,
-          transactions: history.transactions.reverse(),
+          transactions: transactions.reverse(),
         },
       });
     }

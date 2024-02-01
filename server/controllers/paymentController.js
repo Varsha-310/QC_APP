@@ -115,7 +115,7 @@ export const create = async (req, res) => {
  */
 export const payuPayment = async (req, res) => {
   let reqData = req.body;
-  console.log(reqData, "-----------------request data--------------------");
+  console.log(reqData, "-----------------payment successful , webhook from payu--------------------");
   if (reqData.status == "success") {
     await updateBillingHistory(reqData);
   }

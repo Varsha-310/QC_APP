@@ -101,7 +101,7 @@ app.use("/payment",apiLimiter ,paymentRoute);
 cron.schedule("*/10 * * * * *", () => {
   
   console.log("checking failed sessions in every 10 sec");
-  failedOrders();
+ // failedOrders();
 });
 
 // Database and Port connection
