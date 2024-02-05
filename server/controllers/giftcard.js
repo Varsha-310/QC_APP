@@ -102,19 +102,17 @@ export const updateGiftcardProduct = async (req, res) => {
     if (variants) {
       updateObj["variants"] = variants;
     }
-    console.log(updateObj);
+   let updatedProduct = await shopify.product.update(product_id, updateObj);
+
     if (validity) {
       updateObj["validity"] = validity;
     }
     if (terms) {
       updateObj["terms"] = terms;
     }
-    let updatedProduct = await shopify.product.update(product_id, updateObj);
-    await Product.updateOne(
-      { id: product_id },
-      { updateObj },
-      { upsert: true }
-    );
+     console.log("updating product",updateObj);
+    
+    await Product.updateOne({ id: product_id }, updateObj );
 
     console.log(updatedProduct);
     res.json(respondSuccess("Product updated in shopify successfully"));
