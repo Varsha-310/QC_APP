@@ -19,7 +19,8 @@ import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
 import { createJwt } from "./helper/jwtHelper.js";
-
+import { fileURLToPath} from "url";
+import { dirname,join } from "path";
 
 export const app = express();
 
@@ -61,11 +62,20 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-//app.get("/", async (req, res) => {
-//
-//  const token = await createJwt("qc-test-store-12.myshopify.com");
-//  return res.json({"token": token});
-//});
+const currentModuleUrl = new URL(import.meta.url);
+
+// Convert file URL to path
+const __filename = fileURLToPath(currentModuleUrl);
+const __dirname = dirname(__filename);
+
+app.get('/version', (req, res) => {
+    const filePath = join(__dirname, 'public', 'version.json');
+    console.log(__dirname, filePath,"dir an filepath");
+    console.log(filePath, "file path");
+    res.sendFile(filePath);
+});
+
+
 
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
