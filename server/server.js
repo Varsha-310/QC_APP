@@ -21,6 +21,7 @@ import { failedOrders } from "./controllers/webhookController.js";
 import { createJwt } from "./helper/jwtHelper.js";
 import { fileURLToPath} from "url";
 import { dirname,join } from "path";
+import { logger } from "./helper/logger.js";
 
 export const app = express();
 
