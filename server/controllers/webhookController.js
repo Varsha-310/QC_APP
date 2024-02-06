@@ -20,6 +20,9 @@ import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
+import activation from "../views/activation.js";
+import plan from "../models/plan.js";
+import { sendEmail } from "../middleware/sendEmail.js";
 
 
 /**
@@ -663,6 +666,26 @@ export const getQcCredentials = async (req, res) => {
     { shopify_id: shopify_id },
     { dashboard_activated: true }
   );
+  const storeDetails = await store.findOne({shopify_id : shopify_id});
+  console.log(storeDetails , shopify_id, "storedata")
+  const planDetails = await plan.findOne({plan_name :storeDetails.plan.plan_name});
+  console.log(planDetails)
+  let email_template = activation
+  email_template = email_template.replace("__plan_name__", planDetails.plan_name);
+  email_template = email_template.replace("__plan_price__", planDetails.price);
+  email_template = email_template.replace("__given_credit__", planDetails.plan_limit);
+  email_template = email_template.replaceAll("__usage_charge__", planDetails.usage_charge);
+  email_template = email_template.replace("__usage_limit__", planDetails.usage_limit);
+
+  console.log("dashboard activation");
+  const options = {
+      from: "merchantalerts@qwikcilver.com",
+      to: storeDetails.email,
+      subject: "Dashboard Activated",
+      html: email_template,
+    };
+    await sendEmail(options);
+  return 0;
 };
 
 /**
