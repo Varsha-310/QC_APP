@@ -122,14 +122,18 @@ mongoose
 
     app.listen(process.env.PORT);
     console.log("server is listening to " + process.env.PORT);
+    logger.info("server is listening to " + process.env.PORT);
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
+    logger.error("Error occurred, server can't start", error)
   });
 
 // Global error handler
 app.use((err, req, res, next) => {
   
   console.log("Error Encountered: ", err);
+  logger.error("Error Encountered: ", err);
   return res.json(respondInternalServerError());
 });
+

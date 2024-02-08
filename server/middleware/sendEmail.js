@@ -1,5 +1,6 @@
 import NodeMailer from "nodemailer";
 import template from "../views/email_template.js";
+import { logger } from "../helper/logger.js";
 
 //Function to convert the Javascript Date Object to a readable format
 function getReadableDate(dateObj) {
@@ -34,6 +35,7 @@ export const sendEmailViaSendGrid = async (
   product_title
 ) => {;
 console.log("in the mail sender");
+logger.info("in mail sender");
 
 var mail_id = "GC@qwikcilver.com";
 var subject = "Your Qwikcilver GiftCard is ready to use!";
@@ -110,11 +112,13 @@ export const sendEmail = (options) => {
   smtpTransporter.sendMail(options, async function (error, info) {
     if (!error) {
       console.log("mail sent successfully !");
+      logger.info("mail sent successfully");
       return true
       // Resolve if the mail is sent successfully
       
     } else {
       console.log(error);
+      logger.error("error sending mail", error);
       return false
     
     }

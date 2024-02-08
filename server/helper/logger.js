@@ -1,17 +1,20 @@
+import log4js from 'log4js';
+import path from 'path';
 
-import pkg from 'log4js';
-const { Log4js } = pkg;
 
+const rightNow = new Date();
+const res = rightNow.toISOString().slice(0, 10).replace(/-/g, "_");
 // Log4js configuration
-Log4js.configure({
+log4js.configure({
   appenders: {
     console: { type: 'console' },
     file: {
-      type: 'file',
-      filename: 'logs/app.log',
-      maxLogSize: 10485760,
-      backups: 3,
-      category: 'app'
+        "type": "file",
+        "filename": `logs/${res}.log`
+        ,
+        "maxLogSize": 10485760,
+        "backups": 3,
+        "category": "app"
     }
   },
   categories: {
@@ -20,4 +23,4 @@ Log4js.configure({
 });
 
 // Export the logger
-export const logger = Log4js.getLogger('app');
+export const logger = log4js.getLogger('app');
