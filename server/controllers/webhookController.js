@@ -664,7 +664,7 @@ export const getQcCredentials = async (req, res) => {
   console.log(log);
   await store.updateOne(
     { shopify_id: shopify_id },
-    { dashboard_activated: true }
+    { dashboard_activated: true , support_url:support_url}
   );
   const storeDetails = await store.findOne({shopify_id : shopify_id});
   console.log(storeDetails , shopify_id, "storedata")
