@@ -62,7 +62,7 @@ const KycProgress = () => {
               </SectionHeading1>
             </div>
             <p className="box-text">
-              Easily and securely manage all you store credits and gift cards.
+              Easily and securely manage all your store credits and gift cards.
             </p>
           </>
         ) : (
