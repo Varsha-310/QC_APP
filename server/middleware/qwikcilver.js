@@ -8,6 +8,7 @@ import Wallet from "../models/wallet.js";
 import orders from "../models/orders.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import wallet from "../models/wallet.js";
+import { logger } from "../helper/logger.js";
 
 
 const getTransactionId = () =>{
@@ -89,11 +90,12 @@ export const createGiftcard = async (
       data: data,
       checkAuth: {store, n:1}
     };
-
+    logger.info("create and issue card for ", store, config);
     const gcCreation = await axios(config);
     console.log(" Response Code : ", gcCreation.data.ResponseCode);
     logs["resp"] = gcCreation.data;
     if (gcCreation.status == "200") {
+      logger.info("card created successfully", store,order_id);
       if (!logs?.updateBillingAt) {
 
         await updateBilling(amount, store);
@@ -118,7 +120,7 @@ export const createGiftcard = async (
     }
     return logs;
   } catch (err) {
-    
+    logger.error("error creating card", store ,err?.code);
     console.log(" --- Error While Creating Giftcard ---", err);
     logs["error"] = err?.response?.data || err?.code;
     return logs;
@@ -142,8 +144,8 @@ export const cancelCreateNdIssueGiftcard = async (
 
   logs["status"] = false;
   try {
-
-    console.log( "------------------ Create Giftcard Process Started -------------------",logs);
+    logger.info("cancel create and issue", store);
+    console.log( "------------------ cancel create and issue -------------------",logs);
     let setting = await qcCredentials.findOne({ store_url: store });
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
     setting.unique_transaction_id = transactionId + 1; // Append it by 1
@@ -182,7 +184,7 @@ export const cancelCreateNdIssueGiftcard = async (
     logs["status"] = true;
     return logs;
   } catch (err) {
-    
+    logger.error("error cancelling creat and issue card",err?.code)
     logs["status"] = true;
     logs["error"] = err?.response?.data || err?.code;
     return logs;
@@ -229,7 +231,7 @@ export const fetchBalance = async (store, walletData) => {
     let walletDetails = await axios(config);
     return walletDetails
   } catch (err) {
-
+    logger.error("error fetching balance",err?.code);
     console.log(err);
     throw new Error("Internal Server Error");
   }
