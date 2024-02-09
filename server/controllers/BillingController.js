@@ -32,7 +32,7 @@ const handleMandateNotification = async(type) => {
 
                 const resp = await sendMandateNotification(bill);
                 bill.remark = resp.message;
-                bill.isReminded = resp.status == 1 ? true : false;
+                bill.isReminded = resp.status == 200 ? true : false;
                 await bill.save();
             }else{
 
@@ -88,7 +88,7 @@ const sendMandateNotification = async(bill) => {
         seesion_id: Date.now() + Math.random().toString(10).slice(2, 7),
     };
     const apiResp = await callPayUNotificationAPI(bill, mandateDetails.mandate);
-    if(apiResp.status == 1){
+    if(apiResp.status == 200){
 
         session.status = "completed";
     }else{
@@ -96,9 +96,9 @@ const sendMandateNotification = async(bill) => {
         session.status = "retry";
         session.retry_at = Date.now();
     }
-    session.logs = apiResp;
-    session.remark = apiResp.message;
-    await Session.insert(session);
+   // session.logs = apiResp;
+    //session.remark = apiResp.message;
+    await Session.create(session);
     return apiResp;
 }
 
