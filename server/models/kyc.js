@@ -40,7 +40,9 @@ var kycSchema = mongoose.Schema({
   cin_number: { type: String, default: null },
   payu_txn_id:  { type: String, default: null },
   payu_mihpayid: { type: String, default: null },
-  billing_id: { type: String, default: null }
-});
+  billing_id: { type: String, default: null },
+  err:{type:Object},
+  signUrl : {type:String},
+},{timestamps: true});
 
 export default mongoose.model("kyc", kycSchema);

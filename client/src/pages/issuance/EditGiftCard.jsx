@@ -306,8 +306,8 @@ const EditGiftCard = () => {
                 keyField={"validity"}
                 value={cardData?.validity.toString() || "Select"}
                 setvalue={setCardData}
-              /> */}
-              <div className="gift-card__validity-show">6 Months</div>
+              />
+              {/* <div className="gift-card__validity-show">6 Months</div> */}
             </div>
           </div>
         </div>

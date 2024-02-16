@@ -1,5 +1,4 @@
 import { respondSuccess } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
 import Queue from "better-queue";
 import store from "../models/store.js";
 import product from "../models/product.js";
@@ -8,13 +7,23 @@ import {
   createGiftcard,
   redeemWallet,
   reverseRedeemWallet,
+  cancelActivateGiftcard,
+  checkWalletOnQC,
+  cancelAddCardToWallet,
+  createWallet,
+  reverseCreateGiftcard
 } from "../middleware/qwikcilver.js";
 import { addGiftcardtoWallet, giftCardAmount } from "./giftcard.js";
 import orders from "../models/orders.js";
-import { checkActivePlanUses } from "./BillingController.js";
+import { checkActivePlanUses, updateBilling } from "./BillingController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import axios from "../helper/axios.js";
+import Wallet from "../models/wallet.js";
+import activation from "../views/activation.js";
+import plan from "../models/plan.js";
+import { sendEmail } from "../middleware/sendEmail.js";
+
 
 /**
  * To handle order creation webhook
@@ -52,24 +61,27 @@ export const orderDeleted = (req, res) => {
 
 /**
  * calculate shopify refund amount from shopify
- * 
- * @param {*} orderId 
+ *
+ * @param {*} orderId
  * @param {*} storeUrl
- * @param {*} accessToken 
- * @returns 
+ * @param {*} accessToken
+ * @returns
  */
-export const getOrderTransactionDetails = async(orderId, storeUrl, accessToken) => {
-
+export const getOrderTransactionDetails = async (
+  orderId,
+  storeUrl,
+  accessToken
+) => {
   const options = {
-      'method': 'GET',
-      'url': `https://${storeUrl}/admin/api/2023-04/orders/${orderId}/transactions.json`,
-      'headers': {
-          'X-Shopify-Access-Token': accessToken,
-          'Content-Type': 'application/json'
-      }
+    method: "GET",
+    url: `https://${storeUrl}/admin/api/2023-04/orders/${orderId}/transactions.json`,
+    headers: {
+      "X-Shopify-Access-Token": accessToken,
+      "Content-Type": "application/json",
+    },
   };
   return axios(options);
-}
+};
 
 /**
  * Handle order create event
@@ -99,20 +111,22 @@ export const ordercreateEvent = async (shop, order) => {
     //console.log(orderSaved);
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
+    console.log(settings);
+    let gc_order = ({ amount : undefined, sent_as_gift : false });
     if (settings) {
       let newOrder = order;
       let qwikcilver_gift_cards = [];
 
       // check is any gift cards are applied in the orders
       for (let line_item of newOrder.line_items) {
-        //console.log(line_item.product_id);
+        console.log(line_item.product_id);
         gift_card_product = await product
           .findOne({
             id: line_item.product_id,
           })
           .lean(); //Get the product from DB
 
-       // console.log("Giftcard Products: ", gift_card_product);
+        console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
           line_item["validity"] = gift_card_product.validity;
@@ -125,9 +139,8 @@ export const ordercreateEvent = async (shop, order) => {
         store: shop,
         orderId: order.id,
       });
-     // console.log(OrderSession, "ordersession");
+      // console.log(OrderSession, "ordersession");
       if (OrderSession?.status == "done") {
-        
         console.log("Already Processed");
         return 1; // skip if already processed.
       }
@@ -148,7 +161,11 @@ export const ordercreateEvent = async (shop, order) => {
             },
             { upsert: true }
           );
-          await orderCancel(newOrder, shop, "Gift Card Is used for buy the Gift Card");
+          await orderCancel(
+            newOrder,
+            shop,
+            "Gift Card Is used for buy the Gift Card"
+          );
           return 1;
         }
 
@@ -178,99 +195,101 @@ export const ordercreateEvent = async (shop, order) => {
                 { id: newOrder.id },
                 { qc_gc_created: "NO" }
               );
-              await orderCancel(newOrder, shop, "Plan Limit has been exceeded.");
+              await orderCancel(
+                newOrder,
+                shop,
+                "Plan Limit has been exceeded."
+              );
               return 1;
             }
             let email = null;
             let message = "";
             let receiver = "";
             let image_url = "";
-            if (qwikcilver_gift_card.properties.length > 0) {
-              let sent_as_gift;
+
+            qwikcilver_gift_card.properties.forEach((property) => {
+              console.log(property.name)
+              if (property.name === "_Qc_recipient_email") {
+                (gc_order.sent_as_gift = true),
+                  (gc_order.amount = parseFloat(qwikcilver_gift_card.price));
+              } 
+            });
+            console.log(gc_order , "--------------gcorder details ----------");
+            if (gc_order.sent_as_gift == true) {
+              console.log("-------sent as gift---------------");
               for (let i = 0; i < qwikcilver_gift_card.properties.length; i++) {
+                // change it to swith statement
+                if (qwikcilver_gift_card.properties[i].name === "_Qc_img_url") {
+                  image_url = qwikcilver_gift_card.properties[i].value;
+                }
                 if (
                   qwikcilver_gift_card.properties[i].name ===
                   "_Qc_recipient_email"
                 ) {
-                  sent_as_gift = true;
+                  email = qwikcilver_gift_card.properties[i].value;
+                }
+                if (
+                  qwikcilver_gift_card.properties[i].name ===
+                  "_Qc_recipient_message"
+                ) {
+                  message = qwikcilver_gift_card.properties[i].value;
+                }
+
+                if (
+                  qwikcilver_gift_card.properties[i].name ===
+                  "_Qc_recipient_name"
+                ) {
+                  receiver = qwikcilver_gift_card.properties[i].value;
                 }
               }
-              if (sent_as_gift == true) {
-                console.log("-------sent as gift---------------");
-                for (
-                  let i = 0;
-                  i < qwikcilver_gift_card.properties.length;
-                  i++
-                ) {
-                  // change it to swith statement
-                  if (
-                    qwikcilver_gift_card.properties[i].name === "_Qc_img_url"
-                  ) {
-                    image_url = qwikcilver_gift_card.properties[i].value;
-                  }
-                  if (
-                    qwikcilver_gift_card.properties[i].name ===
-                    "_Qc_recipient_email"
-                  ) {
-                    email = qwikcilver_gift_card.properties[i].value;
-                  }
-                  if (
-                    qwikcilver_gift_card.properties[i].name ===
-                    "_Qc_recipient_message"
-                  ) {
-                    message = qwikcilver_gift_card.properties[i].value;
-                  }
 
-                  if (
-                    qwikcilver_gift_card.properties[i].name ===
-                    "_Qc_recipient_name"
-                  ) {
-                    receiver = qwikcilver_gift_card.properties[i].value;
-                  }
-                }
+              let giftCardDetails = {};
+              console.log(OrderSession?.gift?.createGC, "createGc status");
+              if (OrderSession?.gift?.createGC?.status == true) {
+                giftCardDetails = OrderSession?.gift?.createGC?.resp.Cards[0];
+              } else {
+                const logs = await createGiftcard(
+                  shop,
+                  parseFloat(qwikcilver_gift_card.price),
+                  newOrder.id,
+                  qwikcilver_gift_card.validity,
+                  type,
+                  newOrder.customer,
+                  OrderSession?.gift?.createGC
+                );
+                // OrderSession["other"]["createGC"] = logs;
+                await OrderCreateEventLog.updateOne(
+                  logQuery,
+                  { "gift.createGC": logs },
+                  { upsert: true }
+                );
+                if (!logs.status) throw new Error("Error: Create Gift Card");
+                giftCardDetails = logs.resp.Cards[0];
+              }
+              console.log(giftCardDetails);
 
-                let giftCardDetails = {};
-                if (OrderSession?.other?.createGC?.status == true) {
-                  giftCardDetails =
-                    OrderSession?.other?.createGC?.resp.Cards[0];
+              if (!OrderSession?.other?.sentEmailAt) {
+                const mailResponse = await sendEmailViaSendGrid(
+                  shop,
+                  giftCardDetails,
+                  receiver,
+                  email,
+                  message,
+                  image_url,
+                  gift_card_product.title
+                );
+                // OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
+                let mailSentAt;
+                if (mailResponse == true) {
+                  mailSentAt = new Date().toISOString();
                 } else {
-                  const logs = await createGiftcard(
-                    shop,
-                    parseFloat(qwikcilver_gift_card.price),
-                    newOrder.id,
-                    qwikcilver_gift_card.validity,
-                    type,
-                    newOrder.customer,
-                    OrderSession?.gift?.createGC
-                  );
-                  // OrderSession["other"]["createGC"] = logs;
-                  await OrderCreateEventLog.updateOne(
-                    logQuery,
-                    { "gift.createGC": logs },
-                    { upsert: true }
-                  );
-                  if (!logs.status) throw new Error("Error: Create Gift Card");
-                  giftCardDetails = logs.resp.Cards[0];
+                  mailSentAt = null;
                 }
-                console.log(giftCardDetails);
-
-                if (!OrderSession?.other?.sentEmailAt) {
-                  await sendEmailViaSendGrid(
-                    shop,
-                    giftCardDetails,
-                    receiver,
-                    email,
-                    message,
-                    image_url,
-                    gift_card_product.title
-                  );
-                  // OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
-                  await OrderCreateEventLog.updateOne(
-                    logQuery,
-                    { "gift.sentEmailAt": new Date().toISOString() },
-                    { upsert: true }
-                  );
-                }
+                await OrderCreateEventLog.updateOne(
+                  logQuery,
+                  { "gift.sentEmailAt": mailSentAt },
+                  { upsert: true }
+                );
               }
             } else {
               console.log("purchased for self");
@@ -280,6 +299,73 @@ export const ordercreateEvent = async (shop, order) => {
               );
 
               let giftCardDetails = {};
+              if (OrderSession?.self?.checkwallet?.status == 200) {
+                walletNumber =
+                  OrderSession.self.checkWallet.resp.Wallets[0]["WalletNumber"];
+              } else {
+                let checkWallet = OrderSession.self?.checkWallet || {
+                  status: 0,
+                };
+                if ([0, 1].includes(checkWallet?.status)) {
+                  checkWallet = await checkWalletOnQC(
+                    shop,
+                    newOrder.customer.id,
+                    OrderSession.self?.checkWallet
+                  );
+                  console.log(" checking wallet on qc", checkWallet);
+                  // OrderSession.self["checkWallet"] = checkWallet;
+                  await OrderCreateEventLog.updateOne(
+                    logQuery,
+                    { "self.checkWallet": checkWallet },
+                    { upsert: true }
+                  );
+                  await Wallet.updateOne(
+                    {
+                      store_url: shop,
+                      shopify_customer_id: newOrder.customer.id,
+                    },
+                    {
+                      wallet_id: checkWallet.resp.Wallets[0]["WalletNumber"],
+                      WalletPin: checkWallet.resp.Wallets[0]["WalletPin"],
+                    },
+                    { upsert: true }
+                  );
+                  if (checkWallet.status === 1)
+                    throw Error("Error: Check Wallet");
+                }
+                if (checkWallet.status == 404) {
+                  const createWalletOnQc = await createWallet(
+                    shop,
+                    newOrder.customer.id,
+                    newOrder.id,
+                    OrderSession.self?.createWallet
+                  );
+                  console.log(JSON.stringify(createWalletOnQc));
+                  // OrderSession.self["createWallet"] = createWalletOnQc;
+                  await OrderCreateEventLog.updateOne(
+                    logQuery,
+                    { "self.checkWallet": createWalletOnQc },
+                    { upsert: true }
+                  );
+                  if (!createWalletOnQc.status)
+                    throw Error("Error: Creating Wallet On WC");
+                  await Wallet.updateOne(
+                    {
+                      store_url: shop,
+                      shopify_customer_id: newOrder.customer.id,
+                    },
+                    {
+                      wallet_id:
+                        createWalletOnQc["resp"].Wallets[0]["WalletNumber"],
+                      WalletPin:
+                        createWalletOnQc["resp"].Wallets[0]["WalletPin"],
+                    },
+                    { upsert: true }
+                  );
+                  console.log(OrderSession)
+                  // OrderSession.self["checkWallet"]["status"] = true;
+                }
+              }
               if (OrderSession?.self?.createGC?.status == true) {
                 giftCardDetails = OrderSession?.self?.createGC?.resp.Cards[0];
               } else {
@@ -310,7 +396,9 @@ export const ordercreateEvent = async (shop, order) => {
                   giftCardDetails.Balance,
                   type,
                   newOrder.id,
-                  OrderSession?.self?.wallet
+                  giftCardDetails.ExpiryDate,
+		  OrderSession?.self?.wallet,
+                 
                 );
                 // OrderSession["self"]["wallet"] = logs;
                 //console.log(logs, "logs of wallet");
@@ -326,13 +414,15 @@ export const ordercreateEvent = async (shop, order) => {
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
         }
       } else if (newOrder.payment_gateway_names.includes("gift_card")) {
-        
         console.log("giftcard redeemed");
-        let checkAmount = await giftCardAmount(shop, newOrder.id, newOrder.customer.id);
+        let checkAmount = await giftCardAmount(
+          shop,
+          newOrder.id,
+          newOrder.customer.id
+        );
         console.log("--------redeemed amount--------------", checkAmount);
         // Cancle request when wallet not found
-        if(!checkAmount.error){
-
+        if (!checkAmount.error) {
           if (OrderSession?.redeem?.status != true) {
             const redeemed = await redeemWallet(
               shop,
@@ -346,16 +436,17 @@ export const ordercreateEvent = async (shop, order) => {
               logQuery,
               { redeem: redeemed, numberOfRetried },
               { upsert: true }
-            ).then(resp => console.log("Log updated:", resp));
-            if(["config", false, "insufficient"].includes(redeemed["status"])){
-
+            ).then((resp) => console.log("Log updated:", resp));
+            if (
+              ["config", false, "insufficient"].includes(redeemed["status"])
+            ) {
               console.log("Cancelling the API on validation error from QC");
               await orderCancel(order, shop, redeemed["error"]);
             }
-            if (redeemed.status == "timeout") throw new Error("Error: Redeem Gift Card");
+            if (redeemed.status == "timeout")
+              throw new Error("Error: Redeem Gift Card");
           }
-        }else{
-
+        } else {
           console.log("Wallet not found", checkAmount);
           await orderCancel(order, shop, "Missmatch: User Account & Wallet");
           await OrderCreateEventLog.updateOne(
@@ -366,7 +457,22 @@ export const ordercreateEvent = async (shop, order) => {
         }
       }
     }
-    await OrderCreateEventLog.updateOne(logQuery, { status: "done" }).then(resp => console.log("Final Updates:", resp));
+    await OrderCreateEventLog.updateOne(logQuery, { status: "done" }).then(
+      (resp) => console.log("Final Updates:", resp)
+    );
+    if (gc_order.sent_as_gift == true) {
+      await updateBilling(gc_order.amount, shop);
+      await OrderCreateEventLog.updateOne({
+        logQuery,
+        updateBillingAt: new Date().toISOString(),
+      });
+    }
+    if (gc_order.sent_as_gift == false) {
+      
+        await updateBilling(gc_order.amount, shop);
+        logs["updateBillingAt"] = new Date().toISOString();
+      
+    }
     return 1;
     // done(null, true);
   } catch (err) {
@@ -437,7 +543,6 @@ export const handleOrderCreatewebhook = async (req, res) => {
     );
     console.log(data, "Webhook Complieted");
   } catch (err) {
-    logger.info(err);
     console.log(err);
     return res.json(respondInternalServerError());
   }
@@ -530,10 +635,7 @@ function processPrd(updatedProduct, store) {
  * @param {*} res
  */
 export const getQcCredentials = async (req, res) => {
-
   console.log("--------------------webhook from QC------------------");
-  logger.info("--------webhook data from QC---------------");
-  logger.info("----------webhook from QC--------", req.body);
   res.send(respondSuccess("webhook received"));
   const {
     giftcard_cpgn,
@@ -562,32 +664,51 @@ export const getQcCredentials = async (req, res) => {
   console.log(log);
   await store.updateOne(
     { shopify_id: shopify_id },
-    { dashboard_activated: true }
+    { dashboard_activated: true , support_url:support_url}
   );
+  const storeDetails = await store.findOne({shopify_id : shopify_id});
+  console.log(storeDetails , shopify_id, "storedata")
+  const planDetails = await plan.findOne({plan_name :storeDetails.plan.plan_name});
+  console.log(planDetails)
+  let email_template = activation
+  email_template = email_template.replace("__plan_name__", planDetails.plan_name);
+  email_template = email_template.replace("__plan_price__", planDetails.price);
+  email_template = email_template.replace("__given_credit__", planDetails.plan_limit);
+  email_template = email_template.replaceAll("__usage_charge__", planDetails.usage_charge);
+  email_template = email_template.replace("__usage_limit__", planDetails.usage_limit);
+
+  console.log("dashboard activation");
+  const options = {
+      from: "merchantalerts@qwikcilver.com",
+      to: storeDetails.email,
+      subject: "Dashboard Activated",
+      html: email_template,
+    };
+    await sendEmail(options);
+  return 0;
 };
 
 /**
  * Shedule Cron for Retry the Failed Error
  */
 export const failedOrders = async () => {
-
   console.log(" --- Retry Process Started ---- ");
   const failedOrders = await OrderCreateEventLog.find({
     status: "retry",
-    numberOfRetried: { $lte: 4}
+    numberOfRetried: { $lte: 4 },
   });
   console.log("Total Failed Orders: ", failedOrders.length);
   for (const iterator of failedOrders) {
+    console.log(
+      `No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`
+    );
+    if (iterator.numberOfRetried > 2) {
+      const orderData = await orders.findOne({ id: iterator.orderId });
 
-    console.log(`No Of Retries: ${iterator.numberOfRetried} --- Order Id: ${iterator.orderId}`);
-    if (iterator.numberOfRetried > 3) {
-     
       console.log("order retry greater than three");
       let reverse = {};
       if (iterator.action == "redeem") {
-
         console.log("Redeem Action");
-        const orderData = await orders.findOne({id:iterator.orderId});
         reverse = await reverseRedeemWallet(
           iterator.store,
           iterator.orderId,
@@ -596,22 +717,66 @@ export const failedOrders = async () => {
           iterator.redeem.req.Cards[0].Amount,
           iterator.redeem.resp.TransactionId
         );
-        await orderCancel(orderData, iterator.store, "Unable to Redeem On QC after all Reties.");
       }
+      if (iterator.action == "gift") {
+        console.log("reverse giftcard")
+        reverse = await reverseCreateGiftcard(
+          iterator.store,
+          iterator.gift.createGC.req,
+          iterator.gift.createGC.resp.TransactionId
+        );
+      }
+      if (iterator.action == "self") {
+        if (
+          iterator.self.createGC.status == false) {
+            reverse = await reverseCreateGiftcard(
+            iterator.store,
+            iterator.self.createGC.req,
+            iterator.self.createGC.resp.TransactionId
+          );
+        } else {
+          reverse = await cancelActivateGiftcard(
+            iterator.store,
+            iterator.self.createGC.resp.Cards[0].CardNumber,
+            iterator.self.createGC.req.Cards[0].Amount,
+            iterator.self.createGC.resp.CurrentBatchNumber,
+            iterator.self.createGC.resp.TransactionId,
+            iterator.self.createGC.resp.Cards[0].ApprovalCode
+          );
+         
+        }
+      }
+
+      await orderCancel(
+        orderData,
+        iterator.store,
+        "Unable to Redeem On QC after all Reties."
+      );
       await OrderCreateEventLog.findOneAndUpdate(
         { orderId: iterator.orderId },
-        { status: "done", reverse, numberOfRetried: parseInt(iterator.numberOfRetried) + 1 }
+        {
+          status: "done",
+          reverse,
+          numberOfRetried: parseInt(iterator.numberOfRetried) + 1,
+        }
       );
     } else {
-
+      console.log("eligilble for retry");
       const currentTime = Date.now();
-      const timeDifference = Math.floor(Math.abs((iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000));
+      const timeDifference = Math.floor(
+        Math.abs(
+          (iterator?.retriedAt || iterator.updatedAt - currentTime) / 1000
+        )
+      );
       const diff = iterator.numberOfRetried == 1 ? 60 : 120;
-      console.log(`Current Time: ${currentTime}, Last Retied: ${iterator?.retriedAt || iterator.updatedAt}`);
+      console.log(
+        `Current Time: ${currentTime}, Last Retied: ${
+          iterator?.retriedAt || iterator.updatedAt
+        }`
+      );
       console.log(`Time Diffrence: ${timeDifference} -  Diff: ${diff}`);
 
       if (timeDifference > diff) {
-
         const orderData = await orders.findOne({
           id: iterator.orderId,
           store_url: iterator.store,
@@ -628,49 +793,49 @@ export const failedOrders = async () => {
  * @param {*} shop
  */
 export const orderCancel = async (orderData, shop, note = "") => {
-
   try {
-    
     const id = orderData.id;
-    const storeData = await store.findOne({ store_url: shop});
-    let transactions = await getOrderTransactionDetails(id, shop, storeData.access_token);
-    transactions = transactions.data.transactions.map(trans => {
+    const storeData = await store.findOne({ store_url: shop });
+    let transactions = await getOrderTransactionDetails(
+      id,
+      shop,
+      storeData.access_token
+    );
+    transactions = transactions.data.transactions.map((trans) => {
       return {
-          "parent_id": trans.id,
-          "amount": trans.amount,
-          "kind": "refund",
-          "gateway": trans.gateway
+        parent_id: trans.id,
+        amount: trans.amount,
+        kind: "refund",
+        gateway: trans.gateway,
       };
     });
-    const line_item = orderData.line_items.map(items => {
-      let item =  {
-        "line_item_id": items.id,
-        "quantity": items.quantity
+    const line_item = orderData.line_items.map((items) => {
+      let item = {
+        line_item_id: items.id,
+        quantity: items.quantity,
       };
-      if(items.location_id){
-
+      if (items.location_id) {
         item = {
-          ...item, 
-          "restock_type": "cancel",
-          "location_id": 24826418
+          ...item,
+          restock_type: "cancel",
+          location_id: 24826418,
         };
-      }else{
-
+      } else {
         item = {
-          ...item, 
-          "restock_type": "no_restock"
+          ...item,
+          restock_type: "no_restock",
         };
       }
       return item;
     });
-    
-    const data =  {
-      "refund": {
-          "note": note,
-          "shipping": { "full_refund": true },
-          "refund_line_items":line_item,
-          "transactions": transactions
-      }
+
+    const data = {
+      refund: {
+        note: note,
+        shipping: { full_refund: true },
+        refund_line_items: line_item,
+        transactions: transactions,
+      },
     };
     let config = {
       method: "post",
@@ -678,7 +843,7 @@ export const orderCancel = async (orderData, shop, note = "") => {
       headers: {
         "X-Shopify-Access-Token": storeData.access_token,
       },
-      data: data
+      data: data,
     };
     console.log(JSON.stringify(config));
     const responseData = await axios(config);
