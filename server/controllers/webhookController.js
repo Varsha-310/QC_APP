@@ -20,6 +20,7 @@ import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import qcCredentials from "../models/qcCredentials.js";
 import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
+import { encrypt , decrypt } from "../helper/encryption.js";
 
 
 /**
@@ -95,7 +96,12 @@ export const ordercreateEvent = async (shop, order) => {
 
     console.log("------------order create event-----------------");
     console.log("Shop Name", shop, order.id);
-
+    order.customer.email = encrypt(order.customer.email);
+    order.contact_email=encrypt(order.contact_email);
+    order.email=encrypt(order.email);
+    if(order.customer.phone != null){
+      order.customer.phone = encrypt(order.customer.phone);
+    }
     // Store Order
     await orders.updateOne(
       {
@@ -123,7 +129,7 @@ export const ordercreateEvent = async (shop, order) => {
           })
           .lean(); //Get the product from DB
 
-        console.log("Giftcard Products: ", gift_card_product);
+        console.log("Giftcard Products :", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
           line_item["validity"] = gift_card_product.validity;
@@ -381,6 +387,7 @@ export const ordercreateEvent = async (shop, order) => {
                   { "self.createGC": logs },
                   { upsert: true }
                 );
+                
                 if (!logs.status) throw new Error("Error: Create Gift Card");
                 giftCardDetails = logs.resp.Cards[0];
               }
@@ -394,8 +401,7 @@ export const ordercreateEvent = async (shop, order) => {
                   type,
                   newOrder.id,
                   giftCardDetails.ExpiryDate,
-		  OrderSession?.self?.wallet,
-                 
+		              OrderSession?.self?.wallet,
                 );
                 // OrderSession["self"]["wallet"] = logs;
                 //console.log(logs, "logs of wallet");

@@ -1,6 +1,7 @@
 import NodeMailer from "nodemailer";
 import template from "../views/email_template.js";
 import { logger } from "../helper/logger.js";
+import { decrypt } from "../helper/encryption.js";
 
 //Function to convert the Javascript Date Object to a readable format
 function getReadableDate(dateObj) {
@@ -43,7 +44,7 @@ console.log("----------", giftCardDetails);
 let email_template = template;
 email_template = email_template.replace(
   "__CardPIN__",
-  giftCardDetails["CardPin"]
+  decrypt(giftCardDetails["CardPin"])
 );
 email_template = email_template.replace(
   "__CardNumber__",

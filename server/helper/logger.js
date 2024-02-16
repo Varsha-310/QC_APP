@@ -1,6 +1,5 @@
 import log4js from 'log4js';
-import path from 'path';
-
+// import path from 'path';
 
 const rightNow = new Date();
 const res = rightNow.toISOString().slice(0, 10).replace(/-/g, "_");
@@ -10,8 +9,7 @@ log4js.configure({
     console: { type: 'console' },
     file: {
         "type": "file",
-        "filename": `logs/${res}.log`
-        ,
+        "filename": `logs/${res}.log`,
         "maxLogSize": 10485760,
         "backups": 3,
         "category": "app"

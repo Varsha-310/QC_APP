@@ -9,7 +9,7 @@ import orders from "../models/orders.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import wallet from "../models/wallet.js";
 import { logger } from "../helper/logger.js";
-
+import { encrypt , decrypt } from "../helper/encryption.js";
 
 const getTransactionId = () =>{
 
@@ -33,10 +33,9 @@ export const createGiftcard = async (
   customer = {},
   logs = {}
 ) => {
-
   logs["status"] = false;
   try {
-
+    logger.info("creating giftcard  on qwikcilver",store,)
     console.log( "------------------ Create Giftcard Process Started -------------------", logs?.resp?.TransactionId);
     let setting = await qcCredentials.findOne({ store_url: store });
     let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
@@ -52,10 +51,16 @@ export const createGiftcard = async (
     myDate.setDate(myDate.getDate() + parseInt(validity));
     const expirydate = myDate.toISOString().slice(0, 10);
     let cpgn;
+    if(customer?.email){
+      customer.email= decrypt(customer.email);
+    }
+    if(customer?.phone){
+      customer.phone= decrypt(customer.phone);
+    }
     if (type == "refund") {
       cpgn = setting.refund_cpgn;
     } else {
-      console.log("_------in giftcard type--------", cpgn);
+      console.log("-------in giftcard type--------", cpgn);
       cpgn = setting.giftcard_cpgn;
     }
     let data = logs?.req ? logs.req : {
@@ -70,7 +75,7 @@ export const createGiftcard = async (
           CardProgramGroupName: cpgn,
           Amount: amount,
           Expiry: expirydate,
-          CurrencyCode: "INR",
+          CurrencyCode: "INR"
       }],
       Purchaser: {
         FirstName: customer?.first_name || "First Name",
@@ -85,7 +90,7 @@ export const createGiftcard = async (
       url: `${process.env.QC_API_URL}/XNP/api/v3/gc/transactions`,
       headers: {
         TransactionId: logs?.resp?.TransactionId || transactionId,
-        Authorization: `Bearer ${setting.token}`,
+        Authorization: `Bearer ${setting.token}`
       },
       data: data,
       checkAuth: {store, n:1}
@@ -97,10 +102,10 @@ export const createGiftcard = async (
     if (gcCreation.status == "200") {
       logger.info("card created successfully", store,order_id);
       if (!logs?.updateBillingAt) {
-
         await updateBilling(amount, store);
         logs["updateBillingAt"] = new Date().toISOString();
       }
+      gcCreation.data.Cards[0].CardPin = encrypt(gcCreation.data.Cards[0].CardPin);
       console.log("Card Details: ", gcCreation.data.Cards[0]);
       if (!logs?.qcUpdatedToDB) {
         await qc_gc.create({
@@ -501,7 +506,9 @@ export const addToWallet = async (
 ) => {
   logs["status"] = false;
   try {
-
+    if(logs?.req?.Cards[0]?.PaymentInstruments.InstrumentPin){
+      logs.req.Cards[0].PaymentInstruments.InstrumentPin= decrypt(logs.req.Cards[0].PaymentInstruments.InstrumentPin)
+    }
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("---------------add to wallet----------------------------------------");
     let transactionId =logs?.resp?.TransactionId || setting.unique_transaction_id; //Store the unique ID to a variable
@@ -526,7 +533,7 @@ export const addToWallet = async (
             },
           ],
         };
-
+        data.Cards[0].PaymentInstruments.InstrumentPin= encrypt(data.Cards[0].PaymentInstruments.InstrumentPin);
     logs["req"] = data;
     let config = {
       method: "post",
@@ -563,6 +570,10 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
 
   logs["status"] = false;
   try {
+    if(logs?.req?.Cards[0]?.CardPin){
+      console.log("in log decrypting")
+    logs.req.Cards[0].CardPin = decrypt(logs.req.Cards[0].CardPin);
+    } 
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("------------------store qc credeentials-------------------------");
     let transactionId = setting.unique_transaction_id; //Store the unique ID to a variable
@@ -601,7 +612,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
     }
     return logs;
   } catch (err) {
-    
+    console.log(err)
     logs["error"] = err.response.data || err?.code;
     return logs;
   }

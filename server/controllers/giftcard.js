@@ -26,6 +26,9 @@ import { sendEmailViaSendGrid } from "../middleware/sendEmail.js";
 import { getOrderTransactionDetails } from "./webhookController.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import addCard from "../models/addCard.js";
+import { logger } from "../helper/logger.js";
+import store from "../models/store.js";
+import { encrypt } from "../helper/encryption.js";
 
 /**
  * To create gifcard product
@@ -34,7 +37,7 @@ import addCard from "../models/addCard.js";
  */
 export const createGiftcardProducts = async (req, res) => {
   try {
-    console.log("createGiftcardProducts function start");
+    console.log("create Giftcard Products function start");
     let store = req.token.store_url;
     let { description, title, images, variants, validity, terms } = req.body;
     console.log(store);
@@ -73,6 +76,7 @@ export const createGiftcardProducts = async (req, res) => {
     res.json(respondSuccess("Product created in shopify successfully"));
   } catch (error) {
     console.log(error);
+    logger.error("error creating shopify product", store, error);
     res.json(respondInternalServerError());
   }
 };
@@ -118,6 +122,7 @@ export const updateGiftcardProduct = async (req, res) => {
     res.json(respondSuccess("Product updated in shopify successfully"));
   } catch (error) {
     console.log(error);
+    logger.error("error updating product", store, error);
     res.json(respondInternalServerError());
   }
 };
@@ -129,7 +134,7 @@ export const updateGiftcardProduct = async (req, res) => {
  */
 export const deleteGiftcardProducts = async (req, res) => {
   try {
-    console.log("deleteGiftcardProducts function start");
+    console.log("delete Giftcard Products function start");
     let store = req.token.store_url;
     let { product_id } = req.body;
     console.log(store);
@@ -141,9 +146,11 @@ export const deleteGiftcardProducts = async (req, res) => {
     res.json(respondSuccess("Product deleted in shopify successfully"));
   } catch (error) {
     console.log(error);
+    logger.error("error deleting product", store,error)
     res.json(respondInternalServerError());
   }
 };
+
 /**
  * To fetch giftcard products
  * @param {*} req
@@ -166,7 +173,7 @@ export const getGiftcardProducts = async (req, res) => {
     console.log(req.token.store_url);
     let products;
     if (totalPages > 0) {
-      products = await Product.find({ store_url: req.token.store_url })
+      products = await Product.find({ store_url: req.token.store_url})
         .sort({ created_at: -1 })
         .skip((currentPage - 1) * limit)
         .limit(limit);
@@ -181,6 +188,7 @@ export const getGiftcardProducts = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    logger.error("error fetching gc products",req?.token?.store_url,error);
     res.json(respondInternalServerError());
   }
 };
@@ -201,6 +209,7 @@ export const getSelectedGc = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    logger.error("error selecting a gc product",req?.token?.store_url,error);
     res.json(respondInternalServerError());
   }
 };
@@ -291,8 +300,9 @@ export const addGiftcardtoWallet = async (
   let customer_wallet_id;
  
   try {
+    console.log(encrypt(gc_pin))
     const cardAlredyAdded = await wallet_history.findOne({
-      "transactions.gc_pin": gc_pin,
+      "transactions.gc_pin":encrypt(gc_pin),
     });
     if (cardAlredyAdded) {
       return { status: 403 };
@@ -426,7 +436,7 @@ export const addGiftcardtoWallet = async (
       let myDate = new Date();
       myDate.setDate(myDate.getDate() + parseInt(365));
       console.log(  "logs of order sesiion" , gc_pin);
-       const wallet_history_update = await wallet_history.updateOne(
+      const wallet_history_update = await wallet_history.updateOne(
         {
           wallet_id: walletDetails.wallet_id,
           customer_id: customer_id,

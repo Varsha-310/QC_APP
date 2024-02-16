@@ -156,14 +156,15 @@ let payemntPayload = new FormData();
 const handleReccuringPayment = async() => {
 
     const today = new Date().getDate();
-    if([29].includes(today)){
+    if([14].includes(today)){
         const reccuringmarchant = await BillingHistory.find({
             status:"ACTIVE",
-            recordType: "Reccuring",
-            isReminded: true,
+            // recordType: "Reccuring",
+            // isReminded: true,
+            store_url:"uat-kyc-test-automation.myshopify.com"
             // plan_type: "public"
         });
-        console.log(reccuringmarchant)
+        console.log(reccuringmarchant , "ertyuio")
         for (const bill of reccuringmarchant) {
 
             const resp = await captureReccuringpayment(bill);
@@ -222,7 +223,7 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
      data = {
         key : process.env.payukey,
         command: "si_transaction",
-        var1:`{"authPayuId":"${mandateDetails?.mandate?.mihpayid}","invoiceDisplayNumber":"${bill.invoiceNumber}","amount":${bill.invoiceAmount},"txnid":"${randomId}","email":"${mandateDetails?.mandate?.email}","phone":"${mandateDetails?.mandate?.phone}","udf2": "","udf3": "","udf4": "","udf5": ""}`
+        var1:`{"authpayuid":"${mandateDetails?.mandate?.mihpayid}","invoiceDisplayNumber":"${bill.invoiceNumber}","amount":${bill.invoiceAmount},"txnid":"${randomId}","email":"anubhav.gupta_conslt@qwikcilver.com","phone":"${mandateDetails?.mandate?.phone}","udf2": "","udf3": "","udf4": "","udf5": ""}`
     };
     data["hash"] = generateHashForNotification(data);
     const config ={
@@ -236,17 +237,19 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
         data: data
     };
     console.log(data, config);
-    return axios(config).then(res => {
-        console.log(res , "response")
-        return res;
-    }).catch(err => {
+    // return axios(config).then(res => {
+    //     console.log(res , "response")
+    //     return res;
+    // }).catch(err => {
 
-        console.log("Error",err);
-        return {
-            "status": "0",
-            "message": "Exernal Error Occured"
-        };
-    });
+    //     console.log("Error",err);
+    //     return {
+    //         "status": "0",
+    //         "message": "Exernal Error Occured"
+    //     };
+    // });
+    let res = await axios(config);
+    console.log(res, "response new")
 }
 
 /**
@@ -525,13 +528,14 @@ export const handleBillingDetails = async(req, res) => {
 export const changeMonthlyCycle = async() => {
     
     const date = new Date(), y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-    if(d != 21){
+    if(d != 14){
         return 0;
     }
     const firstday = new Date(y, m, 0);
     const query = {
+        store_url : "prod-kyc-test-assisted-flow.myshopify.com",
         status: "ACTIVE",
-        issue_date: {$lt: new Date()}
+        // issue_date: {$lt: new Date()}
     }
 
     console.log(query);
@@ -695,10 +699,44 @@ const getChangeMonthData = async(store) => {
     };
 }
 
+const cancelMandate = async() =>{
+    console.log( "recurring api called")
+    let data = new FormData();
+    const randomId = Date.now() + Math.random().toString(10).slice(2, 8);
+     data = {
+        key : process.env.payukey,
+        command: "mandate_revoke",
+        var1:`{"authPayuId":"403993715530976972","requestId":"${randomId}"}`
+    };
+    data["hash"] = generateHashForNotification(data);
+    const config ={
 
-// cron.schedule("*/30 * * * * *", () => {
-//  console.log("------cron job-----------")
-//     // changeMonthlyCycle();
-//     handleReccuringPayment();
+        url: process.env.DEBUG ? "https://test.payu.in/merchant/postservice?form=2" : "https://info.payu.in/merchant/",
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "POST",
+        data: data
+    };
+    console.log(data, config);
+    return axios(config).then(res => {
+        console.log(res , "response")
+        return res;
+    }).catch(err => {
+
+        console.log("Error",err);
+        return {
+            "status": "0",
+            "message": "Exernal Error Occured"
+        };
+    });
+}
+
+cron.schedule("*/30 * * * * *", () => {
+ console.log("------cron job-----------")
+//  cancelMandate()
+    changeMonthlyCycle();
+    // handleReccuringPayment();
     // handleMandateNotification();
-// });
+});
