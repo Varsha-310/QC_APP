@@ -1,0 +1,14 @@
+[2024-02-20T13:35:21.112] [INFO] app - server is listening to 3000
+[2024-02-20T15:52:14.719] [INFO] app - server is listening to 3000
+[2024-02-20T15:56:19.868] [INFO] app - server is listening to 3000
+[2024-02-20T15:57:39.123] [INFO] app - order created {
+  'content-type': 'application/json',
+  'user-agent': 'PostmanRuntime/7.36.3',
+  accept: '*/*',
+  'cache-control': 'no-cache',
+  'postman-token': '24247427-59e0-49ea-86e5-2b23d6bef397',
+  host: 'localhost:3000',
+  'accept-encoding': 'gzip, deflate, br',
+  connection: 'keep-alive',
+  'content-length': '13794'
+}

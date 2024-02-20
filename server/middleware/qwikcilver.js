@@ -35,7 +35,7 @@ export const createGiftcard = async (
 ) => {
   logs["status"] = false;
   try {
-    logger.info("creating giftcard  on qwikcilver",store,)
+    logger.info("creating giftcard  on qwikcilver",store)
     console.log( "------------------ Create Giftcard Process Started -------------------", logs?.resp?.TransactionId);
     let setting = await qcCredentials.findOne({ store_url: store });
     let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
@@ -56,6 +56,12 @@ export const createGiftcard = async (
     }
     if(customer?.phone){
       customer.phone= decrypt(customer.phone);
+    }
+    if(customer?.first_name){
+      customer.first_name= decrypt(customer.first_name);
+    }
+    if(customer?.last_name){
+      customer.last_name= decrypt(customer.last_name);
     }
     if (type == "refund") {
       cpgn = setting.refund_cpgn;
@@ -122,10 +128,12 @@ export const createGiftcard = async (
       logs["resp"] = gcCreation.data;
       logs["status"] = true;
       //return type == "giftcard" ? logs : gcCreation.data.Cards[0];
+      logger.info("giftcard created",order_id)
+
     }
     return logs;
   } catch (err) {
-    logger.error("error creating card", store ,err?.code);
+    logger.error("error creating card", store,order_id,err?.code);
     console.log(" --- Error While Creating Giftcard ---", err);
     logs["error"] = err?.response?.data || err?.code;
     return logs;
@@ -284,6 +292,7 @@ export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
     logs["status"] = walletCreation?.data?.ResponseCode == "0" ? 200 : 404;
     return logs;
   } catch (err) {
+  logger.error('Error in checkWalletOnQC',err.response?.data);
     console.log(err, "error in qc wallet")
     //console.log("Error : ----- ", JSON.stringify(err.response?.data));
     logs["error"] = err.response?.data;
@@ -301,7 +310,7 @@ export const loadWalletAPI = async (store, amount, order_id, customerId, logs = 
   
   logs["status"] = false;
   try {
-
+  logger.info("load wallet api called",order_id);
     let setting = await qcCredentials.findOne({ store_url: store });
     let transactionId = setting.unique_transaction_id; 
     setting.unique_transaction_id = transactionId + 1;
@@ -533,7 +542,7 @@ export const addToWallet = async (
             },
           ],
         };
-        data.Cards[0].PaymentInstruments.InstrumentPin= encrypt(data.Cards[0].PaymentInstruments.InstrumentPin);
+        data.Cards[0].PaymentInstruments.InstrumentPin= decrypt(data.Cards[0].PaymentInstruments.InstrumentPin);
     logs["req"] = data;
     let config = {
       method: "post",
@@ -547,6 +556,7 @@ export const addToWallet = async (
     };
 
     let cardAdded = await axios(config);
+    logs.req.Cards[0].PaymentInstruments.InstrumentPin= encrypt(logs.req.Cards[0].PaymentInstruments.InstrumentPin);
     //console.log(cardAdded);
     logs["resp"] = cardAdded?.data;
     if (cardAdded.data.ResponseCode == "0")
@@ -590,7 +600,7 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
           TransactionTypeId: 322,
           InputType: "1",
           IdempotencyKey: idempotency_key,
-          Cards: [{ CardPin: gc_pin }],
+          Cards: [{ CardPin: decrypt(gc_pin) }],
         };
 
     logs["req"] = data;

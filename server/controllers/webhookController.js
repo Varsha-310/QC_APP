@@ -21,6 +21,7 @@ import qcCredentials from "../models/qcCredentials.js";
 import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
 import { encrypt , decrypt } from "../helper/encryption.js";
+import { logger } from "../helper/logger.js";
 
 
 /**
@@ -29,7 +30,7 @@ import { encrypt , decrypt } from "../helper/encryption.js";
  * @param {*} res
  */
 export const orderCreated = (req, res) => {
-  console.log("order created", req.headers);
+  logger.info("order created", req.headers);
   // orderCreateQueue.push({shop: req.headers["x-shopify-shop-domain"], order: req.body});
   const shop = req.headers["x-shopify-shop-domain"];
   const order = req.body;
@@ -102,8 +103,15 @@ export const ordercreateEvent = async (shop, order) => {
     if(order.customer.phone != null){
       order.customer.phone = encrypt(order.customer.phone);
     }
+    if(order.customer.first_name != null){
+      order.customer.first_name = encrypt(order.customer.first_name);
+    }
+    if(order.customer.last_name != null){
+      order.customer.last_name = encrypt(order.customer.last_name);
+    }
+    console.log(order.customer.phone , "phone",order.contact_email , "email" )
     // Store Order
-    await orders.updateOne(
+     const orderSaved = await orders.updateOne(
       {
         store_url: shop,
         id: order.id,
@@ -111,7 +119,7 @@ export const ordercreateEvent = async (shop, order) => {
       order,
       { upsert: true }
     );
-    //console.log(orderSaved);
+    console.log(orderSaved);
     let gift_card_product;
     let settings = await store.findOne({ store_url: shop });
     console.log(settings);
@@ -219,6 +227,7 @@ export const ordercreateEvent = async (shop, order) => {
             });
             console.log(gc_order , "--------------gcorder details ----------");
             if (gc_order.sent_as_gift == true) {
+              logger.info("sent as gift",newOrder.id);
               console.log("-------sent as gift---------------");
               for (let i = 0; i < qwikcilver_gift_card.properties.length; i++) {
                 // change it to swith statement

@@ -228,6 +228,7 @@ export const addGiftcard = async (req, res) => {
   const type = "giftcard";
 
   try {
+    gc_pin = encrypt(gc_pin);
     validPin = await qc_gc.findOne({ gc_pin: gc_pin });
     console.log("Pin validated", validPin);
     if (validPin) {
@@ -298,11 +299,11 @@ export const addGiftcardtoWallet = async (
 ) => {
   logs["status"] = false;
   let customer_wallet_id;
- 
+  logger.info("addGiftCardToCustomer")
   try {
     console.log(encrypt(gc_pin))
     const cardAlredyAdded = await wallet_history.findOne({
-      "transactions.gc_pin":encrypt(gc_pin),
+      "transactions.gc_pin":gc_pin,
     });
     if (cardAlredyAdded) {
       return { status: 403 };
