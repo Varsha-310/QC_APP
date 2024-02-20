@@ -21,7 +21,7 @@ import { failedOrders } from "./controllers/webhookController.js";
 import { createJwt } from "./helper/jwtHelper.js";
 import { fileURLToPath} from "url";
 import { dirname,join } from "path";
-
+import { logger } from "./helper/logger.js";
 export const app = express();
 
 app.use(helmet());
@@ -121,6 +121,7 @@ mongoose
 
     app.listen(process.env.PORT);
     console.log("server is listening to " + process.env.PORT);
+    logger.info("server is listening to " + process.env.PORT);
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);

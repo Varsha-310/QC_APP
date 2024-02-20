@@ -23,6 +23,7 @@ import Wallet from "../models/wallet.js";
 import activation from "../views/activation.js";
 import plan from "../models/plan.js";
 import { sendEmail } from "../middleware/sendEmail.js";
+import { logger } from "../helper/logger.js";
 
 
 /**
@@ -90,6 +91,7 @@ export const getOrderTransactionDetails = async (
  */
 export const ordercreateEvent = async (shop, order) => {
   try {
+    logger.info("incoming order",shop, order.id);
     console.log("Shop Name", shop, order.id);
     const logQuery = {
       store: shop,
@@ -129,6 +131,7 @@ export const ordercreateEvent = async (shop, order) => {
         console.log("Giftcard Products: ", gift_card_product);
         if (gift_card_product) {
           console.log("is giftcard product");
+          logger.info("is giftcard order",order.id)
           line_item["validity"] = gift_card_product.validity;
           qwikcilver_gift_cards.push(line_item);
         }
@@ -216,6 +219,7 @@ export const ordercreateEvent = async (shop, order) => {
             });
             console.log(gc_order , "--------------gcorder details ----------");
             if (gc_order.sent_as_gift == true) {
+              logger.info("sent as a gift", order.id);
               console.log("-------sent as gift---------------");
               for (let i = 0; i < qwikcilver_gift_card.properties.length; i++) {
                 // change it to swith statement
@@ -281,6 +285,7 @@ export const ordercreateEvent = async (shop, order) => {
                 // OrderSession["other"]["sentEmailAt"] = new Date().toISOString();
                 let mailSentAt;
                 if (mailResponse == true) {
+                  logger.info("gc mail sent",order.id,"at",new Date().toISOString());
                   mailSentAt = new Date().toISOString();
                 } else {
                   mailSentAt = null;
@@ -292,6 +297,7 @@ export const ordercreateEvent = async (shop, order) => {
                 );
               }
             } else {
+              logger.info("purchased for self", order.id)
               console.log("purchased for self");
               await OrderCreateEventLog.updateOne(
                 { orderId: order.id },
@@ -414,13 +420,15 @@ export const ordercreateEvent = async (shop, order) => {
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
         }
       } else if (newOrder.payment_gateway_names.includes("gift_card")) {
-        console.log("giftcard redeemed");
+      console.log("giftcard redeemed");
         let checkAmount = await giftCardAmount(
           shop,
           newOrder.id,
           newOrder.customer.id
         );
         console.log("--------redeemed amount--------------", checkAmount);
+        logger.info("giftcard redeemed", store,order.id , "amount", checkAmount);
+
         // Cancle request when wallet not found
         if (!checkAmount.error) {
           if (OrderSession?.redeem?.status != true) {

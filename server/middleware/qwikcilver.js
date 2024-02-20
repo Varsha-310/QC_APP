@@ -8,7 +8,7 @@ import Wallet from "../models/wallet.js";
 import orders from "../models/orders.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
 import wallet from "../models/wallet.js";
-
+import { logger } from "../helper/logger.js";
 
 const getTransactionId = () =>{
 
@@ -35,7 +35,6 @@ export const createGiftcard = async (
 
   logs["status"] = false;
   try {
-
     console.log( "------------------ Create Giftcard Process Started -------------------", logs?.resp?.TransactionId);
     let setting = await qcCredentials.findOne({ store_url: store });
     let idempotency_key = generateIdempotencyKey(); // Get the Idempotency Key
@@ -57,6 +56,7 @@ export const createGiftcard = async (
       console.log("_------in giftcard type--------", cpgn);
       cpgn = setting.giftcard_cpgn;
     }
+
     let data = logs?.req ? logs.req : {
       TransactionTypeId: "305",
       InputType: "3",
@@ -91,9 +91,12 @@ export const createGiftcard = async (
     };
 
     const gcCreation = await axios(config);
+    logger.info("in gc creation" ,order_id, JSON.stringify(data));
+
     console.log(" Response Code : ", gcCreation.data.ResponseCode);
     logs["resp"] = gcCreation.data;
     if (gcCreation.status == "200") {
+      logger.info("gc created successfully", order_id)
       if (!logs?.updateBillingAt) {
 
         await updateBilling(amount, store);
@@ -118,7 +121,7 @@ export const createGiftcard = async (
     }
     return logs;
   } catch (err) {
-    
+    logger.error("error craering gc", err?.response?.data?.ResponseCode)
     console.log(" --- Error While Creating Giftcard ---", err);
     logs["error"] = err?.response?.data || err?.code;
     return logs;
@@ -277,6 +280,7 @@ export const checkWalletOnQC = async (store, customer_id, logs = {}) => {
     logs["status"] = walletCreation?.data?.ResponseCode == "0" ? 200 : 404;
     return logs;
   } catch (err) {
+    logger.error("error checking wallet",store, err.response?.data?.ResponseCode)
     console.log(err, "error in qc wallet")
     //console.log("Error : ----- ", JSON.stringify(err.response?.data));
     logs["error"] = err.response?.data;
@@ -538,14 +542,17 @@ export const addToWallet = async (
     };
 
     let cardAdded = await axios(config);
+    logger.info("add card to wallet", JSON.stringify(data));
     //console.log(cardAdded);
     logs["resp"] = cardAdded?.data;
-    if (cardAdded.data.ResponseCode == "0")
+    if (cardAdded.data.ResponseCode == "0"){
+      logger.info("card added successfully", cardAdded.data.Cards[0].CardNumber)
       logs["status"] = true;
+    }
 
     return logs;
   } catch (err) {
-    
+    logger.error("error adding card",err.response.ResponseCode);
     console.log(err);
     logs["error"] = err.response.data || err?.code;
     return logs;
@@ -591,10 +598,12 @@ export const activateCard = async (store, gc_pin, logs = {}) => {
       data: data,
       checkAuth: {store, n:1}
     };
+    logger.info("card activation called", store,JSON.stringify(data));
 
     let activation = await axios(config);
     logs["resp"] = activation?.data;
     if (activation.data.ResponseCode == "0" || "10838") {
+      logger.info("card activated",activation.data.Cards[0].CardNumber);
       logs["status"] = true;
     }
     return logs;
@@ -661,8 +670,10 @@ export const redeemWallet = async (
       checkAuth: {store, n:1}
     };
     let walletRedemption = await axios(config);
+    logger.info("qc redemption called", data)
     logs["resp"] = walletRedemption?.data;
     if (walletRedemption?.data.ResponseCode == "0") {
+      logger.info("wallet redemption done", store, wallet_id)
 
       console.log("redeem successfull");
       await wallet_history.updateOne(
