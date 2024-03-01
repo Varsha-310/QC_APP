@@ -731,7 +731,8 @@ export const failedOrders = async () => {
         reverse = await reverseCreateGiftcard(
           iterator.store,
           iterator.gift.createGC.req,
-          iterator.gift.createGC.resp.TransactionId
+          iterator.gift.createGC?.resp.TransactionId || iterator.gift.createGC?.error.TransactionId
+          
         );
       }
       if (iterator.action == "self") {
@@ -740,16 +741,17 @@ export const failedOrders = async () => {
             reverse = await reverseCreateGiftcard(
             iterator.store,
             iterator.self.createGC.req,
-            iterator.self.createGC.resp.TransactionId
+            iterator.self.createGC?.resp.TransactionId || iterator.self.createGC.error.TransactionId
+
           );
         } else {
           reverse = await cancelActivateGiftcard(
             iterator.store,
             iterator.self.createGC.resp.Cards[0].CardNumber,
             iterator.self.createGC.req.Cards[0].Amount,
-            iterator.self.createGC.resp.CurrentBatchNumber,
-            iterator.self.createGC.resp.TransactionId,
-            iterator.self.createGC.resp.Cards[0].ApprovalCode
+            iterator.self.createGC?.resp.CurrentBatchNumber || iterator.self.createGC?.error.CurrentBatchNumber,
+            iterator.self.createGC?.resp.TransactionId ||  iterator.self.createGC?.error.TransactionId,
+            iterator.self.createGC?.resp.Cards[0].ApprovalCode || iterator.self.createGC?.error.Cards[0].ApprovalCode
           );
          
         }
