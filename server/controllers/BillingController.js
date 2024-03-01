@@ -10,6 +10,16 @@ import complete_limit_template from "../views/complete_limit_exceed.js";
 import { sendEmail } from "../middleware/sendEmail.js";
 import cron from "node-cron";
 
+
+
+ cron.schedule("*/30 * * * * *", () => {
+  console.log("------cron job-----------")
+     // changeMonthlyCycle();
+     handleReccuringPayment();
+   //  handleMandateNotification();
+ });
+
+
 /**
  * Handle the corn iteration for the send Predebit Notification
  * 
@@ -23,6 +33,7 @@ const handleMandateNotification = async(type) => {
             status: "ACTIVE",
             isReminded: false,
             recordType: "Reccuring",
+	    store_url:"uat-kyc-test-automation.myshopify.com"
             // plan_type: "public"
         });
         console.log(notificableMarchant);
@@ -156,11 +167,12 @@ let payemntPayload = new FormData();
 const handleReccuringPayment = async() => {
 
     const today = new Date().getDate();
-    if([29].includes(today)){
+    if([14].includes(today)){
         const reccuringmarchant = await BillingHistory.find({
             status:"ACTIVE",
-            recordType: "Reccuring",
-            isReminded: true,
+           // recordType: "Reccuring",
+            //isReminded: true,
+	    store_url:"uat-kyc-test-automation.myshopify.com"
             // plan_type: "public"
         });
         console.log(reccuringmarchant)
@@ -222,7 +234,7 @@ const callPayUReccuringAPI = async(bill, mandateDetails) =>{
      data = {
         key : process.env.payukey,
         command: "si_transaction",
-        var1:`{"authPayuId":"${mandateDetails?.mandate?.mihpayid}","invoiceDisplayNumber":"${bill.invoiceNumber}","amount":${bill.invoiceAmount},"txnid":"${randomId}","email":"${mandateDetails?.mandate?.email}","phone":"${mandateDetails?.mandate?.phone}","udf2": "","udf3": "","udf4": "","udf5": ""}`
+        var1:`{"authpayuid":"${mandateDetails?.mandate?.mihpayid}","invoiceDisplayNumber":"${bill.invoiceNumber}","amount":${bill.invoiceAmount},"txnid":"${randomId}","email":"anubhav.gupta_conslt@qwikcilver.com","phone":"${mandateDetails?.mandate?.phone}","udf2": "","udf3": "","udf4": "","udf5": ""}`
     };
     data["hash"] = generateHashForNotification(data);
     const config ={
@@ -525,7 +537,7 @@ export const handleBillingDetails = async(req, res) => {
 export const changeMonthlyCycle = async() => {
     
     const date = new Date(), y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-    if(d != 21){
+    if(d != 13){
         return 0;
     }
     const firstday = new Date(y, m, 0);
