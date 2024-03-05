@@ -515,8 +515,8 @@ export const addToWallet = async (
 ) => {
   logs["status"] = false;
   try {
-    if(logs?.req?.Cards[0]?.PaymentInstruments.InstrumentPin){
-      logs.req.Cards[0].PaymentInstruments.InstrumentPin= decrypt(logs.req.Cards[0].PaymentInstruments.InstrumentPin)
+    if(logs?.req?.Cards[0]?.PaymentInstruments[0].InstrumentPin){
+      logs.req.Cards[0].PaymentInstruments[0].InstrumentPin= decrypt(logs.req.Cards[0].PaymentInstruments[0].InstrumentPin)
     }
     let setting = await qcCredentials.findOne({ store_url: store });
     console.log("---------------add to wallet----------------------------------------");
