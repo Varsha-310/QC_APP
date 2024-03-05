@@ -22,6 +22,9 @@ import axios from "../helper/axios.js";
 import Wallet from "../models/wallet.js";
 import { encrypt , decrypt } from "../helper/encryption.js";
 import { logger } from "../helper/logger.js";
+import activation from "../views/activation.js";
+import plan from "../models/plan.js";
+import { sendEmail } from "../middleware/sendEmail.js";
 
 
 /**
@@ -676,8 +679,28 @@ export const getQcCredentials = async (req, res) => {
   console.log(log);
   await store.updateOne(
     { shopify_id: shopify_id },
-    { dashboard_activated: true }
+    { dashboard_activated: true , support_url:support_url}
   );
+  const storeDetails = await store.findOne({shopify_id : shopify_id});
+  console.log(storeDetails , shopify_id, "storedata")
+  const planDetails = await plan.findOne({plan_name :storeDetails.plan.plan_name});
+  console.log(planDetails)
+  let email_template = activation
+  email_template = email_template.replace("__plan_name__", planDetails.plan_name);
+  email_template = email_template.replace("__plan_price__", planDetails.price);
+  email_template = email_template.replace("__given_credit__", planDetails.plan_limit);
+  email_template = email_template.replaceAll("__usage_charge__", planDetails.usage_charge);
+  email_template = email_template.replace("__usage_limit__", planDetails.usage_limit);
+
+  console.log("dashboard activation");
+  const options = {
+      from: "merchantalerts@qwikcilver.com",
+      to: storeDetails.email,
+      subject: "Dashboard Activated",
+      html: email_template,
+    };
+    await sendEmail(options);
+  return 0;
 };
 
 /**
@@ -715,7 +738,8 @@ export const failedOrders = async () => {
         reverse = await reverseCreateGiftcard(
           iterator.store,
           iterator.gift.createGC.req,
-          iterator.gift.createGC.resp.TransactionId
+          iterator.gift.createGC?.resp.TransactionId || iterator.gift.createGC?.error.TransactionId
+          
         );
       }
       if (iterator.action == "self") {
@@ -724,16 +748,17 @@ export const failedOrders = async () => {
             reverse = await reverseCreateGiftcard(
             iterator.store,
             iterator.self.createGC.req,
-            iterator.self.createGC.resp.TransactionId
+            iterator.self.createGC?.resp.TransactionId || iterator.self.createGC.error.TransactionId
+
           );
         } else {
           reverse = await cancelActivateGiftcard(
             iterator.store,
             iterator.self.createGC.resp.Cards[0].CardNumber,
             iterator.self.createGC.req.Cards[0].Amount,
-            iterator.self.createGC.resp.CurrentBatchNumber,
-            iterator.self.createGC.resp.TransactionId,
-            iterator.self.createGC.resp.Cards[0].ApprovalCode
+            iterator.self.createGC?.resp.CurrentBatchNumber || iterator.self.createGC?.error.CurrentBatchNumber,
+            iterator.self.createGC?.resp.TransactionId ||  iterator.self.createGC?.error.TransactionId,
+            iterator.self.createGC?.resp.Cards[0].ApprovalCode || iterator.self.createGC?.error.Cards[0].ApprovalCode
           );
          
         }

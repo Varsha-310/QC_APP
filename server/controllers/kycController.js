@@ -204,7 +204,8 @@ export const statusKyc = async (req, res) => {
         payment: checkStatus.is_payment_done,
         email: checkStatus.email,
         name: checkStatus.name,
-        dashboard_activated: checkStatus.dashboard_activated
+        dashboard_activated: checkStatus.dashboard_activated,
+        support_url:checkStatus?.support_url
       },
     });
   } catch (err) {

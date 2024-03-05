@@ -162,7 +162,7 @@ const updateBillingHistory = async (data) => {
   console.log(updateBilling);
   await store.updateOne(
     { store_url: data.productinfo },
-    { $set: { "plan.plan_name": data.lastname } }
+    { $set: { "plan.plan_name": data.lastname }, mandate:data }
   );
   const billingData = await BillingHistory.findOne({
     transaction_id: data.txnid,
