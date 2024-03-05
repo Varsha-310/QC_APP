@@ -16,7 +16,8 @@ export function encrypt(text) {
 
 export function decrypt(encryptedText) {
   try{
-  const decipher = crypto.createDecipheriv(process.env.encryptlgorithm,process.env.encryptKey,process.env.encryptiv);
+    console.log("in decryption");
+  const decipher = crypto.createDecipheriv(process.env.encryptAlgorithm,process.env.encryptKey,process.env.encryptiv);
   const decrypted = decipher.update(encryptedText, 'hex', 'utf8') + decipher.final('utf8');
   return decrypted;
   }

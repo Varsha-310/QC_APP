@@ -542,7 +542,8 @@ export const addToWallet = async (
             },
           ],
         };
-        data.Cards[0].PaymentInstruments.InstrumentPin= decrypt(data.Cards[0].PaymentInstruments.InstrumentPin);
+        data.Cards[0].PaymentInstruments[0].InstrumentPin= decrypt(data.Cards[0].PaymentInstruments[0].InstrumentPin);
+
     logs["req"] = data;
     let config = {
       method: "post",
