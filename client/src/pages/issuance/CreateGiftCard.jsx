@@ -317,7 +317,7 @@ const CreateGiftCard = () => {
             </div>
 
             <div className="gift-card__validity">
-              {/* <CustomDropdown
+            <CustomDropdown
                 options={[
                   { title: "6 months", value: "180" },
                   { title: "12 months", value: "365" },
