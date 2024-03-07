@@ -33,6 +33,7 @@ let storeSchema = mongoose.Schema({
   is_plan_done: { type: Boolean, default: false },
   is_payment_done: { type: Boolean, default: false },
   dashboard_activated: { type: Boolean , default : false},
+  domain:{type: String},
   //To store the mandate Details
   mandate: Object,
   auth_token: {type:String},

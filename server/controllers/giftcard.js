@@ -465,7 +465,10 @@ export const getWalletBalance = async ({ query }, res) => {
   try {
     let { customer_id, store } = query;
 
-    let storeExists = await Store.findOne({ store_url: store });
+    let storeExists = await Store.findOne({ $or: [
+      {store_url: store},
+      {domain: store},
+  ], });
     if (!storeExists) {
       return res.json(respondUnauthorized("Invalid store"));
     }
@@ -480,7 +483,7 @@ export const getWalletBalance = async ({ query }, res) => {
     console.log("wallet exists");
 
     let shopifybalance = await getShopifyGiftcard(
-      store,
+      storeExists.store_url,
       storeExists.access_token,
       walletExists.shopify_giftcard_id
     );
@@ -489,7 +492,7 @@ export const getWalletBalance = async ({ query }, res) => {
       return res.json(respondNotFound("Wallet is deactivated"));
     }
 
-    let qcBalance = await fetchBalance(store, walletExists.wallet_id);
+    let qcBalance = await fetchBalance(storeExists.store_url, walletExists.wallet_id);
     console.log("balance from qwikcilver giftcard", qcBalance.data.Cards[0]);
 
     if (qcBalance.data.Cards[0].ResponseCode === 10551) {
@@ -508,7 +511,7 @@ export const getWalletBalance = async ({ query }, res) => {
         console.log("qc wallet balance is less");
 
         let updateShopifyGc = await updateShopifyGiftcard(
-          store,
+          storeExists.store_url,
           storeExists.access_token,
           walletExists.shopify_giftcard_id,
           -diffAmount
@@ -537,7 +540,7 @@ export const getWalletBalance = async ({ query }, res) => {
           });
         } else {
           let updateShopifyGc = await updateShopifyGiftcard(
-            store,
+            storeExists.store_url,
             storeExists.access_token,
             walletExists.shopify_giftcard_id,
             qcBalance
