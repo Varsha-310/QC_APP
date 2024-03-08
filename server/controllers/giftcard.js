@@ -215,6 +215,10 @@ export const addGiftcard = async (req, res) => {
   let gcToWallet = {};
   let logs = {};
   let { store, customer_id, gc_pin } = req.body;
+  let storeExists = await Store.findOne({ $or: [
+    {store_url: store},
+    {domain: store},
+], });
   let validPin;
   const type = "giftcard";
 
@@ -228,7 +232,7 @@ export const addGiftcard = async (req, res) => {
         res.json(respondForbidden("card is expired !"));
       } else {
         gcToWallet = await addGiftcardtoWallet(
-          store,
+          storeExists.store_url,
           customer_id,
           gc_pin,
           validPin.balance,
