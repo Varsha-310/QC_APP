@@ -341,9 +341,8 @@ console.log(kycData.gstin)
   const csv = headers.join(", ") + "\n" + values.join(",");
  console.log(csv)
   const options = {
-    from: process.env.KYC_MAIL_ID,
-   to: "qc.serviceautomation_testing@qwikcilver.com",
-   
+    from: "shopifykyc.ib@pinelabs.com",
+    to: "pat-mesduat@pinelabs.com",
     subject: "KYC details of Merchant",
     attachments: [
       {
