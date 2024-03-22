@@ -497,9 +497,10 @@ export const handleRefundAction = async (req, res) => {
         
 	    const trans = [];
         let storeCredit = 0;
+        let refundNotification = false;
         //process gc reverse transaction
         if(refund_type == "Back-to-Source"){
-
+            refundNotification = true
             const gcRfDetails = await getGCRefundAmount(amount, transactions);
             console.log("GC Refund Details:", gcRfDetails);
 
@@ -581,7 +582,7 @@ export const handleRefundAction = async (req, res) => {
             const refund_line_items = line_items.map(item => {
                 return { line_item_id: item.id, quantity: item.qty, location_id: refSetting.location_id, restock_type:refSetting.restock_type };
             })
-            const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
+            const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency, refundNotification);
             console.log(refundedResp.data, " Query : ", sessionQuery);
             refundSession = await updateRefundLogs(sessionQuery, {
                 refund_created_at: new Date(),
@@ -626,7 +627,7 @@ export const handleRefundAction = async (req, res) => {
  * @param {*} storeData
  * @param {*} accessToken
  */
-export const createRefundBackToSource = async (_trans, orderId, line_items, store_url, accessToken, currency) => {
+export const createRefundBackToSource = async (_trans, orderId, line_items, store_url, accessToken, currency,refundNotification) => {
 
     console.log(
         "createRefundBackToSource",
@@ -636,7 +637,7 @@ export const createRefundBackToSource = async (_trans, orderId, line_items, stor
     const data = {
         "refund": {
             currency: currency,
-            notify: true,
+            notify: refundNotification,
             refund_line_items: line_items,
             transactions: _trans
         }

@@ -15,6 +15,11 @@ const qc_credentials = mongoose.Schema({
   unique_transaction_id: { type: Number, default: 1 },
   token: String,
   oracle_id: String,
+  wallet_linked_to: String,
+  card_config:String,
+  top_up_enabled:Boolean,
+  top_up_cpgn:String
+
 });
 
 

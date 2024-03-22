@@ -655,6 +655,10 @@ export const getQcCredentials = async (req, res) => {
     terminal_id,
     username,
     wpgn,
+    wallet_linked_to,
+    card_config,
+    top_up_enabled,
+    top_up_cpgn
   } = req.body;
   const log = await qcCredentials.updateOne(
     { shopify_id: shopify_id },
@@ -666,6 +670,11 @@ export const getQcCredentials = async (req, res) => {
       terminal_id: terminal_id,
       username: username,
       wpgn: wpgn,
+      wallet_linked_to: wallet_linked_to,
+      card_config:card_config,
+      top_up_enabled:top_up_enabled,
+      top_up_cpgn:top_up_cpgn
+    
     },
     { upsert: true }
   );
