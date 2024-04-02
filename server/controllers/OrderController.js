@@ -1,5 +1,4 @@
 import { respondWithData, respondInternalServerError, respondSuccess } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
 import orderModel from "../models/orders.js";
 import Store from "../models/store.js";
 import axios from "../helper/axios.js";
@@ -165,7 +164,6 @@ export const handleOrderDataList = async (req, res) => {
       return res.json(respondWithData("Success",{orders, totalOrders: totalCount}))
   } catch (err) {
 
-      logger.info(err);
       console.log(err);
      return res.json(respondInternalServerError())
   }
@@ -199,7 +197,6 @@ export const handleOrderDetails = async (req, res) => {
       return res.json(respondWithData("Success",result))
   } catch (err) {
 
-      logger.info(err);
       console.log(err);
       return res.json(respondInternalServerError())
   }

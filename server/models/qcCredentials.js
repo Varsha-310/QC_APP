@@ -12,7 +12,7 @@ const qc_credentials = mongoose.Schema({
   giftcard_cpgn: String,
   refund_cpgn: String,
   wpgn: String,
-  unique_transaction_id: { type: Number, default: 0 },
+  unique_transaction_id: { type: Number, default: 1 },
   token: String,
   oracle_id: String,
 });

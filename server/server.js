@@ -2,7 +2,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-// import helmet from "helmet";
+import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import gdprRoute from "./routes/gdpr.js";
@@ -10,7 +10,6 @@ import planRoute from "./routes/plan.js";
 import shopifyRoute from "./routes/shopify.js";
 import { respondInternalServerError } from "./helper/response.js";
 import cron from "node-cron";
-import { logger } from "./helper/utility.js";
 import kycRoute from "./routes/kyc.js";
 import webhookRoute from "./routes/webhooks.js";
 import giftcardRoute from "./routes/giftcard.js";
@@ -20,13 +19,12 @@ import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
 import { createJwt } from "./helper/jwtHelper.js";
-
-
+import { fileURLToPath} from "url";
+import { dirname,join } from "path";
 
 export const app = express();
 
-// 
-// app.use(helmet());
+app.use(helmet());
 //CORS Configuration
 app.use(function (req, res, next) {
 
@@ -64,11 +62,20 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get("/", async (req, res) => {
+const currentModuleUrl = new URL(import.meta.url);
 
-  const token = await createJwt("qc-test-store-12.myshopify.com");
-  return res.json({"token": token});
+// Convert file URL to path
+const __filename = fileURLToPath(currentModuleUrl);
+const __dirname = dirname(__filename);
+
+app.get('/version', (req, res) => {
+    const filePath = join(__dirname, 'public', 'version.json');
+    console.log(__dirname, filePath,"dir an filepath");
+    console.log(filePath, "file path");
+    res.sendFile(filePath);
 });
+
+
 
 //a shopify routes
 app.use("/shopify", apiLimiter ,shopifyRoute);
@@ -117,7 +124,6 @@ mongoose
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
-    logger.info("Error occurred, server can't start", error);
   });
 
 // Global error handler

@@ -35,9 +35,11 @@ export const verifyJwt = (req, res, next) => {
     console.log("-----in verify jwt----------", req.headers);
     if (req.headers.authorization) {
       Jwt.verify(
-        req.headers.authorization,
+        
+	req.headers.authorization,
         process.env.JWT_SECRET,
-        async function (err, payload) {
+        
+	async function (err, payload) {
           if (!err) {
             req.token = payload;
             console.log(payload , "payload")

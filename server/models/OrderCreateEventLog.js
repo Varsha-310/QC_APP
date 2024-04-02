@@ -15,8 +15,12 @@ const OCELog = mongoose.Schema({
   gift: Object,
   reverse: Object,
   retriedAt: Date,
+  inproces: {
+    type: Boolean,
+    default: false
+  },
   numberOfRetried: {
-    type:Number,
+    type: Number,
     default: 0
   },
   status: {

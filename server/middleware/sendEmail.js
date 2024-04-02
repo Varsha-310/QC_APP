@@ -5,7 +5,7 @@ import template from "../views/email_template.js";
 function getReadableDate(dateObj) {
   var d = new Date(dateObj),
     month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
+    day = "" + (d.getDate()+1),
     year = d.getFullYear();
 
   if (month.length < 2) month = "0" + month;
@@ -85,8 +85,10 @@ const options = {
   html: email_template,
 };
 console.log(options);
-await sendEmail(options);
-return true;
+const reponseFromSendGrid = await sendEmail(options);
+console.log(reponseFromSendGrid);
+return reponseFromSendGrid
+
 };
 
 
@@ -95,7 +97,7 @@ return true;
  * @param {*} options 
  */
 export const sendEmail = (options) => {
-  var smtpTransporter = NodeMailer.createTransport({
+  const smtpTransporter = NodeMailer.createTransport({
     port: 587,
     host: "smtp.sendgrid.net",
     auth: {
@@ -108,10 +110,12 @@ export const sendEmail = (options) => {
   smtpTransporter.sendMail(options, async function (error, info) {
     if (!error) {
       console.log("mail sent successfully !");
+      return true
       // Resolve if the mail is sent successfully
       
     } else {
       console.log(error);
+      return false
     
     }
   })

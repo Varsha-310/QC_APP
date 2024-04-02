@@ -1,5 +1,4 @@
 import { respondInternalServerError, respondWithData,respondNotFound, respondError, respondSuccess, respondValidationError } from "../helper/response.js";
-import { logger } from "../helper/utility.js";
 import axios from "../helper/axios.js";
 import orders from "../models/orders.js";
 import refundSetting from "../models/refundSetting.js";
@@ -7,10 +6,11 @@ import Store from "../models/store.js";
 import { checkWalletOnQC, createWallet, loadWalletAPI, cancelLoadWalletAPI } from "../middleware/qwikcilver.js";
 import { createShopifyGiftcard, updateShopifyGiftcard } from "./giftcard.js";
 import RefundSession from "../models/RefundSession.js";
-import { checkActivePlanUses } from "./BillingController.js";
+import { checkActivePlanUses ,updateBilling} from "./BillingController.js";
 import Wallet from "../models/wallet.js";
 import wallet_history from "../models/wallet_history.js";
 import OrderCreateEventLog from "../models/OrderCreateEventLog.js";
+
 
 /**
  * calculate shopify refund amount from shopify
@@ -324,7 +324,14 @@ const refundAsStoreCredit = async (store, accessToken, ordersData, amount, logs 
 
             const loadGC = await loadWalletAPI(store, amount, ordersData.id, ordersData?.customer.id, logs?.loadGC);
             logs["loadWallet"] = loadGC;
-            if(!loadGC.status) throw new Error("Error: Load Wallet API");
+            // if(!loadGC.status) throw new Error("Error: Load Wallet API");
+            if(loadGC.status){
+                    await updateBilling(amount, store);
+                    logs["updateBillingAt"] = new Date().toISOString();
+            }
+            else{
+                throw new Error("Error: Load Wallet API");
+            }
         }
 
         if(!logs?.shopifyGC?.status){
@@ -696,7 +703,6 @@ export const getConfigapi = async (req, res) => {
     } catch (err) {
   
       console.log(err);
-      logger.info(err);
       res.json( respondInternalServerError() );
     }
   };

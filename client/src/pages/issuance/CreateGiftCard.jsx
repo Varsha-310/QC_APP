@@ -36,8 +36,6 @@ const CreateGiftCard = () => {
     validity: "",
   });
 
-  console.log(cardData);
-
   // error
   const [isError, setIsError] = useState(null);
 
@@ -160,11 +158,13 @@ const CreateGiftCard = () => {
       setIsError("* Title can't be empty (min 4)");
       setIsLoading(false);
       return;
-    } else if (!fieldValidate(cardData.validity, 0)) {
-      setIsError("* Validity can't be empty");
-      setIsLoading(false);
-      return;
-    } else if (
+    }
+    // else if (!fieldValidate(cardData.validity, 0)) {
+    // setIsError("* Validity can't be empty");
+    // setIsLoading(false);
+    // return;
+    // }
+    else if (
       cardData.variants.length === 0 ||
       cardData.variants.some((item) => item.option1 === "" || item.price === "")
     ) {
@@ -190,7 +190,7 @@ const CreateGiftCard = () => {
           variants: cardData.variants,
           images: previewImage,
           terms: cardData.terms,
-          validity: cardData.validity,
+          validity: "180", //cardData.validity,
         },
         { headers }
       );
@@ -317,7 +317,7 @@ const CreateGiftCard = () => {
             </div>
 
             <div className="gift-card__validity">
-              <CustomDropdown
+            <CustomDropdown
                 options={[
                   { title: "6 months", value: "180" },
                   { title: "12 months", value: "365" },
@@ -326,6 +326,7 @@ const CreateGiftCard = () => {
                 value={cardData?.validity}
                 setvalue={setCardData}
               />
+              {/* <div className="gift-card__validity-show">6 Months</div> */}
             </div>
           </div>
         </div>

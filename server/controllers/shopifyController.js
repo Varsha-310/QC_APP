@@ -10,7 +10,6 @@ import crypto from "crypto";
 import { checkWebhooks } from "../helper/custom.js";
 import { createJwt } from "../helper/jwtHelper.js";
 import refundSetting from "../models/refundSetting.js";
-import Jwt from "jsonwebtoken";
 
 
 /**
@@ -131,7 +130,8 @@ export const saveStoreData = async (shopData, shop, accessToken, token) => {
       is_installed: true,
       auth_token : token,
       currency: shopData.shop.currency,
-      myshopify_domain: shopData.shop.myshopify_domain
+      myshopify_domain: shopData.shop.myshopify_domain,
+      domain :shopData.shop.domain
     };
     console.log(data);
     let storeDetails = await store.updateOne(

@@ -46,7 +46,10 @@ const billingHistorySchema = mongoose.Schema({
   invoiceDate: String,
   invoiceUrl: String,
   transaction_id: String,
-  remark: String
+  remark: String,
+  plan_type: {
+    type:String,
+    default:"public"}
 });
 
 export default mongoose.model("BillingHistory", billingHistorySchema);
