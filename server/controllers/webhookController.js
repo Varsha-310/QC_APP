@@ -90,7 +90,7 @@ export const getOrderTransactionDetails = async (
  */
 export const ordercreateEvent = async (shop, order) => {
   try {
-    console.log("Shop Name", shop, order.id);
+    console.log("Shop Name", shop, order);
     const logQuery = {
       store: shop,
       orderId: order.id,
@@ -530,7 +530,7 @@ export const productCreateEvent = async (req, res) => {
 export const handleOrderCreatewebhook = async (req, res) => {
   try {
     const orderData = req.body;
-    console.log(orderData.id);
+    console.log("order update webhook",orderData.id);
 
     const store = req.headers["x-shopify-shop-domain"];
     orderData.store_url = store;
