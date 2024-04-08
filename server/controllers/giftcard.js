@@ -62,7 +62,7 @@ export const createGiftcardProducts = async (req, res) => {
         status: "active",
       },
     };
-    const shopifyAPIURL = `https://${store}/admin/api/2021-10/products.json`;
+    const shopifyAPIURL = `https://${store}/admin/api/${process.env.API_VERSION}/products.json`;
     const shopifyHeaders = {
       "Content-Type": "application/json",
       "X-Shopify-Access-Token": storeData.access_token,
@@ -118,7 +118,7 @@ export const updateGiftcardProduct = async (req, res) => {
     
     const response = await axios({
       method: "PUT",
-      url: `https://${store}/admin/api/2021-10/products/${product_id}.json`,
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${product_id}.json`,
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": storeData.access_token,
@@ -154,13 +154,13 @@ export const deleteGiftcardProducts = async (req, res) => {
   try {
     console.log("deleteGiftcardProducts function start");
     let store = req.token.store_url;
-    const storeData = Store.findOne({ store_url: store });
+    const storeData = await Store.findOne({ store_url: store });
     let { product_id } = req.body;
     console.log(store);
 
     const response = await axios({
       method: "DELETE",
-      url: `https://${store}/admin/api/2021-10/products/${product_id}.json`,
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${product_id}.json`,
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": storeData.access_token,
@@ -247,7 +247,7 @@ const addMetafeild = async (store,token,id,terms)=>{
   try{
     await axios({
       method: "POST",
-      url: `https://${store}/admin/api/2021-10/products/${id}/metafields.json`,
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields.json`,
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": token,
