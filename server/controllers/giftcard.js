@@ -102,10 +102,11 @@ export const updateGiftcardProduct = async (req, res) => {
   try {
     let store = req.token.store_url;
     const storeData = await  Store.findOne({ store_url: store });
-    const productData = await Product.findOne({ id: product_id });
     let { images, title, description, variants, product_id, validity, terms } =
       req.body;
     let updateObj = {};
+    const productData = await Product.findOne({ id: product_id });
+
     //Update only the fields sent in request
     if (images && images.length >= 0) {
       updateObj["images"] = images;
@@ -139,12 +140,15 @@ export const updateGiftcardProduct = async (req, res) => {
     }
     let metafield_id ;
     if(!productData.metafield_id){
-      metafield_id =await  getMetafield(store, token ,id);
+      metafield_id =await  getMetafield(store, storeData.access_token ,product_id);
+      console.log("metafield from api",metafield_id)
+
     }
     else{
       metafield_id = productData.metafield_id;
-      console.log("metafield from db",metafield_id)
+      console.log("metafield from DB",metafield_id)
     }
+  
     await addMetafeild  (store,storeData.access_token,product_id,terms,metafield_id);
     console.log("updating product", updateObj);
 
@@ -265,8 +269,11 @@ const getMetafield = async(store, token ,id) =>{
         "X-Shopify-Access-Token": token,
       }
     })
+    console.log(response.data , "get meta")
     const metafields = response.data.metafields.filter(metafield => metafield.namespace === 'global');
-    return metafields.id;
+    console.log(metafields);
+    await Product.updateOne({id:id}, {metafield_id:metafields[0].id});
+    return metafields[0].id;
 
   }
   catch(err){
@@ -282,11 +289,11 @@ const getMetafield = async(store, token ,id) =>{
  * @param {*} id 
  * @param {*} terms 
  */
-const addMetafeild = async (store,token,id,terms)=>{
+const addMetafeild = async (store,token,id,terms,metafield_id)=>{
   try{
     await axios({
-      method: "POST",
-      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields.json`,
+      method: "PUT",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields/${metafield_id}.json`,
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": token,
@@ -295,7 +302,7 @@ const addMetafeild = async (store,token,id,terms)=>{
         metafield: {
           key: "terms",
           value: terms,
-          type: "string",
+          type: "multi_line_text_field",
           namespace: "global",
         },
       }),
