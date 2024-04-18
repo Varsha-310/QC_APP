@@ -116,7 +116,7 @@ cron.schedule("*/10 * * * * *", () => {
 });
 
 //cron to check webhooks and metafield for stores
-cron.schedule("* * * * *", () => {
+cron.schedule("0 1 * * *", () => {
   console.log("checking webhooks and metafields");
   cronToCheckWebhooks();
 });

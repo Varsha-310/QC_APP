@@ -60,6 +60,10 @@ export const createGiftcardProducts = async (req, res) => {
         tags: tags,
         variants: variants,
         status: "active",
+        metafields:[{"key" : "terms",
+        "value": terms,
+        "type": "multi_line_text_field",
+        "namespace": "global"}]
       },
     };
     const shopifyAPIURL = `https://${store}/admin/api/${process.env.API_VERSION}/products.json`;
@@ -73,7 +77,6 @@ export const createGiftcardProducts = async (req, res) => {
     
 
     const newProduct = response.data.product;
-    await addMetafeild  (store,storeData.access_token,newProduct.id,terms);
 
     const otherData = { validity: validity, terms: terms, store_url: store };
     const createP = {
@@ -99,6 +102,7 @@ export const updateGiftcardProduct = async (req, res) => {
   try {
     let store = req.token.store_url;
     const storeData = await  Store.findOne({ store_url: store });
+    const productData = await Product.findOne({ id: product_id });
     let { images, title, description, variants, product_id, validity, terms } =
       req.body;
     let updateObj = {};
@@ -133,7 +137,15 @@ export const updateGiftcardProduct = async (req, res) => {
     if (terms) {
       updateObj["terms"] = terms;
     }
-    await addMetafeild  (store,storeData.access_token,product_id,terms);
+    let metafield_id ;
+    if(!productData.metafield_id){
+      metafield_id =await  getMetafield(store, token ,id);
+    }
+    else{
+      metafield_id = productData.metafield_id;
+      console.log("metafield from db",metafield_id)
+    }
+    await addMetafeild  (store,storeData.access_token,product_id,terms,metafield_id);
     console.log("updating product", updateObj);
 
     await Product.updateOne({ id: product_id }, updateObj);
@@ -168,7 +180,7 @@ export const deleteGiftcardProducts = async (req, res) => {
     });
 
     console.log("Response from Shopify:", response.data);
-
+    await Product.deleteOne({ id: product_id });
     res.json(respondSuccess("Product deleted in Shopify successfully"));
   } catch (error) {
     console.log(error);
@@ -236,6 +248,33 @@ export const getSelectedGc = async (req, res) => {
   }
 };
 
+/**
+ * get metafield id
+ * @param {*} store 
+ * @param {*} token 
+ * @param {*} id 
+ * @returns 
+ */
+const getMetafield = async(store, token ,id) =>{
+  try{
+    const response = await axios({
+      method: "GET",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields.json`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": token,
+      }
+    })
+    const metafields = response.data.metafields.filter(metafield => metafield.namespace === 'global');
+    return metafields.id;
+
+  }
+  catch(err){
+    console.log(err)
+    return 0;
+
+  }
+}
 /**
  * adding terms and conditions to product metafeild
  * @param {*} store 

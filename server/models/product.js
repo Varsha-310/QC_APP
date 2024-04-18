@@ -17,6 +17,7 @@ var productSchema = mongoose.Schema({
   published_at: { type: Date },
   template_suffix: { type: String },
   tags: { type: Array },
+  metafield_id:{type:Number},
   published_scope: { type: String },
   variants: [
     {
