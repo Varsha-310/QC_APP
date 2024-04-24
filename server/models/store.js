@@ -40,7 +40,12 @@ let storeSchema = mongoose.Schema({
   currency: String,
   myshopify_domain: String,
   domain: String,
-  support_url :String
+  support_url :String,
+  store_type:{ type: String, enum: ["core", "plus"] },
+  wallet_enabled:Boolean,
+  card_config:{ type: String, enum: ["claimCode", "cardPin"] },
+  wallet_linked_to:{ type: String, enum: ["phone", "customer", "mail"] }
+
 });
 
 export default mongoose.model("Store", storeSchema);

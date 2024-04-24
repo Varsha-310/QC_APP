@@ -18,7 +18,7 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
-import {cronToCheckWebhooks} from "./helper/custom.js"
+import {cronToCheckWebhooks,reversePreAuth} from "./helper/custom.js"
 import { createJwt } from "./helper/jwtHelper.js";
 import { fileURLToPath} from "url";
 import { dirname,join } from "path";
@@ -120,6 +120,13 @@ cron.schedule("0 1 * * *", () => {
   console.log("checking webhooks and metafields");
   cronToCheckWebhooks();
 });
+
+// cron reverse pre-auth
+cron.schedule("*/30 * * * *", () => {
+  console.log("reversing pre-auth sessions");
+  reversePreAuth();
+});
+
 
 
 

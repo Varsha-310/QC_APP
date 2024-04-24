@@ -179,3 +179,14 @@ const checkMetafieldDefinition = async (store, access_token) => {
     return 0;
   }
 };
+
+
+export const reversePreAuth = () =>{
+  try{
+
+
+  }
+  catch(err){
+    console.log(err)
+  }
+}
