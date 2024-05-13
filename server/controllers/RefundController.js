@@ -498,6 +498,20 @@ export const handleRefundAction = async (req, res) => {
 	    const trans = [];
         let storeCredit = 0;
 	let refundNotification = false;
+    let gc_id;
+    if(ordersData.payment_gateway_names.includes("gift_card")){
+        let gc_transactions = await getOrderTransactionDetails(
+            orderId,
+            store_url,
+            accessToken
+          );
+          let fetchTransaction = gc_transactions.data.transactions.find(
+            (trans) => trans.gateway == "gift_card"
+          );
+          console.log(JSON.stringify(fetchTransaction));
+          gc_id= fetchTransaction.receipt.gift_card_id
+    }
+
         //process gc reverse transaction
         if(refund_type == "Back-to-Source"){
 	refundNotification = true;
@@ -527,7 +541,12 @@ export const handleRefundAction = async (req, res) => {
                     "parent_id": gc_transaciton.parent_id,
                     "amount": gcRfDetails.gc_rf_amount
                 }); 
-                storeCredit =  gcRfDetails.gc_rf_amount;
+                const giftcardExists = await Wallet.findOne({
+                    shopify_giftcard_id: gc_id,
+                  });
+                  if(giftcardExists){
+                    storeCredit =  gcRfDetails.gc_rf_amount;
+                  }
             }     
             refundSession = await updateRefundLogs(sessionQuery, {  
                 amount: gcRfDetails.refundableAmount,

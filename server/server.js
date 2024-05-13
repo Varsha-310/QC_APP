@@ -124,6 +124,7 @@ mongoose
   })
   .catch((error) => {
     console.log("Error occurred, server can't start", error);
+    throw error;
   });
 
 // Global error handler
