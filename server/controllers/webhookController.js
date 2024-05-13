@@ -152,7 +152,7 @@ export const ordercreateEvent = async (shop, order) => {
 
       //check gc in the order & process
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
-        gc_order.amount = parseFloat(qwikcilver_gift_card.price);
+        gc_order.amount = parseFloat(qwikcilver_gift_cards.price);
         if (newOrder.payment_gateway_names.includes("gift_card")) {
           await orders.updateOne(
             { id: newOrder.id },
