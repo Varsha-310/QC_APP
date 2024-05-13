@@ -500,12 +500,12 @@ export const handleRefundAction = async (req, res) => {
 	let refundNotification = false;
     let gc_id;
         if(ordersData.payment_gateway_names.includes("gift_card")){
-            let transactions = await getOrderTransactionDetails(
+            let gc_transactions = await getOrderTransactionDetails(
                 orderId,
                 store_url,
                 accessToken
               );
-              let fetchTransaction = transactions.data.transactions.find(
+              let fetchTransaction = gc_transactions.data.transactions.find(
                 (trans) => trans.gateway == "gift_card"
               );
               console.log(JSON.stringify(fetchTransaction));

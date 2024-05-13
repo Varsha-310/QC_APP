@@ -456,6 +456,9 @@ export const ordercreateEvent = async (shop, order) => {
           }
         } else {
           console.log("Wallet not found", checkAmount);
+          if(!checkAmount.error.msg == "Wallet Not Found"){
+            await orderCancel(order, shop, "Missmatch: User Account & Wallet");
+          }
           await OrderCreateEventLog.updateOne(
             logQuery,
             { redeem: checkAmount, numberOfRetried },
