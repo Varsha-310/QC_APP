@@ -1,4 +1,3 @@
-import { getShopifyObject } from "../helper/shopify.js";
 import Product from "../models/product.js";
 import {
   respondInternalServerError,
@@ -38,30 +37,46 @@ export const createGiftcardProducts = async (req, res) => {
     let store = req.token.store_url;
     let { description, title, images, variants, validity, terms } = req.body;
     console.log(store);
-    let shopify = await getShopifyObject(store);
     console.log("createGiftcardProducts test1");
     let tags = "qc_giftcard";
     console.log("createGiftcardProducts shopify call start");
     console.log("Body shopify");
-
+    const storeData = await Store.findOne({ store_url: store });
     for (let i = 0; i < variants.length; i++) {
       variants[i]["taxable"] = false;
       variants[i]["inventory_policy"] = "deny";
       variants[i]["inventory_management"] = null;
       variants[i]["requires_shipping"] = false;
     }
-    let newProduct = await shopify.product.create({
+    const productData = {
       // Create a product in Shopify with the details sent in API
-      title: title,
-      template_suffix: "gift-card",
-      body_html: description,
-      terms,
-      product_type: "qwikcilver_gift_card", //The product type is hardcode. This will be used to detect the product later
-      images: images,
-      tags: tags,
-      variants: variants,
-      status: "active",
+      product: {
+        title: title,
+        template_suffix: "gift-card",
+        body_html: description,
+        product_type: "qwikcilver_gift_card",
+        images: images,
+        tags: tags,
+        variants: variants,
+        status: "active",
+        metafields:[{"key" : "terms",
+        "value": terms,
+        "type": "multi_line_text_field",
+        "namespace": "global"}]
+      },
+    };
+    const shopifyAPIURL = `https://${store}/admin/api/${process.env.API_VERSION}/products.json`;
+    const shopifyHeaders = {
+      "Content-Type": "application/json",
+      "X-Shopify-Access-Token": storeData.access_token,
+    };
+    const response = await axios.post(shopifyAPIURL, productData, {
+      headers: shopifyHeaders,
     });
+    
+
+    const newProduct = response.data.product;
+
     const otherData = { validity: validity, terms: terms, store_url: store };
     const createP = {
       ...newProduct,
@@ -85,10 +100,12 @@ export const createGiftcardProducts = async (req, res) => {
 export const updateGiftcardProduct = async (req, res) => {
   try {
     let store = req.token.store_url;
+    const storeData = await  Store.findOne({ store_url: store });
     let { images, title, description, variants, product_id, validity, terms } =
       req.body;
-    let shopify = await getShopifyObject(store); // Get Shopify Object
     let updateObj = {};
+    const productData = await Product.findOne({ id: product_id });
+
     //Update only the fields sent in request
     if (images && images.length >= 0) {
       updateObj["images"] = images;
@@ -102,19 +119,40 @@ export const updateGiftcardProduct = async (req, res) => {
     if (variants) {
       updateObj["variants"] = variants;
     }
-   let updatedProduct = await shopify.product.update(product_id, updateObj);
-
+    
+    const response = await axios({
+      method: "PUT",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${product_id}.json`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": storeData.access_token,
+      },
+      data: {
+        product: updateObj,
+      },
+    });
     if (validity) {
       updateObj["validity"] = validity;
     }
     if (terms) {
       updateObj["terms"] = terms;
     }
-     console.log("updating product",updateObj);
-    
-    await Product.updateOne({ id: product_id }, updateObj );
+    let metafield_id ;
+    if(!productData.metafield_id){
+      metafield_id =await  getMetafield(store, storeData.access_token ,product_id);
+      console.log("metafield from api",metafield_id)
 
-    console.log(updatedProduct);
+    }
+    else{
+      metafield_id = productData.metafield_id;
+      console.log("metafield from DB",metafield_id)
+    }
+  
+    await addMetafeild  (store,storeData.access_token,product_id,terms,metafield_id);
+    console.log("updating product", updateObj);
+
+    await Product.updateOne({ id: product_id }, updateObj);
+
     res.json(respondSuccess("Product updated in shopify successfully"));
   } catch (error) {
     console.log(error);
@@ -131,19 +169,28 @@ export const deleteGiftcardProducts = async (req, res) => {
   try {
     console.log("deleteGiftcardProducts function start");
     let store = req.token.store_url;
+    const storeData = await Store.findOne({ store_url: store });
     let { product_id } = req.body;
     console.log(store);
-    let shopify = await getShopifyObject(store); //Get Shopify Object
 
-    let newProduct = await shopify.product.delete(product_id);
+    const response = await axios({
+      method: "DELETE",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${product_id}.json`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": storeData.access_token,
+      },
+    });
+
+    console.log("Response from Shopify:", response.data);
     await Product.deleteOne({ id: product_id });
-    console.log(newProduct);
-    res.json(respondSuccess("Product deleted in shopify successfully"));
+    res.json(respondSuccess("Product deleted in Shopify successfully"));
   } catch (error) {
     console.log(error);
     res.json(respondInternalServerError());
   }
 };
+
 /**
  * To fetch giftcard products
  * @param {*} req
@@ -204,6 +251,68 @@ export const getSelectedGc = async (req, res) => {
     res.json(respondInternalServerError());
   }
 };
+
+/**
+ * get metafield id
+ * @param {*} store 
+ * @param {*} token 
+ * @param {*} id 
+ * @returns 
+ */
+const getMetafield = async(store, token ,id) =>{
+  try{
+    const response = await axios({
+      method: "GET",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields.json`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": token,
+      }
+    })
+    console.log(response.data , "get meta")
+    const metafields = response.data.metafields.filter(metafield => metafield.namespace === 'global');
+    console.log(metafields);
+    await Product.updateOne({id:id}, {metafield_id:metafields[0].id});
+    return metafields[0].id;
+
+  }
+  catch(err){
+    console.log(err)
+    return 0;
+
+  }
+}
+/**
+ * adding terms and conditions to product metafeild
+ * @param {*} store 
+ * @param {*} token 
+ * @param {*} id 
+ * @param {*} terms 
+ */
+const addMetafeild = async (store,token,id,terms,metafield_id)=>{
+  try{
+    await axios({
+      method: "PUT",
+      url: `https://${store}/admin/api/${process.env.API_VERSION}/products/${id}/metafields/${metafield_id}.json`,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": token,
+      },
+      data: JSON.stringify({
+        metafield: {
+          key: "terms",
+          value: terms,
+          type: "multi_line_text_field",
+          namespace: "global",
+        },
+      }),
+    });
+
+  }
+  catch(err){
+    console.log(err)
+  }
+}
 
 /**
  * adding giftcard to wallet
