@@ -129,7 +129,7 @@ export const payuPayment = async (req, res) => {
  * @returns
  */
 export const failurePayment = async (req, res) => {
-  return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful`);
+  return res.redirect(`${process.env.CLIENT_URL}/payment-unsuccessful`);
 };
 
 /**
