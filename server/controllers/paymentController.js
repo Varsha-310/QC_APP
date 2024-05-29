@@ -60,7 +60,7 @@ export const create = async (req, res) => {
       phone: storeData.phone,
     };
     let billingData = {
-      billing_amount: totalAmount,
+      billing_amount: Math.round(totalAmount),
       billing_start_date: date,
       billing_currency: "INR",
       billing_cycle: "ADHOC",
