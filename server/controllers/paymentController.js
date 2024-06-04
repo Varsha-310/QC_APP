@@ -44,6 +44,7 @@ export const create = async (req, res) => {
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays, dailyRate, calculatedPayment);
     let myDate = new Date();
+    myDate.setDate(myDate.getDate()+2);
     const date = myDate.toISOString().slice(0, 10);
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst);
