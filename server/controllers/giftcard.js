@@ -347,6 +347,10 @@ export const addGiftcard = async (req, res) => {
           logs: logs,
         });
         console.log((logs) , "logs of  update wallet");
+
+        if (gcToWallet.status === 403) {
+          return res.json(respondForbidden("Card has already been added to wallet"));
+        }
         if(gcToWallet.activate.resp?.Cards[0]?.ResponseCode === 10299){
           return res.json(respondForbidden("Invalid card credentials"));
         }
@@ -399,6 +403,13 @@ export const addGiftcardtoWallet = async (
   let customer_wallet_id;
 
   try {
+    const cardAlredyAdded = await wallet_history.findOne({
+      "transactions.gc_pin": gc_pin,
+    });
+    let cardNumber = gc_number;
+    if (cardAlredyAdded) {
+      return { status: 403 };
+    } else {
       const getStoreDetails = await Store.findOne({ store_url: store });
       // activate Giftcard
       let activatedCardLog = logs?.activate?.status
@@ -550,7 +561,7 @@ export const addGiftcardtoWallet = async (
         },
         { upsert: true }
       );
-    
+    }
     logs["status"] = true;
     return logs;
   } catch (err) {
