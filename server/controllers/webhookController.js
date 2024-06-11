@@ -394,10 +394,8 @@ export const ordercreateEvent = async (shop, order) => {
                   shop,
                   newOrder.customer.id,
                   giftCardDetails.CardPin,
-                  giftCardDetails.Balance,
                   type,
                   newOrder.id,
-                  giftCardDetails.ExpiryDate,
 		              OrderSession?.self?.wallet,
                  
                 );

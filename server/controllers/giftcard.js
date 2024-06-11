@@ -320,34 +320,25 @@ const addMetafeild = async (store,token,id,terms,metafield_id)=>{
  * @param {*} res
  */
 export const addGiftcard = async (req, res) => {
-  console.log(req.body);
-  let gcToWallet = {};
-  let logs = {};
-  let { store, customer_id, gc_pin } = req.body;
-  let storeExists = await Store.findOne({ $or: [
-    {store_url: store},
-    {domain: store},
-], });
-  let validPin;
-  const type = "giftcard";
-
   try {
-    validPin = await qc_gc.findOne({ gc_pin: gc_pin });
-    console.log("Pin validated", validPin);
-    if (validPin) {
-      const presentTime = new Date(Date.now());
-      console.log(validPin.expiry_date, presentTime);
-      if (validPin.expiry_date < presentTime) {
-        res.json(respondForbidden("card is expired !"));
-      } else {
+        console.log(req.body);
+        let gcToWallet = {};
+        let logs = {};
+        let { store, customer_id, gc_pin } = req.body;
+        let storeExists = await Store.findOne({ $or: [
+          {store_url: store},
+          {domain: store},
+          ], });
+        const type = "giftcard";
+        const order_id = `ORD-${customer_id}`
+        
+
         gcToWallet = await addGiftcardtoWallet(
           storeExists.store_url,
           customer_id,
           gc_pin,
-          validPin.balance,
           type,
-          validPin.order_id,
-          validPin.expiry_date,
+          order_id,
           logs
         );
 
@@ -359,28 +350,32 @@ export const addGiftcard = async (req, res) => {
             respondForbidden("card has been already added to wallet")
           );
         }
-        if (gcToWallet.updateW.resp.ResponseCode == "0") {
-          res.json({
+        if(gcToWallet.activate.resp?.Cards[0]?.ResponseCode === 10299){
+          return res.json(respondForbidden("Invalid card credentials"));
+        }
+        if (gcToWallet.updateW.resp.ResponseCode === 0) {
+          return res.json({
             ...respondWithData("card has been added to wallet"),
           });
         }
-	  if (gcToWallet.updateW.resp.ResponseCode == "10551") {
-          res.json(respondForbidden("Wallet deactivated !"));
+        if(gcToWallet.updateW.resp?.Cards[0]?.PaymentInstruments[0]?.ResponseCode === 10001 ) {
+          return res.json(respondForbidden("Card is expired!"));
+        }
+        if (gcToWallet.updateW.resp.ResponseCode === 10551) {
+              res.json(respondForbidden("Wallet deactivated !"));
         } else {
-          res.json(
-            respondInternalServerError(
-              "Something went wrong try after sometime"
-            )
+          return res.json(
+          respondInternalServerError(
+          "Something went wrong try after sometime"
+          )
           );
         }
-      }
-    } else {
-      res.json(respondForbidden("invalid card credentials"));
-    }
+      
+   
   } catch (err) {
     console.log(err);
 
-    res.json(respondInternalServerError());
+    return res.json(respondInternalServerError());
   }
 };
 
@@ -393,10 +388,8 @@ export const addGiftcardtoWallet = async (
   store,
   customer_id,
   gc_pin,
-  amount,
   type,
   order_id,
-  expiry_date,
   logs = {},
   
 ) => {
@@ -492,7 +485,7 @@ export const addGiftcardtoWallet = async (
         const createShopifyGC = await createShopifyGiftcard(
           store,
           getStoreDetails.access_token,
-          amount
+          logs["updateW"].resp.Cards[0].PaymentInstruments[0].Balance
         );
         await Wallet.updateOne(
           {
@@ -505,7 +498,8 @@ export const addGiftcardtoWallet = async (
             shopify_giftcard_id: createShopifyGC.id,
             shopify_giftcard_pin: createShopifyGC.code,
             balance:
-              parseFloat(walletDetails?.balance || 0) + parseFloat(amount),
+              parseFloat(walletDetails?.balance || 0) + parseFloat(          logs["updateW"].resp.Cards[0].PaymentInstruments[0].Balance
+            ),
           },
           {
             upsert: true,
@@ -516,7 +510,7 @@ export const addGiftcardtoWallet = async (
           store,
           getStoreDetails.access_token,
           walletDetails?.shopify_giftcard_id,
-          amount
+          logs["updateW"].resp.Cards[0].PaymentInstruments[0].Balance
         );
         await Wallet.updateOne(
           {
@@ -525,7 +519,8 @@ export const addGiftcardtoWallet = async (
           },
           {
             balance:
-              parseFloat(walletDetails?.balance || 0) + parseFloat(amount),
+              parseFloat(walletDetails?.balance || 0) + parseFloat(          logs["updateW"].resp.Cards[0].PaymentInstruments[0].Balance
+            ),
           },
           {
             upsert: true,
@@ -548,8 +543,8 @@ export const addGiftcardtoWallet = async (
           $push: {
             transactions: {
               transaction_type: "credit",
-              amount: amount,
-              expires_at:expiry_date,
+              amount: Math.trunc(logs["updateW"].resp.Cards[0].PaymentInstruments[0].Balance),
+              expires_at:logs["updateW"].resp.Cards[0].PaymentInstruments[0].ExpiryDate,
               transaction_date: Date.now(),
               gc_pin :gc_pin,
               type: type,
