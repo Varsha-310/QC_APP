@@ -406,7 +406,6 @@ export const addGiftcardtoWallet = async (
     const cardAlredyAdded = await wallet_history.findOne({
       "transactions.gc_pin": gc_pin,
     });
-    let cardNumber = gc_number;
     if (cardAlredyAdded) {
       return { status: 403 };
     } else {
