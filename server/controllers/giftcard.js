@@ -891,29 +891,37 @@ export const giftCardOrders = async (req, res) => {
  */
 export const walletTransaction = async (req, res) => {
   try {
-    const { store, customer_id } = req.body;
-    console.log(store, customer_id);
-    const history = await wallet_history
-      .findOne({ customer_id: customer_id })
-      .select("-transactions.gc_pin");
-    console.log("History Length: ", history);
+    const { store, customer_id,page } = req.body;
+    let limit = 20;
+    let skip = (page - 1 ) * limit;
+
+    let history = await wallet_history.aggregate([
+      {$match:{customer_id}},
+      {$project:{transactions:1,_id:0}},
+      { $unwind: "$transactions" },
+      { $sort: { "transactions.transaction_date": -1 } },
+      {$skip:skip},
+      {$limit:limit}
+     ]).exec()
+
+     
+
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
     } else {
-let transactions = history.transactions
-      for(let i=0;i<transactions.length; i++){
-	if(transactions[i].expires_at){
-        const convertedDate = new Date(transactions[i].expires_at);
+      history = history.map(trans => trans.transactions)
+      for(let i=0;i<history.length; i++){
+	if(history[i].expires_at){
+        const convertedDate = new Date(history[i].expires_at);
         console.log(convertedDate , "convert")
         convertedDate.setUTCHours(convertedDate.getUTCHours() + 5, convertedDate.getUTCMinutes() + 30);
-        transactions[i].expires_at = convertedDate.toISOString();
+        history[i].expires_at = convertedDate.toISOString();
       }
 	}
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
-          balance: 0,
-          transactions: transactions.reverse(),
+          transactions: history,
         },
       });
     }
@@ -940,6 +948,7 @@ export const giftCardAmount = async (storeUrl, id, customer_id) => {
       (trans) => trans.gateway == "gift_card"
     );
     console.log(JSON.stringify(fetchTransaction));
+    console.log(fetchTransaction.receipt.gift_card_id,customer_id)
     const giftcardExists = await wallet.findOne({
       shopify_giftcard_id: fetchTransaction.receipt.gift_card_id,
       shopify_customer_id: customer_id,
