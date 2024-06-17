@@ -907,15 +907,27 @@ export const giftCardOrders = async (req, res) => {
 export const walletTransaction = async (req, res) => {
   try {
     const { store, customer_id } = req.body;
-    console.log(store, customer_id);
-    const history = await wallet_history
+    const page = req.query.page
+    let limit = 20;
+     let history = await wallet_history
       .findOne({ customer_id: customer_id })
       .select("-transactions.gc_pin");
-    console.log("History Length: ", history);
+      const paginateTransactions = (transactions, page, limit) => {
+        const startIndex = (page - 1) * limit;
+        return transactions.slice(startIndex, startIndex + limit);
+      };
+      
+      const transactions = history.transactions; // Extract transactions array from your document
+      const totalPages = Math.ceil(transactions.length / limit);
+      const currentPage = page > totalPages ? totalPages : page;
+      
+      const paginatedTransactions = paginateTransactions(transactions, currentPage, limit);
+     
+     console.log(paginatedTransactions  , "history of transaction")
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
     } else {
-      let transactions = history.transactions;
+      let transactions = paginatedTransactions;
       for (let i = 0; i < transactions.length; i++) {
         if (transactions[i].expires_at) {
           const convertedDate = new Date(transactions[i].expires_at);
@@ -927,11 +939,14 @@ export const walletTransaction = async (req, res) => {
           transactions[i].expires_at = convertedDate.toISOString();
         }
       }
+      
       res.json({
         ...respondWithData("fetched wallet transaction"),
         data: {
-          balance: 0,
-          transactions: transactions.reverse(),
+          transactions: paginatedTransactions.reverse(),
+          totalCount:history.transactions.length,
+          page:parseInt(page),
+          pageCount:paginatedTransactions.length
         },
       });
     }
