@@ -17,7 +17,7 @@ console.log(planData,planSelected)
 if(planSelected.plan != null){
     res.json({
       ...respondWithData("plan list is fetched successfully"),
-      data: { plans: planData, selectedPlan: planSelected.plan.plan_name },
+      data: { plans: planData, selectedPlan: planSelected.plan.plan_name,currentPrice:planSelected?.plan?.price },
     });
 }
 else{

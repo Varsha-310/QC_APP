@@ -161,9 +161,15 @@ const updateBillingHistory = async (data) => {
     { upsert: true }
   );
   console.log(updateBilling);
+ let planData = await plan.findOne({plan_name:data.lastname});
+ let price;
+ if(planData){
+  price = planData.price;
+ }
+
   await store.updateOne(
     { store_url: data.productinfo },
-    { $set: { "plan.plan_name": data.lastname }, mandate:data }
+    { $set: { "plan.plan_name": data.lastname,"plan.price":price}, mandate:data }
   );
   const billingData = await BillingHistory.findOne({
     transaction_id: data.txnid,

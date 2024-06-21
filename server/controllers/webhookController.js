@@ -734,7 +734,7 @@ export const failedOrders = async () => {
             reverse = await reverseCreateGiftcard(
             iterator.store,
             iterator.self.createGC.req,
-            iterator.self.createGC?.resp.TransactionId || iterator.self.createGC.error.TransactionId
+            iterator.self.createGC?.resp?.TransactionId || iterator?.self?.createGC?.error?.TransactionId
 
           );
         } else {

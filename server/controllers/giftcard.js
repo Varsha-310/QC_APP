@@ -904,7 +904,10 @@ export const walletTransaction = async (req, res) => {
       {$limit:limit}
      ]).exec()
 
-     
+     let totalElementsCount =  await wallet_history.aggregate([
+      {$match:{customer_id}},
+      {$project:{count:{$size:"$transactions"},_id:0}}
+     ])
 
     if (history == null) {
       res.json(respondNotFound("wallet does not exists"));
@@ -922,6 +925,9 @@ export const walletTransaction = async (req, res) => {
         ...respondWithData("fetched wallet transaction"),
         data: {
           transactions: history,
+          totalCount:totalElementsCount[0]?.count,
+          countInPage:history.length
+          
         },
       });
     }
@@ -944,13 +950,17 @@ export const giftCardAmount = async (storeUrl, id, customer_id) => {
       storeUrl,
       storeData.access_token
     );
-    let fetchTransaction = transactions.data.transactions.find(
-      (trans) => trans.gateway == "gift_card"
+    let fetchTransaction = transactions.data.transactions.map(
+      (trans) => {
+        if(trans.gateway == "gift_card"){
+          return trans.receipt.gift_card_id
+        }}
     );
-    console.log(JSON.stringify(fetchTransaction));
+    
+    console.log(JSON.stringify("============>",fetchTransaction));
     console.log(fetchTransaction.receipt.gift_card_id,customer_id)
     const giftcardExists = await wallet.findOne({
-      shopify_giftcard_id: fetchTransaction.receipt.gift_card_id,
+      shopify_giftcard_id: {$in:fetchTransaction},
       shopify_customer_id: customer_id,
     });
     if (giftcardExists) {
@@ -1229,3 +1239,7 @@ export const refundAsStoreCredit = async (
     return logs;
   }
 };
+
+
+
+
