@@ -957,14 +957,13 @@ export const giftCardAmount = async (storeUrl, id, customer_id) => {
         }}
     );
     
-    console.log(JSON.stringify("============>",fetchTransaction));
-    console.log(fetchTransaction.receipt.gift_card_id,customer_id)
     const giftcardExists = await wallet.findOne({
       shopify_giftcard_id: {$in:fetchTransaction},
       shopify_customer_id: customer_id,
     });
     if (giftcardExists) {
-      const redeemAmount = fetchTransaction.amount;
+      const QCGcard = transactions.data.transactions.find(qc => qc.receipt.gift_card_id == giftcardExists?.shopify_giftcard_id);
+      const redeemAmount = QCGcard.amount;
       return {
         error: false,
         amount: redeemAmount,
