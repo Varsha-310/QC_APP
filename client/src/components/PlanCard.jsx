@@ -15,7 +15,7 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan, amountPaid }) => {
 
       <div className="plan-card-title">{plan?.plan_name}</div>
       <div className="plan-card-price">
-        ₹ {amountPaid ? amountPaid : plan?.price} / month
+        ₹ {amountPaid ? amountPaid : plan?.price}
 
         <span>/Month</span>
         <div className="plan-card-gst">+GST</div>

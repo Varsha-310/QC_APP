@@ -58,7 +58,7 @@ const AccountPage = () => {
               plan={planData?.data?.plans.find(
                 (item) =>
                   item.plan_name.toLowerCase() ===
-                  planData.data.selectedPlan.toLowerCase()
+                  planData.data.selectedPlan?.toLowerCase()
               )}
               active={false}
               // popular={}

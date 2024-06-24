@@ -162,7 +162,7 @@ const TermsConditions = () => {
               <li>This Plan will not be applicable in case Pine Labs and the Merchant enter into a separate commercial agreement with custom pricing for the issuance of gift cards and refund cards.</li>
             </ol>
             <div className="price-plans-image">
-              <img src={PricePlans} alt="" loading="lazy" />
+              <img src={PricePlans} alt="" />
             </div>
             <h2 className="text-center">Roles & Responsibilities</h2>
             <h3 className="text-center">Merchant’s Roles & Responsibilities</h3>
