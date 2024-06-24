@@ -63,6 +63,7 @@ const AccountPage = () => {
               active={false}
               // popular={}
               btnText={""}
+              amountPaid={planData?.data?.currentPrice}
             />
           ) : (
             "No Active Plan"
