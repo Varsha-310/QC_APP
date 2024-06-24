@@ -161,7 +161,7 @@ export const getShopifyStoreData = async (shop, accessToken, res) => {
     let API_VERSION = process.env.API_VERSION;
     const shopOption = {
       method: "GET",
-      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code,myshopify_domain`,
+      url: `https://${shop}/admin/api/${API_VERSION}/shop.json?fields=name,id,email,city,country_code,myshopify_domain,domain`,
       headers: {
         "X-Shopify-Access-Token": accessToken,
       },

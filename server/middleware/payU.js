@@ -45,7 +45,7 @@ const createPayload = (storeData, billingData, amount) => {
     key: process.env.payukey,
     api_version: 7,
     txnid: `REC${Date.now() + Math.random().toString(10).slice(2, 8)}`,
-    amount: amount,
+    amount: Math.round(amount),
     productinfo: storeData.store_url,
     firstname: storeData.firstname,
     email: storeData.email,
@@ -54,7 +54,8 @@ const createPayload = (storeData, billingData, amount) => {
     surl: `${process.env.APP_URL}/payment/payu/success`,
     furl: `${process.env.APP_URL}/payment/payu/fail`,
     si: 1,
-    si_details:`{"billingAmount":${billingData.billing_amount},"billingCurrency":"INR","billingCycle":${billingData.billing_cycle},"billingInterval":"1","paymentStartDate":${billingData.billing_start_date},"paymentEndDate":"2122-09-01"}`,
+   free_trial :1,
+    si_details:`{"billingAmount":${billingData.billing_amount},"billingCurrency":"INR","billingCycle":"${billingData.billing_cycle}","billingInterval":"1","paymentStartDate":"${billingData.billing_start_date}","paymentEndDate":"2034-09-01"}`,
   };
   return payload;
 };

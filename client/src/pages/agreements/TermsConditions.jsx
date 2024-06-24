@@ -1,297 +1,212 @@
 import "./styles/Agreement.css";
 import useScrollTop from "../../hooks/useScrollTop";
+import PricePlans from "../../assets/images/pricePlans.jpg"
 
 const TermsConditions = () => {
   useScrollTop();
   return (
     <div className="component">
       <div className="section-box-container">
-        <div className="section-box-title">TERMS AND CONDITIONS</div>
+        <div className="section-box-title">TERMS AND CONDITIONS GOVERNING THE QWIKCILVER APP GIFT CARD PROCESSING SERVICES</div>
       </div>
       <div className="agreement-component">
-        <h2>A. General</h2>
-        <p>
-          <a href="https://www.qwikcilver.com">www.qwikcilver.com</a> is an
-          Internet based portal owned and operated by Pine Labs Pvt Ltd company
-          incorporated under the laws of India, having its registered office at
-          Pine Labs Private Limited, 207, Gupta Arcade, L.S.C. Plot No. 5, Mayur
-          Vihar Phase-I Extension, New Delhi-110091, India. Use of the Website
-          is offered to you conditioned on acceptance of all the terms,
-          conditions and notices contained in these Terms, along with any
-          amendments made by Pine Labs at its sole discretion and posted on the
-          Website.
-        </p>
+        <div className="agreement-component_content">
+          <div>
+            <ol type="1">
+              <li>The Merchant Issuer is desirous of issuing the Gift card and launching the
+                  gift card program by leveraging the technical capabilities and services of
+                  Pine Labs. This Agreement describes the framework upon which Pine Labs
+                  has agreed to offer (i) its gift card solutions (<b>“gift cards”</b>), to the Merchant
+                  (<b>“Merchant Issuer”</b>). The specifications, scope and the manner in which
+                  the solutions will be provided are set out in <b>Annexure A</b> hereto (“Project”).
+              </li>
+              <li>
+                  The products covered by this Agreement consist of the gift cards, software
+                  applications and other devices, if any, provided by Pine Labs for the
+                  purposes of the Project.
+              </li>
+              <li>
+                  The commercial terms agreed by the parties for the purposes of the Project
+                  are set out in <b>Annexure B</b> hereto.
+              </li>
+              <li>
+                  The primary responsibilities of the Merchant Issuer are set out in Annexure
+                  C hereto. Each Party will designate a representative to act as the primary
+                  point- of-contact for the purposes of this Agreement.
+              </li>
+              <li>
+                  Subject to the limitation of liability, each party shall indemnify, defend and
+                  hold harmless the other from and against any and all direct damages,
+                  liability, losses, costs and expenses (including reasonable attorneys’ fees)
+                  relating to or arising out of the breach of this Agreement, the negligence or
+                  willful misconduct of either party, or its employees or agents.
+              </li>
+              <li>
+                  Pine Labs shall endeavor to ensure that its products and services meet the
+                  specifications set out herein in all material aspects, at the time of
+                  implementation. If the Merchant Issuer is of the opinion that Pine Labs
+                  products or services do not conform to the specifications set out herein,
+                  Pine Labs will use commercially reasonable efforts to correct or remedy
+                  such non-conformance.
+              </li>
+              <li>
+                  For the avoidance of doubt, it is hereby clarified that the Merchant Issuer
+                  shall, at all times, be the issuer under law, of the gift cards issued under
+                  this Agreement. Pine Labs shall be the technology partner powering the gift
+                  card program, under instructions from the Merchant Issuer. Pine Labs
+                  products and services are provided on an “as is” basis. Except as
+                  expressly stated in Clause 6, Pine Labs hereby disclaims all express and
+                  implied warranties, including, without limitation, any implied warrantiesof
+                  merchantability and fitness for a particular purpose.
+              </li>
+              <li>
+                  <b>Confidentiality:</b> Each party shall treat all data and information including
+                  the commercial terms and the terms and conditions agreed between the
+                  parties hereunder (including Cardholder information), (<b>&quot;Confidential
+                    Information&quot;</b>), disclosed to it or which comes into its possession or
+                  knowledge in connection with this arrangement as confidential. Further, the
+                  Merchant Issuer hereby agrees Pine Labs may use the personal
+                  information of the Merchant Issuer in any marketing or promotional
+                  activities associated with the Project at any time during the term of this
+                  Agreement.
+              </li>
+              <li>
+                  Notwithstanding anything stated in this arrangement, both parties agree
+                  that all proprietary intellectual property including, software, computer
+                  programs and systems generated by Pine Labs, on the server/systems of
+                  Pine Labs in relation to this arrangement, shall be the sole and exclusive
+                  property of Pine Labs.
+              </li>
+              <li>
+                  Merchant Issuer will not and will not permit others to: (i) copy, adapt, alter,
+                  modify, merge or create derivative works of Pine Labs software
+                  applications; (ii) reverse-engineer, disassemble, or decompile Pine Labs
+                  software applications or otherwise attempt to determine its underlying
+                  source code; or (iii) sell, lease, sublicense or provide any portion of Pine
+                  Labs’ software applications to any third party.
+              </li>
+              <li>
+                  While data/information relating to Merchant Issuer such as name, address,
+                  trademark, logo etc.(Merchant Issuer Data) is the exclusive property of
+                  Customer, Pine Labs is authorized to have legal and physical access to
+                  and make use of all such Merchant Issuer Data for purpose of performing
+                  the Services provided by Pine Labs through its Distribution channels and
+                  social media to facilitate sale of Merchant Gift Card and for purposes of
+                  data analysis and marketing in accordance with Pine Labs Privacy Policy. .
+                  Pine Labs and Qwikcilver are Trademarks owned and operated by Pine
+                  Labs Private Limited.
+              </li>
+              <li>
+                Upon termination or expiration of this Agreement: (i) any and all payment obligations of Merchant Issuer that have accrued shall become immediately due and payable; (ii) products issued prior to termination shall continue to be valid till the expiry of the product and the parties shall fulfill their respective obligations with respect to those Cards as if the arrangement is not terminated; (iii) Merchant Issuer shall promptly return to Pine Labs, its confidential information, software applications and all materials provided pursuant to this Agreement; (iv) Merchant Issuer shall uninstall Pine Labs software applications installed on its systems; and (v) Pine Labs will provide to the Merchant Issuer, an updated MIS setting out the details of all transactions undertaken by the customers of the Merchant Issuer, upto the effective date of termination of this Agreement.
+              </li>
+              <li>
+                <b>Dispute Resolution:</b> Any and all disputes arising from this agreement shall be resolved through arbitration by a single arbitrator appointed by mutual agreement of the Parties, in accordance with the Arbitration and Conciliation Act, 1996.
+              </li>
+              <li>
+                <b>Governing Law and Jurisdiction:</b> This Agreement shall be governed by the laws of India. Subject to Clause 14 above, nothing contained in this clause will preclude either party from applying for and obtaining any injunctive, prohibitory or other similar urgent or interim relief from a competent court of law, for which the courts at Delhi shall have exclusive jurisdiction.
+              </li>
+              <li>
+                <b>Notices:</b> Any notices, requests and other communications required or permitted hereunder shall be in writing and shall be given by hand against written acknowledgement or receipt, or sent by registered mail, followed by a confirmation letter by registered mail, at or to each of the parties at the addresses set forth herein above.
+              </li>
+              <li>
+                <b>Amendments:</b> This Agreement can be modified, supplement or amended only by written agreement executed by both parties.
+              </li>
+            </ol>
+          </div>
+          <div>
+            <h1>ANNEXURE A</h1>
+            <h1>PROJECT AND SCOPE OF SERVICE</h1>
+            <h2>A: For Launching and Managing the Gift Card Program</h2>
+            <p>Pine Labs will provide the services to the Client to launch and manage the Gift Card Program on SaaS model.</p>
+            <p>As part of the overall solution to the Client, Pine Labs will provide the following services:</p>
+            <ol type="1">
+              <li>Will provide software for transaction initiation or redemption of cards at merchant’s online store.</li>
+              <li>Will setup gift card programs on Pine Labs server based on agreed program requirements with the Client;</li>
+              <li>Host and manage Pine Labs transaction processing server on the internet;</li>
+              <li>Manage all server-side maintenance, database back-ups and all regular management activities;</li>
+              <li>Authorize all Gift card transactions and capture transaction data for tracking, reconciliation, and reporting;</li>
+              <li>Provide a standard set of MIS reports for program tracking and settlement.</li>
+            </ol>
 
-        <h2>B. Communication</h2>
-        <p>
-          Pine Labs may use the information submitted by you to respond to any
-          queries raised by you pursuant to your use and access to the Website.
-          We may also use this information to send you e-mails and SMS for
-          administrative and marketing purposes, through its servers and
-          systems; or through third party e-mail or SMS service providers. User
-          can unsubscribe/opt-out from our communications sent on SMS and email
-          anytime:
-        </p>
-        <ol>
-          <li>
-            Please email us at{" "}
-            <a href="mailto:info@qwikcilver.com">info@qwikcilver.com</a> to
-            unsubscribe from SMS or E-mail;
-          </li>
-          <li>
-            User can also un-subscribe from emails, by clicking the "Unsubscribe
-            URL" mentioned in the footer of the emails.
-          </li>
-        </ol>
+            <h2>B: Process for Issuance of gift cards from Merchant Website:</h2>
+            <ol type="1">
+              <li>Merchant should download the Pine Labs Plugin (also called Qwikcilver app) from Shopify App store and complete the KYC and onboarding processes.</li>
+              <li>Once Merchant is onboarded to Pine Labs platform, the merchant will be able to list Gift cards as a salable SKU on Merchant website.</li>
+              <li>Customer selects the quantity and denomination and makes payment via Payment gateway.</li>
+              <li>Upon successful payment processing, the customer gets the digital card which will have a 16-digit card number and separate 14-digit pin via email.</li>
+            </ol>
 
-        <h2>C. Functionalities Offered</h2>
-        <p>
-          This Website is an information gateway to our business model including
-          the products and services that we extend to the Users.
-        </p>
+            <h2>C: Process for Issuance of Refund Cards from Merchant Website:</h2>
+            <ol type="1">
+              <li>Merchant should download the Pine Labs Plugin from Shopify App store and complete the KYC and onboarding processes.</li>
+              <li>Once Merchant is onboarded to Pine Labs platform, the merchant will be able to Issue Refund Cards (also called Store-Credits) using the plugin’s refund dashboard.</li>
+            </ol>
 
-        <h2>D. Privacy Policy</h2>
-        <p>
-          You hereby understand and agree that you have read and fully
-          understood the Privacy Policy of Pine Labs set out
-          <a href="https://www.qwikcilver.com/privacy-policy/">here</a>.
-        </p>
-
-        <h2>E. User Obligations</h2>
-        <p>
-          You agree and undertake to use the Website only to access information
-          regarding Pine Labs including the products and services provided by
-          us. By way of example, and not as a limitation, you agree and
-          undertake that when using the Website, you will not:
-        </p>
-        <ol>
-          <li>
-            Modify, alter or otherwise make any derivative uses of our content,
-            trademarks, technology platform or its underlying software, or any
-            portion thereof;
-          </li>
-          <li>
-            Reverse engineer, modify, copy, distribute, transmit, display,
-            perform, reproduce, publish, license, create derivative works from,
-            transfer, or sell any information or software obtained from the
-            Website;
-          </li>
-          <li>
-            Infringe upon or violate the rights of Pine Labs, its users or third
-            parties;
-          </li>
-          <li>
-            Download, copy or imitate any portion of the Pine Labs technology
-            platform, its underlying software and content, or its user
-            interface, or the Website, except as expressly permitted by us;
-          </li>
-          <li>
-            Aggregate or scrape any content, data or other information from the
-            Website to be aggregated or shown with material from other sites or
-            on a secondary site without our express written permission;
-          </li>
-          <li>
-            Hyperlink to the Website or deep-link to any portion of our Website
-            without our written consent;
-          </li>
-          <li>
-            Interfere with our Website’s attempt to access or steal any data and
-            information on or related to the Website;
-          </li>
-          <li>
-            Seek to transact any fraudulent or illegal activity, through any
-            means or corrupt practices, including but not limited to any of the
-            following: hacking, password mining, deceptive impersonation of
-            another person, misrepresentation of your affiliation with a person
-            or entity, hiding or attempting to hide your true identity or
-            location (including via proxy server or otherwise) or providing
-            false, inaccurate or altered documentation, information or
-            identification;
-          </li>
-          <li>
-            Circumvent or seek to circumvent any security measures or other
-            features meant to protect the security of the Website and the users’
-            security;
-          </li>
-          <li>
-            Use the Website other than for its intended purposes (including for
-            any malicious, threatening, unethical, harassing, fraudulent or
-            illegal activity) or otherwise in violation of these Terms of Use.
-          </li>
-          <li>
-            Upload files that contain software or other material protected by
-            intellectual property laws unless you own or control the rights
-            thereto or have received all necessary consents;
-          </li>
-          <li>
-            Upload or distribute files that contain viruses, corrupted files, or
-            any other similar software or programs that may damage the operation
-            of the Website or another's computer;
-          </li>
-          <li>
-            Conduct or forward surveys, contests, pyramid schemes or chain
-            letters;
-          </li>
-          <li>
-            Falsify or delete any author attributions, legal or other proper
-            notices or proprietary designations or labels of the origin or
-            source of software or other material contained in a file that is
-            uploaded;
-          </li>
-          <li>
-            Violate any code of conduct or other guidelines, which may be
-            applicable for or to any particular Service;
-          </li>
-          <li>
-            Violate any applicable laws or regulations for the time being in
-            force in or outside India;
-          </li>
-          <li>
-            Violate any provisions of these Terms of Use or any other terms and
-            conditions for the use of the Website contained elsewhere herein;
-          </li>
-        </ol>
-        <p>
-          Under no circumstance shall Pine Labs be liable for any consequential,
-          indirect or remote loss that you or your friends and family may
-          suffer.
-        </p>
-
-        <h2>F. Usage Conduct</h2>
-        <ol>
-          <li>
-            You shall solely be responsible for maintaining the necessary
-            computer equipment and Internet connections that may be required to
-            access, use and transact on the Website;
-          </li>
-          <li>
-            You are also under an obligation to use this Website for reasonable
-            and lawful purposes only, and shall not indulge in any activity that
-            is not envisaged through the Website; and
-          </li>
-          <li>
-            You shall use this Website for personal, non-commercial use only.
-          </li>
-        </ol>
-
-        <h2>G. Intellectual Property Rights</h2>
-        <p>
-          Unless otherwise indicated or anything contained to the contrary or
-          any proprietary material owned by a third party and so expressly
-          mentioned, Pine Labs owns all Intellectual Property Rights to and into
-          the trademarks "Pine Labs" and the Website, including, without
-          limitation, any and all rights, title and interest in and to
-          copyright, related rights, patents, utility models, designs, know-how,
-          trade secrets and inventions (patent pending), goodwill, source code,
-          meta tags, databases, text, content, graphics, icons, and hyperlinks.
-          You acknowledge and agree that you shall not use, reproduce or
-          distribute any content from the Website belonging to Pine Labs without
-          obtaining authorization from Pine Labs.
-        </p>
-        <p>
-          Notwithstanding the foregoing, it is expressly clarified that you will
-          solely be responsible for any content that you provide or upload when
-          using any Service, including any text, data, information, images,
-          photographs, music, sound, video or any other material which may be
-          accessible through your post, or any other content that you upload,
-          transmit or store when using the Website.
-        </p>
-
-        <h2>H. Links to Third Party Sites</h2>
-        <p>
-          Pine Labs will contain links to other websites ("Linked Sites"). The
-          Linked Sites are not under the control of Pine Labs, and Pine Labs is
-          not responsible for the contents of any Linked Site, including without
-          limitation any link contained in a Linked Site, or any changes or
-          updates to a Linked Site. Pine Labs is not responsible for any form of
-          transmission, whatsoever, received by you from any Linked Site. Pine
-          Labs provides links of online advertisements to you only as a
-          convenience and the inclusion of any link does not imply endorsement
-          by or affiliation with Pine Labs of the Linked Sites nor does it
-          represent the advice, views, opinions or beliefs of Pine Labs. The
-          users are requested to verify the accuracy of all information on their
-          own before undertaking any reliance on such information. In the event
-          that by accessing the Website or following links to third-party
-          websites you are exposed to content that you consider offensive or
-          inappropriate, your only recourse will be to stop using the Website.
-        </p>
-
-        <h2>I. Disclaimer of Warranties &amp; Liability</h2>
-        <p>
-          Pine Labs has endeavored to ensure that all the information on the
-          Website is correct, but Pine Labs neither warrants nor makes any
-          representations regarding the quality, accuracy or completeness of any
-          data, information, product or service. In no event shall Pine Labs be
-          liable for any direct, indirect, punitive, incidental, special,
-          consequential damages or any other damages. Neither shall Pine Labs be
-          responsible for the delay or inability to use the Website or related
-          Functionalities, the provision of or failure to provide
-          Functionalities, or for any information, software, products,
-          Functionalities and related graphics obtained through the Website, or
-          otherwise arising out of the use of the website, whether based on
-          contract, tort, negligence, strict liability or otherwise. Further,
-          Pine Labs shall not be held responsible for non-availability of the
-          Website during periodic maintenance operations or any unplanned
-          suspension of access to the website that may occur due to technical
-          reasons or for any reason beyond Pine Labs's control. The user
-          understands and agrees that any material and/or data downloaded or
-          otherwise obtained through the Website is done entirely at their own
-          discretion and risk and they will be solely responsible for any damage
-          to their computer systems or loss of data that results from the
-          download of such material and/or data.
-        </p>
-
-        <h2>J. Indemnification</h2>
-        <p>
-          You agree to indemnify, defend and hold harmless Pine Labs from and
-          against any and all losses, liabilities, claims, damages, costs and
-          expenses (including legal fees and disbursements in connection
-          therewith and interest chargeable thereon) asserted against or
-          incurred by Pine Labs that arise out of, result from, or may be
-          payable by virtue of, any breach or non-performance of any
-          representation, warranty, covenant or agreement made or obligation to
-          be performed by you pursuant to these Terms of Use.
-        </p>
-
-        <h2>K. Termination</h2>
-        <p>
-          Pine Labs may suspend or terminate your use of the Website or any
-          Service at its sole and absolute discretion. (i) Notwithstanding the
-          foregoing sub-section above, these Terms will survive indefinitely
-          unless and until Pine Labs chooses to terminate them; and (ii) If you
-          or Pine Labs terminates your use of the Website, Pine Labs may delete
-          any content or other materials relating to your use of the Website and
-          Pine Labs will have no liability to you or any third party for doing
-          so.
-        </p>
-
-        <h2>L. Governing Law</h2>
-        <p>
-          These terms shall be governed by and constructed in accordance with
-          the laws of India without reference to conflict of laws principles,
-          and disputes arising in relation hereto shall be subject to the
-          exclusive jurisdiction of the courts at Bangalore, India.
-        </p>
-
-        <h2>M. Report Abuse</h2>
-        <p>
-          If you come across any abuse or violation of these Terms, please
-          report to <a href="mailto:info@qwikcilver.com">info@qwikcilver.com</a>
-          .
-        </p>
-
-        <h2>N. PRIVACY POLICY OBJECTIVE</h2>
-        <p>
-          Privacy Policy to be uploaded onto the websites of Pine Labs Private
-          Limited, in order to ensure compliance with the Information Technology
-          Act, 2000 and the Information Technology (Reasonable Security
-          Practices and Procedures and Sensitive Personal Data or Information)
-          Rules, 2011.
-        </p>
-        <p>
-          Please find details of our Privacy Policy{" "}
-          <a href="https://www.qwikcilver.com/privacy-policy/">here</a>.
-        </p>
+            <h2>D: Process for Redemption of Refund Cards from Merchant Website:</h2>
+            <ol type="1">
+              <li>Customer visits the Merchant Website with the e-gift card code.</li>
+              <li>Customer will need to add the gift card to the online merchant wallet, that Pine Labs will be creating for each customer desirous of redeeming gift card. This gift card balance will be updated instantly, once the customer uses the Add-to-Wallet Balance functionality on the merchant website.</li>
+              <li>Customer avails the product or service desired.</li>
+              <li>At the time of tendering, the customer will use the balance present in the online wallet for redemption.</li>
+              <li>Bill amount in excess of the Gift Card value should be collected by the merchant website directly via the payment gateway.</li>
+              <li>All support in relation to the transaction of the e-gift card will be handled by Pine Labs helpdesk.</li>
+            </ol>
+          </div>  
+          <div>
+            <h1>ANNEXURE B</h1>
+            <h1>COMMERCIAL TERMS</h1>
+            <p>The commercials provided are for usage of the Technology platform provided for issuance and acceptance of the Merchant gift card.</p>
+            <ol type="1">
+              <li>For all Gift cards and refund cards issued by the merchant, Pine Labs will charge as per the Pricing Plan detailed below.</li>
+              <li>Pine Labs reserves the right to change this Price Plan and Plan Features available for merchants at its discretion.</li>
+              <li>This Plan will not be applicable in case Pine Labs and the Merchant enter into a separate commercial agreement with custom pricing for the issuance of gift cards and refund cards.</li>
+            </ol>
+            <div className="price-plans-image">
+              <img src={PricePlans} alt="" />
+            </div>
+            <h2 className="text-center">Roles & Responsibilities</h2>
+            <h3 className="text-center">Merchant’s Roles & Responsibilities</h3>
+            <ol type="1">
+              <li>Install the Pine Labs plugin (also called Qwikcilver app) from the Shopify App Store</li>
+              <li>Complete the Online KYC Process, to help Pine Labs onboard the merchant to its Pine Labs Electronic Gift Card Management Platform</li>
+              <li>Pay the monthly subscription as published by Pine Labs</li>
+              <li>Configure the Pine Labs plugin as per the instructions of Pine Labs</li>
+              <li>Enable the necessary internal mechanisms & processes to issue gift cards & refund cards to end customers</li>
+              <li>After the sale (of gift cards) AND / OR distribution (of refund gift cards), the Card shall entitle the bearer of the said Card to shop for the amount mentioned on the Card on the Merchant’s Platform. The Merchant shall be responsible for allowing redemption of the Gift Card and will be responsible for providing clear instructions on how to redeem the same, to the customer.</li>
+              <li>Merchant will be prompt in the payment of monthly subscriptions as per the due dates communicated by Pine Labs</li>
+              <li>The Gift Card terms and conditions are set out in Exhibit A hereto.</li>
+            </ol>
+            <h2 className="text-center">Pine Labs Roles & Responsibilities</h2>
+            <ol type="1">
+              <li>Host and manage Pine Labs transaction processing server on the internet;</li>
+              <li>Manage all server-side maintenance, database back-ups and all regular management activities;</li>
+              <li>Help merchants issue gift cards and refund cards as per the pricing plan published on the Shopify platform;</li>
+              <li>Store the details of gift cards and refund cards issued along with any customer data (as applicable);</li>
+              <li>Authorize and Validate gift cards when presented for redemption on the merchant website;</li>
+              <li>Process the redemption transactions and maintain the record of redemption transactions. Capture transaction data for tracking, reconciliation, and reporting;</li>
+              <li>Publish a periodic report detailing the volume and value of transactions.</li>
+            </ol>
+          </div>
+          <div>
+            <h1>EXHIBIT A</h1>
+            <h2 className="text-center">("Gift cards Terms & Conditions")</h2>
+            <p>Terms and Conditions of Gift Card</p>
+            <ol type="1">
+              <li>E-Gift Card is valid for a period of 6 months or 12 months (as applicable) from the date of its issue.</li>
+              <li>This Gift Card shall be subject to applicable laws or any new law, rules and/or regulations as may be promulgated / imposed by the Government, RBI, or any other statutory/regulatory authority.</li>
+              <li>No returns and no refunds on gift cards purchased through any channels.</li>
+              <li>E Gift Card is redeemable for merchandise at Merchant’s website and retail outlet within India. This Gift Voucher is redeemable during its validity.</li>
+              <li>E Gift Card is not redeemable for cash or credit nor can be exchanged for another Gift card.</li>
+              <li>If the invoice value is greater than the Gift Card value, the customer can pay the balance amount through Cash, Debit Card, and Credit Card as the case may be.</li>
+              <li>Merchant shall not be liable and responsible for any unauthorized and/or fraudulent purchase/s made using this E Gift Card.</li>
+              <li>The holder of this E Gift Card shall be solely responsible for the safe custody of the E Gift Card and the credentials mentioned on it. E Gift Card is a bearer instrument.</li>
+              <li>For balance enquiry & expiry, visit details, please add the gift card to your account / wallet on the merchant website.</li>
+              <li>Merchant reserves the right to amend the terms & conditions at its discretion without prior notice.</li>
+              <li>Disputes if any, shall be subject to Delhi jurisdiction.</li>
+              <li>E-gift cards are normally delivered instantly. But sometimes delivery can be delayed up to 24 - 48 hours.</li>
+            </ol>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import "./styles/PlanCard.css";
 import { CustomBtn } from "./BasicComponents";
 
-const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
+const PlanCard = ({ plan, active, popular, btnText, setPlan, amountPaid }) => {
   return (
     <div className={`plan-card ${active ? "card-shadow" : ""}`}>
       {/* popular plan */}
@@ -15,7 +15,8 @@ const PlanCard = ({ plan, active, popular, btnText, setPlan }) => {
 
       <div className="plan-card-title">{plan?.plan_name}</div>
       <div className="plan-card-price">
-        ₹ {plan?.price}
+        ₹ {amountPaid ? amountPaid : plan?.price}
+
         <span>/Month</span>
         <div className="plan-card-gst">+GST</div>
       </div>

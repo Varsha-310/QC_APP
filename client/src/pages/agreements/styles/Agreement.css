@@ -37,3 +37,19 @@
   text-align: left;
   padding: 5px;
 }
+.dashboard__pc-menu{
+  position: sticky;
+  top: 0;
+}
+.agreement-component_content li{
+  list-style-type: auto;
+}
+.agreement-component_content .text-center{
+  text-align: center;
+}
+.agreement-component .price-plans-image{
+  margin-top: 1rem;
+}
+.agreement-component img{
+  max-width: 100%;
+}

@@ -497,9 +497,24 @@ export const handleRefundAction = async (req, res) => {
         
 	    const trans = [];
         let storeCredit = 0;
+	let refundNotification = false;
+    let gc_id;
+    if(ordersData.payment_gateway_names.includes("gift_card")){
+        let gc_transactions = await getOrderTransactionDetails(
+            orderId,
+            store_url,
+            accessToken
+          );
+          let fetchTransaction = gc_transactions.data.transactions.find(
+            (trans) => trans.gateway == "gift_card"
+          );
+          console.log(JSON.stringify(fetchTransaction));
+          gc_id= fetchTransaction.receipt.gift_card_id
+    }
+
         //process gc reverse transaction
         if(refund_type == "Back-to-Source"){
-
+	refundNotification = true;
             const gcRfDetails = await getGCRefundAmount(amount, transactions);
             console.log("GC Refund Details:", gcRfDetails);
 
@@ -526,7 +541,12 @@ export const handleRefundAction = async (req, res) => {
                     "parent_id": gc_transaciton.parent_id,
                     "amount": gcRfDetails.gc_rf_amount
                 }); 
-                storeCredit =  gcRfDetails.gc_rf_amount;
+                const giftcardExists = await Wallet.findOne({
+                    shopify_giftcard_id: gc_id,
+                  });
+                  if(giftcardExists){
+                    storeCredit =  gcRfDetails.gc_rf_amount;
+                  }
             }     
             refundSession = await updateRefundLogs(sessionQuery, {  
                 amount: gcRfDetails.refundableAmount,
@@ -581,7 +601,7 @@ export const handleRefundAction = async (req, res) => {
             const refund_line_items = line_items.map(item => {
                 return { line_item_id: item.id, quantity: item.qty, location_id: refSetting.location_id, restock_type:refSetting.restock_type };
             })
-            const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency);
+            const refundedResp = await createRefundBackToSource(trans, orderId, refund_line_items, store_url, accessToken,refundAmount.refund.currency,refundNotification);
             console.log(refundedResp.data, " Query : ", sessionQuery);
             refundSession = await updateRefundLogs(sessionQuery, {
                 refund_created_at: new Date(),
@@ -626,7 +646,7 @@ export const handleRefundAction = async (req, res) => {
  * @param {*} storeData
  * @param {*} accessToken
  */
-export const createRefundBackToSource = async (_trans, orderId, line_items, store_url, accessToken, currency) => {
+export const createRefundBackToSource = async (_trans, orderId, line_items, store_url, accessToken, currency,refundNotification) => {
 
     console.log(
         "createRefundBackToSource",
@@ -636,7 +656,7 @@ export const createRefundBackToSource = async (_trans, orderId, line_items, stor
     const data = {
         "refund": {
             currency: currency,
-            notify: true,
+            notify: refundNotification,
             refund_line_items: line_items,
             transactions: _trans
         }

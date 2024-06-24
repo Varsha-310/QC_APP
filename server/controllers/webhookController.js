@@ -90,7 +90,7 @@ export const getOrderTransactionDetails = async (
  */
 export const ordercreateEvent = async (shop, order) => {
   try {
-    console.log("Shop Name", shop, order.id);
+    console.log("Shop Name", shop, order);
     const logQuery = {
       store: shop,
       orderId: order.id,
@@ -184,6 +184,7 @@ export const ordercreateEvent = async (shop, order) => {
         //  check financial status
         if (newOrder.financial_status == "paid") {
           for (let qwikcilver_gift_card of qwikcilver_gift_cards) {
+            gc_order.amount = parseFloat(qwikcilver_gift_card.price);
             const type = "giftcard";
             const flag = await checkActivePlanUses(
               qwikcilver_gift_card.price,
@@ -393,11 +394,9 @@ export const ordercreateEvent = async (shop, order) => {
                   shop,
                   newOrder.customer.id,
                   giftCardDetails.CardPin,
-                  giftCardDetails.Balance,
                   type,
                   newOrder.id,
-                  giftCardDetails.ExpiryDate,
-		  OrderSession?.self?.wallet,
+		              OrderSession?.self?.wallet,
                  
                 );
                 // OrderSession["self"]["wallet"] = logs;
@@ -409,6 +408,11 @@ export const ordercreateEvent = async (shop, order) => {
                 if (!logs.status)
                   throw new Error("Error: Add Gift Card To Wallet");
               }
+              await updateBilling(gc_order.amount, shop);
+              await OrderCreateEventLog.updateOne({
+              logQuery,
+              updateBillingAt: new Date().toISOString(),
+              });
             }
           }
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
@@ -448,7 +452,9 @@ export const ordercreateEvent = async (shop, order) => {
           }
         } else {
           console.log("Wallet not found", checkAmount);
-          await orderCancel(order, shop, "Missmatch: User Account & Wallet");
+          if(!checkAmount.error.msg == "Wallet Not Found"){
+            await orderCancel(order, shop, "Missmatch: User Account & Wallet");
+          }
           await OrderCreateEventLog.updateOne(
             logQuery,
             { redeem: checkAmount, numberOfRetried },
@@ -467,12 +473,7 @@ export const ordercreateEvent = async (shop, order) => {
         updateBillingAt: new Date().toISOString(),
       });
     }
-    if (gc_order.sent_as_gift == false) {
-      
-        await updateBilling(gc_order.amount, shop);
-        logs["updateBillingAt"] = new Date().toISOString();
-      
-    }
+    
     return 1;
     // done(null, true);
   } catch (err) {
@@ -530,7 +531,7 @@ export const productCreateEvent = async (req, res) => {
 export const handleOrderCreatewebhook = async (req, res) => {
   try {
     const orderData = req.body;
-    console.log(orderData.id);
+    console.log("order update webhook",orderData.id);
 
     const store = req.headers["x-shopify-shop-domain"];
     orderData.store_url = store;
@@ -733,7 +734,7 @@ export const failedOrders = async () => {
             reverse = await reverseCreateGiftcard(
             iterator.store,
             iterator.self.createGC.req,
-            iterator.self.createGC?.resp.TransactionId || iterator.self.createGC.error.TransactionId
+            iterator.self.createGC?.resp?.TransactionId || iterator?.self?.createGC?.error?.TransactionId
 
           );
         } else {

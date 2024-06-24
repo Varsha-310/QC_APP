@@ -44,6 +44,7 @@ export const create = async (req, res) => {
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays, dailyRate, calculatedPayment);
     let myDate = new Date();
+    myDate.setDate(myDate.getDate()+2);
     const date = myDate.toISOString().slice(0, 10);
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst);
@@ -60,7 +61,7 @@ export const create = async (req, res) => {
       phone: storeData.phone,
     };
     let billingData = {
-      billing_amount: totalAmount,
+      billing_amount: Math.round(totalAmount),
       billing_start_date: date,
       billing_currency: "INR",
       billing_cycle: "ADHOC",
@@ -129,7 +130,7 @@ export const payuPayment = async (req, res) => {
  * @returns
  */
 export const failurePayment = async (req, res) => {
-  return res.redirect(`${process.env.CLIENT_URL}payment-unsuccessful`);
+  return res.redirect(`${process.env.CLIENT_URL}/payment-unsuccessful`);
 };
 
 /**
@@ -160,9 +161,15 @@ const updateBillingHistory = async (data) => {
     { upsert: true }
   );
   console.log(updateBilling);
+ let planData = await plan.findOne({plan_name:data.lastname});
+ let price;
+ if(planData){
+  price = planData.price;
+ }
+
   await store.updateOne(
     { store_url: data.productinfo },
-    { $set: { "plan.plan_name": data.lastname }, mandate:data }
+    { $set: { "plan.plan_name": data.lastname,"plan.price":price}, mandate:data }
   );
   const billingData = await BillingHistory.findOne({
     transaction_id: data.txnid,
