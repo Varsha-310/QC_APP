@@ -66,7 +66,9 @@ const CreateGiftCard = () => {
     const name = event.target.name;
     const value = event.target.value;
 
-    if (/^[a-zA-z0-9.\s]*$/.test(value)) {
+    if(name==="terms" || name==="description"){
+      setCardData((prev) => ({ ...prev, [name]: value }));
+    } else if (/^[a-zA-z0-9.\s]*$/.test(value)) {
       setCardData((prev) => ({ ...prev, [name]: value }));
     }
   };
