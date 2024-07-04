@@ -36,9 +36,7 @@ const RefundPage = () => {
   const [taxPercent, setTaxPercent] = useState(0);
   const [refundData, setRefundData] = useState([]);
   const [setting, setSetting] = useState(false);
-
-  // const [isCalcLoading, setIsCalcLoading] = useState(false);
-  // const [calcData, setCaclData] = useState(null);
+  const [discountPercent, setDiscountPercent] = useState(0);
 
   // getsetting
   const getConfig = useMemo(async () => {
@@ -76,7 +74,15 @@ const RefundPage = () => {
 
       const totalPrice = parseFloat(resData?.total_price);
       const totalTax = parseFloat(resData?.total_tax);
-      const taxPercentage = (totalTax * 100) / (totalPrice - totalTax);
+      const taxPercentage = ((totalTax * 100) / (totalPrice - totalTax)).toFixed(4);
+
+      const subTotalPrice = Number(resData?.total_line_items_price)
+      let totalDiscountAmount = 0
+      resData.discount_codes.length>0 && resData.discount_codes.forEach((item)=>{
+        totalDiscountAmount += Number(item.amount)
+      })
+      const calDiscountPercentage = ((totalDiscountAmount * 100) / subTotalPrice).toFixed(4)
+      setDiscountPercent(calDiscountPercentage)
 
       setRefundData(resJson?.data?.refund || []);
       setTaxPercent(taxPercentage);
@@ -122,6 +128,7 @@ const RefundPage = () => {
         qty: 0,
         totalPrice: 0,
         totalTax: 0,
+        discountAmount: 0
       }));
       setInputData(emptyInputArray);
     } catch (error) {
@@ -171,50 +178,32 @@ const RefundPage = () => {
     }
   };
 
-  // to fetch  max refundable amount
-  // const calcRefund = async (oid, data) => {
-  //   setIsCalcLoading(true);
-  //   const url = "/refund/calculate";
-  //   const headers = {
-  //     Authorization: getUserToken(),
-  //   };
-
-  //   const body = {
-  //     orderId: oid,
-  //     line_items: data,
-  //   };
-
-  //   try {
-  //     const res = await instance.post(url, body, { headers });
-  //     const resData = res.data;
-  //     setCaclData(resData.data);
-  //   } catch (error) {
-  //   } finally {
-  //     setIsCalcLoading(false);
-  //   }
-  // };
-
   // to handle quantity change
   const handleQuantityChange = (itemId, newQty, totalQty, price, taxlines) => {
     const qtyValue = Number(newQty);
 
-    const taxPerItem = price * (taxPercent / 100);
-
     if (!isNaN(qtyValue) && qtyValue >= 0 && qtyValue <= totalQty) {
       const itemIndex = inputData.findIndex((item) => item.id === itemId);
+
+      const discountAmount = ((price*discountPercent)/100).toFixed(4)
+      const finalSubTotalAmount = price-discountAmount
+
+      const taxPerItem = (finalSubTotalAmount * (taxPercent / 100)).toFixed(4);
 
       if (itemIndex !== -1) {
         const updatedInputData = [...inputData];
         updatedInputData[itemIndex].qty = newQty;
         updatedInputData[itemIndex].totalPrice = newQty * price;
-        updatedInputData[itemIndex].totalTax = newQty * taxPerItem;
+        updatedInputData[itemIndex].totalTax = (newQty * taxPerItem).toFixed(4);
+        updatedInputData[itemIndex].discountAmount = discountAmount * newQty
         setInputData(updatedInputData);
       } else {
         const newItem = {
           id: itemId,
           qty: newQty,
           totalPrice: newQty * price,
-          totalTax: newQty * taxPerItem,
+          totalTax: (newQty * taxPerItem).toFixed(4),
+          discountAmount: discountAmount * newQty
         };
         setInputData((prev) => [...prev, newItem]);
       }
@@ -224,12 +213,6 @@ const RefundPage = () => {
   useEffect(() => {
     fetchData(id);
   }, [id]);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     calcRefund(id, [{ id: data[0]?.id, qty: data[0]?.quantity }]);
-  //   }
-  // }, [id, data]);
 
   const refundHistoryTable = useMemo(() => {
     return (
@@ -353,10 +336,6 @@ const RefundPage = () => {
             {/* refund history */}
             {refundData?.logs && refundHistoryTable}
           </div>
-          {/* refund summary */}
-          {/* {isCalcLoading ? (
-            <div>Loading...</div>
-          ) : (  )} */}
           <div className="refund-page__summary">
             <div className="refund-page__refund-process">
               <div className="refund-page__title">Summary</div>
@@ -373,6 +352,10 @@ const RefundPage = () => {
                   <td></td>
                 </tr>
                 <tr>
+                  <td>Discount</td>
+                  <td>-{countTotal(inputData, "discountAmount")}</td>
+                </tr>
+                <tr>
                   <td>Tax</td>
                   <td>₹ {countTotal(inputData, "totalTax")}</td>
                 </tr>
@@ -382,8 +365,8 @@ const RefundPage = () => {
                   <td>
                     ₹{" "}
                     {(
-                      parseFloat(countTotal(inputData, "totalPrice")) +
-                      parseFloat(countTotal(inputData, "totalTax"))
+                      Number(countTotal(inputData, "totalPrice")) - Number(countTotal(inputData, "discountAmount")) +
+                      Number(countTotal(inputData, "totalTax"))
                     ).toFixed(2)}
                   </td>
                 </tr>
@@ -406,16 +389,6 @@ const RefundPage = () => {
                   }}
                   className="refund-page__shipping-rate-input"
                 />
-                {/* <div className="refund-page__refund-amount">
-                    Rs.{" "}
-                    {calcData?.refund?.transactions
-                      ?.reduce((acc, curr) => {
-                        const currValue = parseFloat(curr.maximum_refundable);
-                        return acc + currValue;
-                      }, 0)
-                      .toFixed(2) || 0}{" "}
-                    Available for refund
-                  </div> */}
                 <div style={{ margin: "10px 0px" }}>
                   <CustomDropdown
                     options={[
