@@ -18,6 +18,7 @@ import orderRoute from "./routes/orderRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import paymentRoute from "./routes/payment.js";
 import { failedOrders } from "./controllers/webhookController.js";
+import {cronToCheckWebhooks} from "./helper/custom.js"
 import { createJwt } from "./helper/jwtHelper.js";
 import { fileURLToPath} from "url";
 import { dirname,join } from "path";
@@ -111,8 +112,16 @@ app.use("/payment",apiLimiter ,paymentRoute);
 cron.schedule("*/10 * * * * *", () => {
   
   console.log("checking failed sessions in every 10 sec");
-  failedOrders();
+  // failedOrders();
 });
+
+//cron to check webhooks and metafield for stores
+cron.schedule("0 1 * * *", () => {
+  console.log("checking webhooks and metafields");
+  cronToCheckWebhooks();
+});
+
+
 
 // Database and Port connection
 mongoose

@@ -19,11 +19,12 @@ const webhooks = [
  */
 export const cronToCheckWebhooks = async () => {
   let stores = await store.find();
-  
+
   console.log(stores);
   for (const store of stores) {
     console.log(store);
     await checkWebhooks(store.store_url, store.access_token);
+    await checkMetafieldDefinition(store.store_url, store.access_token);
   }
 };
 
@@ -75,6 +76,106 @@ export const checkWebhooks = async (storeUrl, accessToken) => {
       }
     }
   } catch (err) {
-    console.log("An error occured",err);
+    console.log("An error occured", err);
+  }
+};
+
+/**
+ * to check product metafield definition
+ * @param {*} store
+ * @param {*} access_token
+ * @returns
+ */
+const checkMetafieldDefinition = async (store, access_token) => {
+  try {
+    const response = await axios.post(
+      `https://${store}/admin/api/2024-01/graphql.json`,
+      {
+        query: `
+          {
+            metafieldDefinitions(ownerType: PRODUCT, first: 250) {
+              edges {
+                node {
+                  id
+                  namespace
+                  key
+                  description
+                }
+              }
+            }
+          }
+        `,
+      },
+      {
+        headers: {
+          "X-Shopify-Access-Token": access_token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const metafieldExists = response.data.data.metafieldDefinitions.edges
+      .map((metafield) => metafield.node.namespace)
+      .includes("global");
+
+    console.log(metafieldExists);
+    if (!metafieldExists) {
+      let metafieldData = JSON.stringify({
+        query: `mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
+        metafieldDefinitionCreate(definition: $definition) {
+          createdDefinition {
+              id
+              name
+              namespace
+              key
+              description
+              ownerType
+              type{name}
+              metafieldsCount
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }`,
+        variables: {
+          definition: {
+            name: "terms",
+            namespace: "global",
+            key: "terms",
+            type: "multi_line_text_field",
+            ownerType: "PRODUCT",
+          },
+        },
+      });
+
+      let config = {
+        method: "post",
+
+        url: `https://${store}/admin/api/2024-01/graphql.json`,
+        headers: {
+          "X-Shopify-Access-Token": access_token,
+          "Content-Type": "application/json",
+        },
+        data: metafieldData,
+      };
+
+      await axios(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("Metafield exists");
+    }
+
+    return 1;
+  } catch (error) {
+    console.error(error);
+    return 0;
   }
 };

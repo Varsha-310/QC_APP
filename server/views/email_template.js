@@ -22,7 +22,7 @@ let email_template = `
                                                     align="left">
                                                     Dear <strong>__receiver__</strong>,
                                                     <p style="text-align:justify">
-                                                        You have received a Qwikcilver e-Gift Card, please find the
+                                                        You have received a __product_title__ , please find the
                                                         details below.
                                                     <p style="text-align:justify">
                                                         <strong> Message</strong>: “__message__”

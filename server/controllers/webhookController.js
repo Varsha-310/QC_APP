@@ -152,6 +152,7 @@ export const ordercreateEvent = async (shop, order) => {
 
       //check gc in the order & process
       if (qwikcilver_gift_cards && qwikcilver_gift_cards.length) {
+        gc_order.amount = parseFloat(qwikcilver_gift_cards.price);
         if (newOrder.payment_gateway_names.includes("gift_card")) {
           await orders.updateOne(
             { id: newOrder.id },
@@ -393,11 +394,9 @@ export const ordercreateEvent = async (shop, order) => {
                   shop,
                   newOrder.customer.id,
                   giftCardDetails.CardPin,
-                  giftCardDetails.Balance,
                   type,
                   newOrder.id,
-                  giftCardDetails.ExpiryDate,
-		  OrderSession?.self?.wallet,
+		              OrderSession?.self?.wallet,
                  
                 );
                 // OrderSession["self"]["wallet"] = logs;
@@ -409,6 +408,13 @@ export const ordercreateEvent = async (shop, order) => {
                 if (!logs.status)
                   throw new Error("Error: Add Gift Card To Wallet");
               }
+              await updateBilling(gc_order.amount, shop);
+              await OrderCreateEventLog.updateOne({
+                logQuery,
+                updateBillingAt: new Date().toISOString(),
+              });
+              
+
             }
           }
           await orders.updateOne({ id: newOrder.id }, { qc_gc_created: "YES" });
@@ -448,7 +454,9 @@ export const ordercreateEvent = async (shop, order) => {
           }
         } else {
           console.log("Wallet not found", checkAmount);
-          await orderCancel(order, shop, "Missmatch: User Account & Wallet");
+          if(!checkAmount.error.msg == "Wallet Not Found"){
+            await orderCancel(order, shop, "Missmatch: User Account & Wallet");
+          }
           await OrderCreateEventLog.updateOne(
             logQuery,
             { redeem: checkAmount, numberOfRetried },
@@ -467,12 +475,7 @@ export const ordercreateEvent = async (shop, order) => {
         updateBillingAt: new Date().toISOString(),
       });
     }
-    if (gc_order.sent_as_gift == false) {
-      
-        await updateBilling(gc_order.amount, shop);
-        logs["updateBillingAt"] = new Date().toISOString();
-      
-    }
+    
     return 1;
     // done(null, true);
   } catch (err) {

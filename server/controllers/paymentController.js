@@ -44,6 +44,7 @@ export const create = async (req, res) => {
     const calculatedPayment = remainingDays * dailyRate;
     console.log(remainingDays, dailyRate, calculatedPayment);
     let myDate = new Date();
+    myDate.setDate(myDate.getDate()+2);
     const date = myDate.toISOString().slice(0, 10);
     const calculatedGst = calculateGST(calculatedPayment);
     console.log(calculatedGst);
@@ -60,7 +61,7 @@ export const create = async (req, res) => {
       phone: storeData.phone,
     };
     let billingData = {
-      billing_amount: totalAmount,
+      billing_amount: Math.round(totalAmount),
       billing_start_date: date,
       billing_currency: "INR",
       billing_cycle: "ADHOC",
